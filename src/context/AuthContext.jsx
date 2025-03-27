@@ -1,57 +1,51 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
+AuthContext.displayName = "AuthContext";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    const fetchUser = async (session) => {
-      if (session?.user) {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        if (profileError) {
-          setError(profileError.message);
-        } else {
-          setProfile(profileData);
-          setUser({ ...session.user, profile: profileData });
-        }
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-      setLoading(false);
-    };
-
+  
     const fetchSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      fetchUser(session);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setUser(session?.user || null);
+      } catch (err) {
+        console.error("Error fetching session:", err.message);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
-
+  
     fetchSession();
-
+  
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      fetchUser(session);
+      setUser(session?.user || null);
     });
-
+  
     return () => {
       authListener?.subscription?.unsubscribe();
+
     };
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, profile }}>
+    <AuthContext.Provider value={{ user, loading }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context =  useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth debe usarse dentro de un AuthProvider")
+  }
+  return context;
+}

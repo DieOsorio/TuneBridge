@@ -9,7 +9,7 @@ const Input = ({
   autoComplete,
 }) => {
   return (
-    <div className="text-gray-950 mb-4">
+    <div className="mb-4">
       {label && (
         <label htmlFor={id} className="block text-sm font-medium mb-2">
           {label}

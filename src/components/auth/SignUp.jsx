@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useProfile } from "../../context/ProfileContext";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../pages/Loading";
 import { supabase } from "../../supabase";
@@ -12,14 +13,17 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const { username, session } = useAuth(); 
+  const { user, loading: authLoading } = useAuth();
+  const { createProfile, loading: profileLoading} = useProfile(); 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (session && session.user.email_confirmed_at) {
-      navigate(`/profile/${session.user.id}`);
-    }
-  }, [session, navigate]);
+  if (authLoading || profileLoading) {
+    return <Loading />;
+  }
+
+  if (user && user.email_confirmed_at) {
+    navigate(`profile/${user.id}`);
+  }
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -33,10 +37,7 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-      });
-  
-      console.log("SignUp data:", data); // Verifica qué contiene el data
-      console.log("SignUp error:", error); // Verifica si hay error
+      });  
   
       if (error) {
         setError(error.message);
@@ -44,45 +45,11 @@ const SignUp = () => {
       } else {
         setError("");
         setSuccess(true);
-  
-        if (data.user) {
-          // Verificar si data.user está presente antes de continuar
-          console.log("User:", data.user);  // Verifica el usuario antes de insertarlo
-          
-          const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([{
-            id: data.user.id,
-            username: username,
-            avatar_url: "",
-            instrument: "",
-            is_singer: false,
-            is_composer: false,
-            birthdate: null,
-            gender: "",
-            email: email
-          },
-          ])
-          .select();
-  
-          if (profileError) {
-            console.log("Profile creation error:", profileError);
-            setError("Hubo un error al crear el perfil");
-            return;
-          }
-        }
-  
-        navigate(`/signup-success`);
       }
     } catch (err) {
-      console.error("Error during sign-up:", err);
       setError("Hubo un problema al registrarte.");
     }
   };
-
-  if (!session && success) {
-    return <Loading />;
-  }
 
   return (
     <div className="text-gray-950 flex justify-center items-center h-screen">

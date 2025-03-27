@@ -15,9 +15,8 @@ const Login = () => {
   
   // Si el usuario ya está autenticado, redirigimos a su perfil
   useEffect(() => {
-    if (loading) return;
-
-    if (user && user.email_confirmed_at) {
+    console.log("Estado de user:", user);
+    if (user && user.email_confirmed_at && !loading) {
       navigate(`/profile/${user.id}`); // Redirige a la página del perfil si ya hay un usuario
     }
   }, [user, navigate, loading]);
@@ -30,29 +29,18 @@ const Login = () => {
       email,
       password,
     });
-
+    
     if (error) {
-      setError(error.message); // Si hay error, mostramos el mensaje
-    } else {
-      const user = data?.user;
-      if (user) {
-        setError(""); // Limpiar errores
-        console.log("Usuario logueado:", user);
-
-        // Redirigir al perfil del usuario (verificando que el usuario tiene un ID)
-        if (user.id) {
-          navigate(`/profile/${user.id}`);
-        } else {
-          setError("No se pudo obtener el ID del usuario.");
-        }
-      } else {
-        setError("Error al obtener datos del usuario.");
-      }
+      setError("No se pudo obtener el ID del usuario.");
     }
-  };
+    else {
+    setError("");
+    console.log("Usuario logueado:", data.user);
+    }
+  }
 
   if (loading) {
-    return <Loading />; // O puedes mostrar un spinner mientras se verifica la sesión
+    return <Loading />; 
   }
 
   return (

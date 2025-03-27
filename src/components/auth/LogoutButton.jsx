@@ -1,13 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../../supabase';
 import Button from '../ui/Button';
-
-
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_KEY);
+import { useNavigate } from 'react-router-dom';
 
 const LogoutButton = () => {
+  const navegate = useNavigate();
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.reload(); // O redirigir a la página de inicio
+    navegate("/login")
   };
 
   return <Button onClick={handleLogout}>Cerrar sesión</Button>;

@@ -1,27 +1,45 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import { useAuth } from '../../context/AuthContext';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useProfile } from "../../context/ProfileContext"; // Asumiendo que tienes este contexto
+import Loading from "../../pages/Loading";
 
 const AccountConfirmed = () => {
-  const { username, session } = useAuth(); 
-  const navigate = useNavigate(); 
+  const { user, loading } = useAuth();
+  const { createProfile } = useProfile();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Si no hay sesión o si hay un error, redirige al login
-    if (!session) {
-      navigate('/login');
-    }
-  }, [navigate]);  // Dependemos de la sesión y el error para redirigir
-
+    const createUserProfile = async () => {
+      if (user && user.email_confirmed_at) {
+        try {
+          // Crear perfil en la base de datos
+          const profileCreated = await createProfile(user.id, user.email);
+  
+          if (profileCreated) {
+            navigate(`/profile/${user.id}`);
+          } else {
+            console.error("Error al crear el perfil");
+          }
+        } catch (err) {
+          console.error("Error al crear el perfil:", err);
+          // Podrías agregar un manejo de error visual o alguna acción en caso de que falle
+        }
+      }
+    };
+  
+    createUserProfile();
+  }, [user, navigate, createProfile]);
+  
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
-    <div className="confirmation-container">
-      <h1>¡Cuenta confirmada!</h1>
-      <p>Tu cuenta ha sido confirmada exitosamente.</p>
-      <p>Haz clic en el siguiente enlace para editar tu perfil:</p>
-      <a href={`/edit-profile/${session.user.id}`} className="edit-profile-link">
-        Editar mi perfil
-      </a>
+    <div className="text-center py-6">
+      <h1 className="text-3xl font-bold text-green-300">¡Cuenta confirmada!</h1>
+      <p className="mt-4 text-lg text-gray-600">Tu cuenta ha sido confirmada exitosamente.</p>
+      {loading && <p>Cargando perfil...</p>}
     </div>
   );
 };

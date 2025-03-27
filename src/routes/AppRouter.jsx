@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "../pages/Home";
 import Explore from "../pages/Explore";
 import Login from "../components/auth/Login";
 import SignUp from "../components/auth/SignUp";
@@ -11,6 +10,7 @@ import SignUpSuccess from "../pages/SignUpSuccess";
 import EditProfile from "../components/user/EditProfile";
 import RedirectAfterLogin from "../utilis/RedirectAfterLogin";
 import AccountConfirmed from "../components/auth/AccountConfirmed";
+import LandingPage from "../pages/LandingPage";
 
 const AppRouter = () => {
   return (
@@ -18,7 +18,7 @@ const AppRouter = () => {
       <Navbar />
       <main className="flex-grow p-4">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

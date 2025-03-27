@@ -1,48 +1,41 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../supabase";
 import ProfileAvatar from "../components/user/ProfileAvatar";
 import MusicInfo from "../components/user/MusicInfo";
 import Button from "../components/ui/Button";
+import { useProfile } from "../context/ProfileContext";
+import { useAuth } from "../context/AuthContext";
+import Loading from "./Loading";
 
 
 const Profile = () => {
-  const { user } = useAuth();
-  const [profileData, setProfileData] = useState(null);
+  const {user, loading: authLoading} = useAuth();
+  const { profile, loading: profileLoading, error, fetchProfile } = useProfile();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    } else {
-      fetchProfileData(user.id);
+    if (user) {
+      fetchProfile(user.id);
     }
-  }, [user, navigate]);
+  }, [user]);
 
-  const fetchProfileData = async (userId) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    if (error) console.error(error);
-    else setProfileData(data);
-  };
-
-  if (!profileData) return <div className="text-center mt-10">Cargando perfil...</div>;
+  if (authLoading || profileLoading) {
+    return <Loading />;
+  }
+  if (error) {
+    return <div>No se encontro el perfil.</div>
+  }
 
   return (
     <div className="flex flex-col items-center p-8 max-w-4xl mx-auto gap-8">
-      <ProfileAvatar avatar_url={profileData.avatar_url} />
-      <h2>{profileData.username}</h2>
+      <ProfileAvatar avatar_url={profile?.avatar_url} />
+      <h2>{profile?.username}</h2>
       <MusicInfo 
-      instrument={profileData.instrument}
-      is_singer={profileData.is_singer}
-      is_composer={profileData.is_composer}  
+      instrument={profile?.instrument}
+      is_singer={profile?.is_singer}
+      is_composer={profile?.is_composer}  
       />
-      <Button  onClick={() => navigate(`/edit-profile/${profileData.id}`)}> Editar Perfil </Button>
+      <Button  onClick={() => navigate(`/edit-profile/${profile?.id}`)}> Editar Perfil </Button>
     </div>
   );
 };

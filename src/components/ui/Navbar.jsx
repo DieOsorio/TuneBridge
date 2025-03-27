@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "../../supabase";
 import LogoutButton from "../auth/LogoutButton";
-
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_KEY);
+import HamburgerMenu from "./HamburguerMenu";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -36,9 +35,10 @@ const Navbar = () => {
         <Link to="/explore" className="hover:underline">Explorar</Link>
         {user && <Link to={`profile/${user.id}`} className="hover:underline">Perfil</Link>}
       </div>
-
       {/* Botón de Logout si el usuario está autenticado, sino, mostrar Login */}
       {user ? <LogoutButton /> : <Link to="/login" className="hover:underline">Iniciar sesión</Link>}
+
+      {user ? <HamburgerMenu /> : null}
     </nav>
   );
 };
