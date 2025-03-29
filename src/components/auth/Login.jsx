@@ -15,7 +15,6 @@ const Login = () => {
   
   // Si el usuario ya está autenticado, redirigimos a su perfil
   useEffect(() => {
-    console.log("Estado de user:", user);
     if (user && user.email_confirmed_at && !loading) {
       navigate(`/profile/${user.id}`); // Redirige a la página del perfil si ya hay un usuario
     }

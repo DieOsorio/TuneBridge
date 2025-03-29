@@ -9,7 +9,6 @@ export const ProfileProvider = ({ children }) => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false)
     const [profile, setProfile] = useState(null);
-    const [error, setError] = useState("");
     const [profileError, setProfileError] = useState(null);
 
     const fetchProfile = async (userID) => {
@@ -22,6 +21,7 @@ export const ProfileProvider = ({ children }) => {
             }
     
             const { data: profileData, error } = await supabase
+                .schema('users')
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
@@ -47,30 +47,33 @@ export const ProfileProvider = ({ children }) => {
     const createProfile = async (userId, email) => {
         try {
         setLoading(true);
-        const { error: profileError } = await supabase
+        const { error } = await supabase
+            .schema('users')
             .from("profiles")
             .insert([
             {
                 id: userId,
-                username: "",
-                avatar_url: "",
-                instrument: "",
-                is_singer: false,
-                is_composer: false,
-                birthdate: null,
-                gender: "",
+                username: null,
                 email: email,
+                avatar_url: "",
+                country: "",
+                city: "",
+                firstname: "",
+                lastname: "",
+                gender: "",
+                birthdate: null
             },
             ]);
 
-        if (profileError) {
-            throw new Error(profileError.message);
+            console.error("error", error);
+        if (error) {
+            throw new Error(error.message);
         }
-
+        
         setLoading(false);
-        return true; // O podrías devolver los datos si lo necesitas
-        } catch (err) {
-        setError(err.message);
+        return true; 
+    } catch (err) {
+        setProfileError(err.message);
         setLoading(false);
         return false;
         }
@@ -79,29 +82,32 @@ export const ProfileProvider = ({ children }) => {
         // Actualizar perfil
     const updateProfile = async (profileData) => {
         setLoading(true);
-        setError("");
-
+        setProfileError("");
+        
         try {
             const { error } = await supabase
+            .schema('users')
             .from("profiles")
             .update({
                 username: profileData.username,
                 gender: profileData.gender,
                 avatar_url: profileData.avatar_url,
-                instrument: profileData.instrument,
-                is_singer: profileData.is_singer,
-                is_composer: profileData.is_composer,
+                country: profileData.country,
+                city: profileData.city,
+                firstname: profileData.firstname,
+                lastname: profileData.lastname,
                 birthdate: profileData.birthdate
             })
             .eq("id", profileData.id);
-
+            
             if (error) {
-            setError(error.message);
+                setProfileError(error.message);
+                console.error("error", error);
             } else {
-            setProfile((prev) => ({ ...prev, ...profileData}));
+                setProfile((prev) => ({ ...prev, ...profileData}));
             }
         } catch (err) {
-                setError("Error al actualizar el perfil.");
+                setProfileError("Error al actualizar el perfil.");
                 console.error(err);            
             }
             setLoading(false);
@@ -111,12 +117,13 @@ export const ProfileProvider = ({ children }) => {
     const deleteProfile = async (userId) => {
         setLoading(true);
         const { error } = await supabase
+        .schema('users')
         .from("profiles")
         .delete()
         .eq("id", userId);
 
         if (error) {
-        setError(error.message);
+        setProfileError(error.message);
         } else {
         setProfile(null);
         }

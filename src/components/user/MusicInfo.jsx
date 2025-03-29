@@ -6,22 +6,22 @@ const MusicInfo = ({ instrument, is_singer, is_composer }) => {
   }
 
   return (
-    <div className="music-info">
-      <h2>Información Musical</h2>
+    <div className="p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Información Musical</h2>
       
       {instrument && (
-        <p><strong>Instrumento: </strong>{instrument}</p>
+        <p className="text-lg"><strong>Instrumento: </strong>{instrument}</p>
       )}
       
       {is_singer && (
-        <p><strong>Cantante: </strong>Sí</p>
+        <p className="text-lg"><strong>Cantante: </strong>Sí</p>
       )}
       
       {is_composer && (
-        <p><strong>Compositor: </strong>Sí</p>
+        <p className="text-lg"><strong>Compositor: </strong>Sí</p>
       )}
     </div>
   );
 };
 
-export default MusicInfo
+export default MusicInfo;

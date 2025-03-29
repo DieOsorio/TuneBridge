@@ -6,6 +6,7 @@ import { useProfile } from "../../context/ProfileContext";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../pages/Loading";
 import { supabase } from "../../supabase";
+import SignUpSuccess from "../../pages/SignUpSuccess";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -17,13 +18,11 @@ const SignUp = () => {
   const { createProfile, loading: profileLoading} = useProfile(); 
   const navigate = useNavigate();
 
-  if (authLoading || profileLoading) {
-    return <Loading />;
-  }
 
   if (user && user.email_confirmed_at) {
     navigate(`profile/${user.id}`);
   }
+
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -51,15 +50,17 @@ const SignUp = () => {
     }
   };
 
+  if (authLoading || profileLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="text-gray-950 flex justify-center items-center h-screen">
       <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
         <h2 className="text-2xl font-semibold mb-4 text-center">Registrarse</h2>
 
         {success && (
-          <div className="text-green-500 text-sm mb-4">
-            ¡Registro exitoso! Revisa tu correo para verificar tu cuenta.
-          </div>
+          <SignUpSuccess />
         )}
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 

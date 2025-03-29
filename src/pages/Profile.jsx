@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileAvatar from "../components/user/ProfileAvatar";
 import MusicInfo from "../components/user/MusicInfo";
 import Button from "../components/ui/Button";
@@ -15,7 +15,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (user) {
-      fetchProfile(user.id);
+      fetchProfile(user.id);      
     }
   }, [user]);
 
@@ -30,11 +30,15 @@ const Profile = () => {
     <div className="flex flex-col items-center p-8 max-w-4xl mx-auto gap-8">
       <ProfileAvatar avatar_url={profile?.avatar_url} />
       <h2>{profile?.username}</h2>
-      <MusicInfo 
-      instrument={profile?.instrument}
-      is_singer={profile?.is_singer}
-      is_composer={profile?.is_composer}  
-      />
+      <ul>
+        <li>{profile?.firstname}</li>
+        <li>{profile?.lastname}</li>
+        <li>{profile?.country}</li>
+        <li>{profile?.city}</li>
+        <li>{profile?.gender}</li>
+        <li>{profile?.birthdate ? profile.birthdate.split("T")[0] : null}</li>
+        <Link to={profile?.avatar_url}>Avatar</Link>
+      </ul>
       <Button  onClick={() => navigate(`/edit-profile/${profile?.id}`)}> Editar Perfil </Button>
     </div>
   );

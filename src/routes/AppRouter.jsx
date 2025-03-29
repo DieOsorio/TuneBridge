@@ -8,7 +8,6 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Footer from "../components/ui/Footer";
 import SignUpSuccess from "../pages/SignUpSuccess";
 import EditProfile from "../components/user/EditProfile";
-import RedirectAfterLogin from "../utilis/RedirectAfterLogin";
 import AccountConfirmed from "../components/auth/AccountConfirmed";
 import LandingPage from "../pages/LandingPage";
 
@@ -23,10 +22,9 @@ const AppRouter = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup-success" element={<SignUpSuccess />} />
-          <Route path="/edit-profile/:id" element={<EditProfile />} />
-          <Route path="/redirect" element={<RedirectAfterLogin />} />
-          <Route path="/account-confirmed" element={<AccountConfirmed />} />
           {/* Rutas protegidas */}
+          <Route path="/account-confirmed" element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />
+          <Route path="/edit-profile/:id" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
           <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Routes>
       </main>

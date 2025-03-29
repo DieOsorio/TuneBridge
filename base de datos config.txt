@@ -1,0 +1,242 @@
+Resumen de la configuración de la base de datos
+
+
+Schema users:
+
+    Tabla profiles: Almacena la información general del perfil del usuario.
+
+    Columnas:
+
+        id (UUID, auth.uid()): ID del usuario, relacionado con la autenticación de Supabase.
+
+        username (text): Nombre de usuario.
+
+        email (text): Correo electrónico del usuario.
+
+        avatar_url (text): URL del avatar del usuario.
+
+        country (text): País del usuario.
+
+        city (text): Cuidad del usuario.
+
+        firstname (text) nombre del usuario.
+
+        lasname (text) apellido del usuario.
+
+        gender (text) género del usuario.
+
+
+
+
+Schema music:
+
+    Tabla roles: Almacena los roles de los usuarios (instrumentista, cantante, DJ, productor, compositor).
+
+    Columnas:
+
+        id (UUID): ID del rol.
+
+        role_name (text): Nombre del rol (instrumentista, cantante, DJ, productor, compositor).
+
+        profile_id (UUID): Relacionado con la tabla profiles para asociar el rol con un usuario específico.
+        (Relación con la tabla profiles, con ON DELETE CASCADE y ON UPDATE CASCADE).
+
+    ------------   /   ------------
+
+    Tabla instruments: Almacena los instrumentos tocados por los usuarios (instrumentistas).
+
+        Columnas:
+
+            id (UUID): ID del instrumento.
+
+            profile_id (UUID): Relacionado con la tabla profiles para vincular instrumentos con el usuario.
+
+            instrument (text): Nombre del instrumento.
+
+            years_of_experience (int, nullable): Años de experiencia con el instrumento.
+
+            level (int, nullable): Nivel del usuario con el instrumento (principiante, intermedio, avanzado).
+
+    ------------   /   ------------
+
+    Tabla instrumentist_details: Usada para almacenar los detalles específicos del rol de instrumentista de un usuario.
+    
+        Columnas:
+
+            id (UUID): ID del detalle de instrumentista.
+
+            role_id (UUID): Relacionado con la tabla roles para asociar los detalles con un rol específico.
+
+            instruments (text array): Lista de instrumentos que toca el usuario.
+
+            years_of_experience (int, nullable): Años de experiencia como instrumentista.
+
+
+        Triggers:
+
+            update_instruments_trigger
+
+            Usamos un trigger para actualizar la columna instruments de la tabla instrumentist_details cada vez que un nuevo instrumento sea agregado en la tabla instruments.
+            La función que escribimos se asegura de actualizar la lista de instrumentos del usuario.
+
+    ------------   /   ------------
+
+    Tabla singer_details: Almacena detalles específicos del rol de cantante de un usuario.
+
+        Columnas:
+
+            id (UUID): ID del detalle de cantante.
+
+            role_id (UUID): Relacionado con la tabla roles para asociar los detalles con un rol específico.
+
+            voice_type (text): Tipo de voz del cantante (soprano, tenor, etc.).
+
+            music_genre (text): Géneros musicales del cantante.
+
+    ------------   /   ------------
+
+    Tabla dj_details: Almacena detalles específicos del rol de DJ de un usuario.
+    
+        Columnas:
+
+            id (UUID): ID del detalle de DJ.
+
+            role_id (UUID): Relacionado con la tabla roles para asociar los detalles con un rol específico.
+
+            preferred_genres (text): Géneros musicales preferidos por el DJ.
+
+            events_played (text, nullable): Eventos en los que ha participado el DJ.
+
+    ------------   /   ------------
+
+    Tabla producer_details: Almacena detalles específicos del rol de productor de un usuario.
+        
+        Columnas:
+
+            id (UUID): ID del detalle de productor.
+
+            role_id (UUID): Relacionado con la tabla roles para asociar los detalles con un rol específico.
+
+            production_type (text): Tipo de producción musical realizada (música electrónica, música clásica, etc.).
+
+            years_of_experience (int, nullable): Años de experiencia como productor.
+
+    ------------   /   ------------
+
+    Tabla composer_details: Almacena detalles específicos del rol de compositor de un usuario.
+
+        Columnas:
+
+            id (UUID): ID del detalle de compositor.
+
+            role_id (UUID): Relacionado con la tabla roles para asociar los detalles con un rol específico.
+
+            composition_style (text): Estilo de composición del compositor (clásico, moderno, experimental, etc.).
+
+            years_of_composing (int, nullable): Años de experiencia componiendo.
+
+
+
+
+Schema social:
+
+    Tabla user_connections: Almacena las conexiones entre usuarios (amistades, seguidores, etc.).
+
+        Columnas:
+
+            id (UUID): Identificador único de la conexión.
+
+            follower_profile_id (UUID, users.profiles): ID del perfil que sigue, relacionado con users.profiles(id).
+
+            following_profile_id (UUID, users.profiles): ID del perfil que es seguido, relacionado con users.profiles(id).
+
+            status (text, UNIQUE): Estado de la conexión (e.g., "pendiente", "aceptada"). 
+
+            updated_at (timestamp): Fecha y hora de la última actualización de la conexión.
+
+        Triggers:
+
+            update_connection_status
+
+            Descripción: Usamos un trigger para actualizar la columna status de la tabla user_connections cada vez que se cambie la conexión entre dos usuarios (por ejemplo, de "pendiente" a "aceptada"). La función asociada a este trigger asegura que el estado de la conexión se actualice correctamente cuando sea necesario.
+
+    ------------   /   ------------
+
+    Tabla posts: Almacena las publicaciones de los usuarios.
+
+        Columnas:
+
+            id (UUID): ID único de la publicación.
+
+            profile_id (UUID): ID del perfil del usuario que hace la publicación, relacionado con users.profiles(id).
+
+            content (text): Contenido de la publicación.
+
+            image_url (text, opcional): URL de la imagen asociada a la publicación (si existe).
+
+            created_at (timestamp): Fecha de creación de la publicación.
+
+            updated_at (timestamp): Fecha de la última actualización de la publicación.
+
+        Triggers:
+
+            update_posts_timestamp
+
+            Usamos un trigger para actualizar la columna updated_at de la tabla posts cada vez que una publicación sea modificada. 
+            La función asociada a este trigger asegura que la fecha y hora de la última modificación se actualice automáticamente.
+
+    ------------   /   ------------
+    
+    Tabla comments: Para comentarios en las publicaciones
+
+        Columnas:
+
+            id (UUID): ID único del comentario.
+
+            post_id (UUID, referencia a posts.id): ID de la publicación a la que pertenece el comentario.
+
+            profile_id (UUID, referencia a users.profiles.id): ID del perfil del usuario que hizo el comentario.
+
+            content (text, not nullable): El contenido del comentario.
+
+            updated_at (timestamp): Fecha y hora de la última actualización del comentario.
+
+        Triggers:
+        
+            update_comments_timestamp
+
+            Usamos un trigger para actualizar la columna updated_at de la tabla comments cada vez que un comentario sea modificado. 
+            La función asociada a este trigger asegura que la fecha y hora de la última modificación se actualice automáticamente.
+
+
+    ------------   /   ------------
+
+    Tabla likes: Almacena los "me gusta" de publicaciones y comentarios
+
+        Columnas:
+
+            id (UUID): ID único para el "me gusta".
+
+            profile_id (UUID, referencia a users.profiles.id): ID del perfil del usuario que ha dado el "me gusta".
+
+            post_id (UUID, referencia a posts.id, opcional para comentarios): ID de la publicación a la que se le dio el "me gusta" (si aplica).
+
+            comment_id (UUID, referencia a comments.id, opcional para publicaciones): ID del comentario al que se le dio el "me gusta" (si aplica).
+
+            updated_at (timestamp): Fecha y hora en que se dio el "me gusta" o fue actualizado.
+
+    ------------   /   ------------
+
+    Tabla messages: Almacena los mensajes privados entre usuarios.
+
+        Columnas:
+
+            id (UUID): ID único para el mensaje.
+
+            sender_profile_id (UUID, referencia a users.profiles.id): ID del perfil del usuario que envió el mensaje.
+
+            receiver_profile_id (UUID, referencia a users.profiles.id): ID del perfil del usuario que recibe el mensaje.
+
+            content (texto): Contenido del mensaje.
+
+            updated_at (timestamp): Fecha y hora en que el mensaje fue actualizado.

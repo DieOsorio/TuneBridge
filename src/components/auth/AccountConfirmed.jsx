@@ -1,37 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useProfile } from "../../context/ProfileContext"; // Asumiendo que tienes este contexto
+import { useProfile } from "../../context/ProfileContext";
 import Loading from "../../pages/Loading";
 
 const AccountConfirmed = () => {
   const { user, loading } = useAuth();
-  const { createProfile } = useProfile();
-  const navigate = useNavigate();
+  const { createProfile, loading:profileLoading } = useProfile();
+  const [profileCreated, setProfileCreated] = useState(false);
+  // const navigate = useNavigate();
 
   useEffect(() => {
-    const createUserProfile = async () => {
-      if (user && user.email_confirmed_at) {
-        try {
-          // Crear perfil en la base de datos
-          const profileCreated = await createProfile(user.id, user.email);
+    // Verificar si el perfil ya fue creado
+    if (user && !profileCreated) {
+      createProfile(user.id, user.email).then(() => {
+        setProfileCreated(true); // Cambiar el estado para que no se vuelva a ejecutar
+      });
+    }
+  }, []);
   
-          if (profileCreated) {
-            navigate(`/profile/${user.id}`);
-          } else {
-            console.error("Error al crear el perfil");
-          }
-        } catch (err) {
-          console.error("Error al crear el perfil:", err);
-          // Podrías agregar un manejo de error visual o alguna acción en caso de que falle
-        }
-      }
-    };
-  
-    createUserProfile();
-  }, [user, navigate, createProfile]);
-  
-  if (loading) {
+  if (loading || profileLoading) {
     return <Loading />;
   }
 

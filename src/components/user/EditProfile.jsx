@@ -19,18 +19,17 @@ const EditProfile = () => {
   const [username, setUsername] = useState(profile?.username || "");
   const [gender, setGender] = useState(profile?.gender || "");
   const [avatar_url, setAvatar_url] = useState(profile?.avatar_url || "");
-  const [instrument, setInstrument] = useState(profile?.instrument || "");
+  const [country, setCountry] = useState(profile?.country || "");
   const [birthdate, setBirthdate] = useState(profile?.birthdate || null);
-  const [is_singer, setIs_singer] = useState(profile?.is_singer || false);
-  const [is_composer, setIs_composer] = useState(profile.is_composer || false);
+  const [city, setCity] = useState(profile?.city || "");
+  const [firstname, setFirstname] = useState(profile?.firstname || "");
+  const [lastname, setLastname] = useState(profile?.lastname || "");
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      fetchProfile(user.id);
-    }
+    fetchProfile(user.id);
   }, [user]);
 
   const handleFileChange = (event) => {
@@ -42,19 +41,17 @@ const EditProfile = () => {
   const uploadAvatar = async () => {
     if (!selectedFile) return null;
 
-    const fileExt = selectedFile.name.split(".").pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = `${user.id}/${fileName}`
-    
-    console.log("file path:", filePath);
+    const filePath = `${user.id}/${uuidv4()}`
+    console.log(filePath);
     
 
-    const { error } = await supabase.storage
+    const { error } = await supabase
+      .storage
       .from("avatars")
       .upload(filePath, selectedFile, 
         { 
           cacheControl: "3600",
-          upsert: false 
+          upsert: true 
         });
 
     if (error) {
@@ -62,20 +59,23 @@ const EditProfile = () => {
       return avatar_url;
     }
 
-    const { data, error: urlError } = supabase.storage
-    .from("avatars")
-    .getPublicUrl(filePath);
+    // const { data, error:urlError } = supabase
+    // .storage
+    // .from('avatars')
+    // .getPublicUrl(filePath)
+
+    const { data, error:urlError} = await supabase
+    .storage
+    .from('avatars')
+    .createSignedUrl(filePath, 60*60)
 
     if (urlError) {
-      console.error("Error al obtener la URL pública:", urlError);
+      console.error("Error:", urlError);
       return avatar_url;
     }
-
-    console.log(data?.publicUrl);
     
-    return data?.publicUrl;
-
-    // setAvatar_url(publicUrl); //cuando cambie a avatar privado tengo que cambiar a signed URL
+    setAvatar_url(data?.signedUrl)
+    return data?.signedUrl;
   };
 
   const handleSubmit = async (e) => {
@@ -88,18 +88,21 @@ const EditProfile = () => {
       const uploadedURL = await uploadAvatar();
       if (uploadedURL) {
         avatar = uploadedURL;
+        setAvatar_url(avatar);
       }
     }
     
     console.log("profile:", profile);
+
     await updateProfile(
       {
         avatar_url: avatar,
         username,
         gender,
-        instrument,
-        is_singer,
-        is_composer,
+        country,
+        city,
+        firstname,
+        lastname,
         birthdate,
         id: user.id,
       }
@@ -120,7 +123,7 @@ const EditProfile = () => {
     <div className="flex flex-col items-center text-gray-950 justify-center min-h-screen bg-gray-100 p-6">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
-        {user && <ProfileAvatar userId={profile?.id} avatarUrl={preview || avatar_url} />}
+        {user && <ProfileAvatar userId={profile?.id} avatar_url={preview || avatar_url} />}
         <div className="flex flex-col items-center">
           <input 
             type="file" 
@@ -139,26 +142,34 @@ const EditProfile = () => {
             required
           />
           <Input
-            label="Instrumento"
-            placeholder={instrument}
-            value={instrument}
-            onChange={(e) => setInstrument(e.target.value)}
+            label="Nombre"
+            placeholder={firstname}
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
           />
-          <Checkbox 
-            label="Cantante"
-            checked={is_singer}
-            onChange={(e) => setIs_singer(e.target.checked)}
+          <Input
+            label="Apellido"
+            placeholder={lastname}
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
           />
-          <Checkbox 
-            label="Compositor"
-            checked={is_composer}
-            onChange={(e) => setIs_composer(e.target.checked)}
+          <Input
+            label="País"
+            placeholder={country}
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          />
+          <Input
+            label="Cuidad"
+            placeholder={city}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
           />
           <Input
             label="Fecha de Nacimiento"
             type="date"
-            placeholder={birthdate}
-            value={birthdate || ""}
+            placeholder={birthdate ? birthdate.split("T")[0] : "" }
+            value={birthdate ? birthdate.split("T")[0] : ""}
             onChange={(e) => setBirthdate(e.target.value ||  null)}
           />
           <Select 

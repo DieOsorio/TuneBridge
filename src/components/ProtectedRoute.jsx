@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) return <p>Cargando...</p>; 
   
-  return user ? children : <Navigate to="/login" />; 
+  return user && user.email_confirmed_at ? children : <Navigate to="/login" />; 
 };
 
 export default ProtectedRoute;
