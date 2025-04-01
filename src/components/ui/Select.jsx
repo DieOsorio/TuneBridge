@@ -1,4 +1,5 @@
 const Select = ({ value, onChange, id, label, className, defaultOption, option1, option2, option3, ...props }) => {
+  console.log("SELECT render");
     return (
       <div className="mb-4">
         <label htmlFor={id} className="block text-sm font-medium mb-2">

@@ -3,14 +3,17 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
-import { ProfileProvider } from './context/ProfileContext';
+import { ProfileProvider } from './context/profile/ProfileContext';
+import { SocialProvider } from './context/SocialContext';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <AuthProvider>
       <ProfileProvider>
-        <App />
+        <SocialProvider>
+          <App />
+        </SocialProvider>
       </ ProfileProvider>
     </AuthProvider>
-  </StrictMode>,
+  // </StrictMode>
 )

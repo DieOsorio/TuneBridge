@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useProfile } from "../../context/ProfileContext";
-import Loading from "../../pages/Loading";
+import { useProfile } from "../../context/profile/ProfileContext";
+import Loading from "../../utilis/Loading";
 
 const AccountConfirmed = () => {
   const { user, loading } = useAuth();
   const { createProfile, loading:profileLoading } = useProfile();
   const [profileCreated, setProfileCreated] = useState(false);
   // const navigate = useNavigate();
-
+  console.log("ACCOUNTCONFIRMED render");
   useEffect(() => {
     // Verificar si el perfil ya fue creado
     if (user && !profileCreated) {

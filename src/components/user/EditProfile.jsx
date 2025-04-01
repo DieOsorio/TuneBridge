@@ -8,8 +8,8 @@ import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
 import Checkbox from "../ui/Checkbox";
-import { useProfile } from "../../context/ProfileContext";
-import Loading from "../../pages/Loading";
+import { useProfile } from "../../context/profile/ProfileContext";
+import Loading from "../../utilis/Loading";
 
 const EditProfile = () => {
   const { user, loading: authLoading } = useAuth();
@@ -28,6 +28,8 @@ const EditProfile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
 
+  console.log("EDITPROFILE render");
+
   useEffect(() => {
     fetchProfile(user.id);
   }, [user]);
@@ -40,11 +42,9 @@ const EditProfile = () => {
 
   const uploadAvatar = async () => {
     if (!selectedFile) return null;
+    const filePath = `${user.id}/${uuidv4()}`  
 
-    const filePath = `${user.id}/${uuidv4()}`
-    console.log(filePath);
-    
-
+    // upload avatar image
     const { error } = await supabase
       .storage
       .from("avatars")
@@ -59,23 +59,25 @@ const EditProfile = () => {
       return avatar_url;
     }
 
-    // const { data, error:urlError } = supabase
-    // .storage
-    // .from('avatars')
-    // .getPublicUrl(filePath)
-
-    const { data, error:urlError} = await supabase
+    // get public url of users avatar
+    const { data, error:urlError } = supabase
     .storage
     .from('avatars')
-    .createSignedUrl(filePath, 60*60)
+    .getPublicUrl(filePath)
+
+    // const { data, error:urlError} = await supabase
+    // .storage
+    // .from('avatars')
+    // .createSignedUrl(filePath, 60*60)
 
     if (urlError) {
       console.error("Error:", urlError);
       return avatar_url;
     }
     
-    setAvatar_url(data?.signedUrl)
-    return data?.signedUrl;
+    // set public url in the state and return it
+    setAvatar_url(data?.publicUrl)
+    return data?.publicUrl;
   };
 
   const handleSubmit = async (e) => {
@@ -92,8 +94,6 @@ const EditProfile = () => {
       }
     }
     
-    console.log("profile:", profile);
-
     await updateProfile(
       {
         avatar_url: avatar,
@@ -123,7 +123,7 @@ const EditProfile = () => {
     <div className="flex flex-col items-center text-gray-950 justify-center min-h-screen bg-gray-100 p-6">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
-        {user && <ProfileAvatar userId={profile?.id} avatar_url={preview || avatar_url} />}
+        {user && <ProfileAvatar avatar_url={preview || avatar_url} />}
         <div className="flex flex-col items-center">
           <input 
             type="file" 

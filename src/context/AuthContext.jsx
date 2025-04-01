@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabase';
 
 const AuthContext = createContext(null);
@@ -6,17 +6,19 @@ AuthContext.displayName = "AuthContext";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
   
     const fetchSession = async () => {
+      setLoading(true);
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         setUser(session?.user || null);
       } catch (err) {
-        console.error("Error fetching session:", err.message);
+        setError(err.message);
         setUser(null);
       } finally {
         setLoading(false);
@@ -31,12 +33,13 @@ export const AuthProvider = ({ children }) => {
   
     return () => {
       authListener?.subscription?.unsubscribe();
-
     };
   }, []);
 
+  const value = useMemo(() => ({user, loading, error}), [user])
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

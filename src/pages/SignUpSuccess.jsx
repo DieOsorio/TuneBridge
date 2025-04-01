@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const SignUpSuccess = () => {
-
+  console.log("SIGNUPSUCCESS render");
   return (
     <div className="flex flex-col items-center justify-center h-screen text-center px-4">
       <div className="max-w-md bg-white shadow-lg rounded-lg p-6">

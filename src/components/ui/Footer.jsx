@@ -1,8 +1,9 @@
 import React from 'react'
 
 function Footer() {
+  console.log("FOOTER render");
   return (
-    <div>Footer</div>
+    <div>TuneBridge</div>
   )
 }
 

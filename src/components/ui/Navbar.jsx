@@ -10,7 +10,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      setUser(user);      
     };
 
     fetchUser();
@@ -26,7 +26,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="w-full bg-transparent shadow-2xl text-white p-4 flex justify-between items-center">
+    <nav className="w-full bg-transparent shadow-2xl text-gray-900 p-3 flex justify-between items-center">
       {/* Logo o Nombre */}
       <Link to="/" className="text-xl font-bold flex items-center gap-2 w-10">
         <img src={logo} alt="logo" className="h-10 w-auto" />
@@ -34,11 +34,11 @@ const Navbar = () => {
       </Link>
       {/* Enlaces de navegación */}
       <div className="flex gap-8">
-        <Link to="/explore" className="hover:underline">Explorar</Link>
-        {user && <Link to={`profile/${user.id}`} className="hover:underline">Perfil</Link>}
+        <Link to="/explore" className="font-bold hover:text-gray-700">Explorar</Link>
+        {user && <Link to={`profile/${user.id}`} className="font-bold hover:text-gray-700">Perfil</Link>}
       </div>
       {/* Botón de Logout si el usuario está autenticado, sino, mostrar Login */}
-      {user ? "" : <Link to="/login" className="hover:underline">Iniciar sesión</Link>}
+      {user ? "" : <Link to="/login" className="font-bold text-gray-900 hover:text-gray-700">Iniciar sesión</Link>}
 
       {user ? <HamburgerMenu className="w-10" id={user.id} /> : null}
     </nav>

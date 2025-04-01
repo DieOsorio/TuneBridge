@@ -1,10 +1,19 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth(); 
+  const { user, loading } = useAuth();
+  const [isChecked, setIsChecked] = useState(false);
+  console.log("PROTECTEDROUTE render");
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsChecked(true);
+    }, 1000)
+    return() => clearTimeout(timeout);
+  }, [loading])
 
-  if (loading) return <p>Cargando...</p>; 
+  if (!isChecked) return <p>Cargando...</p>; 
   
   return user && user.email_confirmed_at ? children : <Navigate to="/login" />; 
 };

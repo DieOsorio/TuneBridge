@@ -2,9 +2,9 @@ import { useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
-import { useProfile } from "../../context/ProfileContext";
+import { useProfile } from "../../context/profile/ProfileContext";
 import { useNavigate } from "react-router-dom";
-import Loading from "../../pages/Loading";
+import Loading from "../../utilis/Loading";
 import { supabase } from "../../supabase";
 import SignUpSuccess from "../../pages/SignUpSuccess";
 
@@ -18,6 +18,8 @@ const SignUp = () => {
   const { createProfile, loading: profileLoading} = useProfile(); 
   const navigate = useNavigate();
 
+  console.log("SIGNUP render");
+  
 
   if (user && user.email_confirmed_at) {
     navigate(`profile/${user.id}`);
@@ -36,6 +38,10 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+      }, {
+        data: {
+          username
+        }
       });  
   
       if (error) {

@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import Loading from "../../pages/Loading";
+import Loading from "../../utilis/Loading";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,11 +12,13 @@ const Login = () => {
   const [error, setError] = useState("");
   const { user, loading } = useAuth(); // Accedemos al usuario
   const navigate = useNavigate();
+
+  console.log("LOGIN render");
   
   // Si el usuario ya está autenticado, redirigimos a su perfil
   useEffect(() => {
     if (user && user.email_confirmed_at && !loading) {
-      navigate(`/profile/${user.id}`); // Redirige a la página del perfil si ya hay un usuario
+      navigate(`/profile/${user.user_metadata.username}`); // Redirige a la página del perfil si ya hay un usuario
     }
   }, [user, navigate, loading]);
 

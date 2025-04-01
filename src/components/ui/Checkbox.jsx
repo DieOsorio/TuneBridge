@@ -1,4 +1,5 @@
 const Checkbox = ({ label, id, checked, onChange, className }) => {
+  console.log("CHECKBOX render");
     return (
       <div className="flex items-center mb-4">
         <input
