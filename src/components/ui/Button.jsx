@@ -1,5 +1,4 @@
 const Button = ({ type = "button", children, onClick, className = "", ...props }) => {
-  console.log("BUTTON render");
   
     return (
       <button

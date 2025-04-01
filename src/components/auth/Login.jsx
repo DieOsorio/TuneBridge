@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../supabase"; 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../ui/Input";
@@ -10,38 +9,30 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { user, loading } = useAuth(); // Accedemos al usuario
+  const { user, loading, signIn, error: authError } = useAuth(); // Access signIn and authError from AuthContext
   const navigate = useNavigate();
 
-  console.log("LOGIN render");
-  
-  // Si el usuario ya está autenticado, redirigimos a su perfil
+  // Redirect to the user's profile if already authenticated
   useEffect(() => {
     if (user && user.email_confirmed_at && !loading) {
-      navigate(`/profile/${user.user_metadata.username}`); // Redirige a la página del perfil si ya hay un usuario
+      navigate(`/profile/${user.id}`); // Redirect to the profile page
+      console.log("User is authenticated, redirecting to profile page.");   
     }
   }, [user, navigate, loading]);
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (error) {
-      setError("No se pudo obtener el ID del usuario.");
+
+    try {
+      setError(""); // Clear any previous errors
+      await signIn(email, password); // Use the signIn function from AuthContext
+    } catch (err) {
+      setError("No se pudo iniciar sesión. Verifica tus credenciales.");
     }
-    else {
-    setError("");
-    console.log("Usuario logueado:", data.user);
-    }
-  }
+  };
 
   if (loading) {
-    return <Loading />; 
+    return <Loading />;
   }
 
   return (
@@ -50,6 +41,7 @@ const Login = () => {
         <h2 className="text-2xl font-semibold mb-4 text-center">Iniciar sesión</h2>
 
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+        {authError && <div className="text-red-500 text-sm mb-4">{authError}</div>}
 
         <form onSubmit={handleLogin}>
           <Input
@@ -62,7 +54,7 @@ const Login = () => {
             required
             autoComplete="email"
           />
-          
+
           <Input
             label="Contraseña"
             type="password"
@@ -73,7 +65,7 @@ const Login = () => {
             required
             autoComplete="current-password"
           />
-      
+
           <Button className="w-full" type="submit">
             Iniciar sesión
           </Button>

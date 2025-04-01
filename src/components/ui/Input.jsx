@@ -8,7 +8,6 @@ const Input = ({
   required,
   autoComplete,
 }) => {
-  console.log("INPUT render");
 
   return (
     <div className="mb-4">

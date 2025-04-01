@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 
 const ProfileCard = ({ avatar_url, username, userId, country, city, connect, status, className, imageClass }) => {
-  console.log("PROFILECARD render");
+
     return (
       <div className={className}>
         <Link to={`/profile/${username || userId}`}>

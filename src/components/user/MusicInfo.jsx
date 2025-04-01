@@ -4,7 +4,6 @@ const MusicInfo = ({ instrument, is_singer, is_composer }) => {
   if (!instrument && !is_singer && !is_composer) {
     return null; // Si no hay datos, no renderiza nada
   }
-  console.log("MUSICINFO render");
   return (
     <div className="p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4 text-center">Información Musical</h2>

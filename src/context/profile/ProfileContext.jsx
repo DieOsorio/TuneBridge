@@ -30,30 +30,35 @@ export const ProfileProvider = ({ children }) => {
             console.log("Calling fetchProfile with userId:", userId);
             const result = await fetchProfileAction(supabase, user, userId, setProfile, setError, setLoading);
             console.log("fetchProfile result in ProfileContext:", result);
+            console.log("ProfileContext state updated");
             return result;
         },
         fetchAllProfiles: async () => {
             console.log("Calling fetchAllProfiles");
             const result = await fetchAllProfiles(supabase, setAllProfiles, setError, setLoading);
             console.log("fetchAllProfiles result:", result);
+            console.log("ProfileContext state updated");
             return result;
         },
         createProfile: async (userId, email) => {
             console.log("Calling createProfile with userId and email:", userId, email);
             const result = await createProfile(supabase, userId, email, setError, setLoading);
             console.log("createProfile result:", result);
+            console.log("ProfileContext state updated");
             return result;
         },
         updateProfile: async (profileData) => {
             console.log("Calling updateProfile with profileData:", profileData);
             const result = await updateProfile(supabase, profileData, setProfile, setError, setLoading);
             console.log("updateProfile result:", result);
+            console.log("ProfileContext state updated");
             return result;
         },
         deleteProfile: async (userId) => {
             console.log("Calling deleteProfile with userId:", userId);
             const result = await deleteProfile(supabase, userId, setProfile, setError, setLoading);
             console.log("deleteProfile result:", result);
+            console.log("ProfileContext state updated");
             return result;
         },
     }), [profile, allProfiles, error, loading, user]);

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const [isChecked, setIsChecked] = useState(false);
-  console.log("PROTECTEDROUTE render");
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsChecked(true);

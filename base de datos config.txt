@@ -36,7 +36,7 @@ Schema music:
 
         id (UUID): ID del rol.
 
-        role_name (text): Nombre del rol (instrumentista, cantante, DJ, productor, compositor).
+        role (text): Nombre del rol (instrumentista, cantante, DJ, productor, compositor).
 
         profile_id (UUID): Relacionado con la tabla profiles para asociar el rol con un usuario específico.
         (Relación con la tabla profiles, con ON DELETE CASCADE y ON UPDATE CASCADE).

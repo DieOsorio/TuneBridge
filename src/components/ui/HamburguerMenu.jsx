@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { handleLogout } from '../../utilis/authHelper';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth to access signOut
 
-const HamburgerMenu = ({id}) => {
+const HamburgerMenu = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
-  console.log("HAMBURGUERMENU render");
+  const { signOut } = useAuth(); // Access signOut from AuthContext
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -37,7 +37,7 @@ const HamburgerMenu = ({id}) => {
             </li>
             <li>
               <button
-                onClick={handleLogout}
+                onClick={signOut} // Use signOut from AuthContext
                 className="cursor-pointer w-full text-left px-4 py-2 text-lg hover:bg-gray-700 rounded-md"
               >
                 Sign Out

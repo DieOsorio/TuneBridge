@@ -2,10 +2,7 @@ import { useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
-import { useProfile } from "../../context/profile/ProfileContext";
-import { useNavigate } from "react-router-dom";
 import Loading from "../../utilis/Loading";
-import { supabase } from "../../supabase";
 import SignUpSuccess from "../../pages/SignUpSuccess";
 
 const SignUp = () => {
@@ -14,50 +11,39 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const { user, loading: authLoading } = useAuth();
-  const { createProfile, loading: profileLoading} = useProfile(); 
-  const navigate = useNavigate();
-
-  console.log("SIGNUP render");
-  
-
-  if (user && user.email_confirmed_at) {
-    navigate(`profile/${user.id}`);
-  }
-
+  const { signIn, loading: authLoading, error: authError } = useAuth();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-  
+
     if (password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
       return;
     }
-  
+
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      }, {
-        data: {
-          username
-        }
-      });  
-  
-      if (error) {
-        setError(error.message);
+      // Sign up the user
+      const { error: signUpError } = await signIn(email, password);
+
+      if (signUpError) {
+        setError(signUpError.message);
         return;
-      } else {
-        setError("");
-        setSuccess(true);
       }
+
+      // Clear error and set success
+      setError("");
+      setSuccess(true);
     } catch (err) {
       setError("Hubo un problema al registrarte.");
     }
   };
 
-  if (authLoading || profileLoading) {
+  if (authLoading) {
     return <Loading />;
+  }
+
+  if (success) {
+    return <SignUpSuccess />;
   }
 
   return (
@@ -65,10 +51,8 @@ const SignUp = () => {
       <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
         <h2 className="text-2xl font-semibold mb-4 text-center">Registrarse</h2>
 
-        {success && (
-          <SignUpSuccess />
-        )}
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+        {authError && <div className="text-red-500 text-sm mb-4">{authError}</div>}
 
         <form onSubmit={handleSignUp}>
           <Input

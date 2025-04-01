@@ -13,7 +13,6 @@ const ProfilesList = () => {
     const { followUser, connections, loading:socialLoading, error:socialError } = useSocial();
     const { user } = useAuth();
 
-    console.log("PROFILESLIST render");
     const filteredProfiles = allProfiles.filter(profile => profile.id !== user.id);
     
 

@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const LandingPage = () => {
   const { user } = useAuth();
-  console.log("LANDINGPAGE render");
+
   return (
     <>
       {user && user.email_confirmed_at ?

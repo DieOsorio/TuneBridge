@@ -7,7 +7,6 @@ const Banner = ({ title, subtitle, backgroundImage }) => {
   const textRef = useRef(null);
   const buttonRef = useRef(null);
 
-  console.log("BANNER render");
   useEffect(() => {
     gsap.fromTo(
       titleRef.current,

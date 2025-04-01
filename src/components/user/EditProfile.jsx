@@ -1,38 +1,50 @@
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../../context/AuthContext";
-import { supabase } from "../../supabase";
+import { useProfile } from "../../context/profile/ProfileContext";
 import { useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
-import Checkbox from "../ui/Checkbox";
-import { useProfile } from "../../context/profile/ProfileContext";
 import Loading from "../../utilis/Loading";
+import { uploadAvatar } from "../../utilis/avatarUtils";
 
 const EditProfile = () => {
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading, error, fetchProfile, updateProfile } = useProfile();
+  const { profile, loading: profileLoading, fetchProfile, updateProfile } = useProfile();
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState(profile?.username || "");
-  const [gender, setGender] = useState(profile?.gender || "");
-  const [avatar_url, setAvatar_url] = useState(profile?.avatar_url || "");
-  const [country, setCountry] = useState(profile?.country || "");
-  const [birthdate, setBirthdate] = useState(profile?.birthdate || null);
-  const [city, setCity] = useState(profile?.city || "");
-  const [firstname, setFirstname] = useState(profile?.firstname || "");
-  const [lastname, setLastname] = useState(profile?.lastname || "");
-  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("");
+  const [gender, setGender] = useState("");
+  const [avatar_url, setAvatar_url] = useState("");
+  const [country, setCountry] = useState("");
+  const [birthdate, setBirthdate] = useState(null);
+  const [city, setCity] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
-
-  console.log("EDITPROFILE render");
+  const [localError, setLocalError] = useState("");
 
   useEffect(() => {
-    fetchProfile(user.id);
-  }, [user]);
+    if (user && !profile) {
+      fetchProfile(user.id);
+    }
+  }, [user, profile]);
+
+  useEffect(() => {
+    if (profile) {
+      setUsername(profile.username || "");
+      setGender(profile.gender || "");
+      setAvatar_url(profile.avatar_url || "");
+      setCountry(profile.country || "");
+      setBirthdate(profile.birthdate || null);
+      setCity(profile.city || "");
+      setFirstname(profile.firstname || "");
+      setLastname(profile.lastname || "");
+    }
+  }, [profile]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -40,62 +52,23 @@ const EditProfile = () => {
     setPreview(URL.createObjectURL(file));
   };
 
-  const uploadAvatar = async () => {
-    if (!selectedFile) return null;
-    const filePath = `${user.id}/${uuidv4()}`  
-
-    // upload avatar image
-    const { error } = await supabase
-      .storage
-      .from("avatars")
-      .upload(filePath, selectedFile, 
-        { 
-          cacheControl: "3600",
-          upsert: true 
-        });
-
-    if (error) {
-      console.error("Error al subir imagen:", error);
-      return avatar_url;
-    }
-
-    // get public url of users avatar
-    const { data, error:urlError } = supabase
-    .storage
-    .from('avatars')
-    .getPublicUrl(filePath)
-
-    // const { data, error:urlError} = await supabase
-    // .storage
-    // .from('avatars')
-    // .createSignedUrl(filePath, 60*60)
-
-    if (urlError) {
-      console.error("Error:", urlError);
-      return avatar_url;
-    }
-    
-    // set public url in the state and return it
-    setAvatar_url(data?.publicUrl)
-    return data?.publicUrl;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setIsSubmitting(true);
+    setLocalError("");
 
-    let avatar = avatar_url;
+    try {
+      let avatar = avatar_url;
 
-    if (selectedFile) {
-      const uploadedURL = await uploadAvatar();
-      if (uploadedURL) {
-        avatar = uploadedURL;
-        setAvatar_url(avatar);
+      if (selectedFile) {
+        const uploadedURL = await uploadAvatar(selectedFile, user.id, avatar_url);
+        if (uploadedURL) {
+          avatar = uploadedURL;
+          setAvatar_url(avatar);
+        }
       }
-    }
-    
-    await updateProfile(
-      {
+
+      await updateProfile({
         avatar_url: avatar,
         username,
         gender,
@@ -105,74 +78,74 @@ const EditProfile = () => {
         lastname,
         birthdate,
         id: user.id,
-      }
-    );
+      });
 
-    if (!error) {
       navigate(`/profile/${user.id}`);
+    } catch (err) {
+      setLocalError("Error updating profile.");
+    } finally {
+      setIsSubmitting(false);
     }
-    setLoading(false);
   };
 
-  if (profileLoading) {
-    return <Loading />
+  if (profileLoading || authLoading) {
+    return <Loading />;
   }
 
-    
   return (
     <div className="flex flex-col items-center text-gray-950 justify-center min-h-screen bg-gray-100 p-6">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
         {user && <ProfileAvatar avatar_url={preview || avatar_url} />}
         <div className="flex flex-col items-center">
-          <input 
-            type="file" 
+          <input
+            type="file"
             accept="image/*"
             onChange={handleFileChange}
             className="mt-2 mb-4"
           />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {localError && <p className="text-red-500 text-sm">{localError}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Nombre de usuario"
-            placeholder={username}
+            placeholder="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
           <Input
             label="Nombre"
-            placeholder={firstname}
+            placeholder="Nombre"
             value={firstname}
             onChange={(e) => setFirstname(e.target.value)}
           />
           <Input
             label="Apellido"
-            placeholder={lastname}
+            placeholder="Apellido"
             value={lastname}
             onChange={(e) => setLastname(e.target.value)}
           />
           <Input
             label="País"
-            placeholder={country}
+            placeholder="País"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
           />
           <Input
-            label="Cuidad"
-            placeholder={city}
+            label="Ciudad"
+            placeholder="Ciudad"
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
           <Input
             label="Fecha de Nacimiento"
             type="date"
-            placeholder={birthdate ? birthdate.split("T")[0] : "" }
+            placeholder="Fecha de Nacimiento"
             value={birthdate ? birthdate.split("T")[0] : ""}
-            onChange={(e) => setBirthdate(e.target.value ||  null)}
+            onChange={(e) => setBirthdate(e.target.value || null)}
           />
-          <Select 
+          <Select
             label="Género"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
@@ -181,8 +154,8 @@ const EditProfile = () => {
             option2="Femenino"
             option3="Otro"
           />
-          <Button type="submit" disabled={loading}>
-            {loading ? "Guardando..." : "Guardar cambios"}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Guardando..." : "Guardar cambios"}
           </Button>
         </form>
       </div>

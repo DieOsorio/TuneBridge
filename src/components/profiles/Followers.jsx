@@ -8,7 +8,6 @@ const Followers = () => {
   const { connections, loading, error } = useSocial();
   const { fetchProfile } = useProfile();
   const [followers, setFollowers] = useState([]);
-  console.log("FOLLOWERS render");
     
   useEffect(() => {
     const fetchFollowers = async () => {
