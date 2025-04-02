@@ -1,73 +1,78 @@
 import { supabase } from "../../supabase";
 
-// Fetch all roles for a specific profile
-export const fetchRoles = async (profileId) => {
+// Handles errors and logs them to the console
+export const handleError = (err, setError) => {
+  console.error(err.message || "An unknown error occurred");
+  setError(err.message || "An unknown error occurred");
+};
+
+// Function to handle loading state
+export const withLoading = async (callback, setLoading) => {
+  setLoading(true);
   try {
-    const { data, error } = await supabase
-      .schema("music")  
-      .from("roles")
-      .select("*")
-      .eq("profile_id", profileId);
-
-    if (error) throw error;
-
-    return data;
-  } catch (err) {
-    console.error("Error fetching roles:", err.message);
-    throw err;
+    const result = await callback(); // Capture the result of the callback
+    return result; // Return the result to propagate it
+  } finally {
+    setLoading(false);
   }
 };
 
-// Add a new role for a profile
-export const addRole = async (profileId, roleName) => {
-  try {
-    const { data, error } = await supabase
-      .schema("music") 
-      .from("roles") 
-      .insert([{ profile_id: profileId, role: roleName }]) // Use the correct column name "role"
-      .select("*"); 
-
-    if (error) throw error;
-
-    return data;
-  } catch (err) {
-    console.error("Error adding role:", err.message);
-    throw err;
-  }
+// Fetch all roles for a profile
+export const fetchRoles = async (supabase, profileId, setRoles, setError, setLoading) => {
+  await withLoading(async () => {
+    setError("");
+    try {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("roles")
+        .select("*")
+        .eq("profile_id", profileId);
+      if (error) throw error;
+      setRoles(data);
+    } catch (err) {
+      handleError(err, setError);
+    }
+  }, setLoading);
 };
 
-// Update role-specific details (e.g., instruments, genres)
-export const updateRoleDetails = async (roleId, details, tableName) => {
-  try {
-    const { data, error } = await supabase
-      .schema("music")  
-      .from(tableName)
-      .update(details)
-      .eq("role_id", roleId);
+// Add a role to a profile
+export const addRole = async (supabase, profileId, roleName, setRoles, setError, setLoading) => {
+  return await withLoading(async () => {
+    setError("");
+    try {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("roles")
+        .insert({ profile_id: profileId, role: roleName })
+        .select();
+      if (error) throw error;
 
-    if (error) throw error;
-
-    return data;
-  } catch (err) {
-    console.error(`Error updating details in ${tableName}:`, err.message);
-    throw err;
-  }
+      // Update the roles state with the new role
+      setRoles((prevRoles) => [...prevRoles, data[0]]);
+      return data[0]; // Return the newly added role
+    } catch (err) {
+      handleError(err, setError);
+      throw err; // Re-throw the error to propagate it if needed
+    }
+  }, setLoading);
 };
 
-// Delete a role and its associated details
-export const deleteRole = async (roleId) => {
-  try {
-    const { error } = await supabase
-      .schema("music")    
-      .from("roles")
-      .delete()
-      .eq("id", roleId);
+// Delete a role from a profile
+export const deleteRole = async (supabase, roleId, setRoles, setError, setLoading) => {
+  await withLoading(async () => {
+    setError("");
+    try {
+      const { error } = await supabase
+        .schema("music")
+        .from("roles")
+        .delete()
+        .eq("id", roleId);
+      if (error) throw error;
 
-    if (error) throw error;
-
-    return true;
-  } catch (err) {
-    console.error("Error deleting role:", err.message);
-    throw err;
-  }
+      // Update the roles state by removing the deleted role
+      setRoles((prevRoles) => prevRoles.filter((role) => role.id !== roleId));
+    } catch (err) {
+      handleError(err, setError);
+    }
+  }, setLoading);
 };

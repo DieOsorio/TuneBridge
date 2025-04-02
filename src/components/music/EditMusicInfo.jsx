@@ -1,56 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { useMusic } from "../../context/music/MusicContext";
+import React, { useEffect, useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import Loading from "../../utilis/Loading";
+import { useMusic } from "../../context/music/MusicContext";
 
 const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]; // Predefined options
 
 const EditMusicInfo = ({ profileId }) => {
-  const { roles, loading, error, fetchRolesForProfile, addRoleForProfile, deleteRoleForProfile } = useMusic();
-  const [selectedRole, setSelectedRole] = useState(""); // For dropdown selection
-  const [customRole, setCustomRole] = useState(""); // For custom role input
-  const [errorMessage, setErrorMessage] = useState(""); // For displaying errors
+  const { roles, addRoleForProfile, deleteRoleForProfile } = useMusic();
+  const [selectedRole, setSelectedRole] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [customRole, setCustomRole] = useState("");
 
-  useEffect(() => {
-    if (profileId) {
-      fetchRolesForProfile(profileId);
-    }
-  }, [profileId]);
+  const handleAddRole = () => {
+    const roleToAdd = selectedRole === "Other" ? customRole.trim() : selectedRole;
 
-  const handleAddRole = async () => {
-    if (roles.length >= 8) {
-      setErrorMessage("You can only have a maximum of 8 roles.");
+    if (roles.length >= 6) {
+      setErrorMessage("You can have only 6 roles.");
       return;
     }
 
-    const roleToAdd = selectedRole === "Other" ? customRole.trim() : selectedRole;
-    if (!roleToAdd) return; // Prevent adding empty roles
+    if (!roleToAdd) {
+      setErrorMessage("Role cannot be empty.");
+      return;
+    }
 
-    await addRoleForProfile(profileId, roleToAdd);
+    // Check for duplicate roles (case-insensitive)
+    const isDuplicate = roles.some((role) => role.role.toLowerCase() === roleToAdd.toLowerCase());
+    if (isDuplicate) {
+      setErrorMessage("This role already exists.");
+      return;
+    }
+
+    addRoleForProfile(profileId, roleToAdd)
+    setErrorMessage(""); // Clear any previous error messages
     setSelectedRole(""); // Reset dropdown
     setCustomRole(""); // Reset custom input
-    setErrorMessage(""); // Clear any previous error messages
   };
-
-  const handleDeleteRole = async (roleId) => {
-    await deleteRoleForProfile(roleId);
-    setErrorMessage(""); // Clear any previous error messages
-  };
-
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (error) {
-    return <div className="text-red-500">Error: {error}</div>;
-  }
+  
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Edit Music Information</h2>
 
-      {/* Dropdown and Custom Input */}
+       {/* Dropdown and Custom Input */}
       <div className="mb-4">
         <label htmlFor="roleSelector" className="block text-lg font-medium mb-2">
           Select a Role
@@ -60,7 +52,6 @@ const EditMusicInfo = ({ profileId }) => {
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
           className="w-full p-2 border rounded-md mb-2"
-          disabled={roles.length >= 8} // Disable dropdown if max roles reached
         >
           <option value="" disabled>
             Choose a role
@@ -70,7 +61,7 @@ const EditMusicInfo = ({ profileId }) => {
               {role}
             </option>
           ))}
-        </select>
+        </select> 
 
         {/* Show custom input if "Other" is selected */}
         {selectedRole === "Other" && (
@@ -79,17 +70,12 @@ const EditMusicInfo = ({ profileId }) => {
             placeholder="Enter custom role"
             value={customRole}
             onChange={(e) => setCustomRole(e.target.value)}
-            disabled={roles.length >= 8} // Disable input if max roles reached
           />
         )}
 
-        <Button
-          onClick={handleAddRole}
-          className="mt-2"
-          disabled={roles.length >= 8} // Disable button if max roles reached
-        >
+        <Button onClick={() => handleAddRole()} className="mt-2">
           Add Role
-        </Button>
+        </Button> 
 
         {/* Error Message */}
         {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
@@ -109,7 +95,7 @@ const EditMusicInfo = ({ profileId }) => {
               >
                 <span className="text-lg">{role.role}</span>
                 <button
-                  onClick={() => handleDeleteRole(role.id)}
+                  onClick={() => deleteRoleForProfile(role.id)}
                   className="bg-red-500 text-white text-xs px-1 py-0.5 rounded-full hover:bg-red-600"
                 >
                   ✕
