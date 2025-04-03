@@ -8,99 +8,124 @@ const SocialContext = createContext(null);
 SocialContext.displayName = "SocialContext";
 
 export const SocialProvider = ({ children }) => {
-  const [connections, setConnections] = useState([]);
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+    const [connections, setConnections] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const { user } = useAuth();
 
-  // Cargar conexiones del usuario al montar el contexto
-  useEffect(() => {
-    if (!user) return;
-    
-    const fetchConnections = async () => {
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchConnections = async () => {
+            setLoading(true);
+            setError("");
+
+            try {
+                const { data, error } = await supabase
+                    .schema("social")
+                    .from("user_connections")
+                    .select("*")
+                    .eq("follower_profile_id", user.id);
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                setConnections(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchConnections();
+    }, [user]);
+
+    const followUser = async (profileId) => {
         setLoading(true);
-        setError("")
+        setError("");
 
         try {
+            // Optimistically update the state
+            const newConnection = {
+                follower_profile_id: user.id,
+                following_profile_id: profileId,
+                status: "pending",
+            };
+            setConnections((prev) => [...prev, newConnection]);
+
+            // Call the server
             const { data, error } = await supabase
-            .schema('social')
-            .from("user_connections")
-            .select("*")
-            .eq("follower_profile_id", user.id);
+                .schema("social")
+                .from("user_connections")
+                .insert([newConnection]);
 
-            setConnections(data);
+            if (error) {
+                throw new Error(error.message);
+            }
+
+            // Replace the optimistic update with the server response
+            if (data && data.length > 0) {
+                setConnections((prev) =>
+                    prev.map((conn) =>
+                        conn.following_profile_id === profileId ? data[0] : conn
+                    )
+                );
+            }
         } catch (error) {
-           setError(error.message) 
+            setError(error.message);
+            console.error(error.message);
         } finally {
-            setLoading(false)
-        }     
-    };
-    
-    fetchConnections();
-  }, [user]);
-
-  // Función para seguir a un usuario
-  const followUser = async (followingId) => {
-    setLoading(true);
-    setError("");
-
-    // Verifica si el usuario ya está en connections
-    if (connections.some(conn => conn.following_profile_id === followingId) || followingId === user.id) {
-      setLoading(false);
-      return;
-  }
-    try {
-        const { data, error } = await supabase
-        .schema('social')
-        .from("user_connections")
-        .insert([{ 
-        follower_profile_id: user.id, 
-        following_profile_id: followingId, 
-        status: "pending" 
-        }]);
-        
-        if (data && Array.isArray(data) && data.length > 0) {
-            setConnections(prev => [...prev, data[0]]);
+            setLoading(false);
         }
-    } catch (error) {
-        setError(error.message);
-        console.error(error.message)
-    } finally {
-        setLoading(false);
-    }
-  };
+    };
 
-  // Función para dejar de seguir a un usuario
-  const unfollowUser = async (followingId) => {
-    setLoading(true);
-    setError('');
+    const unfollowUser = async (profileId) => {
+        setLoading(true);
+        setError("");
 
-    try {
-        const { error } = await supabase
-        .schema('social')
-        .from("user_connections")
-        .delete()
-        .match({ follower_profile_id: user.id, following_profile_id: followingId });
+        try {
+            // Optimistically remove the connection
+            setConnections((prev) =>
+                prev.filter((conn) => conn.following_profile_id !== profileId)
+            );
 
-        setConnections((prev) => prev.filter(conn => conn.following_profile_id !== followingId));
-    } catch (error) {
-        setError(error.message);
-    } finally {
-        setLoading(false);
-    }
-  };
+            // Call the server
+            const { error } = await supabase
+                .schema("social")
+                .from("user_connections")
+                .delete()
+                .match({ follower_profile_id: user.id, following_profile_id: profileId });
 
-  const value = useMemo(() => ({connections, loading, error, followUser, unfollowUser}))
+            if (error) {
+                throw new Error(error.message);
+            }
+        } catch (error) {
+            setError(error.message);
+            console.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <SocialContext.Provider value={value}>
-      {children}
-    </SocialContext.Provider>
-  );
+    return (
+        <SocialContext.Provider
+            value={{
+                connections,
+                followUser,
+                unfollowUser,
+                loading,
+                error,
+            }}
+        >
+            {children}
+        </SocialContext.Provider>
+    );
 };
 
 SocialProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 export const useSocial = () => {
@@ -109,4 +134,4 @@ export const useSocial = () => {
         throw new Error("useSocial debe usarse dentro de un SocialProvider");
     }
     return context;
-}
+};
