@@ -3,8 +3,8 @@ import ProfileCard from './ProfileCard';
 import { useProfile } from '../../context/profile/ProfileContext';
 import { useAuth } from '../../context/AuthContext';
 import { useSocial } from '../../context/SocialContext';
-import Loading from '../../utilis/Loading';
-import Error from '../../utilis/Error';
+import Loading from '../../utils/Loading';
+import Error from '../../utils/Error';
 
 
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
-import Loading from "../../utilis/Loading";
+import Loading from "../../utils/Loading";
 import SignUpSuccess from "../../pages/SignUpSuccess";
 
 const SignUp = () => {

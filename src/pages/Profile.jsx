@@ -7,7 +7,7 @@ import EditProfile from "../components/user/EditProfile";
 import EditMusicInfo from "../components/music/EditMusicInfo";
 import { useProfile } from "../context/profile/ProfileContext";
 import { useAuth } from "../context/AuthContext";
-import Loading from "../utilis/Loading";
+import Loading from "../utils/Loading";
 
 const Profile = () => {
   const { identifier } = useParams(); // Get the profile identifier from the URL

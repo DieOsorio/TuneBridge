@@ -6,8 +6,8 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
-import Loading from "../../utilis/Loading";
-import { uploadAvatar } from "../../utilis/avatarUtils";
+import Loading from "../../utils/Loading";
+import { uploadAvatar } from "../../utils/avatarUtils";
 
 const EditProfile = () => {
   const { user, loading: authLoading } = useAuth();

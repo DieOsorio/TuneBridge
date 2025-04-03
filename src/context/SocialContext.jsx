@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./AuthContext";
 
+import PropTypes from "prop-types";
+
 const SocialContext = createContext(null);
 SocialContext.displayName = "SocialContext";
 
@@ -95,6 +97,10 @@ export const SocialProvider = ({ children }) => {
       {children}
     </SocialContext.Provider>
   );
+};
+
+SocialProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const useSocial = () => {

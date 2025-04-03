@@ -6,17 +6,32 @@ import { AuthProvider } from './context/AuthContext';
 import { ProfileProvider } from './context/profile/ProfileContext';
 import { SocialProvider } from './context/SocialContext';
 import { MusicProvider } from './context/music/MusicContext';
+import { InstrumentDetailsProvider } from './context/music/InstrumentDetailsContext';
+import { SingerDetailsProvider } from './context/music/SingerDetailsContext';
+import { DjDetailsProvider } from './context/music/DjDetailsContext';
+import { ProducerDetailsProvider } from './context/music/ProducerDetailsContext';
+import { ComposerDetailsProvider } from './context/music/ComposerDetailsContext';
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
+  <StrictMode>
     <AuthProvider>
       <ProfileProvider>
         <SocialProvider>
           <MusicProvider>
-            <App />
+            <InstrumentDetailsProvider>
+              <SingerDetailsProvider>
+                <DjDetailsProvider>
+                  <ProducerDetailsProvider>
+                    <ComposerDetailsProvider>
+                      <App />
+                    </ComposerDetailsProvider>
+                  </ProducerDetailsProvider>
+              </DjDetailsProvider>
+            </SingerDetailsProvider>
+            </InstrumentDetailsProvider>
           </MusicProvider>
         </SocialProvider>
       </ProfileProvider>
     </AuthProvider>
-  // </StrictMode>
+  </StrictMode>
 );

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import Loading from "../../utilis/Loading";
+import Loading from "../../utils/Loading";
 
 const Login = () => {
   const [email, setEmail] = useState("");

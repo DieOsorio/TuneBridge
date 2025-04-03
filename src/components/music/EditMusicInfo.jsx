@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { FaChevronRight } from "react-icons/fa"; // Import the icon
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useMusic } from "../../context/music/MusicContext";
+import RoleDataEditor from "./RoleDataEditor";
 
-const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]; // Predefined options
+const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"];
 
 const EditMusicInfo = ({ profileId }) => {
   const { roles, addRoleForProfile, deleteRoleForProfile } = useMusic();
   const [selectedRole, setSelectedRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [customRole, setCustomRole] = useState("");
+  const [expandedRole, setExpandedRole] = useState(null);
 
   const handleAddRole = () => {
     const roleToAdd = selectedRole === "Other" ? customRole.trim() : selectedRole;
@@ -24,7 +27,6 @@ const EditMusicInfo = ({ profileId }) => {
       return;
     }
 
-    // Check for duplicate roles (case-insensitive)
     const isDuplicate = roles.some((role) => role.role.toLowerCase() === roleToAdd.toLowerCase());
     if (isDuplicate) {
       setErrorMessage("This role already exists.");
@@ -32,17 +34,25 @@ const EditMusicInfo = ({ profileId }) => {
     }
 
     addRoleForProfile(profileId, roleToAdd)
-    setErrorMessage(""); // Clear any previous error messages
-    setSelectedRole(""); // Reset dropdown
-    setCustomRole(""); // Reset custom input
+      .then(() => {
+        setErrorMessage(""); // Clear any previous error messages
+        setSelectedRole(""); // Reset the selected role
+        setCustomRole(""); // Reset the custom role input
+      })
+      .catch((error) => {
+        console.error("Error adding role:", error);
+        setErrorMessage("An error occurred while adding the role.");
+      });
   };
-  
+
+  const handleRoleClick = (roleId) => {
+    setExpandedRole((prev) => (prev === roleId ? null : roleId));
+  };
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Edit Music Information</h2>
 
-       {/* Dropdown and Custom Input */}
       <div className="mb-4">
         <label htmlFor="roleSelector" className="block text-lg font-medium mb-2">
           Select a Role
@@ -61,9 +71,8 @@ const EditMusicInfo = ({ profileId }) => {
               {role}
             </option>
           ))}
-        </select> 
+        </select>
 
-        {/* Show custom input if "Other" is selected */}
         {selectedRole === "Other" && (
           <Input
             label="Custom Role"
@@ -75,31 +84,51 @@ const EditMusicInfo = ({ profileId }) => {
 
         <Button onClick={() => handleAddRole()} className="mt-2">
           Add Role
-        </Button> 
+        </Button>
 
-        {/* Error Message */}
         {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
       </div>
 
-      {/* Display Existing Roles */}
       <div>
         <h3 className="text-xl font-semibold mb-2">Your Roles</h3>
         {roles.length === 0 ? (
           <p>No roles available. Add a new role to get started.</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-4">
             {roles.map((role) => (
               <div
                 key={role.id}
-                className="flex items-center justify-between p-2 bg-gray-100 rounded-md shadow-sm"
+                className="p-4 bg-gray-100 rounded-md shadow-md border border-gray-300"
               >
-                <span className="text-lg">{role.role}</span>
-                <button
-                  onClick={() => deleteRoleForProfile(role.id)}
-                  className="bg-red-500 text-white text-xs px-1 py-0.5 rounded-full hover:bg-red-600"
+                <div
+                  className="flex items-center justify-between cursor-pointer"
+                  onClick={() => handleRoleClick(role.id)}
                 >
-                  ✕
-                </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-gray-800">{role.role}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaChevronRight
+                      className={`w-6 h-6 text-gray-300 transition-transform ${
+                        expandedRole === role.id ? "rotate-90" : ""
+                      }`}
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the toggle
+                        deleteRoleForProfile(role.id);
+                      }}
+                      className="ml-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full hover:bg-red-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+                {expandedRole === role.id && (
+                  <div className="mt-4 p-4 bg-white rounded-md shadow-inner border border-gray-200">
+                    <RoleDataEditor role={role} profileId={profileId} />
+                  </div>
+                )}
               </div>
             ))}
           </div>

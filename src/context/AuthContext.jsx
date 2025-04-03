@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabase';
 
+import PropTypes from 'prop-types';
+
 const AuthContext = createContext(null);
 AuthContext.displayName = "AuthContext";
 
@@ -8,34 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // Function to create a profile
-  const createProfile = async (userId, email) => {
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .insert([
-          {
-            id: userId,
-            email: email,
-            username: null,
-            avatar_url: "",
-            country: "",
-            city: "",
-            firstname: "",
-            lastname: "",
-            gender: "",
-            birthdate: null,
-          },
-        ]);
-      if (error) {
-        console.error("Error creating profile:", error.message);
-        throw error;
-      }
-    } catch (err) {
-      console.error("Error in createProfile:", err.message);
-    }
-  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -111,6 +85,10 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthContext.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const useAuth = () => {

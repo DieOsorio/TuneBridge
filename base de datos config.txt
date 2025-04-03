@@ -43,21 +43,6 @@ Schema music:
 
     ------------   /   ------------
 
-    Tabla instruments: Almacena los instrumentos tocados por los usuarios (instrumentistas).
-
-        Columnas:
-
-            id (UUID): ID del instrumento.
-
-            profile_id (UUID): Relacionado con la tabla profiles para vincular instrumentos con el usuario.
-
-            instrument (text): Nombre del instrumento.
-
-            years_of_experience (int, nullable): Años de experiencia con el instrumento.
-
-            level (int, nullable): Nivel del usuario con el instrumento (principiante, intermedio, avanzado).
-
-    ------------   /   ------------
 
     Tabla instrumentist_details: Usada para almacenar los detalles específicos del rol de instrumentista de un usuario.
     
@@ -70,6 +55,8 @@ Schema music:
             instruments (text array): Lista de instrumentos que toca el usuario.
 
             years_of_experience (int, nullable): Años de experiencia como instrumentista.
+            
+            level (int, nullable): Nivel del usuario con el instrumento (principiante, intermedio, avanzado).
 
 
         Triggers:
@@ -93,6 +80,8 @@ Schema music:
 
             music_genre (text): Géneros musicales del cantante.
 
+            level (text): Nivel del usuario con el instrumento (principiante, intermedio, avanzado).
+
     ------------   /   ------------
 
     Tabla dj_details: Almacena detalles específicos del rol de DJ de un usuario.
@@ -106,6 +95,11 @@ Schema music:
             preferred_genres (text): Géneros musicales preferidos por el DJ.
 
             events_played (text, nullable): Eventos en los que ha participado el DJ.
+            
+            level (text): Nivel del usuario cono dj (principiante, intermedio, avanzado).
+
+            profile_id (UUID): Relacionado con la tabla profiles para asociar la informacion del rol con un usuario específico.
+            (Relación con la tabla profiles, con ON DELETE CASCADE y ON UPDATE CASCADE).
 
     ------------   /   ------------
 
@@ -121,6 +115,11 @@ Schema music:
 
             years_of_experience (int, nullable): Años de experiencia como productor.
 
+            level (text): Nivel del usuario cono productor (principiante, intermedio, avanzado).
+
+            profile_id (UUID): Relacionado con la tabla profiles para asociar la informacion del rol con un usuario específico.
+            (Relación con la tabla profiles, con ON DELETE CASCADE y ON UPDATE CASCADE).
+
     ------------   /   ------------
 
     Tabla composer_details: Almacena detalles específicos del rol de compositor de un usuario.
@@ -133,7 +132,12 @@ Schema music:
 
             composition_style (text): Estilo de composición del compositor (clásico, moderno, experimental, etc.).
 
-            years_of_composing (int, nullable): Años de experiencia componiendo.
+            years_of_experience (int, nullable): Años de experiencia componiendo.
+
+            level (text): Nivel del usuario cono compositor (principiante, intermedio, avanzado).
+
+            profile_id (UUID): Relacionado con la tabla profiles para asociar la informacion del rol con un usuario específico.
+            (Relación con la tabla profiles, con ON DELETE CASCADE y ON UPDATE CASCADE).
 
 
 
