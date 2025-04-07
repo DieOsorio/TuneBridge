@@ -1,8 +1,10 @@
+import { fetchProducerQuery } from "../../context/music/ProducerDetailsActions";
 import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const ProducerEditor = ({ role, profileId }) => {
-  const { producerDetails, fetchDetails, addDetails, updateDetails, deleteDetails } =
+  const { data: producerDetails} = fetchProducerQuery(role.id)
+  const { refetch, addProducer: addDetails, updateProducer: updateDetails, deleteProducer: deleteDetails } =
     useProducerDetails();
 
   const sanitizeInput = (details) => {
@@ -18,11 +20,11 @@ const ProducerEditor = ({ role, profileId }) => {
     <RoleEditor
       role={role}
       profileId={profileId}
-      details={producerDetails}
-      fetchDetails={fetchDetails}
-      addDetails={(details) => addDetails(sanitizeInput(details))} // Sanitize input before adding
-      updateDetails={(id, details) => updateDetails(id, sanitizeInput(details))} // Sanitize input before updating
-      deleteDetails={deleteDetails}
+      details={producerDetails || []}
+      refetch={refetch}
+      addDetails={(details) => addDetails({details: sanitizeInput(details)})} // Sanitize input before adding
+      updateDetails={(id, details) => updateDetails({id, details: sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteDetails({id})}
       title="Producer Detail"
       fields={[
         {

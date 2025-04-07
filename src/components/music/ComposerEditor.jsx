@@ -1,8 +1,10 @@
+import { fetchComposerQuery } from "../../context/music/ComposerDetailsActions";
 import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const ComposerEditor = ({ role, profileId }) => {
-  const { composerDetails, fetchDetails, addDetails, updateDetails, deleteDetails } =
+  const { data: composerDetails } = fetchComposerQuery(role.id)
+  const { refetch, addComposer: addDetails, updateComposer: updateDetails, deleteComposer: deleteDetails } =
     useComposerDetails();
 
   const sanitizeInput = (details) => {
@@ -19,11 +21,11 @@ const ComposerEditor = ({ role, profileId }) => {
     <RoleEditor
       role={role}
       profileId={profileId}
-      details={composerDetails}
-      fetchDetails={fetchDetails}
-      addDetails={(details) => addDetails(sanitizeInput(details))} // Sanitize input before adding
-      updateDetails={(id, details) => updateDetails(id, sanitizeInput(details))} // Sanitize input before updating
-      deleteDetails={deleteDetails}
+      details={composerDetails || []}
+      refetch={refetch}
+      addDetails={(details) => addDetails({details: sanitizeInput(details)})} // Sanitize input before adding
+      updateDetails={(id, details) => updateDetails({id, details: sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteDetails({id})}
       title="Composer Detail"
       fields={[
         {

@@ -1,93 +1,84 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import ProfileAvatar from "../components/user/ProfileAvatar";
 import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
 import Sidebar from "../components/profiles/Sidebar";
 import EditProfile from "../components/user/EditProfile";
 import EditMusicInfo from "../components/music/EditMusicInfo";
-import { useProfile } from "../context/profile/ProfileContext";
 import { useAuth } from "../context/AuthContext";
+import { useProfileQuery } from "../context/profile/profileActions";
 import Loading from "../utils/Loading";
+import ConnectionsList from "../components/social/ConnectionsList";
 
 const Profile = () => {
+
   const { identifier } = useParams(); // Get the profile identifier from the URL
   const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
-  const { loading: profileLoading, error, fetchProfile } = useProfile();
-  const [profile, setProfile] = useState(null);
+  const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(user, identifier);
+  // const [profile, setProfile] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null); // Default to null
-  const navigate = useNavigate();
 
-  const stableProfileId = useMemo(() => profile?.id, [profile?.id]);
 
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const profileData = await fetchProfile(identifier || user.id);
-        if (profileData) {
-          setProfile(profileData);
-        }
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
-    };
-    getProfile();
-  }, [user, identifier]);
-
-  if (authLoading || profileLoading) {
+  if (authLoading || profileQueryLoading) {
     return <Loading />;
   }
 
   if (error) {
-    return <div>No se encontró el perfil.</div>;
+    return <Error error={error.message || "Error loading profile."} />;
   }
 
-  if (!profile) {
+  if (!profileData) {
     return <div>No profile data available.</div>;
   }
 
   // Check if the logged-in user is viewing their own profile
-  const isOwnProfile = user?.id === identifier;
+  const isOwnProfile = user.id === identifier;
 
   return (
     <div className="flex">
       {/* Render Sidebar only if it's the user's own profile */}
-      {isOwnProfile && <Sidebar onSelectOption={setSelectedOption} avatarUrl={profile?.avatar_url} />}
+      {isOwnProfile && <Sidebar onSelectOption={setSelectedOption} avatarUrl={profileData.avatar_url} />}
 
       {/* Main Content */}
       <div className="flex-1 p-8 max-w-4xl mx-auto gap-8">
         {/* Render based on selectedOption */}
-        {selectedOption === "editProfile" && <EditProfile profile={profile} />}
-        {selectedOption === "editMusicInfo" && <EditMusicInfo profileId={stableProfileId} />}
+        {selectedOption === "editProfile" && <EditProfile profile={profileData} onUpdate={()=>setSelectedOption(null)} />}
+        {selectedOption === "editMusicInfo" && <EditMusicInfo profileId={profileData.id} onUpdate={()=>setSelectedOption(null)} />}
 
         {/* Default Profile View */}
         {selectedOption === null && (
           <div className="bg-white shadow-md rounded-lg p-6">
             <div className="flex items-center gap-4 mb-6">
-              <ProfileAvatar avatar_url={profile?.avatar_url} />
-              <h2 className="text-3xl font-bold">{profile?.username}</h2>
+              <ProfileAvatar avatar_url={profileData.avatar_url} />
+              <h2 className="text-3xl font-bold">{profileData.username}</h2>
             </div>
             <ul className="space-y-4 text-lg">
               <li>
-                <strong className="mr-3">Nombre:</strong> {profile?.firstname}
+                <strong className="mr-3">Nombre:</strong> {profileData.firstname}
               </li>
               <li>
-                <strong className="mr-3">Apellido:</strong> {profile?.lastname}
+                <strong className="mr-3">Apellido:</strong> {profileData.lastname}
               </li>
               <li>
-                <strong className="mr-3">País:</strong> {profile?.country}
+                <strong className="mr-3">País:</strong> {profileData.country}
               </li>
               <li>
-                <strong className="mr-3">Ciudad:</strong> {profile?.city}
+                <strong className="mr-3">Ciudad:</strong> {profileData.city}
               </li>
               <li>
-                <strong className="mr-3">Género:</strong> {profile?.gender}
+                <strong className="mr-3">Género:</strong> {profileData.gender}
               </li>
               <li>
                 <strong className="mr-3">Fecha de Nacimiento:</strong>{" "}
-                {profile?.birthdate ? profile.birthdate.split("T")[0] : null}
+                {profileData?.birthdate ? profileData.birthdate.split("T")[0] : null}
               </li>
             </ul>
-            <DisplayMusicInfo profileId={stableProfileId} />
+            <DisplayMusicInfo profileId={profileData.id} />
+            <h2 className="text-2xl font-bold mt-6">Conexiones</h2>
+            <h3 className="text-xl font-semibold mt-4">Mis Conexiones</h3>
+            {/* <ConnectionsList id={user.id} checkStatus="accepted" /> Show accepted connections */}
+            <h3 className="text-xl font-semibold mt-4">Conexiones Pendientes</h3>
+            {/* <ConnectionsList id={user.id} checkStatus="pending" /> Show pending connections */}
           </div>
         )}
       </div>

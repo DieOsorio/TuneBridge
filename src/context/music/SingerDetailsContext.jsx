@@ -1,41 +1,30 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
-import { supabase } from "../../supabase";
 import {
-  fetchSingerDetails,
-  addSingerDetails,
-  updateSingerDetails,
-  deleteSingerDetails,
+  fetchSingerQuery,
+  addSingerMutation,
+  updateSingerMutation,
+  deleteSingerMutation,
 } from "./SingerDetailsActions";
 
 const SingerDetailsContext = createContext();
 SingerDetailsContext.displayName = "SingerDetailsContext";
 
 export const SingerDetailsProvider = ({ children }) => {
-  const [singerDetails, setSingerDetails] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {data, isLoading, error, refetch} = fetchSingerQuery();
+  const addSinger = addSingerMutation();
+  const updateSinger = updateSingerMutation();
+  const deleteSinger = deleteSingerMutation();
 
-  const value = useMemo(
-      () => ({
-        singerDetails,
-        loading,
+  const value = {
+        singerDetails: data,
+        loading: isLoading,
         error,
-        fetchDetails: async (roleId) => {
-          return await fetchSingerDetails(supabase, roleId, setSingerDetails, setError, setLoading);
-        },
-        addDetails: async (details) => {
-          return await addSingerDetails(supabase, details, setError, setLoading);
-        },
-        updateDetails: async (id, updatedDetails) => {
-          return await updateSingerDetails(supabase, id, updatedDetails, setError, setLoading);
-        },
-        deleteDetails: async (id) => {
-          return await deleteSingerDetails(supabase, id, setError, setLoading);
-        },
-      }),
-      [singerDetails, loading, error]
-    );
+        refetch,
+        addSinger: addSinger.mutateAsync,
+        updateSinger: updateSinger.mutateAsync,
+        deleteSinger: deleteSinger.mutateAsync,
+      }
 
   return (
     <SingerDetailsContext.Provider

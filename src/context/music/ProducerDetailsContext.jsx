@@ -1,41 +1,30 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
-import { supabase } from "../../supabase";
 import {
-  fetchProducerDetails,
-  addProducerDetails,
-  updateProducerDetails,
-  deleteProducerDetails,
+  fetchProducerQuery,
+  addProducerMutation,
+  updateProducerMutation,
+  deleteProducerMutation,
 } from "./ProducerDetailsActions";
 
 const ProducerDetailsContext = createContext();
 ProducerDetailsContext.displayName = "ProducerDetailsContext";
 
 export const ProducerDetailsProvider = ({ children }) => {
-  const [producerDetails, setProducerDetails] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {data, isLoading, error, refetch} = fetchProducerQuery();
+  const addProducer = addProducerMutation();
+  const updateProducer = updateProducerMutation();
+  const deleteProducer = deleteProducerMutation();
 
-  const value = useMemo(
-    () => ({
-      producerDetails,
-      loading,
+  const value = {
+      composerDetails: data,
+      loading: isLoading,
       error,
-      fetchDetails: async (roleId) => {
-        return await fetchProducerDetails(supabase, roleId, setProducerDetails, setError, setLoading);
-      },
-      addDetails: async (details) => {
-        return await addProducerDetails(supabase, details, setError, setLoading);
-      },    
-      updateDetails: async (id, updatedDetails) => {
-        return await updateProducerDetails(supabase, id, updatedDetails, setError, setLoading);
-      },
-      deleteDetails: async (id) => {
-        return await deleteProducerDetails(supabase, id, setError, setLoading);
-      },
-    }),
-    [producerDetails, loading, error]
-  );
+      refetch,
+      addProducer: addProducer.mutateAsync,
+      updateProducer: updateProducer.mutateAsync,
+      deleteProducer: deleteProducer.mutateAsync,
+    };
 
   return (
     <ProducerDetailsContext.Provider

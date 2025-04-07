@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useMusic } from "../../context/music/MusicContext";
-import { useInstruments } from "../../context/music/InstrumentDetailsContext";
-import { useSingerDetails } from "../../context/music/SingerDetailsContext";
+import React, { useState } from "react";
 import { useDjDetails } from "../../context/music/DjDetailsContext";
-import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
-import { useComposerDetails } from "../../context/music/ComposerDetailsContext"; // Import ComposerDetailsContext
 import DisplayRoleInfo from "./DisplayRoleInfo";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { fetchInstrumentsQuery } from "../../context/music/instrumentDetailsActions";
+import { fetchRolesQuery } from "../../context/music/rolesActions";
+import { fetchSingerQuery } from "../../context/music/SingerDetailsActions";
+import { fetchComposerQuery } from "../../context/music/ComposerDetailsActions";
+import { fetchProducerQuery } from "../../context/music/ProducerDetailsActions";
+import { fetchDjQuery } from "../../context/music/djDetailsActions";
 
 const DisplayMusicInfo = ({ profileId }) => {
-  const { roles, loading, error, fetchRolesForProfile } = useMusic();
-  const { instruments, fetchInstruments } = useInstruments();
-  const { singerDetails, fetchDetails: fetchSingerDetails } = useSingerDetails();
-  const { djDetails, fetchDetails: fetchDjDetails } = useDjDetails();
-  const { producerDetails, fetchDetails: fetchProducerDetails } = useProducerDetails();
-  const { composerDetails, fetchDetails: fetchComposerDetails } = useComposerDetails(); // Use ComposerDetailsContext
+  const  [roleId, setRoleId]  = useState();
+  const { data:roles, isLoading: loading, error} = fetchRolesQuery(profileId);
+  const { data:instruments } = fetchInstrumentsQuery(roleId)
+  const { data: singerDetails } = fetchSingerQuery(roleId);
+  const { data: composerDetails } = fetchComposerQuery(roleId);
+  const { data: producerDetails } = fetchProducerQuery(roleId);
+  const { data: djDetails } = fetchDjQuery(roleId);
   const [expandedRole, setExpandedRole] = useState(null); // Track which role is expanded
-
-  useEffect(() => {
-    if (profileId) {
-      fetchRolesForProfile(profileId);
-    }
-  }, [profileId]);
 
   const handleRoleClick = (role) => {
     if (expandedRole === role.id) {
@@ -29,20 +25,20 @@ const DisplayMusicInfo = ({ profileId }) => {
     } else {
       setExpandedRole(role.id); // Expand and fetch data for the role
 
-      if (role.role === "Instrumentalist") {
-        fetchInstruments(profileId);
+      if (role.role === "Instrumentalist") {   
+        setRoleId(role.id) // Fetch instruments using the role ID
       } else if (role.role === "Singer") {
-        fetchSingerDetails(role.id); // Fetch singer details using the role ID
+        setRoleId(role.id) // Fetch singer details using the role ID
       } else if (role.role === "DJ") {
-        fetchDjDetails(role.id); // Fetch DJ details using the role ID
+        setRoleId(role.id); // Fetch DJ details using the role ID
       } else if (role.role === "Producer") {
-        fetchProducerDetails(role.id); // Fetch producer details using the role ID
+        setRoleId(role.id); // Fetch producer details using the role ID
       } else if (role.role === "Composer") {
-        fetchComposerDetails(role.id); // Fetch composer details using the role ID
+        setRoleId(role.id); // Fetch composer details using the role ID
       }
     }
   };
-
+  
   if (loading) {
     return (
       <div className="bg-gray-100 p-4 rounded-lg shadow-md">

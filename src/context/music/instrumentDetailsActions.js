@@ -1,87 +1,165 @@
-import { withLoading, handleError } from "../../utils/helpers"
+import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
+import { supabase } from '../../supabase';
 
 // Fetch all instruments for a profile
-export const fetchInstruments = async (supabase, profileId, setInstruments, setError, setLoading) => {
-  return await withLoading(async () => {
-    setError("");
-    try {
+export const fetchInstrumentsQuery = (roleId) => {
+  
+  return useQuery({
+    queryKey: ["instrumentDetails", roleId],
+    queryFn: async () => {
+      if (!roleId) {
+        console.error("roleId is not avialable");
+        return []
+      }
+
       const { data, error } = await supabase
         .schema("music")
         .from("instrument_details")
-        .select("*")
-        .eq("profile_id", profileId);
-      if (error) throw error;      
+        .select ("*")
+        .eq("role_id", roleId)
+      if (error) throw new Error(error.message);
       
-      setInstruments(data);
-    } catch (err) {
-      handleError(err, setError);
-      throw err;
-    }
-  }, setLoading);
+      return data;
+    },
+    enabled: !!roleId,
+  })
 };
 
-// Add a new instrument for a profile
-export const addInstrument = async (supabase, profileId, instrumentData, setInstruments, setError, setLoading) => {
-  return await withLoading(async () => {
-    setError("");
-    try {
+// ADD NEW INSTRUMENT INFORMATION
+export const addInstrumentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({details}) => {
       const { data, error } = await supabase
         .schema("music")
         .from("instrument_details")
-        .insert([{ profile_id: profileId, ...instrumentData }])
+        .insert(details)
         .select();
-      if (error) throw error;
-      setInstruments((prevInstruments) => [...prevInstruments, data[0]]);
-      return data[0];
-    } catch (err) {
-      handleError(err, setError);
-      throw err;
+      if (error) throw new Error(error.message);
+      return data [0];
+    },
+
+    //optimistic update
+    onMutate: async ({details}) => {
+      await queryClient.cancelQueries({queryKey: ["instrumentDetails"]});
+
+      const previousDetails = queryClient.getQueryData(["instrumentDetails"]);
+
+      const optimisticInstrument = {
+        id: `temp-${Date.now()}`,
+        ...details,
+        created_at: new Date().toISOString(),
+      }
+
+      queryClient.setQueryData(["instrumentDetails"], (old = []) => [
+        ...old,
+        optimisticInstrument,
+      ])
+
+      return { previousDetails };
+    },
+
+    onError: (err, _variables, context) => {
+      if (context?.previousDetails) {
+        queryClient.setQueryData(["instrumentDetails"], context.previousDetails);
+      }
+    },
+
+    onSettled: (_data, _error) => {
+      queryClient.invalidateQueries({ queryKey: ["instrumentDetails"]});
     }
-  }, setLoading);
-};
+  })
+}
+
+
 
 // Update an existing instrument
-export const updateInstrument = async (supabase, instrumentId, updatedData, setInstruments, setError, setLoading) => {
-  return await withLoading(async () => {
-    setError("");
-    try {
+export const updateInstrumentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, details }) => {
       const { data, error } = await supabase
         .schema("music")
         .from("instrument_details")
-        .update(updatedData)
-        .eq("id", instrumentId)
+        .update(details)
+        .eq("id", id)
         .select();
-      if (error) throw error;
-      setInstruments((prevInstruments) =>
-        prevInstruments.map((instrument) =>
-          instrument.id === instrumentId ? data[0] : instrument
+
+      if (error) throw new Error(error.message);
+      return data[0];
+    },
+
+    // optimistic update
+    onMutate: async ({ id, details }) => {
+      await queryClient.cancelQueries({ queryKey: ["instrumentDetails", id] });
+
+      const previousDetails = queryClient.getQueryData(["instrumentDetails", id]);
+
+      queryClient.setQueryData(["instrumentDetails", id], (old = []) =>
+        old.map((instrument) =>
+          instrument.id === id
+            ? { ...instrument, ...details }
+            : instrument
         )
       );
-      return data[0];
-    } catch (err) {
-      handleError(err, setError);
-      throw err;
-    }
-  }, setLoading);
+
+      return { previousDetails };
+    },
+
+    onError: (err, _variables, context) => {
+      if (context?.previousDetails) {
+        queryClient.setQueryData(
+          ["instrumentDetails", _variables.id],
+          context.previousDetails
+        );
+      }
+    },
+
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["instrumentDetails", variables.id] });
+    },
+  });
 };
 
+
 // Delete an instrument
-export const deleteInstrument = async (supabase, instrumentId, setInstruments, setError, setLoading) => {
-  return await withLoading(async () => {
-    setError("");
-    try {
+export const deleteInstrumentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id) => {
       const { error } = await supabase
         .schema("music")
         .from("instrument_details")
         .delete()
-        .eq("id", instrumentId);
-      if (error) throw error;
-      setInstruments((prevInstruments) =>
-        prevInstruments.filter((instrument) => instrument.id !== instrumentId)
+        .eq("id", id);
+      
+      if (error) throw new Error(error.message);
+    },
+
+    // Optimistic update
+    onMutate: async (id) => {
+      await queryClient.cancelQueries(["instrumentDetails"]);
+
+      const previousDetails = queryClient.getQueryData(["instrumentDetails"]);
+
+      queryClient.setQueryData(["instrumentDetails"], (old = []) => 
+        old.filter((instrument) => instrument.id !== id)
       );
-    } catch (err) {
-      handleError(err, setError);
-      throw err;
-    }
-  }, setLoading);
+
+      return { previousDetails };
+    },
+
+    onError: (err, _variables, context) => {
+      if (context?.previousDetails) {
+        queryClient.setQueryData(["instrumentDetails"], context.previousDetails);
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries(["instrumentDetails"]);
+    },
+  });
 };

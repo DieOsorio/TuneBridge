@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useSocial } from "../../context/SocialContext";
+import { Link } from "react-router-dom";
+import { useUserConnections } from "../../context/social/UserConnectionsContext";
 
 const ProfileCard = ({ profile }) => {
-    const { connections, followUser, unfollowUser } = useSocial();
+    const { connections, addConnection, deleteConnection } = useUserConnections();
     const [status, setStatus] = useState("connect");
+    const [hoverText, setHoverText] = useState("");
 
-    useEffect(() => {
+    useEffect(() => {        
         // Find the connection for this profile
         const connection = connections.find(
             (conn) => conn.following_profile_id === profile.id
@@ -16,20 +18,28 @@ const ProfileCard = ({ profile }) => {
     const handleConnect = async () => {
         if (status === "connect") {
             setStatus("pending"); // Optimistically update the status
-            await followUser(profile.id); // Call the server to follow the user
+            await addConnection(profile.id); // Call the server to follow the user
         } else if (status === "pending" || status === "accepted") {
             setStatus("connect"); // Optimistically update the status
-            await unfollowUser(profile.id); // Call the server to unfollow the user
+            await deleteConnection(profile.id); // Call the server to unfollow the user
         }
     };
 
+    const getHoverText = () => {
+        if (status === "pending") return "cancel request";
+        else if (status === "accepted") return "unconnect"; 
+        return null
+    }
+
     return (
         <div className="flex flex-col w-60 h-90 text-gray-800 bg-gray-100 items-center gap-2 border rounded-lg shadow-sm">
+            <Link to={`/profile/${profile.id}`}>
             <img
                 src={profile.avatar_url || "/default-avatar.png"}
                 alt={`${profile.username}'s avatar`}
                 className="w-60 h-50 object-cover"
             />
+            </Link>
             <div className="text-center">
                 <h3 className="font-semibold text-lg">{profile.username}</h3>
                 {profile.city && profile.country ? (
@@ -44,10 +54,25 @@ const ProfileCard = ({ profile }) => {
             </div>
             <div className="mt-auto py-4">
                 <button
-                    className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded"
+                    className="relative  cursor-pointer w-50 bg-blue-400 text-white px-4 py-2 rounded h-10 overflow-hidden"
                     onClick={handleConnect}
+                    onMouseEnter={() => setHoverText(getHoverText())}
+                    onMouseLeave={() => setHoverText(null)}
                 >
-                    {status}
+                    <span
+                        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-400 ${
+                        hoverText ? "opacity-0" : "opacity-100"
+                        }`}
+                        >
+                        {status}
+                        </span>
+                        <span
+                        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-400 ${
+                        hoverText ? "opacity-100" : "opacity-0"
+                        }`}
+                        >
+                        {hoverText || ""}
+                    </span>
                 </button>
             </div>
         </div>

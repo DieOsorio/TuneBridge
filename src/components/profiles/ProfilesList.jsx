@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import ProfileCard from "./ProfileCard";
 import { useProfile } from "../../context/profile/ProfileContext";
 import { useAuth } from "../../context/AuthContext";
@@ -6,20 +5,15 @@ import Loading from "../../utils/Loading";
 import Error from "../../utils/Error";
 
 const ProfilesList = () => {
-    const { allProfiles, fetchAllProfiles, loading: profileLoading, error: profileError } = useProfile();
+    const { allProfiles, loading: profileLoading, error: profileError } = useProfile();
     const { user } = useAuth();
 
     // Filter out the current user from the profiles
-    const filteredProfiles = allProfiles.filter((profile) => profile.id !== user.id);
-
-    // Fetch profiles on component mount
-    useEffect(() => {
-        fetchAllProfiles();
-    }, []);
-
+    const filteredProfiles = allProfiles ? allProfiles.filter((profile) => profile.id !== user.id) : [];
+    
     // Handle errors and loading states
     if (profileError) {
-        return <Error error={profileError} />;
+        return <Error error={profileError.message || "Error when loading profiles."} />;
     }
 
     if (profileLoading || !allProfiles) {

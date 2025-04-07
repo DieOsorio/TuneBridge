@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../context/profile/ProfileContext";
 import Loading from "../../utils/Loading";
@@ -13,10 +12,10 @@ const AccountConfirmed = () => {
     // Verificar si el perfil ya fue creado
     if (user && !profileCreated) {
       createProfile(user.id, user.email).then(() => {
-        setProfileCreated(true); // Cambiar el estado para que no se vuelva a ejecutar
+        setProfileCreated(true);
       });
     }
-  }, []);
+  }, [user, profileCreated]);
   
   if (loading || profileLoading) {
     return <Loading />;

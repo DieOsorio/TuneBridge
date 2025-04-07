@@ -2,36 +2,31 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AuthProvider } from './context/AuthContext';
 import { ProfileProvider } from './context/profile/ProfileContext';
-import { SocialProvider } from './context/SocialContext';
+import { SocialProvider } from './context/social/SocialContext';
 import { MusicProvider } from './context/music/MusicContext';
-import { InstrumentDetailsProvider } from './context/music/InstrumentDetailsContext';
-import { SingerDetailsProvider } from './context/music/SingerDetailsContext';
-import { DjDetailsProvider } from './context/music/DjDetailsContext';
-import { ProducerDetailsProvider } from './context/music/ProducerDetailsContext';
-import { ComposerDetailsProvider } from './context/music/ComposerDetailsContext';
+import { ProfileIdProvider } from './context/profile/ProfileIdContext';
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <ProfileProvider>
-        <SocialProvider>
-          <MusicProvider>
-            <InstrumentDetailsProvider>
-              <SingerDetailsProvider>
-                <DjDetailsProvider>
-                  <ProducerDetailsProvider>
-                    <ComposerDetailsProvider>
-                      <App />
-                    </ComposerDetailsProvider>
-                  </ProducerDetailsProvider>
-              </DjDetailsProvider>
-            </SingerDetailsProvider>
-            </InstrumentDetailsProvider>
-          </MusicProvider>
-        </SocialProvider>
-      </ProfileProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ProfileProvider>
+          <ProfileIdProvider>
+            <SocialProvider>
+              <MusicProvider>
+                <App />
+                <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+              </MusicProvider>
+            </SocialProvider>
+          </ProfileIdProvider>
+        </ProfileProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

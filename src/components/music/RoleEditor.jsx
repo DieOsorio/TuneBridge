@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
@@ -6,7 +6,7 @@ const RoleEditor = ({
   role,
   profileId,
   details,
-  fetchDetails,
+  refetch,
   addDetails,
   updateDetails,
   deleteDetails,
@@ -20,10 +20,6 @@ const RoleEditor = ({
   const [editingDetail, setEditingDetail] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    fetchDetails(role.id);
-  }, [role.id]);
 
   const handleAddDetail = () => {
     for (const field of fields) {
@@ -46,7 +42,7 @@ const RoleEditor = ({
         setTimeout(() => setSuccessMessage(""), 3000);
 
         // Fetch updated details
-        fetchDetails(role.id);
+        refetch()        
       })
       .catch((error) => {
         console.error(`Error adding ${title.toLowerCase()}:`, error);
@@ -71,6 +67,7 @@ const RoleEditor = ({
     updateDetails(detail.id, updatedData).then(() => {
       setSuccessMessage(`${title} updated successfully!`);
       setTimeout(() => setSuccessMessage(""), 3000);
+      refetch();
     });
 
     setEditingDetail((prev) => {
@@ -79,14 +76,16 @@ const RoleEditor = ({
     });
   };
 
-  const handleDeleteDetail = (detailId) => {
-    deleteDetails(detailId)
+  const handleDeleteDetail = (id) => {
+    console.log("id to delete:", id);
+    
+    deleteDetails(id)
       .then(() => {
         setSuccessMessage(`${title} deleted successfully!`);
         setTimeout(() => setSuccessMessage(""), 3000);
 
         // Fetch updated details
-        fetchDetails(role.id);
+        refetch()
       })
       .catch((error) => {
         console.error(`Error deleting ${title.toLowerCase()}:`, error);

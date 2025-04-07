@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../context/profile/ProfileContext";
-import { useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
@@ -9,10 +8,9 @@ import Select from "../ui/Select";
 import Loading from "../../utils/Loading";
 import { uploadAvatar } from "../../utils/avatarUtils";
 
-const EditProfile = () => {
+const EditProfile = ({onUpdate}) => {
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading, fetchProfile, updateProfile } = useProfile();
-  const navigate = useNavigate();
+  const { profile, loading: profileLoading, updateProfile} = useProfile();
 
   const [username, setUsername] = useState("");
   const [gender, setGender] = useState("");
@@ -26,12 +24,7 @@ const EditProfile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [localError, setLocalError] = useState("");
-
-  useEffect(() => {
-    if (user && !profile) {
-      fetchProfile(user.id);
-    }
-  }, [user, profile]);
+  
 
   useEffect(() => {
     if (profile) {
@@ -61,7 +54,7 @@ const EditProfile = () => {
       let avatar = avatar_url;
 
       if (selectedFile) {
-        const uploadedURL = await uploadAvatar(selectedFile, user.id, avatar_url);
+        const uploadedURL = uploadAvatar(selectedFile, user.id, avatar_url);
         if (uploadedURL) {
           avatar = uploadedURL;
           setAvatar_url(avatar);
@@ -79,14 +72,22 @@ const EditProfile = () => {
         birthdate,
         id: user.id,
       });
+      onUpdate(); // back to profile page
 
-      navigate(`/profile/${user.id}`);
-    } catch (err) {
-      setLocalError("Error updating profile.");
+    } catch (error) {
+      setLocalError(error.message || "Error updating profile.");
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
   };
+
+  //     navigate(`/profile/${user.id}`);
+  //   } catch (err) {
+  //     setLocalError("Error updating profile.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   if (profileLoading || authLoading) {
     return <Loading />;

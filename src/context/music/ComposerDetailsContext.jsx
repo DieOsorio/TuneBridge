@@ -1,41 +1,30 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
-import { supabase } from "../../supabase";
 import {
-  fetchComposerDetails,
-  addComposerDetails,
-  updateComposerDetails,
-  deleteComposerDetails,
+  fetchComposerQuery,
+  addComposerMutation,
+  updateComposerMutation,
+  deleteComposerMutation,
 } from "./ComposerDetailsActions";
 
 const ComposerDetailsContext = createContext();
 ComposerDetailsContext.displayName = "ComposerDetailsContext";
 
 export const ComposerDetailsProvider = ({ children }) => {
-  const [composerDetails, setComposerDetails] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {data, isLoading, error, refetch} = fetchComposerQuery();
+  const addComposer = addComposerMutation();
+  const updateComposer = updateComposerMutation();
+  const deleteComposer = deleteComposerMutation();
 
-  const value = useMemo(
-    () => ({
-      composerDetails,
-      loading,
+  const value ={
+      composerDetails: data,
+      loading: isLoading,
       error,
-      fetchDetails: async (roleId) => {
-        return await fetchComposerDetails(supabase, roleId, setComposerDetails, setError, setLoading);
-      },
-      addDetails: async (details) => {
-        return await addComposerDetails(supabase, details, setError, setLoading);
-      },
-      updateDetails: async (id, updatedDetails) => {
-        return await updateComposerDetails(supabase, id, updatedDetails, setError, setLoading);
-      },
-      deleteDetails: async (id) => {
-        return await deleteComposerDetails(supabase, id, setError, setLoading);
-      },
-    }),
-    [composerDetails, loading, error]
-  );
+      refetch,
+      addComposer: addComposer.mutateAsync,
+      updateComposer: updateComposer.mutateAsync,
+      deleteComposer: deleteComposer.mutateAsync,
+    }
 
   return (
     <ComposerDetailsContext.Provider

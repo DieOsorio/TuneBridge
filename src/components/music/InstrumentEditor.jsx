@@ -1,10 +1,12 @@
+import { fetchInstrumentsQuery } from "../../context/music/instrumentDetailsActions";
 import { useInstruments } from "../../context/music/InstrumentDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const InstrumentEditor = ({ role, profileId }) => {
-  const { instruments, fetchInstruments, addInstrument, updateInstrument, deleteInstrument } =
+  const {data:instruments} = fetchInstrumentsQuery(role.id)
+  const { refetch, addInstrument, updateInstrument, deleteInstrument } =
     useInstruments();
-
+  
   const sanitizeInput = (details) => {
     return {
       ...details,
@@ -18,11 +20,11 @@ const InstrumentEditor = ({ role, profileId }) => {
     <RoleEditor
       role={role}
       profileId={profileId}
-      details={instruments}
-      fetchDetails={fetchInstruments}
-      addDetails={(details) => addInstrument(sanitizeInput(details))} // Sanitize input before adding
-      updateDetails={(id, details) => updateInstrument(id, sanitizeInput(details))} // Sanitize input before updating
-      deleteDetails={deleteInstrument}
+      details={instruments || []}
+      refetch={refetch}
+      addDetails={(details) => addInstrument({ details: sanitizeInput(details) })} 
+      updateDetails={(id, details) => updateInstrument({id, details:sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteInstrument({id})}
       title="Instrument Detail"
       fields={[
         {
@@ -41,7 +43,7 @@ const InstrumentEditor = ({ role, profileId }) => {
           name: "level",
           label: "Level",
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced"], // Not required
+          options: ["Beginner", "Intermediate", "Advanced"], 
         },
       ]}
     />

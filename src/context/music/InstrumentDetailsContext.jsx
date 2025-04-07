@@ -1,41 +1,31 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
-import { supabase } from "../../supabase";
 import {
-  fetchInstruments,
-  addInstrument,
-  updateInstrument,
-  deleteInstrument,
+  fetchInstrumentsQuery,
+  addInstrumentMutation,
+  updateInstrumentMutation,
+  deleteInstrumentMutation,
 } from "./instrumentDetailsActions";
 
 const InstrumentDetailsContext = createContext(null);
 InstrumentDetailsContext.displayName = "InstrumentDetailsContext";
 
 export const InstrumentDetailsProvider = ({ children }) => {
-  const [instruments, setInstruments] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  
+  const {data, isLoading, error, refetch}= fetchInstrumentsQuery();
+  const addInstrument = addInstrumentMutation();
+  const updateInstrument = updateInstrumentMutation();
+  const deleteInstrument = deleteInstrumentMutation();  
 
-  const value = useMemo(
-    () => ({
-      instruments,
-      loading,
+  const value ={
+      instruments: data,
+      loading: isLoading,
       error,
-      fetchInstruments: async (profileId) => {
-        return await fetchInstruments(supabase, profileId, setInstruments, setError, setLoading);
-      },
-      addInstrument: async (profileId, instrumentData) => {
-        return await addInstrument(supabase, profileId, instrumentData, setInstruments, setError, setLoading);
-      },
-      updateInstrument: async (instrumentId, updatedData) => {
-        return await updateInstrument(supabase, instrumentId, updatedData, setInstruments, setError, setLoading);
-      },
-      deleteInstrument: async (instrumentId) => {
-        return await deleteInstrument(supabase, instrumentId, setInstruments, setError, setLoading);
-      },
-    }),
-    [instruments, loading, error]
-  );
+      refetch,
+      addInstrument: addInstrument.mutateAsync,
+      updateInstrument: updateInstrument.mutateAsync,
+      deleteInstrument: deleteInstrument.mutateAsync,
+    }
 
   return <InstrumentDetailsContext.Provider value={value}>{children}</InstrumentDetailsContext.Provider>;
 };

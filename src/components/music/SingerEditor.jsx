@@ -1,10 +1,15 @@
+import { fetchSingerQuery } from "../../context/music/SingerDetailsActions";
 import { useSingerDetails } from "../../context/music/SingerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const SingerEditor = ({ role, profileId }) => {
-  const { singerDetails, fetchDetails, addDetails, updateDetails, deleteDetails } =
+  // Fetch singer details using the role ID
+  const { data: singerDetails} = fetchSingerQuery(role.id);
+  // Destructure the functions from the context
+  const { addSinger: addDetails, updateSinger: updateDetails, deleteSinger: deleteDetails, refetch } =
     useSingerDetails();
 
+  // Sanitize input function to trim whitespace and convert empty strings to null  
   const sanitizeInput = (details) => {
     return {
       ...details,
@@ -13,15 +18,16 @@ const SingerEditor = ({ role, profileId }) => {
     };
   };
 
+  // Return the RoleEditor component with the necessary props
   return (
     <RoleEditor
       role={role}
       profileId={profileId}
-      details={singerDetails}
-      fetchDetails={fetchDetails}
-      addDetails={(details) => addDetails(sanitizeInput(details))} // Sanitize input before adding
-      updateDetails={(id, details) => updateDetails(id, sanitizeInput(details))} // Sanitize input before updating
-      deleteDetails={deleteDetails}
+      details={singerDetails || []}
+      refetch={refetch}
+      addDetails={(details) => addDetails({ details: sanitizeInput(details) })} // Sanitize input before adding
+      updateDetails={(id, details) => updateDetails({id, details: sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteDetails({id})}
       title="Singer Detail"
       fields={[
         {
@@ -39,7 +45,7 @@ const SingerEditor = ({ role, profileId }) => {
           name: "level",
           label: "Level",
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced"], // Not required
+          options: ["Beginner", "Intermediate", "Advanced"],
         },
       ]}
     />

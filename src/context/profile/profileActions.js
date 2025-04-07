@@ -1,106 +1,81 @@
-import { handleError, withLoading } from "../../utils/helpers";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from '../../supabase';
 
 // Fetch all profiles
-export const fetchAllProfiles = async (supabase, setAllProfiles, setError, setLoading) => {
-    await withLoading(async () => {
-        setError("");
-        try {
+export const useAllProfilesQuery = () => {
+    return useQuery({
+        queryKey: ['allProfiles'],
+        queryFn: async () => {
             const { data, error } = await supabase
                 .schema("users")
                 .from("profiles")
                 .select("*");
-            if (!data) {
-                throw new Error("No profiles found");
-            }
-            setAllProfiles(data);
-        } catch (err) {
-            handleError(err, setError);
+
+            if (error) throw new Error(error.message);
+            return data;
         }
-    }, setLoading);
+    });
 };
 
 // Fetch a single profile
-export const fetchProfile = async (supabase, user, identifier, setProfile, setError, setLoading) => {
-    return await withLoading(async () => {
-        setError("");
-        try {
-            if (!user) {
-                setProfile(null);
-                return null;
-            }
+export const useProfileQuery = (user, identifier) => {
+    return useQuery({
+        queryKey: ['profile', identifier || user?.id],
+        queryFn: async () => {
+            if (!user) return null;
 
             let query = supabase
-                .schema("users")
-                .from("profiles")
-                .select("*");
+            .schema("users")
+            .from("profiles")
+            .select("*");
 
-            // Determine whether to query by id (UUID) or username
+            const isUUID = identifier?.includes("-") && identifier?.length === 36;
             if (identifier) {
-                const isUUID = identifier.includes("-") && identifier.length === 36; // Simple UUID check
-                if (isUUID) {
-                    query = query.eq("id", identifier); // Fetch by userId (UUID)
-                } else {
-                    query = query.eq("username", identifier); // Fetch by username
-                }
+                query = isUUID
+                    ? query.eq("id", identifier)
+                    : query.eq("username", identifier);
             } else {
-                query = query.eq("id", user.id); // Fetch the logged-in user's profile
+                query = query.eq("id", user.id);
             }
 
-            const { data: profileData, error } = await query.single();
-
-            if (error) {
-                throw new Error(error.message);
-            }
-
-            // Update state only if fetching the logged-in user's profile
-            if (!identifier || identifier === user.id) {
-                setProfile(profileData);
-            }
-
-            return profileData; // Ensure the profile data is returned
-        } catch (err) {
-            handleError(err, setError);
-            return null;
-        }
-    }, setLoading);
+            const { data, error } = await query.single();
+            if (error) throw new Error(error.message);
+            return data;
+        },
+        enabled: !!user,
+    });
 };
 
 // Create a profile
-export const createProfile = async (supabase, userId, email, setError, setLoading) => {
-    await withLoading(async () => {
-        setError("");
-        try {
+export const useCreateProfile = () => {
+    return useMutation({
+        mutationFn: async ({ userId, email }) => {
             const { error } = await supabase
                 .schema("users")
                 .from("profiles")
-                .insert([
-                    {
-                        id: userId,
-                        username: null,
-                        email: email,
-                        avatar_url: "",
-                        country: "",
-                        city: "",
-                        firstname: "",
-                        lastname: "",
-                        gender: "",
-                        birthdate: null
-                    },
-                ]);
-            if (error) {
-                throw new Error(error.message);
-            }
-        } catch (err) {
-            handleError(err, setError);
+                .insert([{
+                    id: userId,
+                    username: null,
+                    email,
+                    avatar_url: "",
+                    country: "",
+                    city: "",
+                    firstname: "",
+                    lastname: "",
+                    gender: "",
+                    birthdate: null,
+                }]);
+
+            if (error) throw new Error(error.message);
         }
-    }, setLoading);
+    });
 };
 
 // Update a profile
-export const updateProfile = async (supabase, profileData, setProfile, setError, setLoading) => {
-    await withLoading(async () => {
-        setError("");
-        try {
+export const useUpdateProfile = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (profileData) => {
             const { error } = await supabase
                 .schema("users")
                 .from("profiles")
@@ -116,35 +91,31 @@ export const updateProfile = async (supabase, profileData, setProfile, setError,
                 })
                 .eq("id", profileData.id);
 
-            if (error) {
-                throw new Error(error.message);
-            }
-
-            setProfile((prev) => ({ ...prev, ...profileData }));
-        } catch (err) {
-            handleError(err, setError);
+            if (error) throw new Error(error.message);
+            return profileData;
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['profile', data.id] });
         }
-    }, setLoading);
+    });
 };
 
 // Delete a profile
-export const deleteProfile = async (supabase, userId, setProfile, setError, setLoading) => {
-    await withLoading(async () => {
-        setError("");
-        try {
+export const useDeleteProfile = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (userId) => {
             const { error } = await supabase
                 .schema("users")
                 .from("profiles")
                 .delete()
                 .eq("id", userId);
 
-            if (error) {
-                throw new Error(error.message);
-            }
-
-            setProfile(null);
-        } catch (err) {
-            handleError(err, setError);
+            if (error) throw new Error(error.message);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['profile'] });
+            queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
         }
-    }, setLoading);
+    });
 };

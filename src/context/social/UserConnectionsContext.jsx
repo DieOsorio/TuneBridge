@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { supabase } from "../../supabase";
 import {
@@ -15,6 +15,25 @@ export const UserConnectionsProvider = ({ children }) => {
   const [connections, setConnections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        const { data, error } = await supabase
+          .schema("social")
+          .from("user_connections")
+          .select("*")
+        if (error) throw error;
+  
+        setConnections(data);
+      } catch (err) {
+        console.error("Error fetching connections:", err)        
+        throw err;
+      }
+    };
+
+    fetchConnections();
+  }, []);
 
   const value = useMemo(
     () => ({

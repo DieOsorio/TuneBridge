@@ -2,10 +2,11 @@ import React from "react";
 import InstrumentEditor from "./InstrumentEditor";
 import SingerEditor from "./SingerEditor";
 import DjEditor from "./DjEditor";
-import ProducerEditor from "./ProducerEditor"; // Import ProducerEditor
-import ComposerEditor from "./ComposerEditor"; // Import ComposerEditor
+import ProducerEditor from "./ProducerEditor";
+import ComposerEditor from "./ComposerEditor";
 
 const RoleDataEditor = ({ role, profileId }) => {
+  
   return (
     <div className="mt-4">
       {role.role === "Instrumentalist" && (
@@ -20,7 +21,7 @@ const RoleDataEditor = ({ role, profileId }) => {
       {role.role === "Producer" && (
         <ProducerEditor role={role} profileId={profileId} />
       )}
-      {role.role === "Composer" && ( // Add case for ComposerEditor
+      {role.role === "Composer" && ( 
         <ComposerEditor role={role} profileId={profileId} />
       )}
     </div>
