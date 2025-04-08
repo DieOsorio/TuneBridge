@@ -10,7 +10,7 @@ const Navbar = () => {
     <nav className="w-full bg-transparent shadow-2xl text-gray-900 p-3 flex justify-between items-center">
       {/* Logo or Name */}
       <Link to="/" className="text-xl font-bold flex items-center gap-2 w-10">
-        <img src={logo} alt="logo" className="h-10 w-auto" />
+        {/* <img src={logo} alt="logo" className="h-10 w-auto" /> */}
         <h3>TuneBridge</h3>
       </Link>
 

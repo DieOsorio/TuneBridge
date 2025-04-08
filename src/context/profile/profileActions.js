@@ -18,11 +18,11 @@ export const useAllProfilesQuery = () => {
 };
 
 // Fetch a single profile
-export const useProfileQuery = (user, identifier) => {
+export const useProfileQuery = (user=null, identifier=null) => {   
     return useQuery({
         queryKey: ['profile', identifier || user?.id],
         queryFn: async () => {
-            if (!user) return null;
+            if (!user && !identifier) return null;
 
             let query = supabase
             .schema("users")
@@ -42,7 +42,7 @@ export const useProfileQuery = (user, identifier) => {
             if (error) throw new Error(error.message);
             return data;
         },
-        enabled: !!user,
+        enabled: !!(user || identifier),
     });
 };
 

@@ -2,7 +2,7 @@ import ProfileCard from "./ProfileCard";
 import { useProfile } from "../../context/profile/ProfileContext";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../../utils/Loading";
-import Error from "../../utils/Error";
+import ErrorMessage from "../../utils/ErrorMessage"
 
 const ProfilesList = () => {
     const { allProfiles, loading: profileLoading, error: profileError } = useProfile();
@@ -13,7 +13,7 @@ const ProfilesList = () => {
     
     // Handle errors and loading states
     if (profileError) {
-        return <Error error={profileError.message || "Error when loading profiles."} />;
+        return <ErrorMessage error={profileError.message || "Error when loading profiles."} />;
     }
 
     if (profileLoading || !allProfiles) {

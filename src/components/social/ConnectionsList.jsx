@@ -1,45 +1,48 @@
-import React, { use, useEffect, useState } from 'react'
-import { useUserConnections } from '../../context/social/UserConnectionsContext'
-import ConnectionCard from './ConnectionCard' 
+import ConnectionCard from './ConnectionCard';
+import { fetchConnectionsQuery } from '../../context/social/userConnectionsActions';
 
-function ConnectionsList({checkStatus, id}) {
-    const { connections } = useUserConnections()
-    const [userConnections, setUserConnections] = useState([])
+function ConnectionsList({ checkStatus, profileId }) {
+    const { data: connections } = fetchConnectionsQuery(profileId);
+
+    const filteredConnections = connections?.filter(conn => conn.status === checkStatus) || [];
     
-    useEffect(() => {
-        const fetchUserConnections = async () => {
-            try {
-                const filteredConnections = connections.filter(conn => conn.follower_profile_id === id)
-                setUserConnections(filteredConnections)
-            } catch (err) {
-                console.error("Error fetching user connections:", err)
-            }
-        }
-        fetchUserConnections()      
-    }, [connections])
-    const pendingConnections = userConnections.filter(conn => conn.status === "pending")
-    const acceptedConnections = userConnections.filter(conn => conn.status === "accepted")
-    console.log("pendingConnections", pendingConnections);
-    
-      
-  return (
-    <>
-    {checkStatus === "pending" ? (
-        <div className="w-full py-4 flex flex-wrap justify-center gap-4 bg-gray-200">
-            <h2 className="text-lg font-semibold">Pending Connections</h2>
-            {pendingConnections.map((conn) => (
-                <ConnectionCard key={conn.id} profileId={conn.following_profile_id} /> 
-            ))}
-        </div>
-    ) : checkStatus === "accepted" ? (
-        <div className="w-full py-4 flex flex-wrap justify-center gap-4 bg-gray-200">
-            <h2 className="text-lg font-semibold">Accepted Connections</h2>
-            {acceptedConnections.map((conn) => (
-                <ConnectionCard key={conn.id} profileId={conn.following_profile_id} /> 
-            ))}
-        </div>
-    ) : null}
-    </>)
+    const getOtherProfileId = (conn) => {
+        return conn.following_profile_id === profileId
+            ? conn.follower_profile_id
+            : conn.following_profile_id;
+    };
+
+    return (
+        <>
+            {checkStatus === "pending" && (
+                <>
+                <h2 className="text-lg text-center font-semibold">Pending Connections</h2>
+                <div className="w-full py-4 flex flex-wrap justify-center gap-4 bg-yellow-50">
+                    {filteredConnections.map((conn) => (
+                        <ConnectionCard
+                            key={conn.id}
+                            profileId={getOtherProfileId(conn)}
+                        />
+                    ))}
+                </div>
+                </>
+            )}
+
+            {checkStatus === "accepted" && (
+                <>
+                    <h2 className="text-2xl font-bold mt-6 mb-4 text-center">Connections</h2>
+                    <div className="w-full py-4 flex flex-wrap justify-center gap-4 bg-green-50">
+                        {filteredConnections.map((conn) => (
+                            <ConnectionCard
+                                key={conn.id}
+                                profileId={getOtherProfileId(conn)}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+        </>
+    );
 }
 
-export default ConnectionsList
+export default ConnectionsList;

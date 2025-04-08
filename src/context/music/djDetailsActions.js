@@ -122,7 +122,6 @@ export const updateDjMutation = () => {
   })
 }
 
-{}
 // DELETE A DJ
 export const deleteDjMutation = () => {
   const queryClient = useQueryClient();

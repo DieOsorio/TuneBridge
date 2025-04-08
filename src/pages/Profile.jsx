@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import ProfileAvatar from "../components/user/ProfileAvatar";
+import ProfileAvatar from "../components/profiles/ProfileAvatar"
 import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
 import Sidebar from "../components/profiles/Sidebar";
-import EditProfile from "../components/user/EditProfile";
+import EditProfile from "../components/profiles/EditProfile";
 import EditMusicInfo from "../components/music/EditMusicInfo";
 import { useAuth } from "../context/AuthContext";
 import { useProfileQuery } from "../context/profile/profileActions";
 import Loading from "../utils/Loading";
+import ErrorMessage from "../utils/ErrorMessage"
 import ConnectionsList from "../components/social/ConnectionsList";
+import Button from "../components/ui/Button";
+import CreatePost from "../components/social/CreatePost";
 
 const Profile = () => {
 
@@ -24,7 +27,7 @@ const Profile = () => {
   }
 
   if (error) {
-    return <Error error={error.message || "Error loading profile."} />;
+    return <ErrorMessage error={error.message || "Error loading profile."} />;
   }
 
   if (!profileData) {
@@ -42,16 +45,23 @@ const Profile = () => {
       {/* Main Content */}
       <div className="flex-1 p-8 max-w-4xl mx-auto gap-8">
         {/* Render based on selectedOption */}
+        {selectedOption === "createPost" && <CreatePost id={user.id} onUpdate={() =>setSelectedOption(null)} />}
         {selectedOption === "editProfile" && <EditProfile profile={profileData} onUpdate={()=>setSelectedOption(null)} />}
         {selectedOption === "editMusicInfo" && <EditMusicInfo profileId={profileData.id} onUpdate={()=>setSelectedOption(null)} />}
 
         {/* Default Profile View */}
         {selectedOption === null && (
           <div className="bg-white shadow-md rounded-lg p-6">
+
+            <div className="flex justify-end mb-4">
+              <Button onClick={() => setSelectedOption("createPost")}>Create Post</Button>
+            </div>
+
             <div className="flex items-center gap-4 mb-6">
               <ProfileAvatar avatar_url={profileData.avatar_url} />
               <h2 className="text-3xl font-bold">{profileData.username}</h2>
             </div>
+
             <ul className="space-y-4 text-lg">
               <li>
                 <strong className="mr-3">Nombre:</strong> {profileData.firstname}
@@ -73,12 +83,13 @@ const Profile = () => {
                 {profileData?.birthdate ? profileData.birthdate.split("T")[0] : null}
               </li>
             </ul>
-            <DisplayMusicInfo profileId={profileData.id} />
-            <h2 className="text-2xl font-bold mt-6">Conexiones</h2>
-            <h3 className="text-xl font-semibold mt-4">Mis Conexiones</h3>
-            {/* <ConnectionsList id={user.id} checkStatus="accepted" /> Show accepted connections */}
-            <h3 className="text-xl font-semibold mt-4">Conexiones Pendientes</h3>
-            {/* <ConnectionsList id={user.id} checkStatus="pending" /> Show pending connections */}
+
+            <DisplayMusicInfo profileId={profileData.id} /> 
+
+            <ConnectionsList profileId={profileData.id} checkStatus="accepted" /> 
+
+            {/* <h3 className="text-xl font-semibold mt-4">Conexiones Pendientes</h3> */}
+            {isOwnProfile && <ConnectionsList profileId={profileData.id} checkStatus="pending" />}
           </div>
         )}
       </div>

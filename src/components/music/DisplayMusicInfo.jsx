@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDjDetails } from "../../context/music/DjDetailsContext";
 import DisplayRoleInfo from "./DisplayRoleInfo";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { fetchInstrumentsQuery } from "../../context/music/instrumentDetailsActions";
@@ -57,7 +56,7 @@ const DisplayMusicInfo = ({ profileId }) => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-2xl font-bold mb-4">Music Roles</h3>
+      <h3 className="text-2xl font-bold mb-4 text-center">Music Roles</h3>
       {roles.length === 0 ? (
         <p className="text-gray-500">No music-related roles found.</p>
       ) : (

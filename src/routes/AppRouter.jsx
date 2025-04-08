@@ -9,7 +9,6 @@ import Footer from "../components/ui/Footer";
 import SignUpSuccess from "../pages/SignUpSuccess";
 import AccountConfirmed from "../components/auth/AccountConfirmed";
 import LandingPage from "../pages/LandingPage";
-import EditProfile from "../components/user/EditProfile";
 
 const AppRouter = () => {
     
@@ -29,7 +28,6 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
           <Route path="/account-confirmed" element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />          
           <Route path="/profile/:identifier" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/profile/:identifier/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
         </Routes>
       </main>
       <Footer />

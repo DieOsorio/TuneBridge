@@ -1,60 +1,30 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
-import { supabase } from "../../supabase";
 import {
-  fetchUserConnections,
-  addUserConnection,
-  updateUserConnection,
-  deleteUserConnection,
+  fetchConnectionsQuery,
+  addConnectionMutation,
+  updateConnectionMutation,
+  deleteConnectionMutation,
 } from "./userConnectionsActions";
 
 const UserConnectionsContext = createContext();
 UserConnectionsContext.displayName = "UserConnectionsContext";
 
 export const UserConnectionsProvider = ({ children }) => {
-  const [connections, setConnections] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { data, isLoading, error, refetch } = fetchConnectionsQuery();
+  const addConnection = addConnectionMutation();
+  const updateConnection = updateConnectionMutation();
+  const deleteConnection = deleteConnectionMutation();
 
-  useEffect(() => {
-    const fetchConnections = async () => {
-      try {
-        const { data, error } = await supabase
-          .schema("social")
-          .from("user_connections")
-          .select("*")
-        if (error) throw error;
-  
-        setConnections(data);
-      } catch (err) {
-        console.error("Error fetching connections:", err)        
-        throw err;
-      }
-    };
-
-    fetchConnections();
-  }, []);
-
-  const value = useMemo(
-    () => ({
-      connections,
-      loading,
-      error,
-      fetchConnections: async (profileId) => {
-        return await fetchUserConnections(supabase, profileId, setConnections, setError, setLoading);
-      },
-      addConnection: async (connection) => {
-        return await addUserConnection(supabase, connection, setError, setLoading);
-      },
-      updateConnection: async (id, updatedConnection) => {
-        return await updateUserConnection(supabase, id, updatedConnection, setError, setLoading);
-      },
-      deleteConnection: async (id) => {
-        return await deleteUserConnection(supabase, id, setError, setLoading);
-      },
-    }),
-    [connections, loading, error]
-  );
+  const value = {
+    connections: data,
+    loading: isLoading,
+    error,
+    refetch,
+    addConnection: addConnection.mutateAsync,
+    updateConnection: updateConnection.mutateAsync,
+    deleteConnection: deleteConnection.mutateAsync,    
+  }
 
   return (
     <UserConnectionsContext.Provider

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUserEdit, FaMusic, FaBars } from "react-icons/fa";
+import { FaUserEdit, FaMusic, FaChevronRight } from "react-icons/fa";
 
 const Sidebar = ({ onSelectOption, avatarUrl }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -33,7 +33,9 @@ const Sidebar = ({ onSelectOption, avatarUrl }) => {
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex items-center justify-center h-16">
-        <FaBars className="text-2xl" />
+        <FaChevronRight  className={`text-gray-300 transform transition-transform duration-300 ${
+          isExpanded ? "rotate-180" : "rotate-0"
+        }`} />
       </div>
       <ul className="mt-4">
         {options.map((option) => (
