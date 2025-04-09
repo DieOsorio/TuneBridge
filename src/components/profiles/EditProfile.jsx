@@ -7,10 +7,12 @@ import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
 import Loading from "../../utils/Loading";
 import { uploadAvatar } from "../../utils/avatarUtils";
+import { useView } from "../../context/ViewContext";
 
-const EditProfile = ({onUpdate}) => {
+const EditProfile = () => {
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, updateProfile} = useProfile();
+  const { setSelectedOption } = useView();
 
   const [username, setUsername] = useState("");
   const [gender, setGender] = useState("");
@@ -72,7 +74,7 @@ const EditProfile = ({onUpdate}) => {
         birthdate,
         id: user.id,
       });
-      onUpdate(); // back to profile page
+      setSelectedOption("profile"); // back to profile page
 
     } catch (error) {
       setLocalError(error.message || "Error updating profile.");
@@ -94,7 +96,7 @@ const EditProfile = ({onUpdate}) => {
   }
 
   return (
-    <div className="flex flex-col items-center text-gray-950 justify-center min-h-screen bg-gray-100 p-6">
+    <div className="flex flex-col items-center text-gray-950 justify-center min-h-screen p-6">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
         {user && <ProfileAvatar avatar_url={preview || avatar_url} />}

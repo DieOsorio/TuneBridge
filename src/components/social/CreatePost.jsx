@@ -4,10 +4,12 @@ import Button from "../ui/Button";
 import ImageUploader from "../../utils/ImageUploader";
 import { useState } from "react";
 import { useUploadPostImages } from "../../context/social/imagesActions";
+import { useView } from "../../context/ViewContext";
 
 const CreatePost = ({ id, onUpdate }) => {
   const [images, setImages] = useState([])
   const { createPost, updatePost } = usePosts();
+  const { setSelectedOption } = useView()
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
 
   const uploadImageMutations = useUploadPostImages();
@@ -21,7 +23,7 @@ const CreatePost = ({ id, onUpdate }) => {
       const post = await createPost({
         ...postData,
         profile_id: id,
-        images_url: [],
+        images_urls: [],
       });
       
       // Upload images to the bucket and obtain urls
@@ -42,13 +44,13 @@ const CreatePost = ({ id, onUpdate }) => {
       await updatePost({
         id: post.id,
         updatedPost: {
-          images_url: uploadedImagesURLs
+          images_urls: uploadedImagesURLs
         }
       });
 
       reset();
       setImages([]);
-      onUpdate();
+      setSelectedOption("profile");
 
     } catch (err) {
       console.error("Error creating post:", err.message);

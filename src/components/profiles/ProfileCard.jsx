@@ -5,12 +5,14 @@ import { fetchConnectionsQuery } from "../../context/social/userConnectionsActio
 import { useAuth } from "../../context/AuthContext";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im"
+import { useView } from "../../context/ViewContext";
 
 const ProfileCard = ({ profile }) => {
     const { user } = useAuth();
     const { data: connections } = fetchConnectionsQuery(profile.id)
     const { addConnection, deleteConnection, updateConnection } = useUserConnections();
     const [hoverText, setHoverText] = useState("");
+    const { setSelectedOption } = useView();
     
     const userConnection = connections?.find(
         (conn) => conn.follower_profile_id || conn.following_profile_id === user.id
@@ -43,9 +45,9 @@ const ProfileCard = ({ profile }) => {
             status==="accepted" ? ("bg-green-50") : 
             status==="pending" ? ("bg-amber-50") : 
             status==="blocked" ? ("bg-red-50") : 
-            "bg-gray-100"
+            "bg-white"
         }`}>
-            <Link to={`/profile/${profile.id}`}>
+            <Link onClick={() => setSelectedOption("profile")} to={`/profile/${profile.id}`}>
             <img
                 src={profile.avatar_url || "/default-avatar.png"}
                 alt={`${profile.username}'s avatar`}

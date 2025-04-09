@@ -1,12 +1,20 @@
 import ProfilesList from "../components/profiles/ProfilesList"
-import { useAuth } from "../context/AuthContext"
+import PostsList from "../components/social/PostsList"
+import Button from "../components/ui/Button"
+import { useView } from "../context/ViewContext"
 
 
 function Explore() {
-  const { user } = useAuth()
+  const { selectedOption, setSelectedOption } = useView();
+
   return (
     <>
-      <ProfilesList />
+      <div className="flex gap-2 justify-center p-4">
+      <Button onClick={() => setSelectedOption("postsList")}>Posts</Button>
+      <Button onClick={() => setSelectedOption("profilesList")}>Profiles</Button>
+      </div>
+      {selectedOption==="profilesList" && <ProfilesList />}
+      {selectedOption==="postsList" && <PostsList />}
     </>
   )
 }

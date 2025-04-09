@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaChevronRight } from "react-icons/fa"; // Import the icon
 import Input from "../ui/Input";
 import Button from "../ui/Button";
