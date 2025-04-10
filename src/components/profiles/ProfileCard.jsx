@@ -12,13 +12,19 @@ const ProfileCard = ({ profile }) => {
     const { data: connections } = fetchConnectionsQuery(profile.id)
     const { addConnection, deleteConnection, updateConnection } = useUserConnections();
     const [hoverText, setHoverText] = useState("");
-    const { setSelectedOption } = useView();
+    const { setExternalView } = useView();
     
     const userConnection = connections?.find(
-        (conn) => conn.follower_profile_id || conn.following_profile_id === user.id
+        (conn) => {
+            const isLoggedUserInvolved = 
+                (conn.follower_profile_id === user.id && conn.following_profile_id === profile.id) ||
+                (conn.follower_profile_id === profile.id && conn.following_profile_id === user.id)
+            return isLoggedUserInvolved;
+        }
       );
-
+          
     const status = userConnection?.status ?? "connect";
+    
 
     const handleConnect = async () => {
         if (status === "connect") {
@@ -47,7 +53,7 @@ const ProfileCard = ({ profile }) => {
             status==="blocked" ? ("bg-red-50") : 
             "bg-white"
         }`}>
-            <Link onClick={() => setSelectedOption("profile")} to={`/profile/${profile.id}`}>
+            <Link onClick={() => setExternalView("profile")} to={`/profile/${profile.id}`}>
             <img
                 src={profile.avatar_url || "/default-avatar.png"}
                 alt={`${profile.username}'s avatar`}

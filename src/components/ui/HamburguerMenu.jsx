@@ -6,7 +6,7 @@ import { useView } from '../../context/ViewContext';
 const HamburgerMenu = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { signOut } = useAuth(); // Access signOut from AuthContext
-  const { setSelectedOption } = useView();
+  const { setExternalView } = useView();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -32,7 +32,7 @@ const HamburgerMenu = ({ id }) => {
               <Link
                 to={`profile/${id}`}
                 className="block px-4 py-2 text-lg hover:bg-sky-800 rounded-md"
-                onClick={() => setSelectedOption("profile")}
+                onClick={() => setExternalView("profile")}
               >
                 Profile
               </Link>

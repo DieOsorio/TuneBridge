@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
 import Sidebar from "../components/profiles/Sidebar";
@@ -9,7 +9,6 @@ import { useProfileQuery } from "../context/profile/profileActions";
 import Loading from "../utils/Loading";
 import ErrorMessage from "../utils/ErrorMessage"
 import ConnectionsList from "../components/social/ConnectionsList";
-import Button from "../components/ui/Button";
 import CreatePost from "../components/social/CreatePost";
 import PostsList from "../components/social/PostsList";
 import { useView } from "../context/ViewContext";
@@ -20,14 +19,14 @@ const Profile = () => {
 
   const { identifier } = useParams(); // Get the profile identifier from the URL
   const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
-  const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(user, identifier);
-  const { selectedOption, setSelectedOption } = useView();
+  const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(identifier);
+  const { externalView, setExternalView, internalView, setInteralView } = useView();
 
   useEffect(() => {
-    if (!selectedOption) {
-      setSelectedOption("profile");
+    if (!externalView) {
+      setExternalView("profile");
     }
-  }, [selectedOption, setSelectedOption]);
+  }, [externalView, setExternalView]);
   
 
   if (authLoading || profileQueryLoading) {
@@ -52,21 +51,21 @@ const Profile = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-8 max-w-4xl mx-auto gap-8">
-        {/* Render based on selectedOption */}
-        {selectedOption === "displayPosts" && <PostsList profileId={profileData.id} />}
-        {isOwnProfile && selectedOption === "createPost" && <CreatePost id={user.id} />}
-        {isOwnProfile && selectedOption === "editProfile" && <EditProfile profile={profileData} />}
-        {isOwnProfile && selectedOption === "editMusicInfo" && <EditMusicInfo profileId={profileData.id} />}
+        {/* Render based on externalView */}
+        <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />          
+        {externalView === "displayPosts" && <PostsList profileId={profileData.id} />}
+        {isOwnProfile && externalView === "createPost" && <CreatePost id={user.id} />}
+        {isOwnProfile && externalView === "editProfile" && <EditProfile profile={profileData} />}
+        {isOwnProfile && externalView === "editMusicInfo" && <EditMusicInfo profileId={profileData.id} />}
 
         {/* Default Profile View */}
-        {selectedOption === "profile" && (
+        {externalView === "profile" && (
           <div className="bg-white shadow-md rounded-lg p-6">
 
-            <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />          
             
-            <ProfileData profileData={profileData} />
+            {internalView === "about" && <ProfileData profileData={profileData} />}
 
-            <DisplayMusicInfo profileId={profileData.id} /> 
+            {internalView === "about" && <DisplayMusicInfo profileId={profileData.id} />} 
 
             <ConnectionsList profileId={profileData.id} checkStatus="accepted" /> 
 

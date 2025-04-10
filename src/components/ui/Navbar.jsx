@@ -6,7 +6,7 @@ import { useView } from "../../context/ViewContext";
 
 const Navbar = () => {
   const { user } = useAuth();
-  const { setSelectedOption } = useView();
+  const { setExternalView } = useView();
   return (
     <nav className="w-full bg-sky-700 shadow-2xl text-white p-3 flex justify-between items-center">
       {/* Logo or Name */}
@@ -17,8 +17,8 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <div className="flex gap-8">
-        {user && <Link to="/explore" onClick={() => setSelectedOption("postsList")} className="font-bold hover:text-gray-200">Explorar</Link>}
-        {user && <Link to={`profile/${user.id}`} onClick={() => setSelectedOption("profile")} className="font-bold hover:text-gray-200">Perfil</Link>}
+        {user && <Link to="/explore" onClick={() => setExternalView("postsList")} className="font-bold hover:text-gray-200">Explorar</Link>}
+        {user && <Link to={`profile/${user.id}`} onClick={() => setExternalView("profile")} className="font-bold hover:text-gray-200">Perfil</Link>}
       </div>
 
       {/* Login or Hamburger Menu */}

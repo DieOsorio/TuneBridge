@@ -18,33 +18,27 @@ export const useAllProfilesQuery = () => {
 };
 
 // Fetch a single profile
-export const useProfileQuery = (user=null, identifier=null) => {   
+export const useProfileQuery = (identifier) => {
     return useQuery({
-        queryKey: ['profile', identifier || user?.id],
-        queryFn: async () => {
-            if (!user && !identifier) return null;
-
-            let query = supabase
-            .schema("users")
-            .from("profiles")
-            .select("*");
-
-            const isUUID = identifier?.includes("-") && identifier?.length === 36;
-            if (identifier) {
-                query = isUUID
-                    ? query.eq("id", identifier)
-                    : query.eq("username", identifier);
-            } else {
-                query = query.eq("id", user.id);
-            }
-
-            const { data, error } = await query.single();
-            if (error) throw new Error(error.message);
-            return data;
-        },
-        enabled: !!(user || identifier),
+      queryKey: ['profile', identifier],
+      queryFn: async () => {
+        if (!identifier) return null;
+  
+        const isUUID = identifier.includes("-") && identifier.length === 36;
+  
+        const query = supabase
+          .schema("users")
+          .from("profiles")
+          .select("*")
+          .eq(isUUID ? "id" : "username", identifier);
+  
+        const { data, error } = await query.single();
+        if (error) throw new Error(error.message);
+        return data;
+      },
+      enabled: !!identifier,
     });
-};
+  };
 
 // Create a profile
 export const useCreateProfile = () => {
@@ -80,6 +74,7 @@ export const useUpdateProfile = () => {
                 .schema("users")
                 .from("profiles")
                 .update({
+                    bio: profileData.bio,
                     username: profileData.username,
                     gender: profileData.gender,
                     avatar_url: profileData.avatar_url,

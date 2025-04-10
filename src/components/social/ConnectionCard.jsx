@@ -4,7 +4,7 @@ import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 
 const ConnectionCard = ({ profileId }) => { 
-    const { data: profile, isLoading: loading, error } = useProfileQuery(null, profileId);
+    const { data: profile, isLoading: loading, error } = useProfileQuery(profileId);
     
     if (loading) return <Loading />;
     

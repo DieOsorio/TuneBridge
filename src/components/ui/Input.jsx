@@ -7,12 +7,13 @@ const Input = ({
   placeholder,
   required,
   autoComplete,
+  className,
 }) => {
 
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={id} className="block text-sm font-medium mb-2">
+        <label htmlFor={id} className={"block text-sm font-medium mb-2"}>
           {label}
         </label>
       )}
@@ -22,7 +23,7 @@ const Input = ({
         value={type !== "checkbox" ? value : undefined}  // Usa value solo para inputs que no sean checkbox
         checked={type === "checkbox" ? value || false : undefined} // Usa checked para checkboxes
         onChange={onChange}
-        className="w-full px-4 py-2 border rounded-md"
+        className={`w-full px-4 py-2 border rounded-md ${className}`}
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}

@@ -3,11 +3,11 @@ import { createContext, useContext, useState } from "react";
 const ViewContext = createContext();
 
 export const ViewProvider = ({ children }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [internView, setInterView] = useState(null);
+  const [externalView, setExternalView] = useState(null);
+  const [internalView, setInternalView] = useState(null);
 
   return (
-    <ViewContext.Provider value={{ selectedOption, internView, setSelectedOption, setInterView }}>
+    <ViewContext.Provider value={{ externalView, internalView, setExternalView, setInternalView }}>
       {children}
     </ViewContext.Provider>
   );

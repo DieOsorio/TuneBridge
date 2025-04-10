@@ -6,7 +6,7 @@ import gsap from "gsap";
 const Sidebar = ({ avatarUrl }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const sidebarRef = useRef(null);  // Reference to the sidebar element
-  const { setSelectedOption } = useView();
+  const { setExternalView } = useView();
 
   const handleMouseEnter = () => {
     setIsExpanded(true);
@@ -63,7 +63,7 @@ const Sidebar = ({ avatarUrl }) => {
           <li
             key={option.id}
             className="flex items-center gap-4 p-5 cursor-pointer hover:bg-sky-800 transition-all duration-300 ease-in-out"
-            onClick={() => setSelectedOption(option.id)}
+            onClick={() => setExternalView(option.id)}
           >
             <span className="text-xl flex-shrink-0">{option.icon}</span>
             <span

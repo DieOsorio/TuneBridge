@@ -3,7 +3,7 @@ import { fetchConnectionsQuery } from '../../context/social/userConnectionsActio
 
 function ConnectionsList({ checkStatus, profileId }) {
     const { data: connections } = fetchConnectionsQuery(profileId);
-
+    
     const filteredConnections = connections?.filter(conn => conn.status === checkStatus) || [];
     
     const getOtherProfileId = (conn) => {
@@ -11,6 +11,7 @@ function ConnectionsList({ checkStatus, profileId }) {
             ? conn.follower_profile_id
             : conn.following_profile_id;
     };
+    
 
     return (
         <>

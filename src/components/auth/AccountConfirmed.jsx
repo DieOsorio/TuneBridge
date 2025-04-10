@@ -25,7 +25,6 @@ const AccountConfirmed = () => {
     <div className="text-center py-6">
       <h1 className="text-3xl font-bold text-green-300">¡Cuenta confirmada!</h1>
       <p className="mt-4 text-lg text-gray-600">Tu cuenta ha sido confirmada exitosamente.</p>
-      {loading && <p>Cargando perfil...</p>}
     </div>
   );
 };

@@ -9,7 +9,7 @@ import { useView } from "../../context/ViewContext";
 const CreatePost = ({ id, onUpdate }) => {
   const [images, setImages] = useState([])
   const { createPost, updatePost } = usePosts();
-  const { setSelectedOption } = useView()
+  const { setExternalView } = useView()
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
 
   const uploadImageMutations = useUploadPostImages();
@@ -50,7 +50,7 @@ const CreatePost = ({ id, onUpdate }) => {
 
       reset();
       setImages([]);
-      setSelectedOption("profile");
+      setExternalView("profile");
 
     } catch (err) {
       console.error("Error creating post:", err.message);

@@ -13,9 +13,8 @@ const ProfileContext = createContext(null);
 ProfileContext.displayName = "ProfileContext";
 
 export const ProfileProvider = ({ children }) => {
-    const { user } = useAuth();
 
-    const profileQuery = useProfileQuery(user);
+    const profileQuery = useProfileQuery();
     const allProfilesQuery = useAllProfilesQuery();
     const createProfile = useCreateProfile();
     const updateProfile = useUpdateProfile();
