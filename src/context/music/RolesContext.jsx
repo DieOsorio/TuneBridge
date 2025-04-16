@@ -5,14 +5,12 @@ import {
     addRoleMutation, 
     deleteRoleMutation } 
     from "./rolesActions";
-import { useProfileId } from "../profile/ProfileIdContext";
 
 
 const RolesContext = createContext(null);
 RolesContext.displayName = "RolesContext";
 
 export const RolesProvider = ({ children }) => {
-    const {profileId} = useProfileId();
 
     const {data, isLoading, error, refetch} = fetchRolesQuery();
     const addRole = addRoleMutation();

@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer() {
   return (
-    <footer className="bg-sky-700 text-white py-4 mt-8">
+    <footer className="bg-gradient-to-t from-sky-700 to-sky-900 text-white py-4 mt-8 z-20">
       <div className="container mx-auto text-center">
         <p>&copy; {new Date().getFullYear()} TuneBridge. All rights reserved.</p>
         <p>Follow us on social media!</p>

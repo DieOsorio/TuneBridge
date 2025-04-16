@@ -1,7 +1,7 @@
 import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
 import {
-  fetchConnectionsQuery,
+  useFetchConnectionsQuery,
   addConnectionMutation,
   updateConnectionMutation,
   deleteConnectionMutation,
@@ -11,7 +11,7 @@ const UserConnectionsContext = createContext();
 UserConnectionsContext.displayName = "UserConnectionsContext";
 
 export const UserConnectionsProvider = ({ children }) => {
-  const { data, isLoading, error, refetch } = fetchConnectionsQuery();
+  const { data, isLoading, error, refetch } = useFetchConnectionsQuery();
   const addConnection = addConnectionMutation();
   const updateConnection = updateConnectionMutation();
   const deleteConnection = deleteConnectionMutation();

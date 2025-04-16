@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from '../../supabase';
+import { useMemo } from "react";
 
 // Fetch all profiles
 export const useAllProfilesQuery = () => {
@@ -39,6 +40,62 @@ export const useProfileQuery = (identifier) => {
       enabled: !!identifier,
     });
   };
+
+
+  //Map through an array of profile IDs an acces each one
+  export const useProfilesMap = (profileIds = []) => {
+    const uniqueSortedIds = useMemo(() => [...new Set(profileIds)].sort(), [profileIds])
+
+    return useQuery({
+      queryKey: ['profilesMap', uniqueSortedIds],
+      enabled: uniqueSortedIds.length > 0, 
+      queryFn: async () => {
+        if (!profileIds || profileIds.length === 0) return;
+  
+        const { data, error } = await supabase
+          .schema("users")
+          .from("profiles")
+          .select('id, avatar_url, username')
+          .in('id', uniqueSortedIds);
+         
+        if (error) throw new Error(error.message);
+        
+        const map = {};
+        data.forEach(profile => {
+            map[profile.id] = profile;
+        });
+
+        return map;
+      }
+    });
+  };
+
+
+// Prefetch a single profile
+export const usePrefetchProfile = () => {
+    const queryClient = useQueryClient();
+
+    return async (identifier) => {
+        if (!identifier) return;
+    
+        await queryClient.prefetchQuery({
+        queryKey: ['profile', identifier],
+        queryFn: async () => {    
+            const isUUID = identifier.includes("-") && identifier.length === 36;
+    
+            const query = supabase
+            .schema("users")
+            .from("profiles")
+            .select("*")
+            .eq(isUUID ? "id" : "username", identifier);
+    
+            const { data, error } = await query.single();
+            if (error) throw new Error(error.message);
+            return data;
+      },
+    });
+  };
+};
 
 // Create a profile
 export const useCreateProfile = () => {
@@ -91,6 +148,7 @@ export const useUpdateProfile = () => {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['profile', data.id] });
+            queryClient.invalidateQueries({ queryKey: ['Allprofile'] });
         }
     });
 };

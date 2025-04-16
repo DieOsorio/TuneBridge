@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // FETCH ALL CONNECTIONS FOR A PROFILE
-export const fetchConnectionsQuery = (profileId) => {
+export const useFetchConnectionsQuery = (profileId) => {
   return useQuery({
     queryKey: ["connections", profileId],
     queryFn: async() => {
@@ -84,14 +84,14 @@ export const updateConnectionMutation = () => {
       .from("user_connections")
       .update(updatedConnection)
       .eq("id", id)
-      .select()
+      .select()      
       
       if (error) throw new Error(error.message)
       return data[0]
     },
 
      // optimistic update
-     onMutate: async ({ id, details }) => {
+     onMutate: async ({ id, updatedConnection }) => {
       await queryClient.cancelQueries({ queryKey: ["connections", id] });
 
       const previousDetails = queryClient.getQueryData(["connections", id]);
@@ -99,7 +99,7 @@ export const updateConnectionMutation = () => {
       queryClient.setQueryData(["connections", id], (old = []) =>
         old.map((conn) =>
           conn.id === id
-            ? { ...conn, ...details }
+            ? { ...conn, ...updatedConnection }
             : conn
         )
       );
@@ -116,8 +116,8 @@ export const updateConnectionMutation = () => {
       }
     },
 
-    onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["connections", variables.id] });
+    onSettled: (_data, _error) => {
+      queryClient.invalidateQueries({ queryKey: ["connections"] });
     },
   })
 }
@@ -145,7 +145,7 @@ export const deleteConnectionMutation = () => {
       const previousDetails = queryClient.getQueryData(["connections"]);
 
       queryClient.setQueryData(["connections"], (old = []) =>
-        old.filter((dj) => dj.id !== id)
+        old.filter((conn) => conn.id !== id)
       );
 
       return { previousDetails };

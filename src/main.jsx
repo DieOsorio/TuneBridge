@@ -8,7 +8,6 @@ import { AuthProvider } from './context/AuthContext';
 import { ProfileProvider } from './context/profile/ProfileContext';
 import { SocialProvider } from './context/social/SocialContext';
 import { MusicProvider } from './context/music/MusicContext';
-import { ProfileIdProvider } from './context/profile/ProfileIdContext';
 import { ViewProvider } from './context/ViewContext';
 
 const queryClient = new QueryClient();
@@ -18,16 +17,14 @@ createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
           <ProfileProvider>
-            <ProfileIdProvider>
-              <SocialProvider>
-                <MusicProvider>
-                  <ViewProvider>
-                  <App />
-                  <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-                  </ViewProvider>
-                </MusicProvider>
-              </SocialProvider>
-            </ProfileIdProvider>
+            <SocialProvider>
+              <MusicProvider>
+                <ViewProvider>
+                <App />
+                <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+                </ViewProvider>
+              </MusicProvider>
+            </SocialProvider>
           </ProfileProvider>
       </AuthProvider>
     </QueryClientProvider>

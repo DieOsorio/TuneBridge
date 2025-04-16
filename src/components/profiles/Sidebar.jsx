@@ -6,7 +6,7 @@ import gsap from "gsap";
 const Sidebar = ({ avatarUrl }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const sidebarRef = useRef(null);  // Reference to the sidebar element
-  const { setExternalView } = useView();
+  const { manageView } = useView();
 
   const handleMouseEnter = () => {
     setIsExpanded(true);
@@ -29,7 +29,8 @@ const Sidebar = ({ avatarUrl }) => {
 
   const options = [
     {
-      id: null,
+      external: "profile",
+      internal: "about",
       label: "View Profile",
       icon: (
         <img
@@ -39,14 +40,20 @@ const Sidebar = ({ avatarUrl }) => {
         />
       ),
     },
-    { id: "editProfile", label: "Edit Profile", icon: <FaUserEdit /> },
-    { id: "editMusicInfo", label: "Edit Music Info", icon: <FaMusic /> },
+    { external: "edit",
+      internal: "editProfile", 
+      label: "Edit Profile", 
+      icon: <FaUserEdit /> },
+    { external: "edit",
+      internal: "editMusicInfo", 
+      label: "Edit Music Info", 
+      icon: <FaMusic /> },
   ];
 
   return (
     <div
       ref={sidebarRef}  // Attach ref to sidebar element
-      className="fixed top-0 left-0 h-[calc(100%-160px)] bg-sky-700 text-white z-10"
+      className="fixed top-0 left-0 h-[calc(100%-160px)] bg-gradient-to-b from-sky-700 to-sky-900 text-white z-10"
       style={{ top: "80px" }} // Adjust top to match navbar height
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -61,9 +68,9 @@ const Sidebar = ({ avatarUrl }) => {
       <ul className="mt-4">
         {options.map((option) => (
           <li
-            key={option.id}
+            key={option.internal}
             className="flex items-center gap-4 p-5 cursor-pointer hover:bg-sky-800 transition-all duration-300 ease-in-out"
-            onClick={() => setExternalView(option.id)}
+            onClick={() => manageView(option.internal, option.external)}
           >
             <span className="text-xl flex-shrink-0">{option.icon}</span>
             <span

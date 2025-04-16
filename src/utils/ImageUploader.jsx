@@ -37,7 +37,7 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
         allowMultiple={amount > 1}
         maxFiles={amount}
         name="images"
-        labelIdle={amount > 1 ? 'Arrastrá las imágenes o hacé click para seleccionar' : ''}
+        labelIdle={amount > 1 ? `Drag the images or click to select (max ${amount})` : ''}
       />
     </div>
   );

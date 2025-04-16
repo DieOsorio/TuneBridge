@@ -6,32 +6,32 @@ import { IoIosSettings } from "react-icons/io";
 import { IoChatboxSharp } from "react-icons/io5";
 
 function ProfileHeader({ isOwnProfile, profileData }) {
-    const { setExternalView, setInternalView } = useView();
-
-    const handleBoth = (internal, external) => {
-        setExternalView(external);
-        setInternalView(internal);
-    };
+    const { manageView, setExternalView } = useView();
 
   return (
-    <div className="bg-sky-700 mb-4 p-4 rounded-b-lg">
+    <div className="bg-gradient-to-b from-sky-700 to-sky-900 mb-4 p-4 rounded-b-lg">
         <div className='flex'>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => manageView("about", "profile")}>                
                 <ProfileAvatar avatar_url={profileData.avatar_url} />
                 <h2 className="text-3xl text-gray-100 font-bold">{profileData.username}</h2>
             </div>
 
             <div className="ml-auto flex gap-4">
-                    <IoChatboxSharp className='w-8 h-8 text-white' onClick={() => handleBoth("about", "profile")} />
-                    {isOwnProfile && <IoIosSettings className='w-8 h-8 text-white' onClick={() => handleBoth("about", "profile")} />}
-                    {isOwnProfile && <BsFillBellFill className='w-7 h-7 text-white' onClick={() => handleBoth("about", "profile")} />}
+                    <IoChatboxSharp className='w-8 h-8 text-white cursor-pointer' onClick={() => manageView("about", "profile")} />
+                    {isOwnProfile && <IoIosSettings className='w-8 h-8 text-white cursor-pointer' onClick={() => manageView("editProfile", "edit")} />}
+                    {isOwnProfile && <BsFillBellFill className='w-7 h-7 text-white cursor-pointer' onClick={() => manageView("pending", "notifications")} />}
             </div>
         </div>
 
         <div className='flex justify-end gap-4'>
             {/* Display the users posts */}
-            <div className="mb-4">
-                <Button onClick={() => handleBoth("about", "profile")}>About</Button>
+            <div>
+                <div className="mb-4">
+                    <Button onClick={() => manageView("about", "profile")}>About</Button>
+                </div>
+                <div className="mb-4">
+                    <Button onClick={() => manageView("about", "profile")}>Music</Button>
+                </div>
             </div>
 
             <div>

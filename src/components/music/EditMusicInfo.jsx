@@ -1,22 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FaChevronRight } from "react-icons/fa"; // Import the icon
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import RoleDataEditor from "./RoleDataEditor";
 import { useRoles } from "../../context/music/RolesContext";
 import { fetchRolesQuery } from "../../context/music/rolesActions";
+import ErrorMessage from "../../utils/ErrorMessage";
+import Loading from "../../utils/Loading";
 
 const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"];
 
 const EditMusicInfo = ({ profileId }) => {
-  const {data:roles} = fetchRolesQuery(profileId)
+  const { data: roles, isLoading, isError } = fetchRolesQuery(profileId); // asumiendo que fetchRolesQuery te da un estado de carga
   const { addRole, deleteRole } = useRoles();
   const [selectedRole, setSelectedRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [customRole, setCustomRole] = useState("");
   const [expandedRole, setExpandedRole] = useState(null);
 
-  const handleAddRole = () => {
+  useEffect(() => {
+    if (isLoading) {
+      // Si está cargando, no se hace nada
+      return;
+    }
+
+    // Cuando termina de cargar, puedes realizar alguna acción (si es necesario)
+    if (isError) {
+      setErrorMessage("Error loading roles");
+    }
+  }, [isLoading, isError]);
+
+  const handleAddRole = useCallback(() => {
     const roleName = selectedRole === "Other" ? customRole.trim() : selectedRole;
 
     if (roles.length >= 6) {
@@ -34,8 +48,8 @@ const EditMusicInfo = ({ profileId }) => {
       setErrorMessage("This role already exists.");
       return;
     }
-    
-    addRole({profileId, roleName})
+
+    addRole({ profileId, roleName })
       .then(() => {
         setErrorMessage(""); // Clear any previous error messages
         setSelectedRole(""); // Reset the selected role
@@ -45,14 +59,24 @@ const EditMusicInfo = ({ profileId }) => {
         console.error("Error adding role:", error);
         setErrorMessage("An error occurred while adding the role.");
       });
-  };
+  }, [selectedRole, customRole, roles, profileId, addRole]);
 
-  const handleRoleClick = (roleId) => {
+  const handleRoleClick = useCallback((roleId) => {
     setExpandedRole((prev) => (prev === roleId ? null : roleId));
-  };
+  }, []);
+
+  // Si los roles no están cargados aún, muestra un loading message
+  if (isLoading) {
+    return <Loading />
+  }
+
+  // Si hay un error cargando los roles
+  if (isError) {
+    return <ErrorMessage error={isError.message} />;
+  }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white rounded-b-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Edit Music Information</h2>
 
       <div className="mb-4">
@@ -84,7 +108,7 @@ const EditMusicInfo = ({ profileId }) => {
           />
         )}
 
-        <Button onClick={() => handleAddRole()} className="mt-2">
+        <Button onClick={handleAddRole} className="mt-2">
           Add Role
         </Button>
 
@@ -121,6 +145,7 @@ const EditMusicInfo = ({ profileId }) => {
                         deleteRole(role.id);
                       }}
                       className="ml-4 cursor-pointer bg-red-500 text-white text-xs px-2 py-1 rounded-full hover:bg-red-600"
+                      aria-label={`Delete ${role.role}`}
                     >
                       ✕
                     </button>

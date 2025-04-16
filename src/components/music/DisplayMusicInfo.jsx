@@ -7,6 +7,8 @@ import { fetchSingerQuery } from "../../context/music/SingerDetailsActions";
 import { fetchComposerQuery } from "../../context/music/ComposerDetailsActions";
 import { fetchProducerQuery } from "../../context/music/ProducerDetailsActions";
 import { fetchDjQuery } from "../../context/music/djDetailsActions";
+import  Loading  from "../../utils/Loading"
+import  ErrorMessage  from "../../utils/ErrorMessage"
 
 const DisplayMusicInfo = ({ profileId }) => {
   const  [roleId, setRoleId]  = useState();
@@ -38,24 +40,12 @@ const DisplayMusicInfo = ({ profileId }) => {
     }
   };
   
-  if (loading) {
-    return (
-      <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-        <p className="text-gray-500">Loading music information...</p>
-      </div>
-    );
-  }
+  if (loading) return <Loading />
 
-  if (error) {
-    return (
-      <div className="bg-red-100 p-4 rounded-lg shadow-md">
-        <p className="text-red-500">Error loading music information: {error}</p>
-      </div>
-    );
-  }
+  if (error) return <ErrorMessage error={error.message} />
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-sky-100 p-6 rounded-lg shadow-md">
       <h3 className="text-2xl font-bold mb-4 text-center">Music Roles</h3>
       {roles.length === 0 ? (
         <p className="text-gray-500">No music-related roles found.</p>

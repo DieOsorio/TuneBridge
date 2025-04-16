@@ -6,8 +6,13 @@ export const ViewProvider = ({ children }) => {
   const [externalView, setExternalView] = useState(null);
   const [internalView, setInternalView] = useState(null);
 
+  const manageView = (internal, external) => {
+    setExternalView(external);
+    setInternalView(internal);
+  }
+
   return (
-    <ViewContext.Provider value={{ externalView, internalView, setExternalView, setInternalView }}>
+    <ViewContext.Provider value={{ externalView, internalView, manageView, setExternalView, setInternalView }}>
       {children}
     </ViewContext.Provider>
   );

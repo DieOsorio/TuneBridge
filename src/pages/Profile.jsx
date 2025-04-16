@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
 import Sidebar from "../components/profiles/Sidebar";
-import EditProfile from "../components/profiles/EditProfile";
-import EditMusicInfo from "../components/music/EditMusicInfo";
 import { useAuth } from "../context/AuthContext";
 import { useProfileQuery } from "../context/profile/profileActions";
 import Loading from "../utils/Loading";
@@ -14,19 +12,21 @@ import PostsList from "../components/social/PostsList";
 import { useView } from "../context/ViewContext";
 import ProfileData from "../components/profiles/ProfileData";
 import ProfileHeader from "../components/profiles/ProfileHeader";
+import Edit from "./Edit";
+import Notifications from "../components/social/Notifications";
 
 const Profile = () => {
 
   const { identifier } = useParams(); // Get the profile identifier from the URL
   const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
   const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(identifier);
-  const { externalView, setExternalView, internalView, setInteralView } = useView();
+  const { externalView, internalView, manageView } = useView();
 
   useEffect(() => {
     if (!externalView) {
-      setExternalView("profile");
+      manageView("about", "profile")
     }
-  }, [externalView, setExternalView]);
+  }, [externalView]);
   
 
   if (authLoading || profileQueryLoading) {
@@ -52,25 +52,43 @@ const Profile = () => {
       {/* Main Content */}
       <div className="flex-1 p-8 max-w-4xl mx-auto gap-8">
         {/* Render based on externalView */}
-        <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />          
-        {externalView === "displayPosts" && <PostsList profileId={profileData.id} />}
-        {isOwnProfile && externalView === "createPost" && <CreatePost id={user.id} />}
-        {isOwnProfile && externalView === "editProfile" && <EditProfile profile={profileData} />}
-        {isOwnProfile && externalView === "editMusicInfo" && <EditMusicInfo profileId={profileData.id} />}
+        <ProfileHeader profileData={profileData} 
+        isOwnProfile={isOwnProfile} /> 
+
+        {/* Posts View */}
+        {externalView === "displayPosts" && 
+        <PostsList profileId={profileData.id} />}
+
+        {/* Create Post View */}
+        {isOwnProfile && 
+        externalView === "createPost" && 
+        <CreatePost id={user.id} />}
+
+        {/* Edit View */}
+        {isOwnProfile && 
+        externalView === "edit" && 
+        <Edit profileData={profileData} />}
+
+        {/* Notifications View */}
+        {isOwnProfile && 
+            externalView === "notifications" && 
+            <Notifications profileId={profileData.id} />}
+
+
 
         {/* Default Profile View */}
         {externalView === "profile" && (
-          <div className="bg-white shadow-md rounded-lg p-6">
+          <div className="bg-white shadow-md rounded-lg p-6 flex flex-col gap-8">
 
             
-            {internalView === "about" && <ProfileData profileData={profileData} />}
+            {internalView === "about" && 
+            <ProfileData profileData={profileData} />}
 
-            {internalView === "about" && <DisplayMusicInfo profileId={profileData.id} />} 
+            {internalView === "about" && 
+            <DisplayMusicInfo profileId={profileData.id} />} 
 
-            <ConnectionsList profileId={profileData.id} checkStatus="accepted" /> 
-
-            {/* <h3 className="text-xl font-semibold mt-4">Conexiones Pendientes</h3> */}
-            {isOwnProfile && <ConnectionsList profileId={profileData.id} checkStatus="pending" />}            
+            <ConnectionsList profileId={profileData.id} checkStatus="accepted" />             
+                        
           </div>
         )}
       </div>

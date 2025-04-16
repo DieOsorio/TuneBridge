@@ -9,7 +9,7 @@ import { useView } from "../../context/ViewContext";
 const CreatePost = ({ id, onUpdate }) => {
   const [images, setImages] = useState([])
   const { createPost, updatePost } = usePosts();
-  const { setExternalView } = useView()
+  const { manageView } = useView()
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
 
   const uploadImageMutations = useUploadPostImages();
@@ -50,7 +50,7 @@ const CreatePost = ({ id, onUpdate }) => {
 
       reset();
       setImages([]);
-      setExternalView("profile");
+      manageView("about", "profile");
 
     } catch (err) {
       console.error("Error creating post:", err.message);
@@ -60,7 +60,7 @@ const CreatePost = ({ id, onUpdate }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">      
       <div>
-        <label className="block font-medium text-gray-700 mb-1">Título</label>
+        <label className="block font-medium text-gray-700 mb-1">Title</label>
         <input
           type="text"
           {...register("title", { required: "El título es obligatorio." })}
@@ -70,7 +70,7 @@ const CreatePost = ({ id, onUpdate }) => {
       </div>
 
       <div>
-        <label className="block font-medium text-gray-700 mb-1">Contenido</label>
+        <label className="block font-medium text-gray-700 mb-1">Content</label>
         <textarea
           {...register("content", { required: "El contenido no puede estar vacío." })}
           className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
@@ -81,7 +81,7 @@ const CreatePost = ({ id, onUpdate }) => {
       <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
 
       <Button type="submit" disabled={isSubmitting} className="ml-auto block">
-        {isSubmitting ? "Publicando..." : "Publicar"}
+        {isSubmitting ? "Posting..." : "Post"}
       </Button>
     </form>
   );

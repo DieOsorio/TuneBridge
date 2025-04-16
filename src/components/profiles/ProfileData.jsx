@@ -16,37 +16,37 @@ function ProfileData({ profileData }) {
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-lg text-gray-800">
         {profileData.firstname &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-600">Nombre:</span>
+          <span className="font-semibold w-32 text-gray-600">Name:</span>
           <span>{profileData.firstname}</span>
         </li>}
 
         {profileData.lastname &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-600">Apellido:</span>
+          <span className="font-semibold w-32 text-gray-600">Last Name:</span>
           <span>{profileData.lastname}</span>
         </li>}
 
         {profileData.country &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-600">País:</span>
+          <span className="font-semibold w-32 text-gray-600">Country:</span>
           <span>{profileData.country}</span>
         </li>}
 
         {profileData.city &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-600">Ciudad:</span>
+          <span className="font-semibold w-32 text-gray-600">City:</span>
           <span>{profileData.city}</span>
         </li>}
 
         {profileData.gender &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-600">Género:</span>
+          <span className="font-semibold w-32 text-gray-600">Gender:</span>
           <span>{profileData.gender}</span>
         </li>}
 
         {profileData.birthdate &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-600">Nacimiento:</span>
+          <span className="font-semibold w-32 text-gray-600">Birthdate:</span>
           <span>{profileData?.birthdate ? profileData.birthdate.split("T")[0] : "—"}</span>
         </li>}
       </ul>

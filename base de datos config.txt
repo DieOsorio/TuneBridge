@@ -25,6 +25,10 @@ Schema users:
 
         gender (text) género del usuario.
 
+        birthdate (date) fecha de nacimiento.
+
+        bio (text) biografia.
+
 
 
 

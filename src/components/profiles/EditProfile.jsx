@@ -8,16 +8,14 @@ import Select from "../ui/Select";
 import Loading from "../../utils/Loading";
 import { uploadAvatar } from "../../utils/avatarUtils";
 import { useView } from "../../context/ViewContext";
-import { useProfileQuery } from "../../context/profile/profileActions";
 import ImageUploader from "../../utils/ImageUploader";
 import { IoIosCamera } from "react-icons/io";
 
 
 const EditProfile = ({profile}) => {
-  const { user, loading: authLoading } = useAuth();
-  const { loading: profileLoading} = useProfileQuery(profile.id);
+  const { user } = useAuth();
   const { updateProfile } = useProfile();
-  const { setExternalView } = useView();
+  const { manageView } = useView();
 
   const [bio, setBio] = useState("");
   const [username, setUsername] = useState("");
@@ -87,7 +85,7 @@ const EditProfile = ({profile}) => {
         birthdate,
         id: user.id,
       });
-      setExternalView("profile"); // back to profile page
+      manageView("about","profile"); // back to profile page
 
     } catch (error) {
       setLocalError(error.message || "Error updating profile.");
@@ -96,14 +94,10 @@ const EditProfile = ({profile}) => {
     }
   };
 
-  if (profileLoading || authLoading) {
-    return <Loading />;
-  }
-
   return (
-    <div className="flex flex-col items-center text-gray-950 justify-center min-h-screen p-6">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-150">
-        <h2 className="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
+    
+      <div className="bg-white p-6 rounded-b-lg shadow-lg">
+        <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
         {user && 
           <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
             <ProfileAvatar avatar_url={preview || avatar_url} />
@@ -129,58 +123,58 @@ const EditProfile = ({profile}) => {
           />
         </div>
           <Input
-            label="Nombre de usuario"
-            placeholder="Nombre de usuario"
+            label="Username"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
           <Input
-            label="Nombre"
-            placeholder="Nombre"
+            label="First name"
+            placeholder="First name"
             value={firstname}
             onChange={(e) => setFirstname(e.target.value)}
           />
           <Input
-            label="Apellido"
-            placeholder="Apellido"
+            label="Last name"
+            placeholder="Last name"
             value={lastname}
             onChange={(e) => setLastname(e.target.value)}
           />
           <Input
-            label="País"
-            placeholder="País"
+            label="Country"
+            placeholder="Country"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
           />
           <Input
-            label="Ciudad"
-            placeholder="Ciudad"
+            label="City"
+            placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
           <Input
-            label="Fecha de Nacimiento"
+            label="Birthdate"
             type="date"
-            placeholder="Fecha de Nacimiento"
+            placeholder="Birthdate"
             value={birthdate ? birthdate.split("T")[0] : ""}
             onChange={(e) => setBirthdate(e.target.value || null)}
           />
           <Select
-            label="Género"
+            label="Gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            defaultOption="Selecciona tu género"
-            option1="Masculino"
-            option2="Femenino"
-            option3="Otro"
+            defaultOption="Choose your gender"
+            option1="Male"
+            option2="Female"
+            option3="Other"
           />
-          <Button className="mt-8 ml-88" type="submit" disabled={isSubmitting}>
+          <Button className="mt-8 ml-73" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save"}
           </Button>
         </form>
       </div>
-    </div>
+    
   );
 };
 

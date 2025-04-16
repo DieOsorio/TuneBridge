@@ -14,7 +14,7 @@ ProfileContext.displayName = "ProfileContext";
 
 export const ProfileProvider = ({ children }) => {
 
-    const profileQuery = useProfileQuery();
+    const profileQuery = useProfileQuery;
     const allProfilesQuery = useAllProfilesQuery();
     const createProfile = useCreateProfile();
     const updateProfile = useUpdateProfile();
@@ -25,8 +25,8 @@ export const ProfileProvider = ({ children }) => {
         allProfiles: allProfilesQuery.data,
         loading: profileQuery.isLoading || allProfilesQuery.isLoading,
         error: profileQuery.error || allProfilesQuery.error,
-        refetchProfile: profileQuery.refetch,
-        refetchAllProfiles: allProfilesQuery.refetch,
+        useProfileQuery: useProfileQuery,
+        useAllProfilesQuery: allProfilesQuery,
         createProfile: createProfile.mutateAsync,
         updateProfile: updateProfile.mutateAsync,
         deleteProfile: deleteProfile.mutateAsync,

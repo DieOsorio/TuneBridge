@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
-import { fetchConnectionsQuery } from "../../context/social/userConnectionsActions";
+import { useFetchConnectionsQuery } from "../../context/social/userConnectionsActions";
 import { useAuth } from "../../context/AuthContext";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im"
@@ -9,10 +9,10 @@ import { useView } from "../../context/ViewContext";
 
 const ProfileCard = ({ profile }) => {
     const { user } = useAuth();
-    const { data: connections } = fetchConnectionsQuery(profile.id)
+    const { data: connections } = useFetchConnectionsQuery(profile.id)
     const { addConnection, deleteConnection, updateConnection } = useUserConnections();
     const [hoverText, setHoverText] = useState("");
-    const { setExternalView } = useView();
+    const { manageView } = useView();
     
     const userConnection = connections?.find(
         (conn) => {
@@ -53,7 +53,7 @@ const ProfileCard = ({ profile }) => {
             status==="blocked" ? ("bg-red-50") : 
             "bg-white"
         }`}>
-            <Link onClick={() => setExternalView("profile")} to={`/profile/${profile.id}`}>
+            <Link onClick={() => manageView("about", "profile")} to={`/profile/${profile.id}`}>
             <img
                 src={profile.avatar_url || "/default-avatar.png"}
                 alt={`${profile.username}'s avatar`}

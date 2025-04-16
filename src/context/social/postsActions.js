@@ -2,33 +2,44 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // FETCH ALL POSTS FOR A PROFILE
-export const fetchPostsQuery = (profileId) => {
-    const key = profileId ? ["posts", profileId] : ["posts"];
-  
+export const useFetchPostsQuery = () => {
     return useQuery({
-      queryKey: key,
+      queryKey: ["posts"],
       queryFn: async () => {
-        let query = supabase
+        const { data, error } = await supabase
           .schema("social")
           .from("posts")
           .select("*");
   
-        if (profileId) {
-          query = query.eq("profile_id", profileId);
-        }
+        if (error) throw new Error(error.message);
+        return data;
+      },
+    });
+  };
   
-        const { data, error } = await query;
+  
+// FETCH USER POSTS
+export const useUserPostsQuery = (profileId) => {
+    return useQuery({
+      queryKey: ["userPosts", profileId],
+      queryFn: async () => {
+        const { data, error } = await  supabase
+          .schema("social")
+          .from("posts")
+          .select("*")
+          .eq("profile_id", profileId);        
   
         if (error) throw new Error(error.message);
         return data;
       },
+      enabled: !!profileId
     });
   };  
   
 
 
 // CREATE NEW POST
-export const createPostMutation = () => {
+export const useCreatePostMutation = () => {
     const queryClient = useQueryClient();
   
     return useMutation({
@@ -69,15 +80,16 @@ export const createPostMutation = () => {
         }
       },
   
-      onSettled: (_data, _error) => {
+      onSettled: (_data, _error, variables) => {
         queryClient.invalidateQueries({ queryKey: ["posts"]});
+        queryClient.invalidateQueries({ queryKey: ["userPosts", variables.profile_id]});
       }
     })
   }
 
 
-  // UPDATE POST
-export const updatePostMutation = () => {
+// UPDATE POST
+export const useUpdatePostMutation = () => {
     const queryClient = useQueryClient();
   
     return useMutation({
@@ -121,13 +133,14 @@ export const updatePostMutation = () => {
   
       onSettled: (_data, _error, variables) => {
         queryClient.invalidateQueries({ queryKey: ["posts", variables.id] });
+        queryClient.invalidateQueries({ queryKey: ["userPosts", variables.profile_id]});
       },
     })
   }
 
 
-  // DELETE POST
-export const deletePostMutation = () => {
+// DELETE POST
+export const useDeletePostMutation = () => {
     const queryClient = useQueryClient();
   
     return useMutation({
@@ -148,7 +161,7 @@ export const deletePostMutation = () => {
         const previousDetails = queryClient.getQueryData(["posts"]);
   
         queryClient.setQueryData(["posts"], (old = []) =>
-          old.filter((dj) => dj.id !== id)
+          old.filter((post) => post.id !== id)
         );
   
         return { previousDetails };
@@ -160,8 +173,9 @@ export const deletePostMutation = () => {
         }
       },
   
-      onSettled: (_data, _error) => {
+      onSettled: (_data, _error, variables) => {
         queryClient.invalidateQueries({ queryKey: ["posts"] });
+        queryClient.invalidateQueries({ queryKey: ["userPosts", variables.profile_id]});
       },
     })
   } 

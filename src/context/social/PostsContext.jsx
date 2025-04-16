@@ -1,20 +1,20 @@
 import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
 import {
-  fetchPostsQuery,
-  createPostMutation,
-  updatePostMutation,
-  deletePostMutation,
+  useFetchPostsQuery,
+  useCreatePostMutation,
+  useUpdatePostMutation,
+  useDeletePostMutation,
 } from "./postsActions";
 
 const PostsContext = createContext();
 PostsContext.displayName = "PostsContext";
 
 export const PostsProvider = ({ children }) => {
-  const { data, isLoading, error, refetch } = fetchPostsQuery();
-  const createPost = createPostMutation();
-  const updatePost = updatePostMutation();
-  const deletePost = deletePostMutation();
+  const { data, isLoading, error, refetch } = useFetchPostsQuery();
+  const createPost = useCreatePostMutation();
+  const updatePost = useUpdatePostMutation();
+  const deletePost = useDeletePostMutation();
 
   const value = {
     posts: data,

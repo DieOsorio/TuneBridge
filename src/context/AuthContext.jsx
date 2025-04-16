@@ -16,7 +16,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError('');
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase
+        .auth.getSession();
+        
         if (error) throw error;
         setUser(session?.user || null);
       } catch (err) {
@@ -29,7 +31,9 @@ export const AuthProvider = ({ children }) => {
 
     fetchSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: authListener } = supabase
+    .auth
+    .onAuthStateChange(async (event, session) => {
       setUser(session?.user || null);
     });
 
@@ -42,7 +46,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError('');
     try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data: { user }, error } = await supabase
+      .auth.signInWithPassword({ email, password });
       if (error) throw error;
 
       // Immediately set the user after login
