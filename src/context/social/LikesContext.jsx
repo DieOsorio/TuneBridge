@@ -2,9 +2,10 @@ import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   useFetchLikesQuery,
+  useUserLikesQuery,
   useInsertLikeMutation,
   useUpdateLikeMutation,
-  useDeleteLikeMutation
+  useDeleteLikeMutation,
 } from "./likesActions";
 
 const LikesContext = createContext();
@@ -12,6 +13,7 @@ LikesContext.displayName = "LikesContext";
 
 export const LikesProvider = ({children}) => {
   const { data, isLoading, error, refetch } = useFetchLikesQuery();
+  const useUserLikes = useUserLikesQuery();
   const useInsertLike = useInsertLikeMutation();
   const useUpdateLike = useUpdateLikeMutation();
   const useDeleteLike = useDeleteLikeMutation();
@@ -21,6 +23,7 @@ export const LikesProvider = ({children}) => {
     loading: isLoading,
     error,
     refetch,
+    useUserLikes: useUserLikes,
     useInsertLike: useInsertLike.mutateAsync,
     useUpdateLike: useUpdateLike.mutateAsync,
     useDeleteLike: useDeleteLike.mutateAsync,

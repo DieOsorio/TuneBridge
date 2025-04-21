@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -9,6 +9,14 @@ import { ProfileProvider } from './context/profile/ProfileContext';
 import { SocialProvider } from './context/social/SocialContext';
 import { MusicProvider } from './context/music/MusicContext';
 import { ViewProvider } from './context/ViewContext';
+
+// if (import.meta.env.MODE === 'development') {
+//   import('@welldone-software/why-did-you-render').then(({ default: whyDidYouRender }) => {
+//     whyDidYouRender(React, {
+//       trackAllPureComponents: true,
+//     });
+//   });
+// }
 
 const queryClient = new QueryClient();
 

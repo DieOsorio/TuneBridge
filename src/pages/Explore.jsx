@@ -8,6 +8,7 @@ import { useView } from "../context/ViewContext"
 function Explore() {
   const { externalView, setExternalView } = useView();
 
+  // Check if there is an external view, if there isn't set it to postList
   useEffect(() => {
       if (!externalView) {
         setExternalView("postsList");
@@ -17,11 +18,15 @@ function Explore() {
   return (
     <>
       <div className="flex gap-2 justify-center p-4">
-      <Button onClick={() => setExternalView("postsList")}>Posts</Button>
-      <Button onClick={() => setExternalView("profilesList")}>Profiles</Button>
+        {/* Select posts view */}
+        <Button onClick={() => setExternalView("postsList")}>Posts</Button>
+        {/* Select profiles view */}        
+        <Button onClick={() => setExternalView("profilesList")}>Profiles</Button>
       </div>
-      {externalView==="profilesList" && <ProfilesList />}
+      {/* List of all posts */}
       {externalView==="postsList" && <PostsList />}
+      {/* List of all profiles */}
+      {externalView==="profilesList" && <ProfilesList />}
     </>
   )
 }

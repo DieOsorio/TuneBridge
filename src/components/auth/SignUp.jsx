@@ -6,12 +6,12 @@ import Loading from "../../utils/Loading";
 import SignUpSuccess from "../../pages/SignUpSuccess";
 
 const SignUp = () => {
+  const { signIn, loading: authLoading, error: authError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const { signIn, loading: authLoading, error: authError } = useAuth();
 
   const handleSignUp = async (e) => {
     e.preventDefault();

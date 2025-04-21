@@ -11,7 +11,7 @@ import ErrorMessage from '../../utils/ErrorMessage';
 import Loading from '../../utils/Loading';
 import { useLikes } from '../../context/social/LikesContext';
 import { useUserLikesQuery } from '../../context/social/likesActions';
-import CommentsBox from './CommentsBox';
+import CommentsBox from './comments/CommentsBox';
 import ProfileMinibox from '../profiles/ProfileMinibox';
 
 // for animations
@@ -39,10 +39,10 @@ function PostCard({ post }) {
   const { data: likes } = useUserLikesQuery(user.id); // retrive the likes aassociated with logged user
   const { useInsertLike, useDeleteLike } = useLikes(); // custom hooks to manage the likes
   const { manageView } = useView(); // manage the views
-  const [showMinibox, setShowMinibox] = useState(false); // know if minibox is visible or not
-  const [showComments, setShowComments] = useState(false);
+  const [showMinibox, setShowMinibox] = useState(false); // manage minibox visibility
+  const [showComments, setShowComments] = useState(false); // manage comments visibility
 
-
+  // preferch profile info to view in the minibox
   const prefetchProfile = usePrefetchProfile();
 
   const handleMouseEnter = () => {
@@ -72,8 +72,7 @@ function PostCard({ post }) {
       useInsertLike(like);
     }
   };
-  
-  
+    
   if (error) return <ErrorMessage error={error.message} />
 
   if (isLoading) return <Loading />
@@ -122,11 +121,11 @@ function PostCard({ post }) {
               </motion.div>
             </div>
             
-            {/* comments box */}
+            {/* show/hide comments box */}
             <LiaCommentsSolid
             title='Post Comments'
             onClick={() => setShowComments((prev) => !prev)} 
-            className='w-10 h-10 mt-8 cursor-pointer' /> 
+            className={`w-10 h-10 mt-8 cursor-pointer hover:text-sky-800 ${showComments && "text-sky-800"}`} /> 
           </div>
         </div>
 

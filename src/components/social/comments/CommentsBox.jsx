@@ -1,25 +1,30 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import ProfileAvatar from '../profiles/ProfileAvatar';
-import { useComments } from '../../context/social/CommentsContext';
-import { useProfileQuery, useProfilesMap } from '../../context/profile/profileActions';
+import { useAuth } from '../../../context/AuthContext';
+import ProfileAvatar from '../../profiles/ProfileAvatar';
+import { useComments } from '../../../context/social/CommentsContext';
+import { useProfileQuery, useProfilesMap } from '../../../context/profile/profileActions';
 import CommentCard from './CommentCard';
+import Loading from "../../../utils/Loading"
+import { Link } from 'react-router-dom';
+import { useView } from '../../../context/ViewContext';
 
 function CommentsBox({ postId }) {
-  const { user } = useAuth();
-  const { data: profile } = useProfileQuery(user?.id);
-  const { useFetchComments, useInsertComment, useUpdateComment, useDeleteComment } = useComments();
-  const { data: comments } = useFetchComments(postId)
-  const [showAll, setShowAll] = useState(false);
-  const [openMenuId, setOpenMenuId] = useState(null);
-  // helper states to edit the comment
-  const [editingCommentId, setEditingCommentId] = useState(null);
-  const [editedContent, setEditedContent] = useState('');
-  
+  const { manageView } = useView();
+  const { user } = useAuth(); // logged user
+  const { data: profile } = useProfileQuery(user?.id); // retrieve logged users data
+  const { 
+    useFetchComments, 
+    useInsertComment, 
+    useUpdateComment, 
+    useDeleteComment, 
+    isLoading: isCommentsLoading 
+  } = useComments(); // to manage comments CRUD
+  const { data: comments } = useFetchComments(postId) // retrieve comments from a specific post
+  const [showAll, setShowAll] = useState(false);// show/hide all comments
   // obtain all the data (id, avatar_url and username) for each profile that left a comment
   const profileIds = comments?.map(comment => comment.profile_id) ?? [];
-  const { data: profileMap, isLoading: profilesLoading} = useProfilesMap(profileIds);
+  const { data: profileMap, isLoading: profilesLoading} = useProfilesMap(profileIds);  
   
   // Form with react-hook-form
   const {
@@ -29,6 +34,7 @@ function CommentsBox({ postId }) {
     formState: { errors }
   } = useForm();
 
+  if (profilesLoading || isCommentsLoading)  return <Loading />;
 
   // Send new comment
   const onSubmit = async (data) => {
@@ -53,25 +59,10 @@ function CommentsBox({ postId }) {
       await useDeleteComment( comment );
     } catch (error) {
       console.error("error trying to delete comment", error);      
-    } finally {
-      setOpenMenuId(null);
     }
   };
 
-  // Edit comment
-  const handleEditComment = (comment) => {
-    if (!comment) {
-      setEditingCommentId(null);
-      setEditedContent("");
-      return;
-    }
-
-    setEditingCommentId(comment.id);
-    setEditedContent(comment.content);
-    setOpenMenuId(null);
-  };
-
-  const handleSaveEditedComment = async (commentId, postId) => {
+  const handleSaveEditedComment = async (commentId, postId, editedContent) => {
     try {
       await useUpdateComment({ 
         id: commentId,
@@ -79,17 +70,31 @@ function CommentsBox({ postId }) {
         updatedComment: {
           content: editedContent,
           updated_at: new Date().toISOString()
-        } });
-
-      setEditingCommentId(null);
-      setEditedContent("");
+        }});
     } catch (error) {
       console.error("Error updating comment", error);      
     }
   }
 
+  // function to handle the reply
+  const onReplySubmit = async (data) => {
+    const comment = {
+      post_id: postId,
+      profile_id: user.id,
+      content: data.content,
+      parent_id: data.parent_id ?? null,
+    }
+
+    try {
+      await useInsertComment(comment);
+    } catch (error) {
+      console.error("Could not insert reply", error);
+      
+    }
+  }
+
   return (
-    <div className="max-w-2xl w-full mx-auto mt-4 border-t pt-4 text-sm text-zinc-800 dark:text-zinc-100">
+    <div className="w-full mt-4 border-t pt-4 text-sm text-zinc-800 dark:text-zinc-100">
       <div className="mb-4">
 
         {/* if there is more than 2 comments, make "more comments" option visible */}
@@ -109,13 +114,11 @@ function CommentsBox({ postId }) {
           comment={comment}
           profile={profileMap?.[comment.profile_id]}
           onDelete={handleDeleteComment}
-          onEdit={handleEditComment}
-          isMenuOpen={openMenuId === comment.id}
-          setOpenMenuId={setOpenMenuId}
-          isEditing={editingCommentId === comment.id}
-          editedContent={editedContent}
-          setEditedContent={setEditedContent}
           onSaveEdit={handleSaveEditedComment}
+          replies={comment.replies}
+          profilesMap={profileMap}
+          onReplySubmit={onReplySubmit}
+          currentUserId={user.id}
           />
         ))}
 
@@ -127,7 +130,11 @@ function CommentsBox({ postId }) {
   
       {/* Form to send comment */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex items-start gap-3 mt-4">
-        <ProfileAvatar avatar_url={profile.avatar_url} className="!w-10 !h-10" />
+        <Link
+        onClick={() => manageView("about", "profile")} 
+        to={`/profile/${profile.id}`}>
+          <ProfileAvatar avatar_url={profile.avatar_url} className="!w-10 !h-10" />
+        </Link>
 
         {/* write a comment */}
         <div className="flex-1">          
@@ -137,18 +144,19 @@ function CommentsBox({ postId }) {
             className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 resize-none"
             rows={2}
           />
-          {errors.comment && (
-            <span className="text-red-500 text-xs">Write something.</span>
-          )}
 
           {/* submit comment */}
           <button
             type="submit"
             className="mt-2 px-4 py-1 bg-sky-700 hover:bg-sky-800 text-white rounded-md text-sm"
-          >
+            >
             Send
           </button>
-
+          
+          {/* error on submit */}
+          {errors.comment && (
+            <span className="text-red-500 text-xs">Write something.</span>
+          )}
         </div>
       </form>
     </div>

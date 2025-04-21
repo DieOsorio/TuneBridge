@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { FaChevronRight } from "react-icons/fa"; // Import the icon
 import Input from "../ui/Input";
 import Button from "../ui/Button";
@@ -11,24 +11,17 @@ import Loading from "../../utils/Loading";
 const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"];
 
 const EditMusicInfo = ({ profileId }) => {
-  const { data: roles, isLoading, isError } = fetchRolesQuery(profileId); // asumiendo que fetchRolesQuery te da un estado de carga
+  const { data: roles, isLoading, isError } = fetchRolesQuery(profileId); 
   const { addRole, deleteRole } = useRoles();
   const [selectedRole, setSelectedRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [customRole, setCustomRole] = useState("");
   const [expandedRole, setExpandedRole] = useState(null);
 
-  useEffect(() => {
-    if (isLoading) {
-      // Si está cargando, no se hace nada
-      return;
-    }
+  if (isLoading) return <Loading />
 
-    // Cuando termina de cargar, puedes realizar alguna acción (si es necesario)
-    if (isError) {
-      setErrorMessage("Error loading roles");
-    }
-  }, [isLoading, isError]);
+  if (isError) return <ErrorMessage error={isError.message} />
+
 
   const handleAddRole = useCallback(() => {
     const roleName = selectedRole === "Other" ? customRole.trim() : selectedRole;
@@ -65,12 +58,11 @@ const EditMusicInfo = ({ profileId }) => {
     setExpandedRole((prev) => (prev === roleId ? null : roleId));
   }, []);
 
-  // Si los roles no están cargados aún, muestra un loading message
+ 
   if (isLoading) {
     return <Loading />
   }
 
-  // Si hay un error cargando los roles
   if (isError) {
     return <ErrorMessage error={isError.message} />;
   }

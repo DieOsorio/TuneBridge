@@ -5,7 +5,7 @@ const Loading = () => {
   const circleRef = useRef(null);
 
   useEffect(() => {
-    // Rotación infinita
+    // infinite rotation
     gsap.to(circleRef.current, {
       rotation: 360,
       repeat: -1,
@@ -13,7 +13,7 @@ const Loading = () => {
       duration: 2,
     });
 
-    // Efecto pulsante
+    // pulsing effect
     gsap.to(circleRef.current, {
       scale: 1.2,
       repeat: -1,

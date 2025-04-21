@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import { nestComments } from "../../components/social/comments/helpers/comments";
 
 // FETCH COMMENTS FROM A SPECIFIC POST
 export const useFetchCommentsQuery = (postId) => {
@@ -14,7 +15,7 @@ export const useFetchCommentsQuery = (postId) => {
       .order("created_at", { ascending: true });
       
       if (error) throw new Error(error.message);
-      return data;
+      return nestComments(data);
     },
     enabled: !!postId
   })
@@ -75,8 +76,6 @@ export const useUpdateCommentMutation = () => {
 
   return useMutation({
     mutationFn: async ({id, updatedComment}) => {
-      console.log("ID of the comment", id);
-      console.log("updated comment", updatedComment);
       
       const { data, error } = await supabase
       .schema("social")

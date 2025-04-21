@@ -19,14 +19,15 @@ const Profile = () => {
 
   const { identifier } = useParams(); // Get the profile identifier from the URL
   const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
-  const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(identifier);
-  const { externalView, internalView, manageView } = useView();
+  const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(identifier); // Get the profile data
+  const { externalView, internalView, manageView } = useView(); // Context to manage views
 
+  // On refresh goes to profile -> about View
   useEffect(() => {
     if (!externalView) {
       manageView("about", "profile")
     }
-  }, [externalView]);
+  }, [externalView, manageView]);
   
 
   if (authLoading || profileQueryLoading) {
@@ -71,25 +72,20 @@ const Profile = () => {
 
         {/* Notifications View */}
         {isOwnProfile && 
-            externalView === "notifications" && 
-            <Notifications profileId={profileData.id} />}
-
-
+        externalView === "notifications" && 
+        <Notifications profileId={profileData.id} />}
 
         {/* Default Profile View */}
         {externalView === "profile" && (
-          <div className="bg-white shadow-md rounded-lg p-6 flex flex-col gap-8">
+        <div className="bg-white shadow-md rounded-lg p-6 flex flex-col gap-8">          
+          {internalView === "about" && 
+          <ProfileData profileData={profileData} />}
 
-            
-            {internalView === "about" && 
-            <ProfileData profileData={profileData} />}
+          {internalView === "about" && 
+          <DisplayMusicInfo profileId={profileData.id} />} 
 
-            {internalView === "about" && 
-            <DisplayMusicInfo profileId={profileData.id} />} 
-
-            <ConnectionsList profileId={profileData.id} checkStatus="accepted" />             
-                        
-          </div>
+          <ConnectionsList profileId={profileData.id} checkStatus="accepted" />                                   
+        </div>
         )}
       </div>
     </div>

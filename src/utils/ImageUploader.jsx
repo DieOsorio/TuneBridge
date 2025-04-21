@@ -26,7 +26,7 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
       triggerEl.addEventListener('click', openDialog);
       return () => triggerEl.removeEventListener('click', openDialog);
     }
-  }, [amount, triggerRef]);
+  }, [amount, triggerRef?.current]);
 
   return (
     <div className={amount === 1 ? 'hidden' : ''}>

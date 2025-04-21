@@ -15,8 +15,7 @@ const Login = () => {
   // Redirect to the user's profile if already authenticated
   useEffect(() => {
     if (user && user.email_confirmed_at && !loading) {
-      navigate(`/profile/${user.id}`); // Redirect to the profile page
-      console.log("User is authenticated, redirecting to profile page.");   
+      navigate(`/profile/${user.id}`); // Redirect to the profile page  
     }
   }, [user, navigate, loading]);
 
