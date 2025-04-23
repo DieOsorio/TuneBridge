@@ -1,11 +1,10 @@
-import { fetchComposerQuery } from "../../context/music/ComposerDetailsActions";
 import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const ComposerEditor = ({ role, profileId }) => {
-  const { data: composerDetails } = fetchComposerQuery(role.id)
-  const { refetch, addComposer: addDetails, updateComposer: updateDetails, deleteComposer: deleteDetails } =
-    useComposerDetails();
+  const { fetchComposer, refetch, addComposer: addDetails, updateComposer: updateDetails, deleteComposer: deleteDetails } =
+  useComposerDetails();
+  const { data: composerDetails } = fetchComposer(role.id)
 
   const sanitizeInput = (details) => {
     return {

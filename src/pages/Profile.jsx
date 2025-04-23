@@ -14,12 +14,14 @@ import ProfileData from "../components/profiles/ProfileData";
 import ProfileHeader from "../components/profiles/ProfileHeader";
 import Edit from "./Edit";
 import Notifications from "../components/social/Notifications";
+import { useProfile } from "../context/profile/ProfileContext";
 
 const Profile = () => {
 
   const { identifier } = useParams(); // Get the profile identifier from the URL
   const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
-  const { data: profileData, isLoading: profileQueryLoading, error } = useProfileQuery(identifier); // Get the profile data
+  const { fetchProfile } = useProfile();
+  const { data: profileData, isLoading: profileQueryLoading, error } = fetchProfile(identifier); // Get the profile data
   const { externalView, internalView, manageView } = useView(); // Context to manage views
 
   // On refresh goes to profile -> about View

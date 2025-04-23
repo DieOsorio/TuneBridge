@@ -1,13 +1,17 @@
-import { fetchSingerQuery } from "../../context/music/SingerDetailsActions";
 import { useSingerDetails } from "../../context/music/SingerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const SingerEditor = ({ role, profileId }) => {
   // Fetch singer details using the role ID
-  const { data: singerDetails} = fetchSingerQuery(role.id);
   // Destructure the functions from the context
-  const { addSinger: addDetails, updateSinger: updateDetails, deleteSinger: deleteDetails, refetch } =
-    useSingerDetails();
+  const {
+    fetchSinger, 
+    addSinger: addDetails, 
+    updateSinger: updateDetails, 
+    deleteSinger: deleteDetails, 
+    refetch } =
+  useSingerDetails();
+  const { data: singerDetails} = fetchSinger(role.id);
 
   // Sanitize input function to trim whitespace and convert empty strings to null  
   const sanitizeInput = (details) => {

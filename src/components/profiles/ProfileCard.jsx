@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
-import { useFetchConnectionsQuery } from "../../context/social/userConnectionsActions";
 import { useAuth } from "../../context/AuthContext";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im"
@@ -9,8 +8,8 @@ import { useView } from "../../context/ViewContext";
 
 const ProfileCard = ({ profile }) => {
     const { user } = useAuth();
-    const { data: connections } = useFetchConnectionsQuery(profile.id)
-    const { addConnection, deleteConnection, updateConnection } = useUserConnections();
+    const { addConnection, deleteConnection, userConnections } = useUserConnections();
+    const { data: connections } = userConnections(profile.id)
     const [hoverText, setHoverText] = useState("");
     const { manageView } = useView();
     

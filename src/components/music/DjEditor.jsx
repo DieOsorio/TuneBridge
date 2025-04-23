@@ -1,10 +1,9 @@
-import { fetchDjQuery } from "../../context/music/djDetailsActions";
 import { useDjDetails } from "../../context/music/DjDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const DjEditor = ({ role, profileId }) => {
-  const { data: djDetails } = fetchDjQuery(role.id);
-  const { refetch, addDj: addDetails, updateDj: updateDetails, deleteDj: deleteDetails } = useDjDetails();
+  const { fetchDj, refetch, addDj: addDetails, updateDj: updateDetails, deleteDj: deleteDetails } = useDjDetails();
+  const { data: djDetails } = fetchDj(role.id);
 
   const sanitizeInput = (details) => {
     return {

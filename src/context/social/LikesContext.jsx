@@ -12,21 +12,20 @@ const LikesContext = createContext();
 LikesContext.displayName = "LikesContext";
 
 export const LikesProvider = ({children}) => {
-  const { data, isLoading, error, refetch } = useFetchLikesQuery();
-  const useUserLikes = useUserLikesQuery();
-  const useInsertLike = useInsertLikeMutation();
-  const useUpdateLike = useUpdateLikeMutation();
-  const useDeleteLike = useDeleteLikeMutation();
+  const { data: likes, isLoading: loading, error, refetch } = useFetchLikesQuery();
+  const insertLike = useInsertLikeMutation().mutateAsync;
+  const updateLike = useUpdateLikeMutation().mutateAsync;
+  const deleteLike = useDeleteLikeMutation().mutateAsync;
 
   const value = {
-    likes: data,
-    loading: isLoading,
+    likes,
+    loading,
     error,
     refetch,
-    useUserLikes: useUserLikes,
-    useInsertLike: useInsertLike.mutateAsync,
-    useUpdateLike: useUpdateLike.mutateAsync,
-    useDeleteLike: useDeleteLike.mutateAsync,
+    userLikes: useUserLikesQuery,
+    insertLike,
+    updateLike,
+    deleteLike,
   };
 
   return(
@@ -44,7 +43,7 @@ LikesProvider.PropTypes = {
 export const useLikes = () => {
   const context = useContext(LikesContext);
   if (!context) {
-    throw new Error("useLies must be used within a LikesProvider")
+    throw new Error("useLikes must be used within a LikesProvider")
   }
   return context;
 };

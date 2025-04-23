@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState} from "react";
 import PropTypes from "prop-types";
 import { 
-    fetchRolesQuery, 
-    addRoleMutation, 
-    deleteRoleMutation } 
+    useFetchRolesQuery, 
+    useAddRoleMutation, 
+    useDeleteRoleMutation } 
     from "./rolesActions";
 
 
@@ -12,15 +12,16 @@ RolesContext.displayName = "RolesContext";
 
 export const RolesProvider = ({ children }) => {
 
-    const {data, isLoading, error, refetch} = fetchRolesQuery();
-    const addRole = addRoleMutation();
-    const deleteRole = deleteRoleMutation();  
+    const {data, isLoading, error, refetch} = useFetchRolesQuery();
+    const addRole = useAddRoleMutation();
+    const deleteRole = useDeleteRoleMutation();  
     
   const value = {
     roles: data || [],
     loading: isLoading,
     error,
     refetchRoles: refetch,
+    fetchRoles: useFetchRolesQuery,
     addRole: addRole.mutateAsync,
     deleteRole: deleteRole.mutateAsync,
   };

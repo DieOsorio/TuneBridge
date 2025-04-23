@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
-import { useProfileQuery } from "../../context/profile/profileActions";
 import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 import { ImCross } from "react-icons/im";
 import { FaCheck } from 'react-icons/fa';
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
+import { useProfile } from "../../context/profile/ProfileContext";
 
-const ConnectionCard = ({ profileId, id }) => { 
-    const { data: profile, isLoading: loading, error } = useProfileQuery(profileId);
+const ConnectionCard = ({ profileId, id }) => {
+    const { fetchProfile } = useProfile(); 
+    const { data: profile, isLoading: loading, error } = fetchProfile(profileId);
     const { updateConnection, deleteConnection } = useUserConnections();
     
     

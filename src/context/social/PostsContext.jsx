@@ -2,6 +2,7 @@ import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
 import {
   useFetchPostsQuery,
+  useUserPostsQuery,
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
@@ -11,19 +12,20 @@ const PostsContext = createContext();
 PostsContext.displayName = "PostsContext";
 
 export const PostsProvider = ({ children }) => {
-  const { data, isLoading, error, refetch } = useFetchPostsQuery();
-  const createPost = useCreatePostMutation();
-  const updatePost = useUpdatePostMutation();
-  const deletePost = useDeletePostMutation();
+  const { data: posts, isLoading: loading, error, refetch } = useFetchPostsQuery();
+  const createPost = useCreatePostMutation().mutateAsync;
+  const updatePost = useUpdatePostMutation().mutateAsync;
+  const deletePost = useDeletePostMutation().mutateAsync;
 
   const value = {
-    posts: data,
-    loading: isLoading,
+    posts,
+    loading,
     error,
     refetch,
-    createPost: createPost.mutateAsync,
-    updatePost: updatePost.mutateAsync,
-    deletePost: deletePost.mutateAsync,    
+    createPost,
+    updatePost,
+    deletePost,
+    userPosts: useUserPostsQuery,    
   }
 
   return (

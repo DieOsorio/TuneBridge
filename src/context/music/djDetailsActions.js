@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // FETCH ALL DJ DETAILS FOR A PROFILE
-export const fetchDjQuery = (roleId) => {
+export const useFetchDjQuery = (roleId) => {
   return useQuery({
     queryKey: ["djDetails", roleId],
     queryFn: async() => {
@@ -25,7 +25,7 @@ export const fetchDjQuery = (roleId) => {
 
 
 // ADD NEW DJ INFORMATION
-export const addDjMutation = () => {
+export const useAddDjMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,7 +74,7 @@ export const addDjMutation = () => {
 
 
 // UPDATE AN EXISTING DJ INFO
-export const updateDjMutation = () => {
+export const useUpdateDjMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -123,7 +123,7 @@ export const updateDjMutation = () => {
 }
 
 // DELETE A DJ
-export const deleteDjMutation = () => {
+export const useDeleteDjMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

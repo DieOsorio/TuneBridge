@@ -11,15 +11,15 @@ const CommentsContext = createContext();
 CommentsContext.displayName = "CommentsContext";
 
 export const CommentsProvider = ({children}) => {
-  const useInsertComment = useInsertCommentMutation();
-  const useUpdateComment = useUpdateCommentMutation();
-  const useDeleteComment = useDeleteCommentMutation();
+  const insertComment = useInsertCommentMutation().mutateAsync;
+  const updateComment = useUpdateCommentMutation().mutateAsync;
+  const deleteComment = useDeleteCommentMutation().mutateAsync;
 
   const value = {
-    useFetchComments: useFetchCommentsQuery,
-    useInsertComment: useInsertComment.mutateAsync,
-    useUpdateComment: useUpdateComment.mutateAsync,
-    useDeleteComment: useDeleteComment.mutateAsync,
+    fetchComments: useFetchCommentsQuery,
+    insertComment,
+    updateComment,
+    deleteComment,
   };
 
   return(

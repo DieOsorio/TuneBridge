@@ -1,23 +1,29 @@
 import React, { useState } from "react";
 import DisplayRoleInfo from "./DisplayRoleInfo";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { fetchInstrumentsQuery } from "../../context/music/instrumentDetailsActions";
-import { fetchRolesQuery } from "../../context/music/rolesActions";
-import { fetchSingerQuery } from "../../context/music/SingerDetailsActions";
-import { fetchComposerQuery } from "../../context/music/ComposerDetailsActions";
-import { fetchProducerQuery } from "../../context/music/ProducerDetailsActions";
-import { fetchDjQuery } from "../../context/music/djDetailsActions";
 import  Loading  from "../../utils/Loading"
 import  ErrorMessage  from "../../utils/ErrorMessage"
+import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
+import { useDjDetails } from "../../context/music/DjDetailsContext";
+import { useInstrumentsDetails } from "../../context/music/InstrumentDetailsContext";
+import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
+import { useRoles } from "../../context/music/RolesContext";
+import { useSingerDetails } from "../../context/music/SingerDetailsContext";
 
 const DisplayMusicInfo = ({ profileId }) => {
   const  [roleId, setRoleId]  = useState();
-  const { data:roles, isLoading: loading, error} = fetchRolesQuery(profileId);
-  const { data:instruments } = fetchInstrumentsQuery(roleId)
-  const { data: singerDetails } = fetchSingerQuery(roleId);
-  const { data: composerDetails } = fetchComposerQuery(roleId);
-  const { data: producerDetails } = fetchProducerQuery(roleId);
-  const { data: djDetails } = fetchDjQuery(roleId);
+  const { fetchRoles } = useRoles();
+  const { data: roles, isLoading: loading, error} = fetchRoles(profileId);
+  const { fetchInstruments } = useInstrumentsDetails();
+  const { data:instruments } = fetchInstruments(roleId)
+  const { fetchSinger } = useSingerDetails();
+  const { data: singerDetails } = fetchSinger(roleId);
+  const { fetchComposer } = useComposerDetails();
+  const { data: composerDetails } = fetchComposer(roleId);
+  const { fetchProducer } = useProducerDetails();
+  const { data: producerDetails } = fetchProducer(roleId);
+  const { fetchDj } = useDjDetails();
+  const { data: djDetails } = fetchDj(roleId);
   const [expandedRole, setExpandedRole] = useState(null); // Track which role is expanded
 
   const handleRoleClick = (role) => {

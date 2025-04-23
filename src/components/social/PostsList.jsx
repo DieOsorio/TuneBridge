@@ -1,11 +1,11 @@
 import PostCard from './PostCard';
-import { useFetchPostsQuery, useUserPostsQuery } from '../../context/social/postsActions';
 import Loading from '../../utils/Loading';
 import ErrorMessage from '../../utils/ErrorMessage';
+import { usePosts } from '../../context/social/PostsContext';
 
-const PostsList = ({ profileId }) => {    
-    const { data:posts, isLoading, error } = useUserPostsQuery(profileId); // Fetch posts based on profileId
-    const {data: allPosts} = useFetchPostsQuery() //fetch all posts
+const PostsList = ({ profileId }) => { 
+    const { posts: allPosts, userPosts } = usePosts()  
+    const { data:posts, isLoading, error } = userPosts(profileId); // Fetch posts based on profileId
     
     if (isLoading) return <Loading /> ;
     if (error) return <ErrorMessage error={error.message} />;

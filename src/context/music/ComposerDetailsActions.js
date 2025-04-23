@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // FETCH ALL COMPOSER DETAILS FOR A PROFILE
-export const fetchComposerQuery = (roleId) => {
+export const useFetchComposerQuery = (roleId) => {
   return useQuery({
     queryKey: ["composerDetails", roleId],
     queryFn: async() => {
@@ -25,7 +25,7 @@ export const fetchComposerQuery = (roleId) => {
 
 
 // ADD NEW COMPOSER INFORMATION
-export const addComposerMutation = () => {
+export const useAddComposerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,7 +74,7 @@ export const addComposerMutation = () => {
 
 
 // UPDATE AN EXISTING COMPOSER INFO
-export const updateComposerMutation = () => {
+export const useUpdateComposerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -124,7 +124,7 @@ export const updateComposerMutation = () => {
 
 
 // DELETE A COMPOSER
-export const deleteComposerMutation = () => {
+export const useDeleteComposerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

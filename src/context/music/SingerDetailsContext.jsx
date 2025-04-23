@@ -1,26 +1,27 @@
 import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
 import {
-  fetchSingerQuery,
-  addSingerMutation,
-  updateSingerMutation,
-  deleteSingerMutation,
+  useFetchSingerQuery,
+  useAddSingerMutation,
+  useUpdateSingerMutation,
+  useDeleteSingerMutation,
 } from "./SingerDetailsActions";
 
 const SingerDetailsContext = createContext();
 SingerDetailsContext.displayName = "SingerDetailsContext";
 
 export const SingerDetailsProvider = ({ children }) => {
-  const {data, isLoading, error, refetch} = fetchSingerQuery();
-  const addSinger = addSingerMutation();
-  const updateSinger = updateSingerMutation();
-  const deleteSinger = deleteSingerMutation();
+  const {data: singerDetails, isLoading: loading, error, refetch} = useFetchSingerQuery();
+  const addSinger = useAddSingerMutation();
+  const updateSinger = useUpdateSingerMutation();
+  const deleteSinger = useDeleteSingerMutation();
 
   const value = {
-        singerDetails: data,
-        loading: isLoading,
+        singerDetails,
+        loading,
         error,
         refetch,
+        fetchSinger: useFetchSingerQuery,
         addSinger: addSinger.mutateAsync,
         updateSinger: updateSinger.mutateAsync,
         deleteSinger: deleteSinger.mutateAsync,

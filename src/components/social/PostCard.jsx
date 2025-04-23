@@ -10,7 +10,6 @@ import { usePrefetchProfile, useProfileQuery } from '../../context/profile/profi
 import ErrorMessage from '../../utils/ErrorMessage';
 import Loading from '../../utils/Loading';
 import { useLikes } from '../../context/social/LikesContext';
-import { useUserLikesQuery } from '../../context/social/likesActions';
 import CommentsBox from './comments/CommentsBox';
 import ProfileMinibox from '../profiles/ProfileMinibox';
 
@@ -29,15 +28,17 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/zoom';
 import 'swiper/css/effect-coverflow';
+import { useProfile } from '../../context/profile/ProfileContext';
 
 
 
 function PostCard({ post }) {
   const { user } = useAuth(); // logged user
   const [isHovered, setIsHovered] = useState(false);
-  const { data: profile, error, isLoading } = useProfileQuery(post.profile_id); // retrive the profile associated with the post
-  const { data: likes } = useUserLikesQuery(user.id); // retrive the likes aassociated with logged user
-  const { useInsertLike, useDeleteLike } = useLikes(); // custom hooks to manage the likes
+  const { fetchProfile } = useProfile();
+  const { data: profile, error, isLoading } = fetchProfile(post.profile_id); // retrive the profile associated with the post
+  const { useInsertLike, useDeleteLike, userLikes } = useLikes(); // custom hooks to manage the likes
+  const { data: likes } = userLikes(user.id); // retrive the likes aassociated with logged user
   const { manageView } = useView(); // manage the views
   const [showMinibox, setShowMinibox] = useState(false); // manage minibox visibility
   const [showComments, setShowComments] = useState(false); // manage comments visibility

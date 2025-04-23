@@ -7,7 +7,6 @@ import CommentMenu from "./CommentMenu";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { useView } from "../../../context/ViewContext";
 import { useLikes } from "../../../context/social/LikesContext";
-import { useUserLikesQuery } from "../../../context/social/likesActions";
 
 function CommentCard({ 
   comment, // comment object
@@ -27,6 +26,7 @@ function CommentCard({
   const [isEditing, setIsEditing] = useState(false); // manage editing comment box
   const [editedContent, setEditedContent] = useState(comment.content); // manage the edited content
   const {
+    userLikes,
     useInsertLike,
     useDeleteLike,
     loading: likesLoading,
@@ -34,7 +34,7 @@ function CommentCard({
   const {
     data: likes,
     isLoading
-  } = useUserLikesQuery(profile.id);
+  } = userLikes(profile.id);
 
   const isMenuOpen = localOpenMenuId === comment.id; 
   const isOwner = currentUserId === comment.profile_id; // check if logged user has a comment submited

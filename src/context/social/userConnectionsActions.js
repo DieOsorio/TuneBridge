@@ -25,7 +25,7 @@ export const useFetchConnectionsQuery = (profileId) => {
 
 
 // ADD NEW CONNECTION (FOLLOW)
-export const addConnectionMutation = () => {
+export const useAddConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,7 +74,7 @@ export const addConnectionMutation = () => {
 
 
 // UPDATE AN CONNECTION
-export const updateConnectionMutation = () => {
+export const useUpdateConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -124,7 +124,7 @@ export const updateConnectionMutation = () => {
 
 
 // DELETE CONNECTION (UNFOLLOW)
-export const deleteConnectionMutation = () => {
+export const useDeleteConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

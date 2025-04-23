@@ -7,29 +7,28 @@ import {
     useCreateProfile,
     useUpdateProfile,
     useDeleteProfile,
+    useProfilesMap,
 } from './profileActions';
 
 const ProfileContext = createContext(null);
 ProfileContext.displayName = "ProfileContext";
 
 export const ProfileProvider = ({ children }) => {
-
-    const profileQuery = useProfileQuery;
-    const allProfilesQuery = useAllProfilesQuery();
-    const createProfile = useCreateProfile();
-    const updateProfile = useUpdateProfile();
-    const deleteProfile = useDeleteProfile();
+    const {data: allProfiles, isLoading: loading, error, refetch} = useAllProfilesQuery();
+    const createProfile = useCreateProfile().mutateAsync;
+    const updateProfile = useUpdateProfile().mutateAsync;
+    const deleteProfile = useDeleteProfile().mutateAsync;
 
     const value = {
-        profile: profileQuery.data,
-        allProfiles: allProfilesQuery.data,
-        loading: profileQuery.isLoading || allProfilesQuery.isLoading,
-        error: profileQuery.error || allProfilesQuery.error,
-        useProfileQuery: useProfileQuery,
-        useAllProfilesQuery: allProfilesQuery,
-        createProfile: createProfile.mutateAsync,
-        updateProfile: updateProfile.mutateAsync,
-        deleteProfile: deleteProfile.mutateAsync,
+        allProfiles,
+        loading,
+        error,
+        refetch,
+        fetchProfile: useProfileQuery,
+        profilesMap: useProfilesMap,
+        createProfile,
+        updateProfile,
+        deleteProfile,
     };
 
     return (

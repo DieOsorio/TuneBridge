@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // Fetch all instruments for a profile
-export const fetchInstrumentsQuery = (roleId) => {
+export const useFetchInstrumentsQuery = (roleId) => {
   
   return useQuery({
     queryKey: ["instrumentDetails", roleId],
@@ -26,7 +26,7 @@ export const fetchInstrumentsQuery = (roleId) => {
 };
 
 // ADD NEW INSTRUMENT INFORMATION
-export const addInstrumentMutation = () => {
+export const useAddInstrumentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -75,7 +75,7 @@ export const addInstrumentMutation = () => {
 
 
 // Update an existing instrument
-export const updateInstrumentMutation = () => {
+export const useUpdateInstrumentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -125,7 +125,7 @@ export const updateInstrumentMutation = () => {
 
 
 // Delete an instrument
-export const deleteInstrumentMutation = () => {
+export const useDeleteInstrumentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

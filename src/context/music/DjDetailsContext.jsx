@@ -1,29 +1,30 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
-  fetchDjQuery,
-  addDjMutation,
-  updateDjMutation,
-  deleteDjMutation,
+  useFetchDjQuery,
+  useAddDjMutation,
+  useUpdateDjMutation,
+  useDeleteDjMutation,
 } from "./djDetailsActions";
 
 const DjDetailsContext = createContext();
 DjDetailsContext.displayName = "DjDetailsContext";
 
 export const DjDetailsProvider = ({ children }) => { 
-  const { data, isLoading, error, refetch} = fetchDjQuery();
-  const addDj = addDjMutation()
-  const updateDj = updateDjMutation();
-  const deleteDj = deleteDjMutation();
+  const { data: djDetails, isLoading: loading, error, refetch} = useFetchDjQuery();
+  const addDj = useAddDjMutation().mutateAsync;
+  const updateDj = useUpdateDjMutation().mutateAsync;
+  const deleteDj = useDeleteDjMutation().mutateAsync;
 
   const value = {
-    djDetails: data,
-    loading: isLoading,
+    djDetails,
+    loading,
     error,
     refetch,
-    addDj: addDj.mutateAsync,
-    updateDj: updateDj.mutateAsync,
-    deleteDj: deleteDj.mutateAsync,      
+    fetchDj: useFetchDjQuery,
+    addDj,
+    updateDj,
+    deleteDj,      
   };
 
 

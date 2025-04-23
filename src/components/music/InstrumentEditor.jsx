@@ -1,11 +1,10 @@
-import { fetchInstrumentsQuery } from "../../context/music/instrumentDetailsActions";
-import { useInstruments } from "../../context/music/InstrumentDetailsContext";
+import { useInstrumentsDetails } from "../../context/music/InstrumentDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const InstrumentEditor = ({ role, profileId }) => {
-  const {data:instruments} = fetchInstrumentsQuery(role.id)
-  const { refetch, addInstrument, updateInstrument, deleteInstrument } =
-    useInstruments();
+  const { fetchInstruments, refetch, addInstrument, updateInstrument, deleteInstrument } =
+  useInstrumentsDetails();
+  const {data:instruments} = fetchInstruments(role.id)
   
   const sanitizeInput = (details) => {
     return {

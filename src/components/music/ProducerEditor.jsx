@@ -1,11 +1,14 @@
-import { fetchProducerQuery } from "../../context/music/ProducerDetailsActions";
 import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const ProducerEditor = ({ role, profileId }) => {
-  const { data: producerDetails} = fetchProducerQuery(role.id)
-  const { refetch, addProducer: addDetails, updateProducer: updateDetails, deleteProducer: deleteDetails } =
-    useProducerDetails();
+  const {
+    fetchProducer, 
+    refetch,
+    addProducer: addDetails, 
+    updateProducer: updateDetails, 
+    deleteProducer: deleteDetails } = useProducerDetails();
+    const { data: producerDetails} = fetchProducer(role.id)
 
   const sanitizeInput = (details) => {
     return {

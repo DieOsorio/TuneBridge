@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // FETCH ALL PRODUCER DETAILS FOR A PROFILE
-export const fetchProducerQuery = (roleId) => {
+export const useFetchProducerQuery = (roleId) => {
   return useQuery({
     queryKey: ["producerDetails", roleId],
     queryFn: async() => {
@@ -25,7 +25,7 @@ export const fetchProducerQuery = (roleId) => {
 
 
 // ADD NEW PRODUCER INFORMATION
-export const addProducerMutation = () => {
+export const useAddProducerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,7 +74,7 @@ export const addProducerMutation = () => {
 
 
 // UPDATE AN EXISTING PRODUCER INFO
-export const updateProducerMutation = () => {
+export const useUpdateProducerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -124,7 +124,7 @@ export const updateProducerMutation = () => {
 
 {}
 // DELETE A PRODUCER
-export const deleteProducerMutation = () => {
+export const useDeleteProducerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

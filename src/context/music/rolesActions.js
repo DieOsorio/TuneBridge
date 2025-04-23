@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/r
 import { supabase } from '../../supabase';
 
 // Fetch all roles for a profile
-export const fetchRolesQuery = (profileId) => {
+export const useFetchRolesQuery = (profileId) => {
   return useQuery({
     queryKey: ["roles", profileId],
     queryFn: async () => {
@@ -24,7 +24,7 @@ export const fetchRolesQuery = (profileId) => {
 }
 
 // Add a role to a profile
-export const addRoleMutation = () => {
+export const useAddRoleMutation = () => {
     const queryClient = useQueryClient();
 
   return useMutation({
@@ -70,7 +70,7 @@ export const addRoleMutation = () => {
 }
 
 // Delete a role from a profile
-export const deleteRoleMutation = () => {
+export const useDeleteRoleMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

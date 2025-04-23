@@ -1,8 +1,9 @@
 import ConnectionCard from './ConnectionCard';
-import { useFetchConnectionsQuery } from '../../context/social/userConnectionsActions';
+import { useUserConnections } from '../../context/social/UserConnectionsContext';
 
 function ConnectionsList({ checkStatus, profileId }) {
-    const { data: connections } = useFetchConnectionsQuery(profileId);
+    const { userConnections } = useUserConnections()
+    const { data: connections } = userConnections(profileId);
 
     // Return null if checkStatus isn't valid or there is no connections
     if (!['accepted', 'pending', 'blocked'].includes(checkStatus)) {

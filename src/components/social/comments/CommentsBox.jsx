@@ -3,28 +3,29 @@ import { useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import ProfileAvatar from '../../profiles/ProfileAvatar';
 import { useComments } from '../../../context/social/CommentsContext';
-import { useProfileQuery, useProfilesMap } from '../../../context/profile/profileActions';
 import CommentCard from './CommentCard';
 import Loading from "../../../utils/Loading"
 import { Link } from 'react-router-dom';
 import { useView } from '../../../context/ViewContext';
+import { useProfile } from '../../../context/profile/ProfileContext';
 
 function CommentsBox({ postId }) {
   const { manageView } = useView();
   const { user } = useAuth(); // logged user
-  const { data: profile } = useProfileQuery(user?.id); // retrieve logged users data
+  const { fetchProfile, profilesMap } = useProfile();
+  const { data: profile } = fetchProfile(user?.id); // retrieve logged users data
   const { 
-    useFetchComments, 
-    useInsertComment, 
-    useUpdateComment, 
-    useDeleteComment, 
+    fetchComments, 
+    insertComment, 
+    updateComment, 
+    deleteComment, 
     isLoading: isCommentsLoading 
   } = useComments(); // to manage comments CRUD
-  const { data: comments } = useFetchComments(postId) // retrieve comments from a specific post
+  const { data: comments } = fetchComments(postId) // retrieve comments from a specific post
   const [showAll, setShowAll] = useState(false);// show/hide all comments
   // obtain all the data (id, avatar_url and username) for each profile that left a comment
   const profileIds = comments?.map(comment => comment.profile_id) ?? [];
-  const { data: profileMap, isLoading: profilesLoading} = useProfilesMap(profileIds);  
+  const { data: profileMap, isLoading: profilesLoading} = profilesMap(profileIds);  
   
   // Form with react-hook-form
   const {
@@ -45,7 +46,7 @@ function CommentsBox({ postId }) {
     };
 
     try {
-      await useInsertComment(comment);
+      await insertComment(comment);
 
       reset();
     } catch (error) {
@@ -56,7 +57,7 @@ function CommentsBox({ postId }) {
   // Delete comment
   const handleDeleteComment = async (comment) => {
     try {
-      await useDeleteComment( comment );
+      await deleteComment( comment );
     } catch (error) {
       console.error("error trying to delete comment", error);      
     }
@@ -64,7 +65,7 @@ function CommentsBox({ postId }) {
 
   const handleSaveEditedComment = async (commentId, postId, editedContent) => {
     try {
-      await useUpdateComment({ 
+      await updateComment({ 
         id: commentId,
         post_id: postId, 
         updatedComment: {
@@ -86,7 +87,7 @@ function CommentsBox({ postId }) {
     }
 
     try {
-      await useInsertComment(comment);
+      await insertComment(comment);
     } catch (error) {
       console.error("Could not insert reply", error);
       

@@ -1,29 +1,30 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
-  fetchProducerQuery,
-  addProducerMutation,
-  updateProducerMutation,
-  deleteProducerMutation,
+  useFetchProducerQuery,
+  useAddProducerMutation,
+  useUpdateProducerMutation,
+  useDeleteProducerMutation,
 } from "./ProducerDetailsActions";
 
 const ProducerDetailsContext = createContext();
 ProducerDetailsContext.displayName = "ProducerDetailsContext";
 
 export const ProducerDetailsProvider = ({ children }) => {
-  const {data, isLoading, error, refetch} = fetchProducerQuery();
-  const addProducer = addProducerMutation();
-  const updateProducer = updateProducerMutation();
-  const deleteProducer = deleteProducerMutation();
+  const {data: composerDetails, isLoading: loading, error, refetch} = useFetchProducerQuery();
+  const addProducer = useAddProducerMutation().mutateAsync;
+  const updateProducer = useUpdateProducerMutation().mutateAsync;
+  const deleteProducer = useDeleteProducerMutation().mutateAsync;
 
   const value = {
-      composerDetails: data,
-      loading: isLoading,
+      composerDetails,
+      loading,
       error,
       refetch,
-      addProducer: addProducer.mutateAsync,
-      updateProducer: updateProducer.mutateAsync,
-      deleteProducer: deleteProducer.mutateAsync,
+      fetchProducer: useFetchProducerQuery,
+      addProducer,
+      updateProducer,
+      deleteProducer,
     };
 
   return (

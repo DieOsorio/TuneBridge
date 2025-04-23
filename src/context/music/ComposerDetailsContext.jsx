@@ -1,27 +1,28 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
-  fetchComposerQuery,
-  addComposerMutation,
-  updateComposerMutation,
-  deleteComposerMutation,
+  useFetchComposerQuery,
+  useAddComposerMutation,
+  useUpdateComposerMutation,
+  useDeleteComposerMutation,
 } from "./ComposerDetailsActions";
 
 const ComposerDetailsContext = createContext();
 ComposerDetailsContext.displayName = "ComposerDetailsContext";
 
 export const ComposerDetailsProvider = ({ children }) => {
-  const {data, isLoading, error, refetch} = fetchComposerQuery();
-  const addComposer = addComposerMutation();
-  const updateComposer = updateComposerMutation();
-  const deleteComposer = deleteComposerMutation();
+  const {data: composerDetails, isLoading: loading, error, refetch} = useFetchComposerQuery();
+  const addComposer = useAddComposerMutation();
+  const updateComposer = useUpdateComposerMutation();
+  const deleteComposer = useDeleteComposerMutation();
 
   const value ={
-      composerDetails: data,
-      loading: isLoading,
+      composerDetails,
+      loading,
       error,
       refetch,
       addComposer: addComposer.mutateAsync,
+      fetchComposer: useFetchComposerQuery,
       updateComposer: updateComposer.mutateAsync,
       deleteComposer: deleteComposer.mutateAsync,
     }

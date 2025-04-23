@@ -4,14 +4,14 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import RoleDataEditor from "./RoleDataEditor";
 import { useRoles } from "../../context/music/RolesContext";
-import { fetchRolesQuery } from "../../context/music/rolesActions";
 import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 
 const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"];
 
 const EditMusicInfo = ({ profileId }) => {
-  const { data: roles, isLoading, isError } = fetchRolesQuery(profileId); 
+  const { fetchRoles } = useRoles();
+  const { data: roles, isLoading, isError } = fetchRoles(profileId); 
   const { addRole, deleteRole } = useRoles();
   const [selectedRole, setSelectedRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
