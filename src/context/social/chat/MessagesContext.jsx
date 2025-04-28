@@ -11,26 +11,18 @@ const MessagesContext = createContext();
 MessagesContext.displayName = "MessagesContext";
 
 export const MessagesProvider = ({ children }) => {
-  const { data: allMessages, isLoading, error, refetch } = useFetchMessagesQuery();
-
   const insertMessage = useInsertMessageMutation().mutateAsync;
   const updateMessage = useUpdateMessageMutation().mutateAsync;
   const deleteMessage = useDeleteMessageMutation().mutateAsync;
 
-  return (
-    <MessagesContext.Provider value={{
-      allMessages,
-      messagesLoading: isLoading,
-      messagesError: error,
-      refetchMessages: refetch,
+  const value = {
+    fetchMessages: useFetchMessagesQuery,
+    insertMessage,
+    updateMessage,
+    deleteMessage,
+  };
 
-      insertMessage,
-      updateMessage,
-      deleteMessage,
-    }}>
-      {children}
-    </MessagesContext.Provider>
-  );
+  return <MessagesContext.Provider value={value}>{children}</MessagesContext.Provider>;
 };
 
 MessagesProvider.propTypes = {

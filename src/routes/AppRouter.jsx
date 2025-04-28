@@ -9,6 +9,8 @@ import Footer from "../components/ui/Footer";
 import SignUpSuccess from "../pages/SignUpSuccess";
 import AccountConfirmed from "../components/auth/AccountConfirmed";
 import LandingPage from "../pages/LandingPage";
+import ChatPage from "../components/social/chat/ChatPage";
+import ChatWindow from "../components/social/chat/ChatWindow";
 
 const AppRouter = () => {
     
@@ -26,6 +28,8 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
+          <Route path="/chat/" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+          <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/account-confirmed" element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />          
           <Route path="/profile/:identifier" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Routes>

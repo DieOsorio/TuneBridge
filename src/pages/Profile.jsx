@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
 import Sidebar from "../components/profiles/Sidebar";
 import { useAuth } from "../context/AuthContext";
-import { useProfileQuery } from "../context/profile/profileActions";
 import Loading from "../utils/Loading";
 import ErrorMessage from "../utils/ErrorMessage"
 import ConnectionsList from "../components/social/ConnectionsList";

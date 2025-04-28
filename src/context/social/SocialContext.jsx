@@ -3,18 +3,18 @@ import { UserConnectionsProvider } from "./UserConnectionsContext";
 import { PostsProvider } from "./PostsContext";
 import { LikesProvider } from "./LikesContext";
 import { CommentsProvider } from "./CommentsContext";
-import { MessagesProvider } from "./MessagesContext";
+import { ChatProvider } from "./chat/ChatContext";
 
 export const SocialProvider = ({ children }) => {
   return (
     <UserConnectionsProvider>
       <PostsProvider>
         <CommentsProvider>
-          <MessagesProvider>
+          <ChatProvider>
             <LikesProvider>
               {children}
             </LikesProvider>
-          </MessagesProvider>  
+          </ChatProvider>  
         </CommentsProvider>
       </PostsProvider>
     </UserConnectionsProvider>

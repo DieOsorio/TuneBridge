@@ -1,0 +1,275 @@
+Database Configuration Summary
+
+    Schema: users
+
+        Table: profiles => Stores general profile information of the user.
+
+        Columns:
+
+            id (UUID, auth.uid()): User ID, linked to Supabase authentication.
+
+            username (text): Username.
+
+            email (text): User email.
+
+            avatar_url (text): User avatar URL.
+
+            country (text): User country.
+
+            city (text): User city.
+
+            firstname (text): User first name.
+
+            lastname (text): User last name.
+
+            gender (text): User gender.
+
+            birthdate (date): User birthdate.
+
+            bio (text): User biography.
+
+
+    ------------   *   ------------
+
+
+    Schema: music
+
+        Table: roles => Stores user roles (instrumentalist, singer, DJ, producer, composer).
+
+        Columns:
+
+            id (UUID): Role ID.
+
+            role (text): Role name.
+
+            profile_id (UUID): Linked to the profiles table. (ON DELETE CASCADE, ON UPDATE CASCADE)
+
+        ------------   /   ------------
+
+        Table: instrumentist_details => Stores specific details of an instrumentalist.
+
+        Columns:
+
+            id (UUID): Detail ID.
+
+            role_id (UUID): Linked to the roles table.
+
+            instruments (text array): List of instruments played by the user.
+
+            years_of_experience (int, nullable): Years of experience.
+
+            level (int, nullable): User's skill level.
+
+        Triggers:
+
+            update_instruments_trigger: Updates the instruments column when a new instrument is added.
+
+        ------------   /   ------------
+
+        Table: singer_details => Stores specific details of a singer.
+
+        Columns:
+
+            id (UUID)
+
+            role_id (UUID)
+
+            voice_type (text)
+
+            music_genre (text)
+
+            level (text)
+
+        ------------   /   ------------
+
+        Table: dj_details => Stores specific details of a DJ.
+
+        Columns:
+
+            id (UUID)
+
+            role_id (UUID)
+
+            preferred_genres (text)
+
+            events_played (text, nullable)
+
+            level (text)
+
+            profile_id (UUID, ON DELETE/UPDATE CASCADE)
+
+        ------------   /   ------------
+
+        Table: producer_details => Stores specific details of a producer.
+
+        Columns:
+
+            id (UUID)
+
+            role_id (UUID)
+
+            production_type (text)
+
+            years_of_experience (int, nullable)
+
+            level (text)
+
+            profile_id (UUID, ON DELETE/UPDATE CASCADE)
+
+        ------------   /   ------------
+
+        Table: composer_details => Stores specific details of a composer.
+
+        Columns:
+
+            id (UUID)
+
+            role_id (UUID)
+
+            composition_style (text)
+
+            years_of_experience (int, nullable)
+
+            level (text)
+
+            profile_id (UUID, ON DELETE/UPDATE CASCADE)
+
+
+    ------------   *   ------------
+
+
+    Schema: social
+
+        Table: user_connections => Stores user connections (friendships, followers).
+
+        Columns:
+
+            id (UUID)
+
+            follower_profile_id (UUID, ref to users.profiles)
+
+            following_profile_id (UUID, ref to users.profiles)
+
+            status (text, UNIQUE)
+
+            updated_at (timestamp)
+
+        Triggers:
+
+            update_connection_status: Ensures connection status is updated.
+
+        ------------   /   ------------
+
+        Table: posts => Stores user posts.
+
+        Columns:
+
+            id (UUID)
+
+            profile_id (UUID, ref to users.profiles)
+
+            content (text)
+
+            image_url (text, optional)
+
+            created_at (timestamp)
+
+            updated_at (timestamp)
+
+        Triggers:
+
+            update_posts_timestamp: Automatically updates updated_at when edited.
+
+        ------------   /   ------------
+    
+        Table: comments => Stores comments on posts.
+
+        Columns:
+
+            id (UUID)
+
+            post_id (UUID, ref to posts.id)
+
+            profile_id (UUID, ref to users.profiles.id)
+
+            content (text, not nullable)
+
+            updated_at (timestamp)
+
+        Triggers:
+
+            update_comments_timestamp: Automatically updates updated_at when edited.
+
+        ------------   /   ------------
+
+        Table: likes => Stores likes on posts and comments.
+
+        Columns:
+
+            id (UUID)
+
+            profile_id (UUID, ref to users.profiles.id)
+
+            post_id (UUID, ref to posts.id, optional)
+
+            comment_id (UUID, ref to comments.id, optional)
+
+            updated_at (timestamp)
+
+        ------------   /   ------------
+
+        Table: conversations => Stores information about private or group conversations between users.
+
+        Columns:
+
+            id (UUID): Unique identifier of the conversation.
+
+            created_at (timestamp): Date and time when the conversation was created.
+
+            updated_at (timestamp): Date and time of the last update to the conversation.
+
+            avatar_url (text, nullable): URL of the conversation's representative avatar (mainly used for groups).
+
+            title (text, nullable): Title of the conversation (commonly used for group chats).
+
+            is_group (boolean): Indicates whether the conversation is a group (true) or a private one-on-one conversation (false).
+
+            created_by (UUID, references users.profiles.id): ID of the profile that created the conversation.
+
+        ------------   /   ------------
+
+        Table: conversation_participants => Stores the list of participants for each conversation, along with their role and join time.
+
+        Columns:
+
+            conversation_id (UUID, references social.conversations.id): ID of the conversation. Combined with profile_id, it forms the primary key.
+
+            profile_id (UUID, references users.profiles.id): ID of the user participating in the conversation. Combined with conversation_id, it forms the primary key.
+
+            joined_at (timestamp): Timestamp indicating when the user joined the conversation.
+
+            role (text, default 'member'): Role of the participant in the conversation (member or admin). Only users with the admin role can manage certain settings or participants.
+
+        ------------   /   ------------
+
+        Table: messages => Stores the individual messages sent within a conversation.
+
+        Columns:
+
+            id (UUID): Unique identifier for the message.
+
+            created_at (timestamp): Timestamp of when the message was created.
+
+            conversation_id (UUID, references social.conversations.id): ID of the conversation to which the message belongs.
+
+            sender_profile_id (UUID, references users.profiles.id): ID of the user who sent the message.
+
+            content (text): The actual content of the message.
+
+            updated_at (timestamp): Timestamp of the last update to the message.
+
+            deleted_at (timestamp, nullable): Timestamp indicating when the message was deleted (if applicable). A soft delete strategy is used.
+
+            delivered_to (UUID array): List of profile IDs that have received the message.
+
+            read_by (UUID array): List of profile IDs that have read the message.
