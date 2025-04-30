@@ -28,9 +28,11 @@ Database Configuration Summary
 
             bio (text): User biography.
 
+        Triggers:
+
+            prevent_duplicate_usernames: Ensures usernames are unique across all profiles.
 
     ------------   *   ------------
-
 
     Schema: music
 
@@ -43,8 +45,8 @@ Database Configuration Summary
             role (text): Role name.
 
             profile_id (UUID): Linked to the profiles table. (ON DELETE CASCADE, ON UPDATE CASCADE)
-
-        ------------   /   ------------
+        
+    ------------   /   ------------
 
         Table: instrumentist_details => Stores specific details of an instrumentalist.
 
@@ -59,12 +61,8 @@ Database Configuration Summary
             years_of_experience (int, nullable): Years of experience.
 
             level (int, nullable): User's skill level.
-
-        Triggers:
-
-            update_instruments_trigger: Updates the instruments column when a new instrument is added.
-
-        ------------   /   ------------
+        
+    ------------   /   ------------
 
         Table: singer_details => Stores specific details of a singer.
 
@@ -80,7 +78,7 @@ Database Configuration Summary
 
             level (text)
 
-        ------------   /   ------------
+    ------------   /   ------------
 
         Table: dj_details => Stores specific details of a DJ.
 
@@ -98,7 +96,7 @@ Database Configuration Summary
 
             profile_id (UUID, ON DELETE/UPDATE CASCADE)
 
-        ------------   /   ------------
+    ------------   /   ------------
 
         Table: producer_details => Stores specific details of a producer.
 
@@ -116,7 +114,7 @@ Database Configuration Summary
 
             profile_id (UUID, ON DELETE/UPDATE CASCADE)
 
-        ------------   /   ------------
+    ------------   /   ------------
 
         Table: composer_details => Stores specific details of a composer.
 
@@ -134,9 +132,7 @@ Database Configuration Summary
 
             profile_id (UUID, ON DELETE/UPDATE CASCADE)
 
-
     ------------   *   ------------
-
 
     Schema: social
 
@@ -154,11 +150,13 @@ Database Configuration Summary
 
             updated_at (timestamp)
 
-        Triggers:
+        Triggers:            
 
-            update_connection_status: Ensures connection status is updated.
+            trigger_follow_request: Creates a notification when a follow request is sent.
 
-        ------------   /   ------------
+            trigger_update_connection_timestamp: Automatically updates the `updated_at` column when the connection status changes.
+
+    ------------   /   ------------
 
         Table: posts => Stores user posts.
 
@@ -178,10 +176,12 @@ Database Configuration Summary
 
         Triggers:
 
-            update_posts_timestamp: Automatically updates updated_at when edited.
+            trigger_update_posts_timestamp: Automatically updates `updated_at` when a post is edited.
 
-        ------------   /   ------------
-    
+            trigger_like: Creates a notification when a post is liked.
+
+    ------------   /   ------------
+
         Table: comments => Stores comments on posts.
 
         Columns:
@@ -198,9 +198,11 @@ Database Configuration Summary
 
         Triggers:
 
-            update_comments_timestamp: Automatically updates updated_at when edited.
+            trigger_update_comments_timestamp: Automatically updates `updated_at` when a comment is edited.
 
-        ------------   /   ------------
+            trigger_comment: Creates a notification when a comment is added to a post.
+
+    ------------   /   ------------
 
         Table: likes => Stores likes on posts and comments.
 
@@ -216,7 +218,11 @@ Database Configuration Summary
 
             updated_at (timestamp)
 
-        ------------   /   ------------
+        Triggers:
+
+            prevent_duplicate_likes: Ensures a user cannot like the same post or comment more than once.
+
+    ------------   /   ------------
 
         Table: conversations => Stores information about private or group conversations between users.
 
@@ -236,7 +242,7 @@ Database Configuration Summary
 
             created_by (UUID, references users.profiles.id): ID of the profile that created the conversation.
 
-        ------------   /   ------------
+    ------------   /   ------------
 
         Table: conversation_participants => Stores the list of participants for each conversation, along with their role and join time.
 
@@ -250,7 +256,7 @@ Database Configuration Summary
 
             role (text, default 'member'): Role of the participant in the conversation (member or admin). Only users with the admin role can manage certain settings or participants.
 
-        ------------   /   ------------
+    ------------   /   ------------
 
         Table: messages => Stores the individual messages sent within a conversation.
 
@@ -273,3 +279,33 @@ Database Configuration Summary
             delivered_to (UUID array): List of profile IDs that have received the message.
 
             read_by (UUID array): List of profile IDs that have read the message.
+
+        Triggers:
+
+            trigger_message: Creates a notification when a message is sent.
+
+            trigger_update_message_timestamp: Automatically updates `updated_at` when a message is edited.
+
+            trigger_soft_delete_message: Implements a soft delete strategy by setting `deleted_at` instead of deleting the message.
+
+    ------------   /   ------------
+
+        Table: notifications => Stores notifications generated by user interactions (likes, messages, follow requests, etc.)
+
+        Columns:
+
+            id (UUID): Unique identifier for the notification.
+
+            created_at (timestamp): Timestamp of when the notification was created.
+
+            profile_id (UUID, references users.profiles.id): ID of the user who is the recipient of the notification.
+
+            type (text): The type of notification (e.g., "like", "comment", "follow_request", "message").
+
+            entity_id (UUID): ID of the related entity (e.g., post, comment, message, etc.) that triggered the notification.
+
+            from_user_id (UUID, references users.profiles.id): ID of the user who triggered the notification.
+
+            is_read (boolean): Indicates whether the notification has been read. Defaults to false.
+
+            message (text): A human-readable message describing the notification (optional if you want to display custom texts).

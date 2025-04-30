@@ -30,7 +30,7 @@ export const CommentsProvider = ({children}) => {
   )
 };
 
-CommentsProvider.PropTypes = {
+CommentsProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 

@@ -11,7 +11,9 @@ const ChatWindow = () => {
   const { conversationId } = useParams();
   const { user } = useAuth();
 
-  const { fetchMessages } = useMessages();
+  const { fetchMessages, messagesRealtime } = useMessages();
+  // Real-time updates for messages
+  messagesRealtime(conversationId);
   const { data: messages, isLoading, error } = fetchMessages(conversationId);
   
   if (isLoading) return <Loading />;

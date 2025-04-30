@@ -36,7 +36,7 @@ export const LikesProvider = ({children}) => {
   )
 };
 
-LikesProvider.PropTypes = {
+LikesProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 

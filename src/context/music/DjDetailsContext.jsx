@@ -38,7 +38,7 @@ export const DjDetailsProvider = ({ children }) => {
   
 };
 
-DjDetailsProvider.PropTypes = {
+DjDetailsProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 

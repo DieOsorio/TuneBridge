@@ -37,7 +37,7 @@ function PostCard({ post }) {
   const [isHovered, setIsHovered] = useState(false);
   const { fetchProfile } = useProfile();
   const { data: profile, error, isLoading } = fetchProfile(post.profile_id); // retrive the profile associated with the post
-  const { useInsertLike, useDeleteLike, userLikes } = useLikes(); // custom hooks to manage the likes
+  const { insertLike, deleteLike, userLikes } = useLikes(); // custom hooks to manage the likes
   const { data: likes } = userLikes(user.id); // retrive the likes aassociated with logged user
   const { manageView } = useView(); // manage the views
   const [showMinibox, setShowMinibox] = useState(false); // manage minibox visibility
@@ -68,9 +68,9 @@ function PostCard({ post }) {
   // handle the like for every situation
   const handleLikeClick = () => {
     if (alreadyLiked) {
-      useDeleteLike(existingLike);
+      deleteLike(existingLike);
     } else {
-      useInsertLike(like);
+      insertLike(like);
     }
   };
     

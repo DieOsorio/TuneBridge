@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
+  useMessagesRealtime,
   useFetchMessagesQuery,
   useInsertMessageMutation,
   useUpdateMessageMutation,
@@ -16,6 +17,7 @@ export const MessagesProvider = ({ children }) => {
   const deleteMessage = useDeleteMessageMutation().mutateAsync;
 
   const value = {
+    messagesRealtime: useMessagesRealtime,
     fetchMessages: useFetchMessagesQuery,
     insertMessage,
     updateMessage,

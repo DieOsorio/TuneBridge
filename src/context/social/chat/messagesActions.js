@@ -1,5 +1,37 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../supabase";
+import { useEffect } from "react";
+
+// REALTIME MESSAGES
+export const useMessagesRealtime = (conversation_id) => {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!conversation_id) return;
+
+    const channel = supabase
+      .channel("realtime-messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "social",
+          table: "messages",
+          filter: `conversation_id=eq.${conversation_id}`,
+        },
+        () => {
+          queryClient.invalidateQueries({
+            queryKey: ["messages", conversation_id],
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversation_id, queryClient]);
+};
 
 // FETCH MESSAGES FROM A CONVERSATION
 export const useFetchMessagesQuery = (conversationId) => {
