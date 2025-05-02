@@ -58,32 +58,40 @@ const CreatePost = ({ id, onUpdate }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">      
-      <div>
-        <label className="block font-medium text-gray-700 mb-1">Title</label>
-        <input
-          type="text"
-          {...register("title", { required: "El título es obligatorio." })}
-          className="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
-        />
-        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
-      </div>
+    <>
+      {/* Section Title */}
+      <h2 className="text-2xl font-bold text-gray-100 text-center mb-4">
+        Create a New Post
+      </h2>
 
-      <div>
-        <label className="block font-medium text-gray-700 mb-1">Content</label>
-        <textarea
-          {...register("content", { required: "El contenido no puede estar vacío." })}
-          className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
-        />
-        {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
-      </div>
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-r from-gray-900 p-6 rounded-lg shadow-md max-w-xl mx-auto">      
+        <div>
+          <label className="block font-medium text-gray-400 mb-1">Title</label>
+          <input
+            type="text"
+            {...register("title", { required: "El título es obligatorio." })}
+            className="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
+          />
+          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+        </div>
 
-      <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
+        <div>
+          <label className="block font-medium text-gray-400 mb-1">Content</label>
+          <textarea
+            {...register("content", { required: "El contenido no puede estar vacío." })}
+            className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
+          />
+          {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+        </div>
 
-      <Button type="submit" disabled={isSubmitting} className="ml-auto block">
-        {isSubmitting ? "Posting..." : "Post"}
-      </Button>
-    </form>
+        <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
+
+        <Button type="submit" disabled={isSubmitting} className="ml-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700">
+          {isSubmitting ? "Posting..." : "Post"}
+        </Button>
+      </form>
+    </> 
   );
 };
 

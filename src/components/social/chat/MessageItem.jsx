@@ -6,12 +6,12 @@ const MessageItem = ({ message, isMine }) => {
       {!isMine && (
         <div className="flex flex-col items-start">
           <span className="text-sm font-semibold">{message.sender_name}</span>
-          <div className="bg-gray-200 p-2 rounded-lg max-w-xs">{message.content}</div>
+          <div className="bg-gray-700 p-2 rounded-lg max-w-xs">{message.content}</div>
         </div>
       )}
       {isMine && (
         <div className="flex flex-col items-end">
-          <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs">{message.content}</div>
+          <div className="bg-sky-700 text-white p-2 rounded-lg max-w-xs">{message.content}</div>
         </div>
       )}
     </div>

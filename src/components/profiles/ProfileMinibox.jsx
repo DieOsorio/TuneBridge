@@ -1,11 +1,51 @@
 import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useView } from "../../context/ViewContext";
 import { IoChatboxOutline } from "react-icons/io5";
+import { useAuth } from "../../context/AuthContext";
+import { useConversations } from "../../context/social/chat/ConversationsContext";
+import { useParticipants } from "../../context/social/chat/ParticipantsContext";
+import { useState } from "react";
 
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { manageView } = useView();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const {findConversation, createConversation} = useConversations();
+  const { addParticipant } = useParticipants();
+  const [isStartingChat, setIsStartingChat] = useState(false);
+
+  const handleStartChat = async () => {
+    if (isStartingChat) return;
+
+    try {       
+        const conversationData  = await findConversation({ myProfileId: user.id, otherProfileId: profile.id });
+
+      if (conversationData) {
+        navigate(`/chat/${conversationData.id}`);
+      } else {
+          
+        const newConv = await createConversation({
+            created_by: user.id,
+            avatar_url: profile.avatar_url,
+            title: profile.username
+        });        
+
+        // Vincular a ambos usuarios como participantes
+        const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
+        const otherUser = { conversation_id: newConv.id, profile_id: profileData.id };
+        await addParticipant(loggedUser);
+        await addParticipant(otherUser);
+
+        navigate(`/chat/${newConv.id}`);
+      }  
+    } catch (err) {
+      console.error("Error iniciando conversación:", err);
+    } finally {
+        setIsStartingChat(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -14,7 +54,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
-        className="absolute z-50 p-3 rounded-lg shadow-md bg-white dark:bg-zinc-800 w-64"
+        className="absolute z-50 p-3 rounded-lg shadow-md bg-white dark:bg-zinc-900 w-64"
       >
         <Skeleton count={4} />
       </motion.div>
@@ -31,7 +71,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="absolute z-50 p-4 rounded-lg shadow-md bg-white dark:bg-zinc-800 w-64 text-sm"
+      className="absolute z-50 p-4 rounded-lg shadow-md bg-white dark:bg-zinc-900 w-64 text-sm"
     >
       <div className="flex items-center gap-3 mb-2">
         <Link 
@@ -44,7 +84,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
           />
         </Link>
         <div>
-          <p className="font-semibold text-zinc-900 dark:text-zinc-100">@{username}</p>
+          <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">@{username}</p>
           {(city || country) && (
             <p className="text-zinc-500 text-xs">
               {city}{city && country ? ", " : ""}{country}
@@ -60,7 +100,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
         <button
           title="Send Message"
           className="text-zinc-500 cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition"
-          onClick={() => console.log("Abrir chatbox")} // más adelante lo reemplazás
+          onClick={handleStartChat}
         >
           <IoChatboxOutline size={30} />
         </button>

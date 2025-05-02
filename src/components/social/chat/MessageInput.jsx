@@ -33,11 +33,11 @@ const MessageInput = ({ conversationId, senderId }) => {
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Write a message..."
-        className="flex-1 resize-none rounded-lg border border-neutral-700 bg-neutral-900 text-white p-2 outline-none focus:ring-1 focus:ring-neutral-500"
+        className="flex-1 resize-none rounded-lg border border-neutral-700 bg-neutral-950 text-white p-2 outline-none focus:ring-1 focus:ring-neutral-500"
       />
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
+        className="bg-sky-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-sky-700 transition"
       >
         Send
       </button>

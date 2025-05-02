@@ -39,7 +39,7 @@ function ConnectionsList({ checkStatus, profileId }) {
             : conn.following_profile_id;
     };
 
-    const bgClass = checkStatus === 'accepted' ? 'bg-green-50' : 'bg-yellow-50';
+    const bgClass = checkStatus === 'accepted' ? 'bg-gray-900' : 'bg-yellow-800';
     const title = checkStatus === 'accepted' ? 'Connections' : 'Pending Connections';
 
     return (

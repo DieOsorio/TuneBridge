@@ -24,10 +24,10 @@ const Loading = () => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-white">
+    <div className="flex justify-center items-center h-screen">
       <div
         ref={circleRef}
-        className="w-16 h-16 border-4 border-gray-500 border-t-transparent rounded-full"
+        className="w-16 h-16 border-4 border-gray-400 border-t-transparent rounded-full"
       />
     </div>
   );

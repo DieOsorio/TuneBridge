@@ -1,0 +1,175 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { usePosts } from "../../context/social/PostsContext";
+import Button from "../ui/Button";
+import ImageUploader from "../../utils/ImageUploader";
+import { useUploadPostImages } from "../../context/social/imagesActions";
+import Loading from "../../utils/Loading";
+import ErrorMessage from "../../utils/ErrorMessage";
+import { supabase } from "../../supabase";
+
+const UpdatePost = () => {
+  const { postId } = useParams(); // Extract postId from the URL
+  const [images, setImages] = useState([]); // Store images (existing + new)
+  const { fetchPost, updatePost } = usePosts(); // Fetch and update post logic
+  const { data: postData, isLoading, error } = fetchPost(postId); // Fetch post data by ID
+  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm();
+  const uploadImageMutations = useUploadPostImages();
+  const navegate = useNavigate(); // For navigation
+
+  console.log("POST DATA:", postData);
+  
+  // Fetch the post data when the component mounts
+  useEffect(() => {
+    if (postData) {
+      setValue("title", postData.title);
+      setValue("content", postData.content);
+      setImages(postData.images_urls || []);
+    }
+  }, [postData, setValue]);
+
+  // Handle file updates (new images)
+  const onFileUpdate = (files) => {
+    setImages((prevImages) => [...prevImages, ...files]); // Add new files to the existing images
+  };
+
+  // Handle image deletion
+  const handleDeleteImage = async (imageUrl) => {
+    try {
+      // Step 1: Delete the image from the Supabase bucket
+      const fileName = imageUrl.split("/").pop(); // Extract the file name from the URL
+      const { error: deleteError } = await supabase.storage
+        .from("post-media")
+        .remove([fileName]);
+
+      if (deleteError) {
+        throw new Error(`Error deleting image from bucket: ${deleteError.message}`);
+      }
+
+      // Step 2: Update the images_urls array in the database
+      const updatedImages = images.filter((img) => img !== imageUrl); // Remove the image locally
+      const { error: updateError } = await updatePost({
+        id: postData.id,
+        updatedPost: {
+          ...postData,
+          images_urls: updatedImages, // Update the images_urls array
+        },
+      });
+
+      if (updateError) {
+        throw new Error(`Error updating post data: ${updateError.message}`);
+      }
+
+      // Step 3: Update the local state
+      setImages(updatedImages);
+    } catch (err) {
+      console.error("Error deleting image:", err.message);
+    }
+  };
+
+  // Handle form submission
+  const onSubmit = async (data) => {
+    try {
+      // Upload new images and keep existing ones
+      const uploadedImagesURLs = await Promise.all(
+        images.map(async (file, index) => {
+          if (typeof file === "string") return file; // Keep existing image URLs
+          const filename = `${Date.now()}-${index}-${file.name}`;
+          const publicURL = await uploadImageMutations.mutateAsync({
+            file,
+            userId: postData.profile_id,
+            postId: postData.id,
+            filename,
+          });
+          return publicURL;
+        })
+      );
+
+      // Update the post
+      await updatePost({
+        id: postData.id,
+        updatedPost: {
+          ...data,
+          images_urls: uploadedImagesURLs,
+        },
+      });
+
+      navegate(`/profile/${postData.profile_id}`) // Navigate back to the profile view
+    } catch (err) {
+      console.error("Error updating post:", err.message);
+    }
+  };
+
+  if (isLoading) {
+    return <Loading />; // Show loading state while fetching post data
+  }
+  if (error) {
+    return <ErrorMessage error={error.message} />; // Show loading state while fetching post data
+  }
+
+  return (
+    <>
+      {/* Section Title */}
+      <h2 className="text-2xl font-bold text-gray-100 text-center mb-4">
+        Update Post
+      </h2>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-r from-gray-900 p-6 rounded-lg shadow-md max-w-xl mx-auto">
+        <div>
+          <label className="block font-medium text-gray-400 mb-1">Title</label>
+          <input
+            type="text"
+            {...register("title", { required: "The title is required." })}
+            className="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
+          />
+          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+        </div>
+
+        <div>
+          <label className="block font-medium text-gray-400 mb-1">Content</label>
+          <textarea
+            {...register("content", { required: "The content cannot be empty." })}
+            className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
+          />
+          {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+        </div>
+
+        {/* Existing Images */}
+        <div>
+          <label className="block font-medium text-gray-400 mb-1">Existing Images</label>
+          <div className="flex flex-wrap gap-4">
+            {images
+              .filter((img) => typeof img === "string") // Only show existing images
+              .map((imageUrl, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={imageUrl}
+                    alt={`Post image ${index}`}
+                    className="w-32 h-32 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage(imageUrl)}
+                    className="absolute top-1 right-1 bg-red-600 w-9 h-9 text-white rounded-full p-1 hover:bg-red-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* Image Uploader */}
+        <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
+
+        <Button type="submit" disabled={isSubmitting} className="ml-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700">
+          {isSubmitting ? "Updating..." : "Update"}
+        </Button>
+      </form>
+    </>
+  );
+};
+
+export default UpdatePost;

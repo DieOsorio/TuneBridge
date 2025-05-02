@@ -53,7 +53,7 @@ const Sidebar = ({ avatarUrl }) => {
   return (
     <div
       ref={sidebarRef}  // Attach ref to sidebar element
-      className="fixed top-0 left-0 h-[calc(100%-160px)] bg-gradient-to-b from-sky-700 to-sky-900 text-white z-10"
+      className="fixed top-0 left-0 h-[calc(100%-160px)] bg-gradient-to-b from-gray-950 to-gray-900 text-white z-10"
       style={{ top: "80px" }} // Adjust top to match navbar height
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -69,7 +69,7 @@ const Sidebar = ({ avatarUrl }) => {
         {options.map((option) => (
           <li
             key={option.internal}
-            className="flex items-center gap-4 p-5 cursor-pointer hover:bg-sky-800 transition-all duration-300 ease-in-out"
+            className="flex items-center gap-4 p-5 cursor-pointer hover:bg-sky-600 transition-all duration-300 ease-in-out"
             onClick={() => manageView(option.internal, option.external)}
           >
             <span className="text-xl flex-shrink-0">{option.icon}</span>

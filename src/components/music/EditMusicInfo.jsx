@@ -6,8 +6,8 @@ import RoleDataEditor from "./RoleDataEditor";
 import { useRoles } from "../../context/music/RolesContext";
 import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
+import Select from "../ui/Select";
 
-const predefinedRoles = ["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"];
 
 const EditMusicInfo = ({ profileId }) => {
   const { fetchRoles } = useRoles();
@@ -68,28 +68,18 @@ const EditMusicInfo = ({ profileId }) => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-b-lg shadow-md">
+    <div className="p-6 bg-gradient-to-l to-gray-900 rounded-b-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Edit Music Information</h2>
 
       <div className="mb-4">
-        <label htmlFor="roleSelector" className="block text-lg font-medium mb-2">
-          Select a Role
-        </label>
-        <select
-          id="roleSelector"
+        <Select
+          label="Select a Role"
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
-          className="w-full p-2 border rounded-md mb-2"
-        >
-          <option value="" disabled>
-            Choose a role
-          </option>
-          {predefinedRoles.map((role) => (
-            <option key={role} value={role}>
-              {role}
-            </option>
-          ))}
-        </select>
+          defaultOption="Choose a role"
+          option1="Composer"
+          options={["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]}
+        />        
 
         {selectedRole === "Other" && (
           <Input
@@ -116,7 +106,7 @@ const EditMusicInfo = ({ profileId }) => {
             {roles.map((role) => (
               <div
                 key={role.id}
-                className="p-4 bg-gray-100 rounded-md shadow-md border border-gray-300"
+                className="p-4 bg-gray-200 rounded-md shadow-md border border-gray-400"
               >
                 <div
                   className="flex items-center justify-between cursor-pointer"
@@ -127,7 +117,7 @@ const EditMusicInfo = ({ profileId }) => {
                   </div>
                   <div className="flex items-center">
                     <FaChevronRight
-                      className={`w-6 h-6 text-gray-300 transition-transform ${
+                      className={`w-6 h-6 text-gray-400 transition-transform ${
                         expandedRole === role.id ? "rotate-90" : ""
                       }`}
                     />

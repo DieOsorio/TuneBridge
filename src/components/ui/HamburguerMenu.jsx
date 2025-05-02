@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; // Import useAuth to access signOut
-import { useView } from '../../context/ViewContext';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // Import useAuth to access signOut
+import { useView } from "../../context/ViewContext";
 
 const HamburgerMenu = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,38 +14,65 @@ const HamburgerMenu = ({ id }) => {
 
   return (
     <div className="relative">
-      {/* Icono del menú */}
+      {/* Hamburger Icon */}
       <button
-        className="p-3 text-white"
+        className="p-3 text-white focus:outline-none"
         onClick={toggleMenu}
+        aria-label="Toggle menu"
+        aria-expanded={isOpen}
       >
-        <svg className="w-8 h-8 text-white cursor-pointer transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <svg
+          className="w-8 h-8 text-white cursor-pointer transition-transform transform hover:scale-110"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
         </svg>
       </button>
 
-      {/* Menú desplegable */}
+      {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-[-12px] w-48 bg-sky-700 text-white rounded-md shadow-lg mt-2 p-4 transition-all">
-          <ul>
-            <li onClick={toggleMenu}>
+        <div className="absolute right-0 w-48 bg-gray-900 text-white rounded-md shadow-lg mt-2 p-4 transition-all">
+          <ul className="space-y-2">
+            <li className="md:hidden">
               <Link
-                to={`profile/${id}`}
-                className="block px-4 py-2 text-lg hover:bg-sky-800 rounded-md"
-                onClick={() => manageView("about", "profile")}
+                to="/explore"
+                className="block px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
+                onClick={() => {
+                  manageView(null, "postsList");
+                  toggleMenu();
+                }}
+              >
+                Explore
+              </Link>
+            </li>
+            <li className="md:hidden">
+              <Link
+                to={`/profile/${id}`}
+                className="block px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
+                onClick={() => {
+                  manageView("about", "profile");
+                  toggleMenu();
+                }}
               >
                 Profile
               </Link>
             </li>
             <li>
               <button
-                onClick={signOut} // Use signOut from AuthContext
-                className="cursor-pointer w-full text-left px-4 py-2 text-lg hover:bg-sky-800 rounded-md"
+                onClick={signOut}
+                className="w-full text-left px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
               >
                 Sign Out
               </button>
             </li>
-            {/* Puedes agregar más enlaces aquí si lo necesitas */}
           </ul>
         </div>
       )}

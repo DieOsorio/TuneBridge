@@ -18,7 +18,7 @@ function EditCommentBox({ value, onChange, onSave, onCancel }) {
         </button>
         <button
           onClick={() => onCancel()}
-          className="px-3 py-1 w-16 bg-gray-400 hover:bg-gray-500 text-white rounded text-sm"
+          className="px-3 py-1 w-16 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm"
         >
           Cancel
         </button>

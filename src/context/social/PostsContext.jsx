@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {
   useFetchPostsQuery,
   useUserPostsQuery,
+  useFetchPostQuery,
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
@@ -25,7 +26,8 @@ export const PostsProvider = ({ children }) => {
     createPost,
     updatePost,
     deletePost,
-    userPosts: useUserPostsQuery,    
+    userPosts: useUserPostsQuery,
+    fetchPost: useFetchPostQuery,    
   }
 
   return (

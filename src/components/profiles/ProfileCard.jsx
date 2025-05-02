@@ -46,12 +46,7 @@ const ProfileCard = ({ profile }) => {
     }
 
     return (
-        <div className={`flex flex-col w-60 h-90 text-gray-800 items-center gap-2 border rounded-lg shadow-sm ${
-            status==="accepted" ? ("bg-green-50") : 
-            status==="pending" ? ("bg-amber-50") : 
-            status==="blocked" ? ("bg-red-50") : 
-            "bg-white"
-        }`}>
+        <div className="flex flex-col w-60 h-90 text-gray-800 items-center gap-2 border rounded-lg shadow-sm bg-gray-200">
             <Link onClick={() => manageView("about", "profile")} to={`/profile/${profile.id}`}>
             <img
                 src={profile.avatar_url || "/default-avatar.png"}
@@ -62,13 +57,13 @@ const ProfileCard = ({ profile }) => {
             <div className="text-center">
                 <h3 className="font-semibold text-lg">{profile.username}</h3>
                 {profile.city && profile.country ? (
-                    <p className="text-gray-400">
+                    <p className="text-gray-500">
                         {profile.city}, {profile.country}
                     </p>
                 ) : profile.country ? (
-                    <p className="text-gray-400">{profile.country}</p>
+                    <p className="text-gray-500">{profile.country}</p>
                 ) : profile.city ? (
-                    <p className="text-gray-400">{profile.city}</p>
+                    <p className="text-gray-500">{profile.city}</p>
                 ) : null}
             </div>
             <div className="mt-auto py-4">

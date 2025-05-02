@@ -9,6 +9,7 @@ import { useInstrumentsDetails } from "../../context/music/InstrumentDetailsCont
 import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
 import { useRoles } from "../../context/music/RolesContext";
 import { useSingerDetails } from "../../context/music/SingerDetailsContext";
+import RoleItem from "./RoleItem";
 
 const DisplayMusicInfo = ({ profileId }) => {
   const  [roleId, setRoleId]  = useState();
@@ -51,7 +52,7 @@ const DisplayMusicInfo = ({ profileId }) => {
   if (error) return <ErrorMessage error={error.message} />
 
   return (
-    <div className="bg-sky-100 p-6 rounded-lg shadow-md">
+    <div className="bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 className="text-2xl font-bold mb-4 text-center">Music Roles</h3>
       {roles.length === 0 ? (
         <p className="text-gray-500">No music-related roles found.</p>
@@ -59,18 +60,12 @@ const DisplayMusicInfo = ({ profileId }) => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {roles.map((role) => (
-              <div
+              <RoleItem
                 key={role.id}
-                className={`bg-gray-100 p-4 rounded-lg shadow-sm flex flex-col items-center justify-center text-lg font-medium text-gray-700 cursor-pointer hover:bg-gray-200`}
-                onClick={() => handleRoleClick(role)}
-              >
-                <span>{role.role}</span>
-                <FaChevronDown
-                  className={`mt-2 text-gray-500 transition-transform ${
-                    expandedRole === role.id ? "rotate-180" : ""
-                  }`}
-                /> {/* Rotate chevron when expanded */}
-              </div>
+                role={role}
+                expandedRole={expandedRole}
+                handleRoleClick={handleRoleClick}
+              />
             ))}
           </div>
           {expandedRole && (

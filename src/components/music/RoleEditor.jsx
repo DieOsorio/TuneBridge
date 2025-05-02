@@ -94,7 +94,7 @@ const RoleEditor = ({
   };
 
   return (
-    <div>
+    <div className="text-gray-800">
       <h4 className="text-lg font-semibold mb-2">{title}</h4>
       {successMessage && <p className="text-green-500 mb-2">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
@@ -205,7 +205,7 @@ const RoleEditor = ({
           </div>
         ))}
         <Button onClick={handleAddDetail} className="mt-2">
-          Add {title}
+          Add
         </Button>
       </div>
     </div>

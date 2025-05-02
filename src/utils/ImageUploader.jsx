@@ -30,6 +30,7 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
 
   return (
     <div className={amount === 1 ? 'hidden' : ''}>
+      <label className="block font-medium text-gray-400 mb-1">Upload Images</label>
       <FilePond
         ref={pondRef}
         files={files}
@@ -38,6 +39,12 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
         maxFiles={amount}
         name="images"
         labelIdle={amount > 1 ? `Drag the images or click to select (max ${amount})` : ''}
+        style={{
+          backgroundColor: '#1a202c',
+          border: '2px dashed #4a5568',
+          borderRadius: '8px',
+          color: '#cbd5e0',
+        }}
       />
     </div>
   );

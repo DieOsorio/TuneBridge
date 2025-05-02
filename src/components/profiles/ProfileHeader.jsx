@@ -53,10 +53,10 @@ function ProfileHeader({ isOwnProfile, profileData }) {
         } finally {
             setIsStartingChat(false);
         }
-      };
+    };
 
   return (
-    <div className="bg-gradient-to-b from-sky-700 to-sky-900 mb-4 p-4 rounded-b-lg">
+    <div className="bg-gradient-to-l from-gray-900 to-gray-950 mb-4 p-4 rounded-b-lg">
         <div className='flex'>
             <div className="flex items-center gap-4 cursor-pointer" onClick={() => manageView("about", "profile")}>                
                 <ProfileAvatar avatar_url={profileData.avatar_url} />

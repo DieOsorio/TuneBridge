@@ -1,6 +1,27 @@
 import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { supabase } from '../../supabase';
 
+// FETCH A SINGLE POST
+export const useFetchPostQuery = (postId) => {
+  return useQuery({
+    queryKey: ["post", postId], // Ensure the queryKey is unique for each post
+    queryFn: async () => {
+      if (!postId) throw new Error("postId is required"); // Ensure postId is provided
+
+      const { data, error } = await supabase
+        .schema("social")
+        .from("posts") // Query the "posts" table
+        .select("*")
+        .eq("id", postId) // Filter by postId
+        .single(); // Fetch a single post
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!postId, // Only run the query if postId is defined
+  });
+};
+
 // FETCH ALL POSTS FOR A PROFILE
 export const useFetchPostsQuery = () => {
     return useQuery({
@@ -178,4 +199,4 @@ export const useDeletePostMutation = () => {
         queryClient.invalidateQueries({ queryKey: ["userPosts", variables.profile_id]});
       },
     })
-  } 
+  }

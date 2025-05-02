@@ -125,7 +125,7 @@ function CommentsBox({ postId }) {
 
         {/* if there is no comments yet */}
         {comments?.length === 0 && (
-          <p className="italic text-zinc-500">Be the first one to comment on this posts.</p>
+          <p className="italic text-zinc-600">Be the first one to comment on this posts.</p>
         )}
       </div>
   
@@ -142,7 +142,7 @@ function CommentsBox({ postId }) {
           <textarea
             {...register('comment', { required: true })}
             placeholder="Write a comment..."
-            className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 resize-none"
+            className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 resize-none"
             rows={2}
           />
 

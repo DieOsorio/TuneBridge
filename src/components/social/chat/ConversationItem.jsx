@@ -29,7 +29,7 @@ const ConversationItem = ({ conversation, isSelected, onClick }) => {
   return (
     <div
       onClick={() => onClick(conversation.id)}
-      className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors ${isSelected ? "bg-neutral-700" : "hover:bg-neutral-800 hover:text-white"}`}
+      className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors ${isSelected ? "bg-sky-700" : "hover:bg-sky-950 hover:text-white"}`}
     >
       {avatarUrl ? (
         <img

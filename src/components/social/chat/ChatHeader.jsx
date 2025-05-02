@@ -20,7 +20,7 @@ const ChatHeader = ({ conversationId }) => {
   // If there isn't conversationId, render a generic message
   if (!conversationId) {
     return (
-      <div className="flex items-center gap-4 px-4 py-2 border-b border-neutral-700">
+      <div className="flex items-center gap-4 px-4 py-2 border-b border-sky-600">
         <h2 className="text-lg font-semibold">Select a conversation</h2>
       </div>
     );
@@ -40,7 +40,7 @@ const ChatHeader = ({ conversationId }) => {
     : otherProfile?.username;
 
   return (
-    <div className="flex items-center gap-4 px-4 py-2 border-b border-neutral-700">
+    <div className="flex items-center bg-gradient-to-l from-gray-900 gap-4 px-4 py-2 border-b-2 border-sky-600">
       {conversation?.avatar_url ? (
         <Link to={isGroup ? "" : `/profile/${otherProfile?.id}`}>
           <img

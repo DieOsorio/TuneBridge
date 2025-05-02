@@ -31,7 +31,7 @@ const ConversationList = () => {
   if (error) return <ErrorMessage error={error.message} />;
 
   return (
-    <div className="w-full overflow-y-auto border-r border-neutral-800">
+    <div className="w-full overflow-y-auto h-full bg-gradient-to-l from-gray-900 border-r-2 border-sky-700">
       {conversations?.length ? (
         conversations.map((conversation) => (
           <ConversationItem
@@ -42,7 +42,7 @@ const ConversationList = () => {
           />
         ))
       ) : (
-        <p className="text-neutral-400 p-4">No conversations found.</p>
+        <p className="text-gray-400 p-4">No conversations found.</p>
       )}
     </div>
   );

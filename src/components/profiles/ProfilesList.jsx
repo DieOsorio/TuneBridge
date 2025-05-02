@@ -22,7 +22,7 @@ const ProfilesList = () => {
 
     // Render the profiles
     return (
-        <div className="w-full py-4 flex flex-wrap justify-center gap-4 bg-sky-100">
+        <div className="w-full py-4 flex flex-wrap justify-center gap-4 bg-gradient-to-l from-gray-950">
             {filteredProfiles.map((profile) => (
                 <ProfileCard key={profile.id} profile={profile} />
             ))}

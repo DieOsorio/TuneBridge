@@ -1,6 +1,6 @@
 const DisplayRoleInfo = ({ role, data }) => {
   if (!data || data.length === 0) {
-    return <p className="text-gray-500 mt-2">No information available for this role.</p>;
+    return <p className="text-gray-300 mt-2">No information available for this role.</p>;
   }
 
   return (
@@ -10,7 +10,7 @@ const DisplayRoleInfo = ({ role, data }) => {
         {data.map((item) => (
           <li
             key={item.id}
-            className="bg-gray-50 p-3 rounded-lg shadow-sm border border-gray-200"
+            className="bg-gray-700 p-3 rounded-lg shadow-sm border border-gray-500"
           >
             {role.role === "Instrumentalist" && (
               <>

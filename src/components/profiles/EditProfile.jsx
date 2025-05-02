@@ -96,7 +96,7 @@ const EditProfile = ({profile}) => {
 
   return (
     
-      <div className="bg-white p-6 rounded-b-lg shadow-lg">
+      <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg">
         <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
         {user && 
           <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
@@ -112,14 +112,14 @@ const EditProfile = ({profile}) => {
         {localError && <p className="text-red-500 text-sm">{localError}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
+          <label htmlFor="bio" className="block text-sm font-medium text-gray-400">Bio</label>
           <textarea
             id="bio"
             name="bio"
             placeholder="Bio"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="mt-1 block w-full rounded-md border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm h-24 resize-none p-2"
+            className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
           />
         </div>
           <Input
@@ -165,9 +165,7 @@ const EditProfile = ({profile}) => {
             value={gender}
             onChange={(e) => setGender(e.target.value)}
             defaultOption="Choose your gender"
-            option1="Male"
-            option2="Female"
-            option3="Other"
+            options={["Male", "Female", "Other"]}
           />
           <Button className="mt-8 ml-73" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save"}
