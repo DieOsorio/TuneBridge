@@ -26,7 +26,7 @@ const Login = () => {
       setError(""); // Clear any previous errors
       await signIn(email, password); // Use the signIn function from AuthContext
     } catch (err) {
-      setError("No se pudo iniciar sesión. Verifica tus credenciales.");
+      setError("Unable to log in. Please check your credentials.");
     }
   };
 
@@ -35,9 +35,9 @@ const Login = () => {
   }
 
   return (
-    <div className=" text-gray-950 flex justify-center items-center h-screen">
+    <div className="text-gray-950 flex justify-center items-center h-screen">
       <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Iniciar sesión</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">Log In</h2>
 
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
         {authError && <div className="text-red-500 text-sm mb-4">{authError}</div>}
@@ -49,31 +49,31 @@ const Login = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Tu email"
+            placeholder="Your email"
             required
             autoComplete="email"
           />
 
           <Input
-            label="Contraseña"
+            label="Password"
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Tu contraseña"
+            placeholder="Your password"
             required
             autoComplete="current-password"
           />
 
           <Button className="w-full" type="submit">
-            Iniciar sesión
+            Log In
           </Button>
         </form>
 
         <p className="mt-4 text-sm text-center">
-          ¿No tienes cuenta?{" "}
+          Don't have an account?{" "}
           <Link to="/signup" className="text-blue-500 hover:underline">
-            Regístrate aquí
+            Sign up here
           </Link>
         </p>
       </div>

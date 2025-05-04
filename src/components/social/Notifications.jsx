@@ -7,7 +7,7 @@ function Notifications({ profileId }) {
 
   return (
     <>
-      <div className="bg-gray-800 text-white p-4 rounded-lg">
+      <div className="bg-gradient-to-b from-gray-800 to-gray-950 text-white p-4 rounded-t-lg h-25">
         <div className="max-w-6xl mx-auto flex space-x-8 justify-center">
           <span
             onClick={() => setInternalView("allNotifications")}

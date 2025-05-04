@@ -86,7 +86,7 @@ function PostCard({ post }) {
   return (
     <div className="bg-gradient-to-l to-gray-800 p-4 rounded-lg shadow-md mb-4 mx-auto">
       {/* Title of the post */}
-      <h3 className="text-xl mb-4 font-semibold rounded-lg bg-gray-900 p-4 text-gray-100">
+      <h3 className="text-xl mb-4 font-semibold rounded-lg bg-gradient-to-l to-sky-600 p-4 text-gray-100">
         {post.title}
       </h3>
 

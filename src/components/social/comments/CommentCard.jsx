@@ -27,14 +27,14 @@ function CommentCard({
   const [editedContent, setEditedContent] = useState(comment.content); // manage the edited content
   const {
     userLikes,
-    useInsertLike,
-    useDeleteLike,
+    insertLike,
+    deleteLike,
     loading: likesLoading,
   } = useLikes();
   const {
     data: likes,
-    isLoading
   } = userLikes(profile.id);
+  
 
   const isMenuOpen = localOpenMenuId === comment.id; 
   const isOwner = currentUserId === comment.profile_id; // check if logged user has a comment submited
@@ -78,9 +78,9 @@ function CommentCard({
     const like = existingLike();
     
     if (like) {
-      await useDeleteLike(like);
+      await deleteLike(like);
     } else {
-      await useInsertLike({ comment_id: comment.id, profile_id: currentUserId });
+      await insertLike({ comment_id: comment.id, profile_id: currentUserId });
     }
   };
 
@@ -138,9 +138,10 @@ function CommentCard({
               {profile?.username || "Anonymous"}
             </div>
 
-            {/* date the comment was made */}
+            <div className="flex items-center gap-2">
+              {/* date the comment was made/update */}
             <div className="text-xs text-zinc-500">
-            {new Date(comment.created_at).toLocaleString()}
+            {new Date(comment.updated_at || comment.created_at).toLocaleString()}
             </div>
   
             {/* menu */}
@@ -153,6 +154,8 @@ function CommentCard({
                 isMenuOpen={isMenuOpen}
               />
             )}
+            </div>
+
           </div>          
   
           <div className="text-zinc-600 dark:text-zinc-300 mt-1">{comment.content}</div>

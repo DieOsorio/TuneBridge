@@ -5,28 +5,39 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
-import Loading from "../../utils/Loading";
-import { uploadAvatar } from "../../utils/avatarUtils";
+import { uploadFileToBucket } from "../../utils/avatarUtils";
 import { useView } from "../../context/ViewContext";
 import ImageUploader from "../../utils/ImageUploader";
 import { IoIosCamera } from "react-icons/io";
+import { useForm } from "react-hook-form";
+import { DatePicker } from "@mui/x-date-pickers";
 
-
-const EditProfile = ({profile}) => {
+const EditProfile = ({ profile }) => {
   const { user } = useAuth();
   const { updateProfile } = useProfile();
   const { manageView } = useView();
 
-  const [bio, setBio] = useState("");
-  const [username, setUsername] = useState("");
-  const [gender, setGender] = useState("");
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      bio: "",
+      username: "",
+      gender: "",
+      country: "",
+      birthdate: "",
+      city: "",
+      firstname: "",
+      lastname: "",
+    },
+  });
+
   const [avatar_url, setAvatar_url] = useState("");
-  const [country, setCountry] = useState("");
-  const [birthdate, setBirthdate] = useState(null);
-  const [city, setCity] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [localError, setLocalError] = useState("");
@@ -35,144 +46,136 @@ const EditProfile = ({profile}) => {
 
   useEffect(() => {
     if (profile) {
-      setBio(profile.bio || "");
-      setUsername(profile.username || "");
-      setGender(profile.gender || "");
+      reset({
+        bio: profile.bio || "",
+        username: profile.username || "",
+        gender: profile.gender || "",
+        country: profile.country || "",
+        birthdate: profile.birthdate ? new Date(profile.birthdate) : "",
+        city: profile.city || "",
+        firstname: profile.firstname || "",
+        lastname: profile.lastname || "",
+      });
       setAvatar_url(profile.avatar_url || "");
-      setCountry(profile.country || "");
-      setBirthdate(profile.birthdate || null);
-      setCity(profile.city || "");
-      setFirstname(profile.firstname || "");
-      setLastname(profile.lastname || "");
     }
-  }, [profile]);
+  }, [profile, reset]);
 
   const handleAvatarUpdate = (file) => {
-    if (file.lenght > 0) {
+    if (file.length > 0) {
       setSelectedFile(file[0]);
       setPreview(URL.createObjectURL(file[0]));
     } else {
       setSelectedFile(null);
       setPreview(null);
     }
-  }
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const onSubmit = async (data) => {
     setLocalError("");
 
     try {
       let avatar = avatar_url;
 
       if (selectedFile) {
-        const uploadedURL = uploadAvatar(selectedFile, user.id, avatar_url);
-        if (uploadedURL) {
-          avatar = uploadedURL;
-          setAvatar_url(avatar);
-        }
+        // Use the generalized function to upload the avatar
+        avatar = await uploadFileToBucket(selectedFile, "avatars", user.id, avatar_url);
+        setAvatar_url(avatar);
       }
 
       await updateProfile({
+        ...data,
         avatar_url: avatar,
-        bio,
-        username,
-        gender,
-        country,
-        city,
-        firstname,
-        lastname,
-        birthdate,
         id: user.id,
       });
-      manageView("about","profile"); // back to profile page
 
+      manageView("about", "profile");
     } catch (error) {
       setLocalError(error.message || "Error updating profile.");
-    } finally {
-      setIsSubmitting(false)
     }
   };
 
   return (
-    
-      <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
-        {user && 
-          <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
-            <ProfileAvatar avatar_url={preview || avatar_url} />
-            <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md group-hover:opacity-100 opacity-80 transition-opacity">
-              <IoIosCamera size={20} className="text-gray-700" />
-            </div>
+    <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
+      {user && (
+        <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
+          <ProfileAvatar avatar_url={preview || avatar_url} />
+          <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md group-hover:opacity-100 opacity-80 transition-opacity">
+            <IoIosCamera size={20} className="text-gray-700" />
           </div>
-        }
-        <div className="my-4">
-          <ImageUploader onFilesUpdate={handleAvatarUpdate} amount={1} triggerRef={avatarClickRef} />
         </div>
-        {localError && <p className="text-red-500 text-sm">{localError}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+      )}
+      <div className="my-4">
+        <ImageUploader onFilesUpdate={handleAvatarUpdate} amount={1} triggerRef={avatarClickRef} />
+      </div>
+      {localError && <p className="text-red-500 text-sm">{localError}</p>}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label htmlFor="bio" className="block text-sm font-medium text-gray-400">Bio</label>
+          <label htmlFor="bio" className="block text-sm font-medium text-gray-400">
+            Bio
+          </label>
           <textarea
             id="bio"
-            name="bio"
+            {...register("bio")}
             placeholder="Bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
             className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
           />
         </div>
-          <Input
-            label="Username"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
+        <Input
+          label="Username"
+          placeholder="Username"
+          {...register("username", { required: "Username is required" })}
+          error={errors.username?.message}
+        />
+        <Input
+          label="First name"
+          placeholder="First name"
+          {...register("firstname")}
+        />
+        <Input
+          label="Last name"
+          placeholder="Last name"
+          {...register("lastname")}
+        />
+        <Input
+          label="Country"
+          placeholder="Country"
+          {...register("country")}
+        />
+        <Input
+          label="City"
+          placeholder="City"
+          {...register("city")}
+        />
+        <div>
+          <label htmlFor="birthdate" className="block text-sm font-medium mb-2 text-gray-400">
+            Birthdate
+          </label>
+          <DatePicker
+            value={watch("birthdate")} // Bind the selected date to the form state
+            onChange={(date) => setValue("birthdate", date)} // Update the form state when a new date is selected
           />
-          <Input
-            label="First name"
-            placeholder="First name"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-          />
-          <Input
-            label="Last name"
-            placeholder="Last name"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-          />
-          <Input
-            label="Country"
-            placeholder="Country"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-          />
-          <Input
-            label="City"
-            placeholder="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-          <Input
-            label="Birthdate"
-            type="date"
-            placeholder="Birthdate"
-            value={birthdate ? birthdate.split("T")[0] : ""}
-            onChange={(e) => setBirthdate(e.target.value || null)}
-          />
-          <Select
-            label="Gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            defaultOption="Choose your gender"
-            options={["Male", "Female", "Other"]}
-          />
+        </div>
+        <Select
+          label="Gender"
+          {...register("gender")}
+          defaultOption="Choose your gender"
+          options={["Male", "Female", "Other"]}
+        />
+        <div className="flex justify-end mt-4">
           <Button className="mt-8 ml-73" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save"}
           </Button>
-        </form>
-      </div>
-    
+          <Button
+            className="mt-8 ml-4 !bg-gray-500 hover:!bg-gray-600 text-white"
+            type="button"
+            onClick={() => manageView("about", "profile")}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

@@ -16,9 +16,7 @@ const UpdatePost = () => {
   const { data: postData, isLoading, error } = fetchPost(postId); // Fetch post data by ID
   const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm();
   const uploadImageMutations = useUploadPostImages();
-  const navegate = useNavigate(); // For navigation
-
-  console.log("POST DATA:", postData);
+  const navigate = useNavigate(); // For navigation
   
   // Fetch the post data when the component mounts
   useEffect(() => {
@@ -31,7 +29,13 @@ const UpdatePost = () => {
 
   // Handle file updates (new images)
   const onFileUpdate = (files) => {
-    setImages((prevImages) => [...prevImages, ...files]); // Add new files to the existing images
+    setImages((prevImages) => {
+      // Filter out duplicate files
+      const newFiles = files.filter(
+        (file) => !prevImages.some((img) => img.name === file.name)
+      );
+      return [...prevImages, ...newFiles];
+    });
   };
 
   // Handle image deletion
@@ -94,8 +98,7 @@ const UpdatePost = () => {
           images_urls: uploadedImagesURLs,
         },
       });
-
-      navegate(`/profile/${postData.profile_id}`) // Navigate back to the profile view
+      navigate(`/profile/${postData.profile_id}`); // Navigate back to the profile view
     } catch (err) {
       console.error("Error updating post:", err.message);
     }
@@ -164,9 +167,23 @@ const UpdatePost = () => {
         {/* Image Uploader */}
         <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
 
-        <Button type="submit" disabled={isSubmitting} className="ml-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700">
-          {isSubmitting ? "Updating..." : "Update"}
-        </Button>
+        {/* Cancel and Update Buttons */}
+        <div className="flex justify-center gap-4">
+          <Button
+            type="button"
+            onClick={() => navigate("/explore")} // Navigate to /explore
+            className="px-4 py-2 !bg-gray-500 text-white rounded-lg hover:!bg-gray-600 transition"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition"
+          >
+            {isSubmitting ? "Updating..." : "Update"}
+          </Button>
+        </div>
       </form>
     </>
   );

@@ -10,8 +10,8 @@ import SignUpSuccess from "../pages/SignUpSuccess";
 import AccountConfirmed from "../components/auth/AccountConfirmed";
 import LandingPage from "../pages/LandingPage";
 import ChatPage from "../components/social/chat/ChatPage";
-import ChatWindow from "../components/social/chat/ChatWindow";
 import UpdatePost from "../components/social/UpdatePost";
+import CreateProfileGroup from "../components/profiles/CreateProfileGroup";
 
 const AppRouter = () => {
     
@@ -29,6 +29,7 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
+          <Route path="/create-profile-group/" element={<ProtectedRoute><CreateProfileGroup /></ProtectedRoute>} />
           <Route path="/chat/" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/edit-post/:postId" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
           <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />

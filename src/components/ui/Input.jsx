@@ -1,33 +1,33 @@
 const Input = ({
   label,
   id,
-  type,
-  value,
-  onChange,
+  type = "text",
   placeholder,
   required,
   autoComplete,
-  className,
+  className = "",
+  error,
+  ...rest // Accept additional props (e.g., from react-hook-form's register)
 }) => {
-
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={id} className={"block text-sm text-gray-400 font-medium mb-2"}>
+        <label htmlFor={id} className="block text-sm text-gray-400 font-medium mb-2">
           {label}
         </label>
       )}
       <input
         type={type}
         id={id}
-        value={type !== "checkbox" ? value : undefined}  // Usa value solo para inputs que no sean checkbox
-        checked={type === "checkbox" ? value || false : undefined} // Usa checked para checkboxes
-        onChange={onChange}
-        className={`w-full px-4 py-2 border border-gray-400 rounded-md ${className}`}
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
+        className={`w-full px-4 py-2 border ${
+          error ? "border-red-500" : "border-gray-400"
+        } rounded-md ${className}`}
+        {...rest} // Spread the rest of the props (e.g., {...register("fieldName")})
       />
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
 };

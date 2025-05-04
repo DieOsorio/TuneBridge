@@ -32,6 +32,58 @@ Database Configuration Summary
 
             prevent_duplicate_usernames: Ensures usernames are unique across all profiles.
 
+        ------------   *   ------------
+
+        Table: profile_groups => Stores general information about profile groups (e.g., a band).
+        
+        Columns:
+
+            id (UUID): Unique identifier for the profile group.
+
+            name (text): Name of the group (e.g., band name).
+
+            bio (text, nullable): Brief biography or description of the group.
+
+            avatar_url (text, nullable): URL of the group's avatar or representative image.
+
+            country (text, nullable): Country where the group is based.
+
+            city (text, nullable): City where the group is based.
+
+            genre (text, nullable): Primary genre of the group.
+
+            created_by (UUID, references users.profiles.id): ID of the profile that created the group.
+
+            created_at (timestamp, default now()): Timestamp indicating when the group was created.
+
+        Triggers:
+
+            prevent_duplicate_usernames: Ensures usernames are unique across all profiles.
+
+            add_creator_to_group_members: Automatically adds the creator of the group as the first member in the profile_group_members table with the role "admin".
+
+        ------------   *   ------------
+
+        Table: profile_group_members => Associates individual profiles with profile groups, including role and join date.
+        
+        Columns:
+
+            id (UUID): Unique identifier for the record.
+
+            profile_group_id (UUID, references users.profile_groups.id): ID of the profile group.
+
+            profile_id (UUID, references users.profiles.id): ID of the profile that is a member of the group.
+
+            role (text, default 'member'): Role of the profile within the group (e.g., "admin", "member").
+
+            joined_at (timestamp, default now()): Timestamp indicating when the profile joined the group.
+
+        Triggers:
+
+            trigger_reassign_admin: Automatically assigns a new admin when the only existing admin leaves a group.
+            trigger_group_member_join: Trigger function to create a notification when a new member joins a group.
+            trigger_group_member_leave: Trigger function to create a notification when a member leaves a group.
+
     ------------   *   ------------
 
     Schema: music

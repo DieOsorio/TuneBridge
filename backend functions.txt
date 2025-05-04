@@ -1,0 +1,316 @@
+CREATE OR REPLACE FUNCTION public.notify_comment()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    INSERT INTO social.notifications (
+        id,
+        created_at,
+        profile_id,
+        type,
+        entity_id,
+        from_user_id,
+        is_read,
+        message
+    )
+    VALUES (
+        gen_random_uuid(),
+        NOW(),
+        (SELECT profile_id FROM social.posts WHERE id = NEW.post_id), -- Post owner
+        'comment',
+        NEW.post_id, -- The ID of the commented post
+        NEW.profile_id, -- The user who commented
+        false,
+        'Someone commented on your post!'
+    );
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.notify_follow_request()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    INSERT INTO social.notifications (
+        id,
+        created_at,
+        profile_id,
+        type,
+        entity_id,
+        from_user_id,
+        is_read,
+        message
+    )
+    VALUES (
+        gen_random_uuid(),
+        NOW(),
+        NEW.following_profile_id, -- The recipient of the follow request
+        'follow_request',
+        NEW.id, -- The ID of the user_connections row
+        NEW.follower_profile_id, -- The user who sent the follow request
+        false,
+        'You have a new follow request!'
+    );
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.notify_like()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    INSERT INTO social.notifications (
+        id,
+        created_at,
+        profile_id,
+        type,
+        entity_id,
+        from_user_id,
+        is_read,
+        message
+    )
+    VALUES (
+        gen_random_uuid(),
+        NOW(),
+        (SELECT profile_id FROM social.posts WHERE id = NEW.post_id), -- Post owner
+        'like',
+        NEW.post_id, -- The ID of the liked post
+        NEW.profile_id, -- The user who liked the post
+        false,
+        'Someone liked your post!'
+    );
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.notify_profile_group_join()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  INSERT INTO social.notifications (
+    id,
+    created_at,
+    profile_id,
+    type,
+    entity_id,
+    from_user_id,
+    is_read,
+    message
+  )
+  VALUES (
+    gen_random_uuid(),
+    NOW(),
+    NEW.profile_id, -- Notify the user (profile_id) who joined the group
+    'group_join',
+    NEW.profile_group_id, -- The ID of the group
+    NEW.profile_id, -- The user who joined the group
+    FALSE,
+    'You have joined the group.'
+  );
+  RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.notify_profile_group_leave()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  INSERT INTO social.notifications (
+    id,
+    created_at,
+    profile_id,
+    type,
+    entity_id,
+    from_user_id,
+    is_read,
+    message
+  )
+  VALUES (
+    gen_random_uuid(),
+    NOW(),
+    OLD.profile_group_id, -- or each admin
+    'group_leave',
+    OLD.profile_group_id,
+    OLD.profile_id,
+    FALSE,
+    'A member has left the group.'
+  );
+  RETURN OLD;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.prevent_duplicate_likes()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM social.likes
+        WHERE profile_id = NEW.profile_id
+        AND (post_id = NEW.post_id OR comment_id = NEW.comment_id)
+    ) THEN
+        RAISE EXCEPTION 'Duplicate like detected';
+    END IF;
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.prevent_duplicate_participants()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM social.conversation_participants
+        WHERE conversation_id = NEW.conversation_id
+        AND profile_id = NEW.profile_id
+    ) THEN
+        RAISE EXCEPTION 'Duplicate participant detected';
+    END IF;
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.prevent_duplicate_usernames()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM users.profiles
+        WHERE username = NEW.username
+        AND id != NEW.id
+    ) THEN
+        RAISE EXCEPTION 'Duplicate username detected';
+    END IF;
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.reassign_admin_on_leave()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+  remaining_admins INT;
+  new_admin UUID;
+BEGIN
+  -- Count remaining admins in the group
+  SELECT COUNT(*) INTO remaining_admins
+  FROM users.profile_group_members
+  WHERE profile_group_id = OLD.profile_group_id AND role = 'admin' AND profile_id != OLD.profile_id;
+
+  -- If no admins left, assign a new one
+  IF remaining_admins = 0 THEN
+    SELECT profile_id INTO new_admin
+    FROM users.profile_group_members
+    WHERE profile_group_id = OLD.profile_group_id
+    ORDER BY joined_at ASC
+    LIMIT 1;
+
+    IF new_admin IS NOT NULL THEN
+      UPDATE users.profile_group_members
+      SET role = 'admin'
+      WHERE profile_group_id = OLD.profile_group_id AND profile_id = new_admin;
+    END IF;
+  END IF;
+
+  RETURN OLD;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.soft_delete_message()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    NEW.deleted_at = NOW();
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.update_comment_timestamp()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.update_connection_timestamp()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.update_message_timestamp()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION public.update_post_timestamp()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$function$
+
+
+
+CREATE OR REPLACE FUNCTION add_creator_to_group_members()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insert the creator into the profile_group_members table
+  INSERT INTO users.profile_group_members (profile_group_id, profile_id, role, joined_at)
+  VALUES (NEW.id, NEW.created_by, 'admin', NOW());
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

@@ -110,13 +110,20 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             <div>
                 {/* Display the users posts */}
                 <div className="mb-4">
-                    <Button onClick={() => setExternalView("displayPosts")}>Posts</Button>
+                    <Button onClick={() => manageView("displayPosts", "profile")}>Posts</Button>
                 </div>
 
+                {/* Create a new post
+                {isOwnProfile && 
+                <div className="mb-4">
+                    <Button onClick={() => manageView("createPost", "profile")}>Create Post</Button>
+                </div>} */}
                 {/* Create a new post */}
                 {isOwnProfile && 
                 <div className="mb-4">
-                    <Button onClick={() => setExternalView("createPost")}>Create Post</Button>
+                    <Button onClick={() => manageView("groups", "profile")}>
+                        View My Groups
+                    </Button>
                 </div>}
             </div>
         </div>

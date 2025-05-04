@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
@@ -17,7 +18,7 @@ const SignUp = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      setError("Passwords do not match");
       return;
     }
 
@@ -34,7 +35,7 @@ const SignUp = () => {
       setError("");
       setSuccess(true);
     } catch (err) {
-      setError("Hubo un problema al registrarte.");
+      setError("There was a problem signing you up.");
     }
   };
 
@@ -49,7 +50,7 @@ const SignUp = () => {
   return (
     <div className="text-gray-950 flex justify-center items-center h-screen">
       <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Registrarse</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">Sign Up</h2>
 
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
         {authError && <div className="text-red-500 text-sm mb-4">{authError}</div>}
@@ -60,32 +61,40 @@ const SignUp = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Tu email"
+            placeholder="Your email"
             required
             autoComplete="email"
           />
           <Input
-            label="Contraseña"
+            label="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Tu contraseña"
+            placeholder="Your password"
             required
             autoComplete="new-password"
           />
           <Input
-            label="Confirmar contraseña"
+            label="Confirm Password"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirma tu contraseña"
+            placeholder="Confirm your password"
             required
             autoComplete="new-password"
           />
           <Button className="w-full" type="submit">
-            Registrarse
+            Sign Up
           </Button>
         </form>
+
+        {/* Suggestion to log in */}
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-sky-600 hover:underline">
+            Log In
+          </Link>
+        </p>
       </div>
     </div>
   );

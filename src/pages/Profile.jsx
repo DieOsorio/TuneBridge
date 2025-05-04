@@ -14,6 +14,7 @@ import ProfileHeader from "../components/profiles/ProfileHeader";
 import Edit from "./Edit";
 import Notifications from "../components/social/Notifications";
 import { useProfile } from "../context/profile/ProfileContext";
+import UserGroups from "../components/profiles/group/UserGroups"; // Import the UserGroups component
 
 const Profile = () => {
   const { identifier } = useParams(); // Get the profile identifier from the URL
@@ -57,12 +58,12 @@ const Profile = () => {
         <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />
 
         {/* Posts View */}
-        {externalView === "displayPosts" && (
+        {externalView === "profile" && internalView === "displayPosts" && (
           <PostsList profileId={profileData.id} />
         )}
 
         {/* Create Post View */}
-        {isOwnProfile && externalView === "createPost" && (
+        {isOwnProfile && externalView === "profile" && internalView === "createPost" && (
           <CreatePost id={user.id} />
         )}
 
@@ -74,6 +75,11 @@ const Profile = () => {
         {/* Notifications View */}
         {isOwnProfile && externalView === "notifications" && (
           <Notifications profileId={profileData.id} />
+        )}
+
+        {/* User Groups View */}
+        {isOwnProfile && internalView === "groups" && externalView === "profile" && (
+          <UserGroups />
         )}
 
         {/* Default Profile View */}

@@ -3,10 +3,12 @@ import Skeleton from "react-loading-skeleton";
 import { Link, useNavigate } from "react-router-dom";
 import { useView } from "../../context/ViewContext";
 import { IoChatboxOutline } from "react-icons/io5";
+import { BsPostcard } from "react-icons/bs";
 import { useAuth } from "../../context/AuthContext";
 import { useConversations } from "../../context/social/chat/ConversationsContext";
 import { useParticipants } from "../../context/social/chat/ParticipantsContext";
 import { useState } from "react";
+import { AiFillEdit } from "react-icons/ai";
 
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { manageView } = useView();
@@ -15,6 +17,8 @@ const ProfileMinibox = ({ profile, isLoading }) => {
   const {findConversation, createConversation} = useConversations();
   const { addParticipant } = useParticipants();
   const [isStartingChat, setIsStartingChat] = useState(false);
+
+  const isOwnProfile = user.id === profile.id; // Check if the logged-in user is the same as the profile being viewed
 
   const handleStartChat = async () => {
     if (isStartingChat) return;
@@ -93,10 +97,33 @@ const ProfileMinibox = ({ profile, isLoading }) => {
         </div>
       </div>
       {bio && (
-        <p className="text-zinc-600 dark:text-zinc-300 line-clamp-4">{bio}</p>
+        <p className="text-zinc-600 dark:text-zinc-300 line-clamp-4">
+          {bio.length > 50 ? `${bio.slice(0, 100)}...` : bio}
+        </p>
       )}
       {/* message icon */}
-      <div className="flex justify-end">
+      <div className="flex justify-end items-center gap-5 pt-2">
+
+        {isOwnProfile && (
+          <Link
+          title="Edit Profile"
+          onClick={() => manageView("editProfile", "edit")}
+          to={`/profile/${id}`}
+          className="text-zinc-500 cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition"
+        >
+          <AiFillEdit size={30} />
+        </Link>
+      )}
+
+        <Link
+          title="View Posts"
+          onClick={() => manageView("displayPosts", "profile")}
+          to={`/profile/${id}`}
+          className="text-zinc-500 cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition"
+        >
+          <BsPostcard size={30} />
+        </Link>
+
         <button
           title="Send Message"
           className="text-zinc-500 cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition"

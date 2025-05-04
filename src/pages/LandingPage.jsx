@@ -1,11 +1,10 @@
 import { FaMusic, FaHandshake, FaMicrophoneAlt } from "react-icons/fa"; // Importing icons
 import { motion } from "framer-motion"; // For animations
-import { Swiper, SwiperSlide } from "swiper/react"; // For carousel
-import "swiper/css"; // Swiper styles
 import Skeleton from "react-loading-skeleton"; // For skeleton loaders
 import "react-loading-skeleton/dist/skeleton.css"; // Skeleton styles
 import Banner from "../components/ui/Banner";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   const { user } = useAuth();
@@ -46,7 +45,7 @@ const LandingPage = () => {
           ) : (
             <>
               <FeatureCard
-                icon={<FaMusic className="text-blue-400 mx-auto" />}
+                icon={<FaMusic className="text-sky-500 mx-auto" />}
                 title="Share Your Music"
                 description="Upload your tracks, share your ideas, and get feedback from other musicians."
               />
@@ -65,36 +64,45 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Trending Tracks Carousel */}
+      {/* Trending Tracks Section */}
       <section className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-white">
           Trending Tracks
         </h2>
-        <Swiper spaceBetween={30} slidesPerView={3} loop={true}>
-          <SwiperSlide>
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-xl font-bold text-white">Track 1</h3>
-              <p className="text-gray-400">Artist Name</p>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-xl font-bold text-white">Track 2</h3>
-              <p className="text-gray-400">Artist Name</p>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-              <h3 className="text-xl font-bold text-white">Track 3</h3>
-              <p className="text-gray-400">Artist Name</p>
-            </div>
-          </SwiperSlide>
-        </Swiper>
+        <div className="flex flex-col md:flex-row md:flex-wrap gap-6 justify-center">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
+            <img
+              src="/for-landing-page/musician-1.jpg"
+              alt="Track 1"
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-xl font-bold text-white">Track 1</h3>
+            <p className="text-gray-400">Artist Name</p>
+          </div>
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
+            <img
+              src="/for-landing-page/musician-2.jpg"
+              alt="Track 2"
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-xl font-bold text-white">Track 2</h3>
+            <p className="text-gray-400">Artist Name</p>
+          </div>
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
+            <img
+              src="/for-landing-page/musician-3.jpg"
+              alt="Track 3"
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-xl font-bold text-white">Track 3</h3>
+            <p className="text-gray-400">Artist Name</p>
+          </div>
+        </div>
       </section>
 
       {/* Call-to-Action Section */}
       <motion.section
-        className="bg-gradient-to-r from-blue-600 to-purple-700 py-12 text-center"
+        className="bg-gradient-to-r from-sky-700 to-purple-700 py-12 text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 1 }}
@@ -106,12 +114,16 @@ const LandingPage = () => {
           Sign up now and take your music to the next level.
         </p>
         <div>
-          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg mr-4">
+          <Link 
+            to={"/signup"} 
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg mr-4">
             Sign Up
-          </button>
-          <button className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg">
+          </Link>
+          <Link 
+            to={"/login"} 
+            className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg">
             Log In
-          </button>
+          </Link>
         </div>
       </motion.section>
     </div>

@@ -24,39 +24,40 @@ export const useFetchPostQuery = (postId) => {
 
 // FETCH ALL POSTS FOR A PROFILE
 export const useFetchPostsQuery = () => {
-    return useQuery({
-      queryKey: ["posts"],
-      queryFn: async () => {
-        const { data, error } = await supabase
-          .schema("social")
-          .from("posts")
-          .select("*");
-  
-        if (error) throw new Error(error.message);
-        return data;
-      },
-    });
-  };
-  
-  
+  return useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("social")
+        .from("posts")
+        .select("*")
+        .order("updated_at", { ascending: false }); // Order by updated_at (most recent first)
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+};
+
+
 // FETCH USER POSTS
 export const useUserPostsQuery = (profileId) => {
-    return useQuery({
-      queryKey: ["userPosts", profileId],
-      queryFn: async () => {
-        const { data, error } = await  supabase
-          .schema("social")
-          .from("posts")
-          .select("*")
-          .eq("profile_id", profileId);        
-  
-        if (error) throw new Error(error.message);
-        return data;
-      },
-      enabled: !!profileId
-    });
-  };  
-  
+  return useQuery({
+    queryKey: ["userPosts", profileId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("social")
+        .from("posts")
+        .select("*")
+        .eq("profile_id", profileId) // Filter by profile_id
+        .order("updated_at", { ascending: false }); // Order by updated_at (most recent first)
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!profileId, // Only run the query if profileId is defined
+  });
+};
 
 
 // CREATE NEW POST
