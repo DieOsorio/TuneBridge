@@ -53,7 +53,7 @@ const Sidebar = ({ avatarUrl }) => {
   return (
     <div
       ref={sidebarRef}  // Attach ref to sidebar element
-      className="fixed top-0 left-0 h-[calc(100%-160px)] bg-gradient-to-b from-gray-950 to-gray-900 text-white z-10"
+      className="hidden md:block fixed top-0 left-0 h-[calc(100%-160px)] bg-gradient-to-b from-gray-950 to-gray-900 text-white z-10"
       style={{ top: "80px" }} // Adjust top to match navbar height
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

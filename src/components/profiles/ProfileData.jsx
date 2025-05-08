@@ -3,15 +3,6 @@ import React from 'react'
 function ProfileData({ profileData }) {
   return (
     <div className="flex flex-col items-center">
-      {profileData.bio && (
-        <p className="max-w-2xl text-center text-lg text-gray-200 mb-4">
-          {profileData.bio}
-        </p>
-      )}
-
-      {profileData.bio && (
-        <hr className="w-full max-w-3xl border-t border-gray-300 mb-6" />
-      )}
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-lg text-gray-300">
         {profileData.firstname &&

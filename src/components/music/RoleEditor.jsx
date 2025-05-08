@@ -98,13 +98,13 @@ const RoleEditor = ({
       <h4 className="text-lg font-semibold mb-2">{title}</h4>
       {successMessage && <p className="text-green-500 mb-2">{successMessage}</p>}
       {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
-      <ul className="space-y-2">
+      <ul className="space-y-4">
         {details.map((detail) => (
           <li
             key={detail.id}
-            className="bg-gray-50 p-3 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center"
+            className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full sm:w-auto">
               {fields.map((field) => (
                 <div key={field.name}>
                   <strong>{field.label}:</strong>
@@ -120,7 +120,7 @@ const RoleEditor = ({
                           },
                         }))
                       }
-                      className="ml-2 p-1 border rounded"
+                      className="ml-2 p-1 border rounded w-full sm:w-auto"
                     >
                       <option value="" disabled>
                         Choose one
@@ -144,23 +144,23 @@ const RoleEditor = ({
                           },
                         }))
                       }
-                      className="ml-2 p-1 border rounded"
+                      className="ml-2 p-1 border rounded w-full sm:w-auto"
                       required={field.required}
                     />
                   )}
                 </div>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto justify-end">
               <button
                 onClick={() => handleSaveDetail(detail)}
-                className="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600"
+                className="bg-green-500 text-white text-xs px-4 py-2 rounded hover:bg-green-600"
               >
                 Save
               </button>
               <button
                 onClick={() => handleDeleteDetail(detail.id)}
-                className="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                className="bg-red-500 text-white text-xs px-4 py-2 rounded hover:bg-red-600"
               >
                 ✕
               </button>
@@ -170,7 +170,7 @@ const RoleEditor = ({
       </ul>
       <div className="mt-4">
         {fields.map((field) => (
-          <div key={field.name} className="mb-2">
+          <div key={field.name} className="mb-4">
             {field.type === "select" ? (
               <>
                 <label className="block text-sm font-medium text-gray-700">{field.label}</label>

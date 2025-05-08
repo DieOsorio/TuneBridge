@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useUploadPostImages } from "../../context/social/imagesActions";
 import { useView } from "../../context/ViewContext";
 
-const CreatePost = ({ id, onUpdate }) => {
+const CreatePost = ({ id }) => {
   const [images, setImages] = useState([])
   const { createPost, updatePost } = usePosts();
   const { manageView } = useView()

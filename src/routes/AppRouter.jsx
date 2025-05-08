@@ -12,6 +12,8 @@ import LandingPage from "../pages/LandingPage";
 import ChatPage from "../components/social/chat/ChatPage";
 import UpdatePost from "../components/social/UpdatePost";
 import CreateProfileGroup from "../components/profiles/CreateProfileGroup";
+import ProfileGroup from "../pages/ProfileGroups";
+import CreatePost from "../components/social/CreatePost";
 
 const AppRouter = () => {
     
@@ -29,7 +31,9 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
-          <Route path="/create-profile-group/" element={<ProtectedRoute><CreateProfileGroup /></ProtectedRoute>} />
+          <Route path="/create-post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+          <Route path="/group/:groupId" element={<ProtectedRoute><ProfileGroup /></ProtectedRoute>} />
+          <Route path="/create-profile-group" element={<ProtectedRoute><CreateProfileGroup /></ProtectedRoute>} />
           <Route path="/chat/" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/edit-post/:postId" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
           <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />

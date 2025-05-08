@@ -39,13 +39,12 @@ function ConnectionsList({ checkStatus, profileId }) {
             : conn.following_profile_id;
     };
 
-    const bgClass = checkStatus === 'accepted' ? 'bg-gray-900' : 'bg-yellow-800';
     const title = checkStatus === 'accepted' ? 'Connections' : 'Pending Connections';
 
     return (
         <>
             <h2 className="text-lg text-center font-semibold">{title}</h2>
-            <div className={`w-full py-4 flex flex-wrap justify-center gap-4 ${bgClass}`}>
+            <div className={`w-full bg-gradient-to-l from-gray-900 py-4 flex flex-wrap justify-center rounded-lg gap-4`}>
                 {filteredConnections.map((conn) => (
                     <ConnectionCard
                         key={conn.id}

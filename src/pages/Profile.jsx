@@ -14,7 +14,7 @@ import ProfileHeader from "../components/profiles/ProfileHeader";
 import Edit from "./Edit";
 import Notifications from "../components/social/Notifications";
 import { useProfile } from "../context/profile/ProfileContext";
-import UserGroups from "../components/profiles/group/UserGroups"; // Import the UserGroups component
+import UserGroups from "../components/profiles/group/UserGroups";
 
 const Profile = () => {
   const { identifier } = useParams(); // Get the profile identifier from the URL
@@ -59,7 +59,9 @@ const Profile = () => {
 
         {/* Posts View */}
         {externalView === "profile" && internalView === "displayPosts" && (
-          <PostsList profileId={profileData.id} />
+          <PostsList 
+          isOwnProfile={isOwnProfile}
+          profileId={profileData.id} />
         )}
 
         {/* Create Post View */}
@@ -76,15 +78,11 @@ const Profile = () => {
         {isOwnProfile && externalView === "notifications" && (
           <Notifications profileId={profileData.id} />
         )}
-
-        {/* User Groups View */}
-        {isOwnProfile && internalView === "groups" && externalView === "profile" && (
-          <UserGroups />
-        )}
+        
 
         {/* Default Profile View */}
         {externalView === "profile" && (
-          <div className="bg-gradient-to-r from-gray-950 to-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8">
+          <div className="bg-gradient-to-l to-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8">
             {internalView === "about" && (
               <>
                 <ProfileData profileData={profileData} />
@@ -92,10 +90,21 @@ const Profile = () => {
               </>
             )}
 
+            {/* User Groups View */}
+            {internalView === "groups" && externalView === "profile" && (
+              <UserGroups
+              isOwnProfile={isOwnProfile} 
+              profileId={identifier}
+              />
+            )}
+      
+              
+            {/* Connections List View */} 
+            {externalView === "profile" && internalView === "about" && (
             <ConnectionsList
               profileId={profileData.id}
               checkStatus="accepted"
-            />
+            />)}
           </div>
         )}
       </div>

@@ -12,6 +12,8 @@ import { IoIosCamera } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 
+const MAX_BIO_LENGTH = 100; // Set the maximum number of characters for the bio
+
 const EditProfile = ({ profile }) => {
   const { user } = useAuth();
   const { updateProfile } = useProfile();
@@ -95,10 +97,13 @@ const EditProfile = ({ profile }) => {
   };
 
   return (
-    <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg">
+    <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
       {user && (
-        <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
+        <div
+          ref={avatarClickRef}
+          className="relative w-fit mx-auto cursor-pointer group"
+        >
           <ProfileAvatar avatar_url={preview || avatar_url} />
           <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md group-hover:opacity-100 opacity-80 transition-opacity">
             <IoIosCamera size={20} className="text-gray-700" />
@@ -106,27 +111,37 @@ const EditProfile = ({ profile }) => {
         </div>
       )}
       <div className="my-4">
-        <ImageUploader onFilesUpdate={handleAvatarUpdate} amount={1} triggerRef={avatarClickRef} />
+        <ImageUploader
+          onFilesUpdate={handleAvatarUpdate}
+          amount={1}
+          triggerRef={avatarClickRef}
+        />
       </div>
-      {localError && <p className="text-red-500 text-sm">{localError}</p>}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label htmlFor="bio" className="block text-sm font-medium text-gray-400">
+      {localError && (
+        <p className="text-red-500 text-sm text-center">{localError}</p>
+      )}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
+      >
+        <div className="sm:col-span-2">
+          <label
+            htmlFor="bio"
+            className="block text-sm font-medium text-gray-400"
+          >
             Bio
           </label>
           <textarea
             id="bio"
             {...register("bio")}
             placeholder="Bio"
+            maxLength={MAX_BIO_LENGTH} // Limit the number of characters
             className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
           />
-        </div>
-        <Input
-          label="Username"
-          placeholder="Username"
-          {...register("username", { required: "Username is required" })}
-          error={errors.username?.message}
-        />
+          <p className="text-sm text-gray-500 mt-1">
+            {watch("bio")?.length || 0}/{MAX_BIO_LENGTH} characters used
+          </p>
+        </div>        
         <Input
           label="First name"
           placeholder="First name"
@@ -147,8 +162,25 @@ const EditProfile = ({ profile }) => {
           placeholder="City"
           {...register("city")}
         />
-        <div>
-          <label htmlFor="birthdate" className="block text-sm font-medium mb-2 text-gray-400">
+
+        <Input
+          label="Username"
+          placeholder="Username"
+          {...register("username", { required: "Username is required" })}
+          error={errors.username?.message}
+        />
+        <Select
+          label="Gender"
+          {...register("gender")}
+          defaultOption="Choose your gender"
+          options={["Male", "Female", "Other"]}
+        />
+
+        <div className="sm:col-span-2">
+          <label
+            htmlFor="birthdate"
+            className="block text-sm font-medium mb-2 text-gray-400"
+          >
             Birthdate
           </label>
           <DatePicker
@@ -156,14 +188,8 @@ const EditProfile = ({ profile }) => {
             onChange={(date) => setValue("birthdate", date)} // Update the form state when a new date is selected
           />
         </div>
-        <Select
-          label="Gender"
-          {...register("gender")}
-          defaultOption="Choose your gender"
-          options={["Male", "Female", "Other"]}
-        />
-        <div className="flex justify-end mt-4">
-          <Button className="mt-8 ml-73" type="submit" disabled={isSubmitting}>
+        <div className="sm:col-span-2 flex justify-end mt-4">
+          <Button className="mt-8" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save"}
           </Button>
           <Button

@@ -1,7 +1,7 @@
 import React from "react";
-import { useProfileGroups } from "../../context/profile/ProfileGroupsContext"; // Use the context
+import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
 import { useNavigate } from "react-router-dom";
-import Button from "../ui/Button";
+import Button from "../../ui/Button";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 
@@ -34,7 +34,7 @@ const GroupItem = ({ groupId }) => {
       <h3 className="text-lg font-semibold text-gray-100">{group.name}</h3>
       <p className="text-sm text-gray-400">{group.bio}</p>
       <Button
-        className="mt-4 bg-blue-500 hover:bg-blue-600 text-white"
+        className="mt-4  !bg-amber-700 hover:!bg-amber-800"
         onClick={() => navigate(`/group/${group.id}`)}
       >
         View Group
