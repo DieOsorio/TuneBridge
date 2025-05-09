@@ -1,5 +1,79 @@
-import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { supabase } from '../../supabase';
+
+
+// INFINITE SCROLL FOR ALL POSTS AND USER POSTS
+const PAGE_SIZE = 8; // Number of posts to fetch per page
+
+export const useInfiniteUserPostsQuery = (profileId) => {
+  return useInfiniteQuery({
+    queryKey: ["userPosts", profileId], 
+    queryFn: async ({ pageParam = 0 }) => {
+      if (!profileId) return [];
+      
+      const { data, error } = await supabase
+        .schema("social")
+        .from("posts")
+        .select("*")
+        .eq("profile_id", profileId)
+        .order("created_at", { ascending: false })
+        .range(pageParam * PAGE_SIZE, (pageParam + 1) * PAGE_SIZE - 1);
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length === PAGE_SIZE ? allPages.length : undefined,
+  });
+};
+
+export const useInfinitePostsQuery = () => {
+  return useInfiniteQuery({
+    queryKey: ["postsInfinite"],
+    queryFn: async ({ pageParam = 0 }) => {
+      const from = pageParam * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error } = await supabase
+        .schema("social")
+        .from("posts")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .range(from, to);
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < PAGE_SIZE) return undefined; // No more pages to load
+      return allPages.length; // Next page number
+    },
+  });
+};
+
+
+// SEARCH POSTS
+export const useSearchPostsQuery = (searchTerm) => {
+  return useQuery({
+    queryKey: ["searchPosts", searchTerm],
+    queryFn: async () => {
+      if (!searchTerm) return []; 
+
+      const { data, error } = await supabase
+        .schema("social")
+        .from("posts")
+        .select("*")
+        .textSearch("content_search", searchTerm, {
+          type: "websearch",
+        });
+
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!searchTerm,
+  });
+};
+
 
 // FETCH A SINGLE POST
 export const useFetchPostQuery = (postId) => {

@@ -1,6 +1,53 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { supabase } from '../../supabase';
 import { useMemo } from "react";
+
+// INFINITE SCROLL FOR ALL PROFILES
+const PAGE_SIZE = 8; // Number of profiles to fetch per page
+
+export const useInfiniteProfilesQuery = () => {
+    return useInfiniteQuery({
+      queryKey: ["profilesInfinite"],
+      queryFn: async ({ pageParam = 0 }) => {
+        const from = pageParam * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+  
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .range(from, to);
+  
+        if (error) throw new Error(error.message);
+        return data;
+      },
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length < PAGE_SIZE) return undefined; // No more pages to load
+        return allPages.length; // Next page number
+      },
+    });
+  };
+
+// Fetch profiles based on search term
+  export const useSearchProfilesQuery = (searchTerm) => {
+    return useQuery({
+      queryKey: ["searchProfiles", searchTerm],
+      queryFn: async () => {
+        if (!searchTerm) return []; 
+  
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .textSearch("content_search", searchTerm, {
+            type: "websearch",
+          });
+  
+        if (error) throw new Error(error.message);
+        return data;
+      },
+      enabled: !!searchTerm, // Only run the query if searchTerm is defined
+    });
+  };
 
 // Fetch all profiles
 export const useAllProfilesQuery = () => {

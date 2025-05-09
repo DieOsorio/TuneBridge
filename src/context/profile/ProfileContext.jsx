@@ -8,6 +8,8 @@ import {
     useUpdateProfile,
     useDeleteProfile,
     useProfilesMap,
+    useSearchProfilesQuery,
+    useInfiniteProfilesQuery,
 } from './profileActions';
 
 const ProfileContext = createContext(null);
@@ -29,6 +31,8 @@ export const ProfileProvider = ({ children }) => {
         createProfile,
         updateProfile,
         deleteProfile,
+        searchProfiles: useSearchProfilesQuery,
+        infiniteProfiles: useInfiniteProfilesQuery,
     };
 
     return (

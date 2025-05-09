@@ -31,6 +31,7 @@ Database Configuration Summary
         Triggers:
 
             prevent_duplicate_usernames: Ensures usernames are unique across all profiles.
+            trigger_update_profile_content_search: Generates a full-text search vector (tsvector) by combining Spanish and English versions of relevant fields such as username, firstname, lastname, email, country, city, and bio, enabling efficient text-based search on user profiles.
 
         ------------   *   ------------
 
@@ -214,23 +215,32 @@ Database Configuration Summary
 
         Columns:
 
-            id (UUID)
+            id (UUID): Unique identifier of the post.
 
-            profile_id (UUID, ref to users.profiles)
+            profile_id (UUID, ref to users.profiles): Author of the post.
 
-            content (text)
+            title (text): Title of the post.
 
-            image_url (text, optional)
+            content (text): Main content of the post.
 
-            created_at (timestamp)
+            images_urls (text, optional): URLs of images associated with the post (as comma-separated text or array depending on implementation).
 
-            updated_at (timestamp)
+            created_at (timestamp): Timestamp when the post was created.
+
+            updated_at (timestamp): Timestamp of the last edit of the post.
+
+            content_search (tsvector): Searchable vector generated from title and content.
+
+        Indexes:
+            content_search_idx: GIN index on content_search for full-text search performance.
 
         Triggers:
 
             trigger_update_posts_timestamp: Automatically updates `updated_at` when a post is edited.
 
             trigger_like: Creates a notification when a post is liked.
+
+            update_content_search_trigger: Updates content_search when title or content changes.
 
     ------------   /   ------------
 

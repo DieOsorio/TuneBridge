@@ -7,6 +7,9 @@ import {
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
+  useSearchPostsQuery,
+  useInfinitePostsQuery,
+  useInfiniteUserPostsQuery,
 } from "./postsActions";
 
 const PostsContext = createContext();
@@ -17,7 +20,7 @@ export const PostsProvider = ({ children }) => {
   const createPost = useCreatePostMutation().mutateAsync;
   const updatePost = useUpdatePostMutation().mutateAsync;
   const deletePost = useDeletePostMutation().mutateAsync;
-
+  
   const value = {
     posts,
     loading,
@@ -27,7 +30,10 @@ export const PostsProvider = ({ children }) => {
     updatePost,
     deletePost,
     userPosts: useUserPostsQuery,
-    fetchPost: useFetchPostQuery,    
+    fetchPost: useFetchPostQuery,
+    searchPosts: useSearchPostsQuery,
+    infinitePosts: useInfinitePostsQuery,
+    infiniteUserPosts: useInfiniteUserPostsQuery,    
   }
 
   return (

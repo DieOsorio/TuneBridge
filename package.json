@@ -24,6 +24,7 @@
     "filepond-plugin-image-preview": "^4.6.12",
     "framer-motion": "^12.6.5",
     "gsap": "^3.12.7",
+    "meilisearch": "^0.50.0",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -230,7 +230,7 @@ function PostCard({ post }) {
       )}
 
       {/* Text content of the post */}
-      <p className="text-gray-400 font-semibold border-gray-300 border-1 sm:ml-auto sm:w-140 p-4 my-4">
+      <p className="text-gray-300 mx-auto font-semibold border-gray-300 border-1 sm:ml-auto sm:w-140 p-4 my-4">
         {post.content}
       </p>
 
