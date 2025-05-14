@@ -115,7 +115,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             <Button onClick={() => manageView("about", "profile")}>About</Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("about", "profile")}>Music</Button>
+            <Button onClick={() => manageView("music", "profile")}>Music</Button>
           </div>
         </div>
 
