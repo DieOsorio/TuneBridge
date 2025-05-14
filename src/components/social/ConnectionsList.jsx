@@ -48,7 +48,7 @@ function ConnectionsList({ checkStatus, profileId }) {
                 {filteredConnections.map((conn) => (
                     <ConnectionCard
                         key={conn.id}
-                        id={conn.id}
+                        connection={conn}
                         profileId={getOtherProfileId(conn)}
                     />
                 ))}
