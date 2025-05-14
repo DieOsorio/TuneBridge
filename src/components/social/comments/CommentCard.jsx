@@ -26,14 +26,14 @@ function CommentCard({
   const [isEditing, setIsEditing] = useState(false); // manage editing comment box
   const [editedContent, setEditedContent] = useState(comment.content); // manage the edited content
   const {
-    userLikes,
+    commentLikesQuery,
     insertLike,
     deleteLike,
-    loading: likesLoading,
   } = useLikes();
   const {
-    data: likes,
-  } = userLikes(profile.id);
+    data: likes = [],
+    isLoading: likesLoading,
+  } = commentLikesQuery(comment.id);
   
 
   const isMenuOpen = localOpenMenuId === comment.id; 
