@@ -12,7 +12,7 @@ import { supabase } from "../../supabase";
 const UpdatePost = () => {
   const { postId } = useParams(); // Extract postId from the URL
   const [images, setImages] = useState([]); // Store images (existing + new)
-  const { fetchPost, updatePost } = usePosts(); // Fetch and update post logic
+  const { fetchPost, updatePost, deletePost } = usePosts(); // Fetch and update post logic
   const { data: postData, isLoading, error } = fetchPost(postId); // Fetch post data by ID
   const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm();
   const uploadImageMutations = useUploadPostImages();
@@ -104,6 +104,22 @@ const UpdatePost = () => {
     }
   };
 
+  // Handle post deletion
+   const handleDeletePost = async () => {
+    if (!postData) return;
+
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      try {
+        await deletePost(postData.id);
+        navigate(`/profile/${postData.profile_id}`); // Navigate back to the profile view
+      } catch (error) {
+        console.error("Error deleteing post:", error.message);
+        alert("Error deleting the post. Please try again.");
+      }
+    }
+  };
+
+
   if (isLoading) {
     return <Loading />; // Show loading state while fetching post data
   }
@@ -172,16 +188,22 @@ const UpdatePost = () => {
           <Button
             type="button"
             onClick={() => navigate("/explore")} // Navigate to /explore
-            className="px-4 py-2 !bg-gray-500 text-white rounded-lg hover:!bg-gray-600 transition"
+            className="!bg-gray-500 hover:!bg-gray-600"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition"
           >
             {isSubmitting ? "Updating..." : "Update"}
+          </Button>
+          <Button
+            type="button"
+            onClick={handleDeletePost}
+            className="px-4 py-2 !bg-red-600 hover:!bg-red-700"
+          >
+            Delete Post
           </Button>
         </div>
       </form>

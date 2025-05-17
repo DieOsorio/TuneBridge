@@ -4,27 +4,29 @@ import { useAuth } from "../../context/AuthContext";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Loading from "../../utils/Loading";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { user, loading, signIn, error: authError } = useAuth(); // Access signIn and authError from AuthContext
+  const { user, loading, signIn, error: authError } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  // Redirect to the user's profile if already authenticated
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
   useEffect(() => {
     if (user && user.email_confirmed_at && !loading) {
-      navigate(`/profile/${user.id}`); // Redirect to the profile page  
+      navigate(`/profile/${user.id}`);
     }
   }, [user, navigate, loading]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
-      setError(""); // Clear any previous errors
-      await signIn(email, password); // Use the signIn function from AuthContext
+      setError("");
+      await signIn(data.email, data.password);
     } catch (err) {
       setError("Unable to log in. Please check your credentials.");
     }
@@ -42,31 +44,31 @@ const Login = () => {
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
         {authError && <div className="text-red-500 text-sm mb-4">{authError}</div>}
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             label="Email"
             type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             placeholder="Your email"
-            required
             autoComplete="email"
+            {...register("email", {
+              required: "Email is required",
+            })}
+            error={errors.email?.message}
           />
 
           <Input
             label="Password"
             type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             placeholder="Your password"
-            required
             autoComplete="current-password"
+            {...register("password", {
+              required: "Password is required",
+            })}
+            error={errors.password?.message}
           />
 
-          <Button className="w-full" type="submit">
-            Log In
+          <Button className="w-full" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Log In"}
           </Button>
         </form>
 

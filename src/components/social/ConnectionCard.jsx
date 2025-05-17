@@ -30,8 +30,6 @@ const ConnectionCard = ({ profileId, connection }) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
-    console.log("currentProfileId", currentProfileId, "connections", connection );
-
     if (loading) return <Loading />;
     
     if (error) return <ErrorMessage error={error.message || "Error loading profile."} />;

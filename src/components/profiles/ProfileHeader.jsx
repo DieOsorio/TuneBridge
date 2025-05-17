@@ -40,7 +40,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                 title: profileData.username
             });        
     
-            // Vincular a ambos usuarios como participantes
+            // Add participants to the new conversation
             const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
             const otherUser = { conversation_id: newConv.id, profile_id: profileData.id };
             await addParticipant(loggedUser);
@@ -115,7 +115,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             <Button onClick={() => manageView("about", "profile")}>About</Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("about", "profile")}>Music</Button>
+            <Button onClick={() => manageView("music", "profile")}>Music</Button>
           </div>
         </div>
 

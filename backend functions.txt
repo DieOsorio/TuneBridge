@@ -351,3 +351,22 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+ 
+create or replace function public.create_profile_when_authenticated()
+returns trigger as $$
+begin
+  -- Solo crea perfil si el rol es 'authenticated' y no existe ya
+  if new.role = 'authenticated' then
+    insert into users.profiles (id, email, username)
+    values (
+      new.id,
+      new.email,
+      new.raw_user_meta_data->>'full_name'  -- Extrae el username
+    )
+    on conflict (id) do nothing;
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer;

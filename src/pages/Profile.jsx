@@ -91,13 +91,25 @@ const Profile = () => {
             )}
 
             {/* User Groups View */}
-            {internalView === "groups" && externalView === "profile" && (
+            {/* {internalView === "groups" && externalView === "profile" && (
               <UserGroups
               isOwnProfile={isOwnProfile} 
               profileId={identifier}
               />
+            )} */}
+
+            {internalView === "groups" && externalView === "profile" && (
+              <div className="text-center text-gray-400 py-8">
+                User Groups is in development. Coming soon!
+              </div>
             )}
-      
+
+            {/* Music View */}
+            {internalView === "music" && externalView === "profile" && (
+              <div className="text-center text-gray-400 py-8">
+                Music section is in development. Coming soon!
+              </div>
+            )}      
               
             {/* Connections List View */} 
             {externalView === "profile" && internalView === "about" && (

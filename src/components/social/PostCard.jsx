@@ -129,7 +129,7 @@ function PostCard({ post }) {
             )}
           </div>
 
-          <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-8">
+          <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-8 mt-6">
             {/* Edit button for the logged-in user's posts */}
             <div className="w-10 h-10 flex items-center justify-center">
               {post.profile_id === user.id && (
