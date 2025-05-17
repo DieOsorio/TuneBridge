@@ -12,9 +12,7 @@ import { IoIosCamera } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 
-const MAX_BIO_LENGTH = 100; // Set the maximum number of characters for the bio
-
-const EditProfile = ({ profile }) => {
+const EditProfile = ({ profile, onSave, onCancel }) => {
   const { user } = useAuth();
   const { updateProfile } = useProfile();
   const { manageView } = useView();
@@ -91,6 +89,7 @@ const EditProfile = ({ profile }) => {
       });
 
       manageView("about", "profile");
+      if (onSave) onSave();
     } catch (error) {
       setLocalError(error.message || "Error updating profile.");
     }
@@ -133,13 +132,20 @@ const EditProfile = ({ profile }) => {
           </label>
           <textarea
             id="bio"
-            {...register("bio")}
-            placeholder="Bio"
-            maxLength={MAX_BIO_LENGTH} // Limit the number of characters
+            {...register("bio", {
+              maxLength: {
+                value: 100,
+                message: "Bio cannot exceed 100 characters",
+              },
+            })}
+            placeholder="Bio"            
             className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
           />
+          {errors.bio && (
+            <p className="text-sm text-red-500 mt-1">{errors.bio.message}</p>
+          )}
           <p className="text-sm text-gray-500 mt-1">
-            {watch("bio")?.length || 0}/{MAX_BIO_LENGTH} characters used
+            {watch("bio")?.length || 0}/100 characters used
           </p>
         </div>        
         <Input
@@ -166,7 +172,17 @@ const EditProfile = ({ profile }) => {
         <Input
           label="Username"
           placeholder="Username"
-          {...register("username", { required: "Username is required" })}
+          {...register("username", { 
+            required: "Username is required",
+          maxLength: {
+            value: 12,
+            message: "Username cannot exceed 12 characters",
+          },
+          pattern: {
+            value: /^[a-zA-Z0-9_.-]+$/,
+            message: "Username can only contain letters, numbers, underscores, hyphens, and periods",
+          },
+        })}
           error={errors.username?.message}
         />
         <Select
@@ -195,7 +211,10 @@ const EditProfile = ({ profile }) => {
           <Button
             className="mt-8 ml-4 !bg-gray-500 hover:!bg-gray-600 text-white"
             type="button"
-            onClick={() => manageView("about", "profile")}
+            onClick={() => {
+              manageView("about", "profile");
+              if (onCancel) onCancel();
+            }}
           >
             Cancel
           </Button>

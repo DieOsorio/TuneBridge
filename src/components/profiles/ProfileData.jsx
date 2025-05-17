@@ -1,6 +1,18 @@
 import React from 'react'
 
 function ProfileData({ profileData }) {
+
+  function calculateAge(birthdate) {
+    const birth = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
   return (
     <div className="flex flex-col items-center">
 
@@ -37,8 +49,8 @@ function ProfileData({ profileData }) {
 
         {profileData.birthdate &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">Birthdate:</span>
-          <span>{profileData?.birthdate ? profileData.birthdate.split("T")[0] : "—"}</span>
+          <span className="font-semibold w-32 text-gray-500">Age:</span>
+          <span>{calculateAge(profileData.birthdate)} years</span>
         </li>}
       </ul>
     </div>

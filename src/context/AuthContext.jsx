@@ -59,6 +59,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signUp = async (email, password, username) => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: username,
+          },
+        },
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   const signOut = async () => {
     setLoading(true);
     setError('');
@@ -83,6 +109,7 @@ export const AuthProvider = ({ children }) => {
     error,
     signIn,
     signOut,
+    signUp,
   }), [user, loading, error]);
 
   return (

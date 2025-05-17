@@ -40,7 +40,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                 title: profileData.username
             });        
     
-            // Vincular a ambos usuarios como participantes
+            // Add participants to the new conversation
             const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
             const otherUser = { conversation_id: newConv.id, profile_id: profileData.id };
             await addParticipant(loggedUser);
