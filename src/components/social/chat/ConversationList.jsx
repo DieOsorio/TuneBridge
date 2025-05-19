@@ -5,6 +5,7 @@ import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import ConversationItem from "./ConversationItem";
 import { useAuth } from "../../../context/AuthContext";
+import { useChatUI } from "../../../context/social/chat/ChatUIContext";
 
 const ConversationList = () => {
   const { user } = useAuth();
@@ -13,6 +14,8 @@ const ConversationList = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(conversationId);
+  const { setIsConversationListVisible } = useChatUI();
+  
   
   useEffect(() => {
     if (!conversationId && conversations && conversations.length > 0) {
@@ -25,6 +28,7 @@ const ConversationList = () => {
   const handleSelect = (id) => {
     setSelectedId(id);
     navigate(`/chat/${id}`);
+    setIsConversationListVisible(false); // Collapse sidebar on selection
   };
 
   if (isLoading) return <Loading />;

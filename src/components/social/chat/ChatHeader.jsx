@@ -13,7 +13,8 @@ import { useState, useEffect, useRef } from "react";
 import { uploadFileToBucket } from "../../../utils/avatarUtils";
 import ImageUploader from "../../../utils/ImageUploader";
 import { HiCamera } from "react-icons/hi";
-
+import { HiBars3 } from 'react-icons/hi2';
+import { useChatUI } from "../../../context/social/chat/ChatUIContext";
 
 
 const ChatHeader = ({ conversationId }) => {
@@ -36,6 +37,7 @@ const ChatHeader = ({ conversationId }) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(conversation?.title || "");
   const [isUploading, setIsUploading] = useState(false);
+  const { isConversationListVisible, toggleConversationList } = useChatUI();
 
   // Get the other participant's profile in direct chats
   const otherParticipant = participants?.find((p) => p.profile_id !== user.id);
@@ -65,7 +67,7 @@ const ChatHeader = ({ conversationId }) => {
     setIsUploading(true);
 
     try {
-      const newUrl = await uploadFileToBucket(
+      const newUrl = uploadFileToBucket(
         files[0],
         "chat-group-avatars",
         conversationId,
@@ -101,6 +103,14 @@ const ChatHeader = ({ conversationId }) => {
     return (
       <div className="flex items-center gap-4 px-4 py-2 border-b border-sky-600">
         <h2 className="text-lg font-semibold">Select a conversation</h2>
+        <button
+        onClick={toggleConversationList}
+        className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1"
+        aria-label={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
+        title={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
+      >
+        <HiBars3 size={30}/>
+      </button>
       </div>
     );
   }
@@ -129,6 +139,7 @@ const ChatHeader = ({ conversationId }) => {
 
   return (
   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 bg-gradient-to-l from-gray-900 px-4 py-2 border-b-2 border-sky-600">
+    
     {/* Left side: avatar and title */}
     <div className="flex items-center gap-4">
       {conversation?.avatar_url ? (
@@ -218,6 +229,16 @@ const ChatHeader = ({ conversationId }) => {
         <h2 className="text-lg font-semibold">{title || "Untitled"}</h2>
       )}
 
+      {/* Menu to show conversations*/}
+      <button
+        onClick={toggleConversationList}
+        className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1"
+        aria-label={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
+        title={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
+      >
+        <HiBars3 size={30}/>
+      </button>
+
       {/* Convert direct chat to group button */}
       {!isGroup && (
         <button
@@ -232,7 +253,7 @@ const ChatHeader = ({ conversationId }) => {
 
     {/* Right side: search and add participants */}
     {isGroup && (
-      <div className="flex flex-col w-full md:w-auto md:items-end md:mt-0">
+      <div className="flex flex-col items-center w-full md:w-auto md:items-end md:mt-0">
         {/* Toggle search visibility */}
         <div className="flex items-center justify-between">
           <span className="text-sm text-white font-semibold">Add participants</span>

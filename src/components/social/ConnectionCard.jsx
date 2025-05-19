@@ -60,7 +60,7 @@ const ConnectionCard = ({ profileId, connection }) => {
                             </button>
                         </>
                     )}
-                    {showMenuTrigger && (
+                    {showMenuTrigger && !showAcceptReject && (
                         <div className="relative">
                             <button
                                 onClick={() => setMenuOpen((open) => !open)}
