@@ -11,11 +11,14 @@ import { useConversations } from '../../context/social/chat/ConversationsContext
 import { useParticipants } from '../../context/social/chat/ParticipantsContext';
 import { useState } from 'react';
 import { useNotifications } from '../../context/social/NotificationsContext';
+import { useMessages } from '../../context/social/chat/MessagesContext';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { manageView } = useView();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { totalUnreadMessages } = useMessages();
+    const { data: unreadMessagesCount, isLoading: loadingUnreadMessages } = totalUnreadMessages(user?.id);
     const {findConversation, createConversation} = useConversations();
     const { addParticipant } = useParticipants();
     const { userNotifications, notificationsRealtime } = useNotifications();
@@ -23,6 +26,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const { data: notifications, isLoading } = userNotifications(user.id);
     const [isStartingChat, setIsStartingChat] = useState(false);
     const unreadCount = notifications?.filter(n => !n.is_read).length || 0;
+    
     
     const handleStartChat = async () => {
         if (isStartingChat) return;
@@ -84,10 +88,17 @@ function ProfileHeader({ isOwnProfile, profileData }) {
           )}
           {isOwnProfile && (
             <>
-              <IoChatbubblesSharp
-                className="w-8 h-8 text-white cursor-pointer"
-                onClick={() => navigate("/chat")}
-              />
+              <div className="relative">
+                <IoChatbubblesSharp
+                  className="w-8 h-8 text-white cursor-pointer"
+                  onClick={() => navigate("/chat")}
+                />
+                {!loadingUnreadMessages && unreadMessagesCount?.total > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+                    {unreadMessagesCount.total}
+                  </span>
+                )}
+              </div>
               <IoIosSettings
                 className="w-8 h-8 text-white cursor-pointer"
                 onClick={() => manageView("editProfile", "edit")}

@@ -2,61 +2,70 @@ import { supabase } from "../supabase";
 import { v4 as uuidv4 } from "uuid";
 
 /**
- * Uploads a file to a specified bucket and removes old files from the folder.
- * @param {File} selectedFile - The file to upload.
- * @param {string} bucketName - The name of the Supabase storage bucket.
- * @param {string} folderId - The folder ID (e.g., userId or groupId).
- * @param {string} currentFileUrl - The current file URL (optional).
- * @returns {string|null} - The public URL of the new file or null if an error occurs.
+ * Uploads a file to a specified Supabase Storage bucket and optionally removes old files in the same folder.
+ *
+ * @param {File} selectedFile - The file to be uploaded.
+ * @param {string} bucketName - The name of the Supabase Storage bucket.
+ * @param {string} folderId - The folder ID within the bucket (e.g., user ID, group ID).
+ * @param {string} currentFileUrl - The current file URL (optional, used as fallback).
+ * @param {boolean} shouldCleanFolder - Whether to remove all previous files in the same folder (default: true).
+ * @returns {string|null} - The public URL of the newly uploaded file, or the original URL if an error occurs.
  */
-export const uploadFileToBucket = async (selectedFile, bucketName, folderId, currentFileUrl) => {
+
+export const uploadFileToBucket = async (
+  selectedFile,
+  bucketName,
+  folderId,
+  currentFileUrl,
+  deleteOldFiles = false
+) => {
   if (!selectedFile) return currentFileUrl;
 
   try {
-    const filePath = `${folderId}/${uuidv4()}`; // Generate a unique file path for the new file
+    if (deleteOldFiles) {
+      const { data: files, error: listError } = await supabase.storage
+        .from(bucketName)
+        .list(folderId);
 
-    // Upload the new file
+      if (listError) throw listError;
+
+      const filesToDelete = files.map((file) => `${folderId}/${file.name}`);
+
+      if (filesToDelete.length > 0) {
+        const { error: deleteError } = await supabase.storage
+          .from(bucketName)
+          .remove(filesToDelete);
+
+        if (deleteError) throw deleteError;
+      }
+    }
+
+    const fileExt = selectedFile.name.split(".").pop();
+    const filePath = `${folderId}/${uuidv4()}.${fileExt}`;
+
     const { error: uploadError } = await supabase.storage
       .from(bucketName)
       .upload(filePath, selectedFile, {
         cacheControl: "3600",
-        upsert: true,
+        upsert: false,
       });
 
     if (uploadError) throw uploadError;
 
-    // Get the public URL of the uploaded file
     const { data: publicUrlData, error: urlError } = supabase.storage
       .from(bucketName)
       .getPublicUrl(filePath);
 
     if (urlError) throw urlError;
 
-    const newFileUrl = publicUrlData?.publicUrl;
-
-    // List all files in the folder
-    const { data: files, error: listError } = await supabase.storage
-      .from(bucketName)
-      .list(folderId);
-
-    if (listError) throw listError;
-
-    // Filter out the newly uploaded file and delete the rest
-    const filesToDelete = files
-      .filter((file) => file.name !== filePath.split("/")[1]) // Exclude the new file
-      .map((file) => `${folderId}/${file.name}`); // Get full paths for deletion
-
-    if (filesToDelete.length > 0) {
-      const { error: deleteError } = await supabase.storage
-        .from(bucketName)
-        .remove(filesToDelete);
-
-      if (deleteError) throw deleteError;
-    }
-
-    return newFileUrl; // Return the new file URL
+    return publicUrlData?.publicUrl;
   } catch (err) {
-    console.error(`Error uploading file to bucket "${bucketName}":`, err.message);
-    return currentFileUrl; // Return the current file URL if an error occurs
+    console.error(
+      `Error uploading file to bucket "${bucketName}":`,
+      err.message
+    );
+    return currentFileUrl;
   }
 };
+
+

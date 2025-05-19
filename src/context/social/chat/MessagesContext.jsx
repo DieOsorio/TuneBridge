@@ -6,6 +6,9 @@ import {
   useInsertMessageMutation,
   useUpdateMessageMutation,
   useDeleteMessageMutation,
+  useTotalUnreadMessages,
+  useUnreadMessages,
+  useMarkMessagesAsReadMutation,
 } from "./messagesActions";
 
 const MessagesContext = createContext();
@@ -15,6 +18,7 @@ export const MessagesProvider = ({ children }) => {
   const insertMessage = useInsertMessageMutation().mutateAsync;
   const updateMessage = useUpdateMessageMutation().mutateAsync;
   const deleteMessage = useDeleteMessageMutation().mutateAsync;
+  const markMessagesAsRead = useMarkMessagesAsReadMutation().mutateAsync;
 
   const value = {
     messagesRealtime: useMessagesRealtime,
@@ -22,6 +26,9 @@ export const MessagesProvider = ({ children }) => {
     insertMessage,
     updateMessage,
     deleteMessage,
+    totalUnreadMessages: useTotalUnreadMessages,
+    unreadMessages: useUnreadMessages,
+    markMessagesAsRead,
   };
 
   return <MessagesContext.Provider value={value}>{children}</MessagesContext.Provider>;

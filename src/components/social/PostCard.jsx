@@ -129,7 +129,9 @@ function PostCard({ post }) {
             )}
           </div>
 
+          {/* Utility buttons */}
           <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-8 mt-6">
+          
             {/* Edit button for the logged-in user's posts */}
             <div className="w-10 h-10 flex items-center justify-center">
               {post.profile_id === user.id && (
@@ -176,7 +178,7 @@ function PostCard({ post }) {
         </div>
 
         {/* Images of the post */}
-        <div className="bg-gradient-to-l from-gray-900 w-70 mx-auto sm:w-110 md:h-100 md:w-140 p-4 sm:ml-auto">
+        <div className="w-full max-w-[600px] mx-auto p-4 bg-gradient-to-l from-gray-900 rounded-md">
           {post.images_urls && post.images_urls.length > 0 ? (
             <Swiper
               modules={[Navigation, Pagination, Scrollbar, Zoom]}
@@ -190,47 +192,50 @@ function PostCard({ post }) {
                   <img
                     src={url}
                     alt={`Post image ${index}`}
-                    className="sm:w-110 sm:h-90 h-60 object-contain rounded justify-self-center cursor-pointer"
-                    onClick={() => openModal(url)} // Open modal on click
+                    className="w-full max-h-[400px] sm:max-h-[500px] object-contain rounded cursor-pointer"
+                    onClick={() => openModal(url)}
                   />
                 </SwiperSlide>
               ))}
             </Swiper>
           ) : (
-            <p className="font-semibolds">
+            <p className="font-semibold text-center text-white">
               No images available for this post.
             </p>
           )}
         </div>
-      </div>
 
-      {/* Modal for viewing the image */}
+      </div>
+      {/* Modal for full-size image */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black/80 bg-opacity-75 flex items-center justify-center z-50"
-          onClick={closeModal} // Close modal when clicking outside the image
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          onClick={closeModal}
         >
           <div
-            className="relative p-4 rounded-lg"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+            className="relative max-w-full max-h-full p-4"
+            onClick={(e) => e.stopPropagation()}
           >
+            {/* Close Button */}
             <button
-              className="absolute cursor-pointer top-2 right-2 text-gray-300 hover:text-gray-100"
+              className="absolute top-1 right-1 text-white hover:text-red-100 cursor-pointer z-10"
               onClick={closeModal}
             >
-              <AiOutlineClose size={24} /> {/* Close icon */}
+              <AiOutlineClose size={28} />
             </button>
+
+            {/* Image */}
             <img
               src={currentImage}
               alt="Full-size post image"
-              className="max-w-[90%] max-h-[90%] object-contain mx-auto"
+              className="max-w-[90vw] max-h-[80vh] object-contain rounded-md shadow-lg"
             />
           </div>
         </div>
       )}
 
       {/* Text content of the post */}
-      <p className="text-gray-300 mx-auto font-semibold border-gray-300 border-1 sm:ml-auto sm:w-140 p-4 my-4">
+      <p className="text-gray-300 mx-auto rounded-md bg-gray-900 font-semibold border-gray-400 border-1 sm:ml-auto sm:w-140 p-4 my-4">
         {post.content}
       </p>
 

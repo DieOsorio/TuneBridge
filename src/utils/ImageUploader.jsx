@@ -21,7 +21,9 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
   // Si amount es 1 y se recibe un triggerRef, lo usamos para disparar el input
   useEffect(() => {
     if (amount === 1 && triggerRef && triggerRef.current && pondRef.current) {
-      const openDialog = () => pondRef.current.browse();
+      const openDialog = () => {
+        pondRef.current.browse();
+      }
       const triggerEl = triggerRef.current;
       triggerEl.addEventListener('click', openDialog);
       return () => triggerEl.removeEventListener('click', openDialog);

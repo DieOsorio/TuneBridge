@@ -1,21 +1,36 @@
 import { useParams } from "react-router-dom";
 import { useMessages } from "../../../context/social/chat/MessagesContext";
-import { useAuth } from "../../../context/AuthContext"
+import { useAuth } from "../../../context/AuthContext";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import Loading from "../../../utils/Loading"
-import ErrorMessage from "../../../utils/ErrorMessage"
+import Loading from "../../../utils/Loading";
+import ErrorMessage from "../../../utils/ErrorMessage";
+import { useEffect } from "react";
 
 const ChatWindow = () => {
   const { conversationId } = useParams();
   const { user } = useAuth();
 
-  const { fetchMessages, messagesRealtime } = useMessages();
-  // Real-time updates for messages
-  messagesRealtime(conversationId);
-  const { data: messages, isLoading, error } = fetchMessages(conversationId);
   
+  const { fetchMessages, markMessagesAsRead, unreadMessages, messagesRealtime } = useMessages();
+  const { data: unreadMessagesData } = unreadMessages({ conversationId, profileId: user.id });
+  const { data: messages, isLoading, error } = fetchMessages(conversationId);
+  messagesRealtime(conversationId); 
+  
+  useEffect(() => {
+    if (
+      unreadMessagesData &&
+      unreadMessagesData.length > 0 &&
+      markMessagesAsRead &&
+      user.id
+    ) {
+      const messageIds = unreadMessagesData.map((msg) => msg.id);
+      
+      markMessagesAsRead({ messageIds, profileId: user.id });
+    }
+  }, [unreadMessagesData, markMessagesAsRead, user.id]);
+
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error.message} />;
 

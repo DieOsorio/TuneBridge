@@ -48,7 +48,13 @@ const CreateProfileGroup = () => {
 
       // Handle avatar upload using the generalized function
       if (selectedFile) {
-        avatar = await uploadFileToBucket(selectedFile, "group-avatars", data.name, avatar_url);
+        avatar = await uploadFileToBucket(
+          selectedFile, 
+          "group-avatars", 
+          data.name, 
+          avatar_url,
+          true,
+        );
         setAvatar_url(avatar);
       }
 
