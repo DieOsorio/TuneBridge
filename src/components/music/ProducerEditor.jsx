@@ -4,11 +4,10 @@ import RoleEditor from "./RoleEditor";
 const ProducerEditor = ({ role, profileId }) => {
   const {
     fetchProducer, 
-    refetch,
-    addProducer: addDetails, 
-    updateProducer: updateDetails, 
-    deleteProducer: deleteDetails } = useProducerDetails();
-    const { data: producerDetails} = fetchProducer(role.id)
+    addProducer, 
+    updateProducer, 
+    deleteProducer } = useProducerDetails();
+    const { data: producerDetails, refetch} = fetchProducer(role.id)
 
   const sanitizeInput = (details) => {
     return {
@@ -25,9 +24,9 @@ const ProducerEditor = ({ role, profileId }) => {
       profileId={profileId}
       details={producerDetails || []}
       refetch={refetch}
-      addDetails={(details) => addDetails({details: sanitizeInput(details)})} // Sanitize input before adding
-      updateDetails={(id, details) => updateDetails({id, details: sanitizeInput(details)})} // Sanitize input before updating
-      deleteDetails={(id) => deleteDetails({id})}
+      addDetails={(details) => addProducer({details: sanitizeInput(details)})} // Sanitize input before adding
+      updateDetails={(id, details) => updateProducer({id, details: sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteProducer({id})}
       title="Producer Detail"
       fields={[
         {
@@ -46,7 +45,7 @@ const ProducerEditor = ({ role, profileId }) => {
           name: "level",
           label: "Level",
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced"],
+          options: ["Beginner", "Intermediate", "Advanced", "Expert"],
         },
       ]}
     />

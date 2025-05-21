@@ -2,9 +2,13 @@ import { useInstrumentsDetails } from "../../context/music/InstrumentDetailsCont
 import RoleEditor from "./RoleEditor";
 
 const InstrumentEditor = ({ role, profileId }) => {
-  const { fetchInstruments, refetch, addInstrument, updateInstrument, deleteInstrument } =
-  useInstrumentsDetails();
-  const {data:instruments} = fetchInstruments(role.id)
+  const { 
+    fetchInstruments, 
+    addInstrument, 
+    updateInstrument, 
+    deleteInstrument 
+  } = useInstrumentsDetails();
+  const { data:instruments, refetch } = fetchInstruments(role.id)
   
   const sanitizeInput = (details) => {
     return {
@@ -42,7 +46,7 @@ const InstrumentEditor = ({ role, profileId }) => {
           name: "level",
           label: "Level",
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced"], 
+          options: ["Beginner", "Intermediate", "Advanced", "Expert"], 
         },
       ]}
     />

@@ -6,12 +6,11 @@ const SingerEditor = ({ role, profileId }) => {
   // Destructure the functions from the context
   const {
     fetchSinger, 
-    addSinger: addDetails, 
-    updateSinger: updateDetails, 
-    deleteSinger: deleteDetails, 
-    refetch } =
-  useSingerDetails();
-  const { data: singerDetails} = fetchSinger(role.id);
+    addSinger,
+    updateSinger,
+    deleteSinger
+  } = useSingerDetails();
+  const { data: singerDetails, refetch } = fetchSinger(role.id);
 
   // Sanitize input function to trim whitespace and convert empty strings to null  
   const sanitizeInput = (details) => {
@@ -29,9 +28,9 @@ const SingerEditor = ({ role, profileId }) => {
       profileId={profileId}
       details={singerDetails || []}
       refetch={refetch}
-      addDetails={(details) => addDetails({ details: sanitizeInput(details) })} // Sanitize input before adding
-      updateDetails={(id, details) => updateDetails({id, details: sanitizeInput(details)})} // Sanitize input before updating
-      deleteDetails={(id) => deleteDetails({id})}
+      addDetails={(details) => addSinger({ details: sanitizeInput(details) })} // Sanitize input before adding
+      updateDetails={(id, details) => updateSinger({id, details: sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteSinger({id})}
       title="Singer Detail"
       fields={[
         {

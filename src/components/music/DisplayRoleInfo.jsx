@@ -1,80 +1,56 @@
 const DisplayRoleInfo = ({ role, data }) => {
   if (!data || data.length === 0) {
-    return <p className="text-gray-300 mt-2">No information available for this role.</p>;
+    return (
+      <p className="text-gray-400 mt-4 italic text-center">
+        No information available for this role.
+      </p>
+    );
   }
 
   return (
-    <div className="mt-4 w-full">
-      <h4 className="text-lg font-semibold mb-2">{role.role} Details</h4>
-      <ul className="space-y-2">
+    <div className="mt-6">
+      <h4 className="text-xl font-bold mb-4 text-sky-200 text-center">
+        {role.role} Details
+      </h4>
+      <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {data.map((item) => (
           <li
             key={item.id}
-            className="bg-gray-700 p-3 rounded-lg shadow-sm border border-gray-500"
+            className="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-sm"
           >
             {role.role === "Instrumentalist" && (
               <>
-                <p>
-                  <strong>Instrument:</strong> {item.instrument || "N/A"}
-                </p>
-                <p>
-                  <strong>Years of Experience:</strong> {item.years_of_experience || "N/A"}
-                </p>
-                <p>
-                  <strong>Level:</strong> {item.level || "N/A"}
-                </p>
+                <Detail label="Instrument" value={item.instrument} />
+                <Detail label="Years of Experience" value={item.years_of_experience} />
+                <Detail label="Level" value={item.level} />
               </>
             )}
             {role.role === "Singer" && (
               <>
-                <p>
-                  <strong>Voice Type:</strong> {item.voice_type || "N/A"}
-                </p>
-                <p>
-                  <strong>Music Genre:</strong> {item.music_genre || "N/A"}
-                </p>
-                <p>
-                  <strong>Level:</strong> {item.level || "N/A"}
-                </p>
+                <Detail label="Voice Type" value={item.voice_type} />
+                <Detail label="Music Genre" value={item.music_genre} />
+                <Detail label="Level" value={item.level} />
               </>
             )}
             {role.role === "DJ" && (
               <>
-                <p>
-                  <strong>Events Played:</strong> {item.events_played || "N/A"}
-                </p>
-                <p>
-                  <strong>Preferred Genres:</strong> {item.preferred_genres || "N/A"}
-                </p>
-                <p>
-                  <strong>Level:</strong> {item.level || "N/A"}
-                </p>
+                <Detail label="Events Played" value={item.events_played} />
+                <Detail label="Preferred Genres" value={item.preferred_genres} />
+                <Detail label="Level" value={item.level} />
               </>
             )}
             {role.role === "Producer" && (
               <>
-                <p>
-                  <strong>Production Type:</strong> {item.production_type || "N/A"}
-                </p>
-                <p>
-                  <strong>Years of Experience:</strong> {item.years_of_experience || "N/A"}
-                </p>
-                <p>
-                  <strong>Level:</strong> {item.level || "N/A"}
-                </p>
+                <Detail label="Production Type" value={item.production_type} />
+                <Detail label="Years of Experience" value={item.years_of_experience} />
+                <Detail label="Level" value={item.level} />
               </>
             )}
             {role.role === "Composer" && (
               <>
-                <p>
-                  <strong>Composition Style:</strong> {item.composition_style || "N/A"}
-                </p>
-                <p>
-                  <strong>Years of Experience:</strong> {item.years_of_experience || "N/A"}
-                </p>
-                <p>
-                  <strong>Level:</strong> {item.level || "N/A"}
-                </p>
+                <Detail label="Composition Style" value={item.composition_style} />
+                <Detail label="Years of Experience" value={item.years_of_experience} />
+                <Detail label="Level" value={item.level} />
               </>
             )}
           </li>
@@ -83,5 +59,14 @@ const DisplayRoleInfo = ({ role, data }) => {
     </div>
   );
 };
+
+// Reusable small component for consistent field rendering
+const Detail = ({ label, value }) => (
+  <p className="text-sm text-gray-300 mb-1">
+    <span className="font-semibold text-gray-200">{label}:</span>{" "}
+    {value || "N/A"}
+  </p>
+);
+
 
 export default DisplayRoleInfo;

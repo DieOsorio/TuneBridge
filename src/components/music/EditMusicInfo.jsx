@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
-import { FaChevronRight } from "react-icons/fa"; // Import the icon
+import { FaChevronRight } from "react-icons/fa";
+import { useForm } from "react-hook-form";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import RoleDataEditor from "./RoleDataEditor";
@@ -8,133 +9,146 @@ import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 import Select from "../ui/Select";
 
-
 const EditMusicInfo = ({ profileId }) => {
   const { fetchRoles } = useRoles();
-  const { data: roles, isLoading, isError } = fetchRoles(profileId); 
+  const { data: roles = [], isLoading, isError } = fetchRoles(profileId);
   const { addRole, deleteRole } = useRoles();
-  const [selectedRole, setSelectedRole] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [customRole, setCustomRole] = useState("");
   const [expandedRole, setExpandedRole] = useState(null);
 
-  if (isLoading) return <Loading />
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setError,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      selectedRole: "",
+      customRole: ""
+    }
+  });
 
-  if (isError) return <ErrorMessage error={isError.message} />
+  const selectedRole = watch("selectedRole");
 
-
-  const handleAddRole = useCallback(() => {
-    const roleName = selectedRole === "Other" ? customRole.trim() : selectedRole;
+  const onSubmit = (data) => {
+    const roleName = data.selectedRole === "Other" ? data.customRole.trim() : data.selectedRole;
 
     if (roles.length >= 6) {
-      setErrorMessage("You can have only 6 roles.");
+      setError("selectedRole", { message: "You can have only 6 roles." });
       return;
     }
 
     if (!roleName) {
-      setErrorMessage("Role cannot be empty.");
+      setError("selectedRole", { message: "Role cannot be empty." });
       return;
     }
 
-    const isDuplicate = roles.some((role) => role.role.toLowerCase() === roleName.toLowerCase());
+    const isDuplicate = roles.some(
+      (role) => role.role.toLowerCase() === roleName.toLowerCase()
+    );
     if (isDuplicate) {
-      setErrorMessage("This role already exists.");
+      setError("selectedRole", { message: "This role already exists." });
       return;
     }
 
     addRole({ profileId, roleName })
       .then(() => {
-        setErrorMessage(""); // Clear any previous error messages
-        setSelectedRole(""); // Reset the selected role
-        setCustomRole(""); // Reset the custom role input
+        reset(); // Clear form fields
       })
-      .catch((error) => {
-        console.error("Error adding role:", error);
-        setErrorMessage("An error occurred while adding the role.");
+      .catch(() => {
+        setError("selectedRole", {
+          message: "An error occurred while adding the role."
+        });
       });
-  }, [selectedRole, customRole, roles, profileId, addRole]);
+  };
 
   const handleRoleClick = useCallback((roleId) => {
     setExpandedRole((prev) => (prev === roleId ? null : roleId));
   }, []);
 
- 
-  if (isLoading) {
-    return <Loading />
-  }
-
-  if (isError) {
-    return <ErrorMessage error={isError.message} />;
-  }
+  if (isLoading) return <Loading />;
+  if (isError) return <ErrorMessage error={isError.message} />;
 
   return (
-    <div className="p-6 bg-gradient-to-l to-gray-900 rounded-b-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Edit Music Information</h2>
+    <div className="p-6 bg-gradient-to-r from-gray-900 text-white rounded-b-2xl shadow-lg max-w-5xl mx-auto">
+      <h2 className="text-2xl text-center font-bold mb-4">Edit Music Information</h2>
 
-      <div className="mb-4">
-        <Select
-          label="Select a Role"
-          value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
-          defaultOption="Choose a role"
-          option1="Composer"
-          options={["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]}
-        />        
+      {/* Add New Role */}
+      <form onSubmit={handleSubmit(onSubmit)} className="mb-6 space-y-4">
+        <h3 className="text-xl font-semibold text-white">Add a new role</h3>
 
-        {selectedRole === "Other" && (
-          <Input
-            label="Custom Role"
-            placeholder="Enter custom role"
-            value={customRole}
-            onChange={(e) => setCustomRole(e.target.value)}
+        <div className="grid md:grid-cols-2 gap-4 items-center">
+          <Select
+            id="selectedRole"
+            label="Select a Role"
+            register={register}
+            validation={{ required: "Please select a role." }}
+            error={errors.selectedRole}
+            defaultOption="Choose a role"
+            options={["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]}
           />
-        )}
 
-        <Button onClick={handleAddRole} className="mt-2">
-          Add Role
-        </Button>
+          {selectedRole === "Other" && (
+            <Input
+              id="customRole"
+              label="Custom Role"
+              placeholder="Enter custom role"
+              register={register}
+              validation={{ required: "Please enter a custom role." }}
+              error={errors.customRole}
+              classForLabel="!text-gray-700"
+            />
+          )}
 
-        {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-      </div>
+          <div className={`${selectedRole === "Other" ? "md:col-span-2" : ""}`}>
+            <Button type="submit" className="w-full md:w-auto md:mt-3">
+              Add Role
+            </Button>
+          </div>
+        </div>
+      </form>
 
-      <div>
-        <h3 className="text-xl font-semibold mb-2">Your Roles</h3>
+      {/* Roles List */}
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold text-white mb-4">Your Roles</h3>
+
         {roles.length === 0 ? (
-          <p>No roles available. Add a new role to get started.</p>
+          <p className="text-gray-300">No roles available. Add a new role to get started.</p>
         ) : (
           <div className="space-y-4">
             {roles.map((role) => (
               <div
                 key={role.id}
-                className="p-4 bg-gray-200 rounded-md shadow-md border border-gray-400"
+                className="bg-gray-800 rounded-lg border border-gray-700 shadow-sm transition-all"
               >
                 <div
-                  className="flex items-center justify-between cursor-pointer"
+                  className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-700 rounded-t-lg"
                   onClick={() => handleRoleClick(role.id)}
                 >
+                  <span className="text-lg font-semibold text-white">{role.role}</span>
+
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-gray-800">{role.role}</span>
-                  </div>
-                  <div className="flex items-center">
                     <FaChevronRight
-                      className={`w-6 h-6 text-gray-400 transition-transform ${
+                      className={`w-5 h-5 text-gray-400 transition-transform ${
                         expandedRole === role.id ? "rotate-90" : ""
                       }`}
                     />
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering the toggle
+                        e.stopPropagation();
                         deleteRole(role.id);
                       }}
-                      className="ml-4 cursor-pointer bg-red-500 text-white text-xs px-2 py-1 rounded-full hover:bg-red-600"
+                      className="text-xs bg-red-500 text-white px-2 py-1 rounded-full hover:bg-red-600"
                       aria-label={`Delete ${role.role}`}
                     >
                       ✕
                     </button>
                   </div>
                 </div>
+
                 {expandedRole === role.id && (
-                  <div className="mt-4 p-4 bg-white rounded-md shadow-inner border border-gray-200">
+                  <div className="bg-gray-900 border-t border-gray-700 px-4 py-4 rounded-b-lg">
                     <RoleDataEditor role={role} profileId={profileId} />
                   </div>
                 )}

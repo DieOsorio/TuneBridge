@@ -1,4 +1,3 @@
-import React from "react";
 import InstrumentEditor from "./InstrumentEditor";
 import SingerEditor from "./SingerEditor";
 import DjEditor from "./DjEditor";

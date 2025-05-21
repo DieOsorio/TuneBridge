@@ -1,8 +1,8 @@
 import ProfileCard from "./ProfileCard";
 import { useProfile } from "../../context/profile/ProfileContext";
 import { useAuth } from "../../context/AuthContext";
-import Loading from "../../utils/Loading";
 import ErrorMessage from "../../utils/ErrorMessage";
+import ProfileCardSkeleton from "./ProfileCardSkeleton";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
 
@@ -31,7 +31,13 @@ const ProfilesList = () => {
     }
 
     if (profileLoading && !allProfilesData) {
-        return <Loading />;
+        return (
+            <div className="flex flex-col gap-4 items-center">
+                {[...Array(7)].map((_, i) => (
+                    <ProfileCardSkeleton key={i} />
+                ))}
+            </div>
+        );
     }
 
     // Filter out the current user from the profiles
@@ -59,7 +65,11 @@ const ProfilesList = () => {
             {/* Profiles List */}
             <div className="w-full flex flex-wrap justify-center gap-4">
                 {isSearching ? (
-                    <Loading />
+                    <div className="flex flex-col gap-4 items-center">
+                        {[...Array(3)].map((_, i) => (
+                            <ProfileCardSkeleton key={i} />
+                        ))}
+                    </div>
                 ) : searchTerm && filteredSearchResults.length > 0 ? (
                     filteredSearchResults.map((profile) => (
                         <ProfileCard key={profile.id} profile={profile} />

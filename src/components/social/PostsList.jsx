@@ -1,7 +1,7 @@
 import React from 'react';
 import PostCard from './PostCard';
-import Loading from '../../utils/Loading';
 import ErrorMessage from '../../utils/ErrorMessage';
+import PostCardSkeleton from './PostCardSkeleton';
 import { usePosts } from '../../context/social/PostsContext';
 import { useView } from '../../context/ViewContext';
 import { Button } from '@mui/material';
@@ -31,9 +31,20 @@ const PostsList = ({ profileId, isOwnProfile }) => {
     const { register, handleSubmit, watch } = useForm(); // react-hook-form for handling the search form
     const searchTerm = watch("searchTerm"); // Watch the search term input
 
-    const { data: searchResults, isLoading: isSearching } = searchPosts(searchTerm); // Use searchPosts hook
+    const { 
+        data: searchResults, 
+        isLoading: isSearching 
+    } = searchPosts(searchTerm); // Use searchPosts hook
     
-    if (isLoading) return <Loading />;
+    if (isLoading) {
+        return (
+            <div className="flex flex-col gap-4 items-center">
+            {[...Array(7)].map((_, i) => (
+                <PostCardSkeleton key={i} />
+            ))}
+            </div>
+        );
+    }
     if (error) return <ErrorMessage error={error.message} />;
 
     // Display all posts or search results
@@ -65,7 +76,11 @@ const PostsList = ({ profileId, isOwnProfile }) => {
 
                 {/* Display Posts */}
                 {isSearching ? (
-                    <Loading />
+                    <div className="flex flex-col gap-4 items-center">
+                        {[...Array(2)].map((_, i) => (
+                        <PostCardSkeleton key={i} />
+                        ))}
+                    </div>
                 ) : searchTerm && searchResults?.length > 0 ? (
                     searchResults.map((post) => (
                         <PostCard key={post.id} post={post} />
@@ -99,7 +114,14 @@ const PostsList = ({ profileId, isOwnProfile }) => {
     );
 
     // Display posts for a specific user
-    if (isLoadingUserPosts) return <Loading />;
+    if (isLoadingUserPosts) {
+       return (
+        <div className="flex flex-col gap-4 items-center">
+            {[...Array(3)].map((_, i) => (
+                <PostCardSkeleton key={i} />
+            ))}
+        </div>
+    )};
     if (errorUserPosts) return <ErrorMessage error={errorUserPosts.message} />;
     
     return (

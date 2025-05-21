@@ -53,9 +53,11 @@ const Profile = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8 max-w-4xl mx-auto gap-8">
+      <div className="flex-1 p-4 md:p-8 gap-8">
         {/* Render based on externalView */}
-        <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />
+        <div className="max-w-4xl y mx-auto">
+          <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />
+        </div>
 
         {/* Posts View */}
         {externalView === "profile" && internalView === "displayPosts" && (

@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
-  useFetchComposerQuery,
+  useFetchComposersQuery,
+  useFetchComposerById,
   useAddComposerMutation,
   useUpdateComposerMutation,
   useDeleteComposerMutation,
@@ -11,7 +12,7 @@ const ComposerDetailsContext = createContext();
 ComposerDetailsContext.displayName = "ComposerDetailsContext";
 
 export const ComposerDetailsProvider = ({ children }) => {
-  const {data: composerDetails, isLoading: loading, error, refetch} = useFetchComposerQuery();
+  const {data: composerDetails, isLoading: loading, error, refetch} = useFetchComposersQuery();
   const addComposer = useAddComposerMutation();
   const updateComposer = useUpdateComposerMutation();
   const deleteComposer = useDeleteComposerMutation();
@@ -22,7 +23,8 @@ export const ComposerDetailsProvider = ({ children }) => {
       error,
       refetch,
       addComposer: addComposer.mutateAsync,
-      fetchComposer: useFetchComposerQuery,
+      fetchComposer: useFetchComposersQuery,
+      fetchComposerById: useFetchComposerById,
       updateComposer: updateComposer.mutateAsync,
       deleteComposer: deleteComposer.mutateAsync,
     }

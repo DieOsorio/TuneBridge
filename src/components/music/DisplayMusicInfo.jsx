@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DisplayRoleInfo from "./DisplayRoleInfo";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaMusic } from "react-icons/fa";
 import  Loading  from "../../utils/Loading"
 import  ErrorMessage  from "../../utils/ErrorMessage"
 import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
@@ -53,7 +53,13 @@ const DisplayMusicInfo = ({ profileId }) => {
 
   return (
     <div className="bg-gray-900 p-6 rounded-lg shadow-md">
-      <h3 className="text-2xl font-bold mb-4 text-center">Music Roles</h3>
+      <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="p-3 bg-sky-900/30 rounded-full">
+          <FaMusic className="text-sky-400 text-2xl animate-pulse" />
+        </div>
+        <h3 className="text-3xl font-bold text-sky-500 tracking-wide">Music Roles</h3>
+      </div>
+
       {roles.length === 0 ? (
         <p className="text-gray-500">No music-related roles found.</p>
       ) : (

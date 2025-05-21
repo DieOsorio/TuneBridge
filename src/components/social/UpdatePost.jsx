@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { usePosts } from "../../context/social/PostsContext";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
 import ImageUploader from "../../utils/ImageUploader";
 import { useUploadPostImages } from "../../context/social/imagesActions";
 import Loading from "../../utils/Loading";
@@ -14,7 +15,12 @@ const UpdatePost = () => {
   const [images, setImages] = useState([]); // Store images (existing + new)
   const { fetchPost, updatePost, deletePost } = usePosts(); // Fetch and update post logic
   const { data: postData, isLoading, error } = fetchPost(postId); // Fetch post data by ID
-  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm();
+  const { 
+    register, 
+    handleSubmit, 
+    setValue, 
+    formState: { errors, isSubmitting } 
+  } = useForm();
   const uploadImageMutations = useUploadPostImages();
   const navigate = useNavigate(); // For navigation
   
@@ -135,16 +141,18 @@ const UpdatePost = () => {
       </h2>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-r from-gray-900 p-6 rounded-lg shadow-md max-w-xl mx-auto">
-        <div>
-          <label className="block font-medium text-gray-400 mb-1">Title</label>
-          <input
-            type="text"
-            {...register("title", { required: "The title is required." })}
-            className="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
-          />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
-        </div>
+      <form 
+        onSubmit={handleSubmit(onSubmit)} 
+        className="space-y-6 bg-gradient-to-r from-gray-900 p-6 rounded-lg shadow-md max-w-xl mx-auto"
+      >
+        <Input
+          id="title"
+          label="Title"
+          placeholder="Enter a title"
+          register={register}
+          required="The title is required."
+          error={errors.title}
+        />
 
         <div>
           <label className="block font-medium text-gray-400 mb-1">Content</label>

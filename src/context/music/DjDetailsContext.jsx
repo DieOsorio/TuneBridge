@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
-  useFetchDjQuery,
+  useFetchDjsQuery,
+  useFetchDjById,
   useAddDjMutation,
   useUpdateDjMutation,
   useDeleteDjMutation,
@@ -11,7 +12,7 @@ const DjDetailsContext = createContext();
 DjDetailsContext.displayName = "DjDetailsContext";
 
 export const DjDetailsProvider = ({ children }) => { 
-  const { data: djDetails, isLoading: loading, error, refetch} = useFetchDjQuery();
+  const { data: djDetails, isLoading: loading, error, refetch} = useFetchDjsQuery();
   const addDj = useAddDjMutation().mutateAsync;
   const updateDj = useUpdateDjMutation().mutateAsync;
   const deleteDj = useDeleteDjMutation().mutateAsync;
@@ -21,7 +22,8 @@ export const DjDetailsProvider = ({ children }) => {
     loading,
     error,
     refetch,
-    fetchDj: useFetchDjQuery,
+    fetchDj: useFetchDjsQuery,
+    fetchDjById: useFetchDjById,
     addDj,
     updateDj,
     deleteDj,      

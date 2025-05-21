@@ -16,32 +16,31 @@ function Edit({ profileData }) {
     return (
         <>
             {/* Internal Navbar*/}
-            <div className="bg-gradient-to-b from-gray-800 to-gray-950 text-white p-4 rounded-t-lg h-25">
-                <div className="max-w-6xl mx-auto flex space-x-8 justify-center">
-                    {/* Select editProfile view */}
-                    <span
-                        onClick={() => manageView("editProfile", "edit")}
-                        className={`cursor-pointer text-lg font-medium transition-all duration-300 ${
-                            internalView === "editProfile"
-                                ? "border-b-4 border-sky-800"
-                                : "hover:text-sky-600"
-                        }`}
-                    >
-                        Edit Profile
-                    </span>
-                    {/* Select editMusicInfo view */}
-                    <span
-                        onClick={() => manageView("editMusicInfo", "edit")}
-                        className={`cursor-pointer text-lg font-medium transition-all duration-300 ${
-                            internalView === "editMusicInfo"
-                                ? "border-b-4 border-sky-800"
-                                : "hover:text-sky-600"
-                        }`}
-                    >
-                        Edit Music Info
-                    </span>
+            <div className="bg-gradient-to-b from-gray-800 to-gray-950 text-white p-4 rounded-t-lg shadow-md">
+                <div className="max-w-6xl mx-auto flex justify-center space-x-4">
+                    {[
+                    { label: "Edit Profile", view: "editProfile" },
+                    { label: "Edit Music Info", view: "editMusicInfo" },
+                    ].map(({ label, view }) => {
+                    const isActive = internalView === view;
+                    return (
+                        <button
+                        key={view}
+                        onClick={() => manageView(view, "edit")}
+                        className={`px-4 py-2 text-sm sm:text-base rounded-t-lg font-semibold transition-all duration-300 focus:outline-none
+                            ${
+                            isActive
+                                ? "bg-sky-700 text-white shadow-lg"
+                                : "bg-gray-800 text-gray-300 hover:bg-sky-800 hover:text-white"
+                            }`}
+                        >
+                        {label}
+                        </button>
+                    );
+                    })}
                 </div>
-            </div>
+                </div>
+
 
             {/* Internal views */}
             <div>

@@ -1,129 +1,147 @@
-import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
-import { supabase } from '../../supabase';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "../../supabase";
 
-// FETCH ALL PRODUCER DETAILS FOR A PROFILE
-export const useFetchProducerQuery = (roleId) => {
+// Fetch all producer details for a given roleId
+export const useFetchProducersQuery = (roleId) => {
   return useQuery({
-    queryKey: ["producerDetails", roleId],
-    queryFn: async() => {
-      if (!roleId) {
-        console.error("roleId is not valid");
-        return [];
-      }
+    queryKey: ["producerDetailsList", roleId],
+    queryFn: async () => {
+      if (!roleId) return [];
       const { data, error } = await supabase
-      .schema("music")
-      .from("producer_details")
-      .select("*")
-      .eq("role_id", roleId)
-
-      if (error) throw new Error(error.message)
+        .schema("music")
+        .from("producer_details")
+        .select("*")
+        .eq("role_id", roleId);
+      if (error) throw new Error(error.message);
       return data;
     },
     enabled: !!roleId,
-  })
-}
+  });
+};
 
+// Fetch a single producer detail by id
+export const useFetchProducerById = (id) => {
+  return useQuery({
+    queryKey: ["producerDetails", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("producer_details")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!id,
+  });
+};
 
-// ADD NEW PRODUCER INFORMATION
+// Add new producer
 export const useAddProducerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async({details}) => {
-      const { data, error}= await supabase
-      .schema("music")
-      .from("producer_details")
-      .insert(details)
-      .select();
-      
+    mutationFn: async ({ details }) => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("producer_details")
+        .insert(details)
+        .select();
       if (error) throw new Error(error.message);
       return data[0];
     },
 
-    //optimistic update
     onMutate: async ({ details }) => {
-      await queryClient.cancelQueries({queryKey: ["producerDetails"]});
-
-      const previousDetails = queryClient.getQueryData(["producerDetails"]);
-
-      const optimisticData = {
-        id: `temp-${Date.now()}`,
+      const tempId = `temp-${Date.now()}`;
+      const optimisticProducer = {
+        id: tempId,
         ...details,
         created_at: new Date().toISOString(),
-      }
+      };
 
-      queryClient.setQueryData(["producerDetails"], (old = []) => [
+      queryClient.setQueryData(["producerDetails", tempId], optimisticProducer);
+
+      queryClient.setQueryData(["producerDetailsList", details.role_id], (old = []) => [
         ...old,
-        optimisticData,
-      ])
+        optimisticProducer,
+      ]);
 
-      return { previousDetails};
+      return { tempId, roleId: details.role_id };
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["producerDetails"], context.previousDetails);
-      }
-    },
-
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["producerDetails"]});
-    }
-  })
-}
-
-
-// UPDATE AN EXISTING PRODUCER INFO
-export const useUpdateProducerMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({id, details}) => {
-      const { data, error } = await supabase
-      .schema("music")
-      .from("producer_details")
-      .update(details)
-      .eq("id", id)
-      .select()
-      
-      if (error) throw new Error(error.message)
-      return data[0]
-    },
-
-     // optimistic update
-     onMutate: async ({ id, details }) => {
-      await queryClient.cancelQueries({ queryKey: ["producerDetails", id] });
-
-      const previousDetails = queryClient.getQueryData(["producerDetails", id]);
-
-      queryClient.setQueryData(["producerDetails", id], (old = []) =>
-        old.map((producer) =>
-          producer.id === id
-            ? { ...producer, ...details }
-            : producer
-        )
-      );
-
-      return { previousDetails };
-    },
-
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(
-          ["producerDetails", _variables.id],
-          context.previousDetails
+    onError: (_err, _variables, context) => {
+      if (context?.tempId) {
+        queryClient.removeQueries({ queryKey: ["producerDetails", context.tempId] });
+        queryClient.setQueryData(["producerDetailsList", context.roleId], (old = []) =>
+          old.filter((item) => item.id !== context.tempId)
         );
       }
     },
 
-    onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["producerDetails", variables.id] });
+    onSuccess: (data, _variables, context) => {
+      const realId = data.id;
+      if (context?.tempId) {
+        queryClient.removeQueries({ queryKey: ["producerDetails", context.tempId] });
+        queryClient.setQueryData(["producerDetailsList", context.roleId], (old = []) =>
+          old.map((item) => (item.id === context.tempId ? data : item))
+        );
+      }
+      queryClient.setQueryData(["producerDetails", realId], data);
     },
-  })
-}
 
-{}
-// DELETE A PRODUCER
+    onSettled: (data) => {
+      if (data?.role_id) {
+        queryClient.invalidateQueries(["producerDetailsList", data.role_id]);
+      }
+    },
+  });
+};
+
+// Update producer
+export const useUpdateProducerMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, details }) => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("producer_details")
+        .update(details)
+        .eq("id", id)
+        .select();
+        
+      if (error) throw new Error(error.message);    
+      return data[0];
+    },
+
+    onMutate: async ({ id, details }) => {
+      await queryClient.cancelQueries(["producerDetails", id]);
+
+      const previousDetails = queryClient.getQueryData(["producerDetails", id]);
+      queryClient.setQueryData(["producerDetails", id], (old = {}) => ({ ...old, ...details }));
+
+      return { previousDetails, id };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousDetails) {
+        queryClient.setQueryData(["producerDetails", context.id], context.previousDetails);
+      }
+    },
+
+    onSettled: (_data, _err, variables) => {
+      if (variables?.id) {
+        queryClient.invalidateQueries(["producerDetails", variables.id]);
+      }
+      if (_data?.role_id) {
+        queryClient.invalidateQueries(["producerDetailsList", _data.role_id]);
+      }
+    },
+  });
+};
+
+// Delete producer
 export const useDeleteProducerMutation = () => {
   const queryClient = useQueryClient();
 
@@ -134,31 +152,32 @@ export const useDeleteProducerMutation = () => {
         .from("producer_details")
         .delete()
         .eq("id", id);
-
       if (error) throw new Error(error.message);
     },
 
-    // optimistic update
-    onMutate: async ({ id }) => {
-      await queryClient.cancelQueries({ queryKey: ["producerDetails"] });
+    onMutate: async ({ id, roleId }) => {
+      await queryClient.cancelQueries(["producerDetails", id]);
+      await queryClient.cancelQueries(["producerDetailsList", roleId]);
 
-      const previousDetails = queryClient.getQueryData(["producerDetails"]);
+      const previousList = queryClient.getQueryData(["producerDetailsList", roleId]);
 
-      queryClient.setQueryData(["producerDetails"], (old = []) =>
+      queryClient.setQueryData(["producerDetailsList", roleId], (old = []) =>
         old.filter((producer) => producer.id !== id)
       );
 
-      return { previousDetails };
+      queryClient.removeQueries({ queryKey: ["producerDetails", id] });
+
+      return { previousList, roleId };
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["producerDetails"], context.previousDetails);
+    onError: (_err, _vars, context) => {
+      if (context?.previousList) {
+        queryClient.setQueryData(["producerDetailsList", context.roleId], context.previousList);
       }
     },
 
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["producerDetails"] });
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries(["producerDetailsList", variables.roleId]);
     },
-  })
-} 
+  });
+};
