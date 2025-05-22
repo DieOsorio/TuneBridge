@@ -6,10 +6,14 @@ import ImageUploader from "../../utils/ImageUploader";
 import { useState } from "react";
 import { useUploadPostImages } from "../../context/social/imagesActions";
 import { useView } from "../../context/ViewContext";
+import { useHashtags } from "../../context/social/HashtagsContext";
+import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 
 const CreatePost = ({ id }) => {
   const [images, setImages] = useState([]);
   const { createPost, updatePost } = usePosts();
+  const { upsertHashtag } = useHashtags();
+  const { upsertPostHashtag } = usePostHashtags();
   const { manageView } = useView();
   const {
     register,
@@ -25,13 +29,35 @@ const CreatePost = ({ id }) => {
   };
 
   const onSubmit = async (postData) => {
+    const {hashtags, ...cleanPostData } = postData;
+
     try {
       // Create post without images
       const post = await createPost({
-        ...postData,
+        ...cleanPostData,
         profile_id: id,
         images_urls: [],
       });
+
+      // Check if hashtags exist and upsert them
+      const parsedHashtags  = postData.hashtags.split(/\s+/).map((tag) => tag.trim());
+      const hashtagsToUpsert = parsedHashtags .map((tag) => ({ name: tag }));
+      const upsertedHashtags = await Promise.all(
+        hashtagsToUpsert.map(async (hashtag) => {
+          const existingHashtag = await upsertHashtag(hashtag);
+          return existingHashtag;
+        })
+      );
+      // Associate hashtags with the post
+      await Promise.all(
+        upsertedHashtags.map(async (hashtag) => {
+          const postHashtag = {
+            post_id: post.id,
+            hashtag_id: hashtag.id,
+          };
+          await upsertPostHashtag(postHashtag);
+        })
+      );
 
       // Upload images to the bucket and obtain public URLs
       const uploadedImagesURLs = await Promise.all(
@@ -97,6 +123,15 @@ const CreatePost = ({ id }) => {
             <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
           )}
         </div>
+
+        <Input
+          id="hashtags"
+          label="Hashtags"
+          placeholder="Add hashtags separated by space, e.g. #rock #jazz"
+          register={register}
+          validation={{}}
+          error={errors.hashtags?.message}
+        />
 
         <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
 

@@ -240,7 +240,8 @@ Database Configuration Summary
 
             trigger_like: Creates a notification when a post is liked.
 
-            update_content_search_trigger: Updates content_search when title or content changes.
+            update_content_search_trigger: Updates `content_search` using `refresh_post_content_search()` when a post is inserted or updated.
+
 
     ------------   /   ------------
 
@@ -371,3 +372,31 @@ Database Configuration Summary
             is_read (boolean): Indicates whether the notification has been read. Defaults to false.
 
             message (text): A human-readable message describing the notification (optional if you want to display custom texts).
+
+    ------------   /   ------------
+
+        Table: hashtags => Stores unique hashtags that can be linked to posts.
+
+        Columns:
+
+            id (UUID): Unique identifier of the hashtag. Defaults to gen_random_uuid().
+
+            name (text): Hashtag text, expected to be lowercase and prefixed with # (e.g., #guitarist). Must be unique.
+
+            created_at (timestamp): Timestamp when the hashtag was created. Defaults to now().
+
+    ------------   /   ------------
+
+    Table: post_hashtags => Join table associating hashtags with posts.
+
+    Columns:
+
+        post_id (UUID, references social.posts.id): ID of the post.
+
+        hashtag_id (UUID, references social.hashtags.id): ID of the associated hashtag.
+
+        created_at (timestamp): Timestamp when the association was created. Defaults to now().
+
+     Triggers:
+
+            update_content_search_hashtags: Triggers `refresh_post_content_search()` when a hashtag is added, updated, or removed, to keep `posts.content_search` up to date.

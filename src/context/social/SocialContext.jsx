@@ -5,21 +5,27 @@ import { LikesProvider } from "./LikesContext";
 import { CommentsProvider } from "./CommentsContext";
 import { NotificationsProvider } from "./NotificationsContext";
 import { ChatProvider } from "./chat/ChatContext";
+import { HashtagsProvider } from "./HashtagsContext";
+import { PostHashtagsProvider } from "./PostHashtagsContext";
 
 export const SocialProvider = ({ children }) => {
   return (
     <UserConnectionsProvider>
-      <PostsProvider>
-        <CommentsProvider>
-          <ChatProvider>
-            <LikesProvider>
-              <NotificationsProvider>
-                {children}
-              </NotificationsProvider>
-            </LikesProvider>
-          </ChatProvider>  
-        </CommentsProvider>
-      </PostsProvider>
+      <HashtagsProvider>
+        <PostHashtagsProvider>
+          <PostsProvider>
+            <CommentsProvider>
+              <ChatProvider>
+                <LikesProvider>
+                  <NotificationsProvider>
+                    {children}
+                  </NotificationsProvider>
+                </LikesProvider>
+              </ChatProvider>  
+            </CommentsProvider>
+          </PostsProvider>
+        </PostHashtagsProvider>
+      </HashtagsProvider>
     </UserConnectionsProvider>
   );
 };

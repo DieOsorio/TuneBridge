@@ -16,7 +16,7 @@ function Edit({ profileData }) {
     return (
         <>
             {/* Internal Navbar*/}
-            <div className="bg-gradient-to-b from-gray-800 to-gray-950 text-white p-4 rounded-t-lg shadow-md">
+            <div className="bg-gradient-to-b from-gray-800 to-gray-950 text-white p-4 rounded-t-lg shadow-md max-w-4xl y mx-auto">
                 <div className="max-w-6xl mx-auto flex justify-center space-x-4">
                     {[
                     { label: "Edit Profile", view: "editProfile" },
