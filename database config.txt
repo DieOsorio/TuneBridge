@@ -101,19 +101,21 @@ Database Configuration Summary
         
     ------------   /   ------------
 
-        Table: instrumentist_details => Stores specific details of an instrumentalist.
+        Table: instrument_details => Stores specific details of an instrumentalist.
 
         Columns:
 
             id (UUID): Detail ID.
 
+            profile_id (UUID): Linked to the profiles table.
+
             role_id (UUID): Linked to the roles table.
 
-            instruments (text array): List of instruments played by the user.
+            instrument (text): instrument played by the user.
 
-            years_of_experience (int, nullable): Years of experience.
+            years_of_experience (int2): Years of experience.
 
-            level (int, nullable): User's skill level.
+            level (text): User's skill level.
         
     ------------   /   ------------
 
@@ -131,6 +133,8 @@ Database Configuration Summary
 
             level (text)
 
+            profile_id (UUID)
+
     ------------   /   ------------
 
         Table: dj_details => Stores specific details of a DJ.
@@ -143,7 +147,7 @@ Database Configuration Summary
 
             preferred_genres (text)
 
-            events_played (text, nullable)
+            events_played (text)
 
             level (text)
 
@@ -161,11 +165,11 @@ Database Configuration Summary
 
             production_type (text)
 
-            years_of_experience (int, nullable)
+            years_of_experience (int2)
 
             level (text)
 
-            profile_id (UUID, ON DELETE/UPDATE CASCADE)
+            profile_id (UUID)
 
     ------------   /   ------------
 

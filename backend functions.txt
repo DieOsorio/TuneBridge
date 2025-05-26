@@ -415,3 +415,90 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+
+CREATE OR REPLACE FUNCTION users.update_content_search_roles_trigger()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  UPDATE users.profiles
+  SET content_search_roles = (
+    SELECT to_tsvector(
+      string_agg(role, ' ')
+    )
+    FROM music.roles
+    WHERE profile_id = NEW.profile_id
+  )
+  WHERE id = NEW.profile_id;
+
+  RETURN NEW;
+END;
+$$;
+
+
+
+
+CREATE OR REPLACE FUNCTION social.refresh_profile_content_search_details()
+RETURNS TRIGGER AS $$
+DECLARE
+  target_profile_id uuid;
+  hashtag_text TEXT;
+  new_search tsvector;
+  current_search tsvector;
+BEGIN
+  -- Determinar el ID del perfil afectado
+  IF TG_TABLE_NAME = 'profile_hashtags' THEN
+    IF TG_OP = 'DELETE' THEN
+      target_profile_id := OLD.profile_id;
+    ELSE
+      target_profile_id := NEW.profile_id;
+    END IF;
+  ELSE
+    target_profile_id := NEW.id;
+  END IF;
+
+  -- Obtener hashtags asociados
+  SELECT string_agg(h.name, ' ') INTO hashtag_text
+  FROM social.profile_hashtags ph
+  JOIN social.hashtags h ON h.id = ph.hashtag_id
+  WHERE ph.profile_id = target_profile_id;
+
+  IF hashtag_text IS NULL THEN
+    hashtag_text := '';
+  END IF;
+
+  -- Obtener el valor actual de content_search_details
+  SELECT content_search_details INTO current_search
+  FROM users.profiles
+  WHERE id = target_profile_id;
+
+  -- Calcular nuevo valor
+  new_search :=
+    to_tsvector('spanish', hashtag_text) ||
+    to_tsvector('english', hashtag_text);
+
+  -- Actualizar solo si hubo cambios
+  IF current_search IS DISTINCT FROM new_search THEN
+    UPDATE users.profiles
+    SET content_search_details = new_search
+    WHERE id = target_profile_id;
+  END IF;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION users.update_content_search_all()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.content_search_all :=
+    coalesce(NEW.content_search, '') ||
+    coalesce(NEW.content_search_roles, '') ||
+    coalesce(NEW.content_search_details, '');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

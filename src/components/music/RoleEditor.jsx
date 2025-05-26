@@ -4,6 +4,16 @@ import Input from "../ui/Input";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { Button } from "@mui/material";
 import Select from "../ui/Select";
+import { useHashtags } from "../../context/social/HashtagsContext";
+import { useProfileHashtags } from "../../context/social/ProfileHashtagsContext";
+
+const principalFields = new Set([
+  "instrument",
+  "composition_style",
+  "production_type",
+  "preferred_genres",
+  "music_genre",
+]);
 
 const RoleEditor = ({
   role,
@@ -18,6 +28,9 @@ const RoleEditor = ({
 }) => {
   const [editingDetail, setEditingDetail] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+
+  const { upsertHashtag } = useHashtags();
+  const { upsertProfileHashtag } = useProfileHashtags();
 
   const {
     register,
@@ -34,6 +47,7 @@ const RoleEditor = ({
     reset(fields.reduce((acc, field) => ({ ...acc, [field.name]: field.default || "" }), {}));
   }, [details, fields, reset]);
 
+
   const onSubmit = async (data) => {
     try {
       clearErrors("root");
@@ -43,11 +57,44 @@ const RoleEditor = ({
         return;
       }
 
+
       await addDetails({
         ...data,
         role_id: role.id,
         profile_id: profileId,
       });
+
+      // Extract hashtags from principal fields
+      const hashtags = [];
+      for (const field of fields) {
+        if (principalFields.has(field.name) && data[field.name]) {
+          const values = data[field.name]
+            .split(",")
+            .map((val) => val.trim())
+            .filter(Boolean);
+          hashtags.push(...values.map((val) => `#${val.replace(/\s+/g, "")}`));
+        }
+      }
+
+      try {
+        const upsertedHashtags = await Promise.all(
+          hashtags.map(async (tag) => {
+            const hashtag = await upsertHashtag({ name: tag });
+            return hashtag;
+          })
+        );
+      
+        await Promise.all(
+          upsertedHashtags.map(async (hashtag) => {
+            await upsertProfileHashtag({
+              profile_id: profileId,
+              hashtag_id: hashtag.id,
+            });
+          })
+        );
+        } catch (error) {
+        console.error("Error while upserting profile hashtags:", error.message);
+        }
 
       reset();
       setSuccessMessage(`${title} added successfully!`);

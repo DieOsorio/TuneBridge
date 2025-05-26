@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useView } from '../context/ViewContext';
 import EditProfile from '../components/profiles/EditProfile';
 import EditMusicInfo from '../components/music/EditMusicInfo';

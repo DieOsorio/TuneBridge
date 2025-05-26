@@ -7,23 +7,26 @@ import { NotificationsProvider } from "./NotificationsContext";
 import { ChatProvider } from "./chat/ChatContext";
 import { HashtagsProvider } from "./HashtagsContext";
 import { PostHashtagsProvider } from "./PostHashtagsContext";
+import { ProfileHashtagsProvider } from "./ProfileHashtagsContext";
 
 export const SocialProvider = ({ children }) => {
   return (
     <UserConnectionsProvider>
       <HashtagsProvider>
         <PostHashtagsProvider>
-          <PostsProvider>
-            <CommentsProvider>
-              <ChatProvider>
-                <LikesProvider>
-                  <NotificationsProvider>
-                    {children}
-                  </NotificationsProvider>
-                </LikesProvider>
-              </ChatProvider>  
-            </CommentsProvider>
-          </PostsProvider>
+          <ProfileHashtagsProvider>
+            <PostsProvider>
+              <CommentsProvider>
+                <ChatProvider>
+                  <LikesProvider>
+                    <NotificationsProvider>
+                      {children}
+                    </NotificationsProvider>
+                  </LikesProvider>
+                </ChatProvider>  
+              </CommentsProvider>
+            </PostsProvider>
+          </ProfileHashtagsProvider>
         </PostHashtagsProvider>
       </HashtagsProvider>
     </UserConnectionsProvider>

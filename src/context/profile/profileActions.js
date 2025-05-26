@@ -38,10 +38,10 @@ export const useInfiniteProfilesQuery = () => {
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
-          .textSearch("content_search", searchTerm, {
+          .textSearch("content_search_all", searchTerm, {
             type: "websearch",
           });
-  
+
         if (error) throw new Error(error.message);
         return data;
       },
