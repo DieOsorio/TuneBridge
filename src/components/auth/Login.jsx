@@ -46,25 +46,25 @@ const Login = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
+            id="email"
             label="Email"
             type="email"
             placeholder="Your email"
             autoComplete="email"
-            {...register("email", {
-              required: "Email is required",
-            })}
-            error={errors.email?.message}
+            register={register}
+            validation={{ required: "Email is required" }}
+            error={errors.email}
           />
 
           <Input
+            id="password"
             label="Password"
             type="password"
             placeholder="Your password"
             autoComplete="current-password"
-            {...register("password", {
-              required: "Password is required",
-            })}
-            error={errors.password?.message}
+            register={register}
+            validation={{ required: "Password is required" }}
+            error={errors.password}
           />
 
           <Button className="w-full" type="submit" disabled={isSubmitting}>

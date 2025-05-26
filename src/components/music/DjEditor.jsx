@@ -2,8 +2,13 @@ import { useDjDetails } from "../../context/music/DjDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const DjEditor = ({ role, profileId }) => {
-  const { fetchDj, refetch, addDj: addDetails, updateDj: updateDetails, deleteDj: deleteDetails } = useDjDetails();
-  const { data: djDetails } = fetchDj(role.id);
+  const { 
+    fetchDj, 
+    addDj, 
+    updateDj, 
+    deleteDj 
+  } = useDjDetails();
+  const { data: djDetails, refetch } = fetchDj(role.id);
 
   const sanitizeInput = (details) => {
     return {
@@ -18,9 +23,9 @@ const DjEditor = ({ role, profileId }) => {
       profileId={profileId}
       details={djDetails || []}
       refetch={refetch}
-      addDetails={(details) => addDetails({details: sanitizeInput(details)})} // Sanitize input before adding
-      updateDetails={(id, details) => updateDetails({id, details: sanitizeInput(details)})} // Sanitize input before updating
-      deleteDetails={(id) => deleteDetails({id})}
+      addDetails={(details) => addDj({details: sanitizeInput(details)})} // Sanitize input before adding
+      updateDetails={(id, details) => updateDj({id, details: sanitizeInput(details)})} // Sanitize input before updating
+      deleteDetails={(id) => deleteDj({id})}
       title="DJ Detail"
       fields={[
         {

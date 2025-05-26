@@ -28,7 +28,7 @@ const Banner = ({ title, subtitle, backgroundImage }) => {
             ref={buttonRef}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg text-lg font-semibold hover:bg-blue-600 transition"
           >
-            Explore Now
+            Join Us
           </button>
         </Link>
       </div>

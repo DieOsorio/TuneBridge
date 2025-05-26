@@ -1,7 +1,8 @@
 import React, { createContext, useContext} from "react";
 import PropTypes from "prop-types";
 import {
-  useFetchSingerQuery,
+  useFetchSingersQuery,
+  useFetchSingerById,
   useAddSingerMutation,
   useUpdateSingerMutation,
   useDeleteSingerMutation,
@@ -11,7 +12,7 @@ const SingerDetailsContext = createContext();
 SingerDetailsContext.displayName = "SingerDetailsContext";
 
 export const SingerDetailsProvider = ({ children }) => {
-  const {data: singerDetails, isLoading: loading, error, refetch} = useFetchSingerQuery();
+  const {data: singerDetails, isLoading: loading, error, refetch} = useFetchSingersQuery();
   const addSinger = useAddSingerMutation();
   const updateSinger = useUpdateSingerMutation();
   const deleteSinger = useDeleteSingerMutation();
@@ -21,7 +22,8 @@ export const SingerDetailsProvider = ({ children }) => {
         loading,
         error,
         refetch,
-        fetchSinger: useFetchSingerQuery,
+        fetchSinger: useFetchSingersQuery,
+        fetchSingerById: useFetchSingerById,
         addSinger: addSinger.mutateAsync,
         updateSinger: updateSinger.mutateAsync,
         deleteSinger: deleteSinger.mutateAsync,

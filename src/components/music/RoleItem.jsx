@@ -1,20 +1,25 @@
-import React from 'react'
 import { FaChevronDown } from 'react-icons/fa'
 
 function RoleItem({ role, expandedRole, handleRoleClick }) {
+  const isExpanded = expandedRole === role.id;
+
   return (
     <div
-      className={`bg-sky-100 p-4 rounded-lg shadow-sm flex flex-col items-center justify-center text-lg font-medium text-gray-700 cursor-pointer hover:bg-gray-200`}
+      className={`p-5 rounded-xl shadow-md border transition-all duration-300 cursor-pointer text-white text-center select-none
+        ${isExpanded ? "border-sky-500 bg-sky-800/30" : "border-gray-700 bg-gray-800 hover:border-sky-500 hover:bg-gray-700/60"}
+      `}
       onClick={() => handleRoleClick(role)}
     >
-      <span>{role.role}</span>
-      <FaChevronDown  
-        className={`mt-2 text-gray-500 transition-transform ${
-          expandedRole === role.id ? "rotate-180" : ""
-        }`}
-      /> {/* Rotate chevron when expanded */}
+      <span className="text-lg font-semibold tracking-wide">{role.role}</span>
+      <div className="mt-2 flex justify-center">
+        <FaChevronDown
+          className={`text-gray-400 transition-transform duration-200 ${
+            isExpanded ? "rotate-180" : ""
+          }`}
+        />
+      </div>
     </div>
-  )
+  );
 }
 
 export default RoleItem

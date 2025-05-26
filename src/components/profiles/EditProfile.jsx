@@ -155,59 +155,87 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
           </p>
         </div>        
         <Input
+          id="firstname"
           label="First name"
           placeholder="First name"
-          {...register("firstname")}
-        />
-        <Input
-          label="Last name"
-          placeholder="Last name"
-          {...register("lastname")}
-        />
-        <Input
-          label="Country"
-          placeholder="Country"
-          {...register("country")}
-        />
-        <Input
-          label="City"
-          placeholder="City"
-          {...register("city")}
+          register={register}
+          error={errors.firstname}
+          classForLabel="!text-gray-400"
         />
 
         <Input
+          id="lastname"
+          label="Last name"
+          placeholder="Last name"
+          register={register}
+          error={errors.lastname}
+          classForLabel="!text-gray-400"
+        />
+
+        <Input
+          id="country"
+          label="Country"
+          placeholder="Country"
+          register={register}
+          error={errors.country}
+          classForLabel="!text-gray-400"
+        />
+
+        <Input
+          id="city"
+          label="City"
+          placeholder="City"
+          register={register}
+          error={errors.city}
+          classForLabel="!text-gray-400"
+        />
+
+        <Input
+          id="username"
+          classForLabel="!text-gray-400"
           label="Username"
           placeholder="Username"
-          {...register("username", { 
+          register={register}
+          validation={{
             required: "Username is required",
-          maxLength: {
-            value: 12,
-            message: "Username cannot exceed 12 characters",
-          },
-          pattern: {
-            value: /^[a-zA-Z0-9_.-]+$/,
-            message: "Username can only contain letters, numbers, underscores, hyphens, and periods",
-          },
-        })}
-          error={errors.username?.message}
+            maxLength: {
+              value: 12,
+              message: "Username cannot exceed 12 characters",
+            },
+            pattern: {
+              value: /^[a-zA-Z0-9_.-]+$/,
+              message:
+                "Username can only contain letters, numbers, underscores, hyphens, and periods",
+            },
+          }}
+          error={errors.username}
         />
+
         <Select
+          id="gender"
           label="Gender"
-          {...register("gender")}
           defaultOption="Choose your gender"
           options={["Male", "Female", "Other"]}
+          register={register}
+          error={errors.gender}
         />
 
         <div className="sm:col-span-2">
-          <label
-            htmlFor="birthdate"
-            className="block text-sm font-medium mb-2 text-gray-400"
-          >
+          <label htmlFor="birthdate" className="block text-sm font-medium mb-2 text-gray-400">
             Birthdate
           </label>
           <DatePicker
-            value={watch("birthdate")} // Bind the selected date to the form state
-            onChange={(date) => setValue("birthdate", date)} // Update the form state when a new date is selected
+            value={watch("birthdate")}
+            onChange={(date) => setValue("birthdate", date)}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+                size: "small",
+                fullWidth: true,
+                error: !!errors.birthdate,
+                helperText: errors.birthdate?.message,
+              },
+            }}
           />
         </div>
         <div className="sm:col-span-2 flex justify-end mt-4">

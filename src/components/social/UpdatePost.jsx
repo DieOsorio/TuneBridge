@@ -3,34 +3,58 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { usePosts } from "../../context/social/PostsContext";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
 import ImageUploader from "../../utils/ImageUploader";
 import { useUploadPostImages } from "../../context/social/imagesActions";
 import Loading from "../../utils/Loading";
 import ErrorMessage from "../../utils/ErrorMessage";
 import { supabase } from "../../supabase";
+import { useHashtags } from "../../context/social/HashtagsContext";
+import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 
 const UpdatePost = () => {
-  const { postId } = useParams(); // Extract postId from the URL
-  const [images, setImages] = useState([]); // Store images (existing + new)
-  const { fetchPost, updatePost, deletePost } = usePosts(); // Fetch and update post logic
-  const { data: postData, isLoading, error } = fetchPost(postId); // Fetch post data by ID
-  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm();
+  const { postId } = useParams();
+  const [images, setImages] = useState([]);
+  const { fetchPost, updatePost, deletePost } = usePosts();
+  const { upsertHashtag } = useHashtags();
+  const { getHashtagsByPostId, deletePostHashtags, upsertPostHashtag } = usePostHashtags();
+  const { 
+    data: hashtagsData, 
+    isLoading: hashtagsLoading, 
+    error: hashtagsError 
+  } = getHashtagsByPostId(postId);
+  const { 
+    data: postData, 
+    isLoading, 
+    error 
+  } = fetchPost(postId);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm();
   const uploadImageMutations = useUploadPostImages();
-  const navigate = useNavigate(); // For navigation
-  
-  // Fetch the post data when the component mounts
+  const navigate = useNavigate();
+
+  // Load post data into form
   useEffect(() => {
     if (postData) {
       setValue("title", postData.title);
       setValue("content", postData.content);
       setImages(postData.images_urls || []);
-    }
-  }, [postData, setValue]);
 
-  // Handle file updates (new images)
+      // Load hashtags for this post
+      if (hashtagsData) {
+        const hashtags = hashtagsData.map((hashtag) => hashtag.hashtags.name).join(" ");
+        
+        setValue("hashtags", hashtags);
+      } 
+    }
+  }, [postData, setValue, getHashtagsByPostId]);
+
   const onFileUpdate = (files) => {
     setImages((prevImages) => {
-      // Filter out duplicate files
       const newFiles = files.filter(
         (file) => !prevImages.some((img) => img.name === file.name)
       );
@@ -38,113 +62,121 @@ const UpdatePost = () => {
     });
   };
 
-  // Handle image deletion
   const handleDeleteImage = async (imageUrl) => {
     try {
-      // Step 1: Delete the image from the Supabase bucket
-      const fileName = imageUrl.split("/").pop(); // Extract the file name from the URL
+      const fileName = imageUrl.split("/").pop();
       const { error: deleteError } = await supabase.storage
         .from("post-media")
         .remove([fileName]);
 
-      if (deleteError) {
-        throw new Error(`Error deleting image from bucket: ${deleteError.message}`);
-      }
+      if (deleteError) throw new Error(deleteError.message);
 
-      // Step 2: Update the images_urls array in the database
-      const updatedImages = images.filter((img) => img !== imageUrl); // Remove the image locally
-      const { error: updateError } = await updatePost({
+      const updatedImages = images.filter((img) => img !== imageUrl);
+      await updatePost({
         id: postData.id,
         updatedPost: {
           ...postData,
-          images_urls: updatedImages, // Update the images_urls array
+          images_urls: updatedImages,
         },
       });
 
-      if (updateError) {
-        throw new Error(`Error updating post data: ${updateError.message}`);
-      }
-
-      // Step 3: Update the local state
       setImages(updatedImages);
     } catch (err) {
       console.error("Error deleting image:", err.message);
     }
   };
 
-  // Handle form submission
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
+    const { hashtags, ...cleanPostData } = formData;
+
+    if (!postData?.id) {
+    console.error("Post ID not available. Cannot proceed with update.");
+    return;
+  }
+
     try {
-      // Upload new images and keep existing ones
+      // Upload new images and retain existing ones
       const uploadedImagesURLs = await Promise.all(
         images.map(async (file, index) => {
-          if (typeof file === "string") return file; // Keep existing image URLs
+          if (typeof file === "string") return file;
           const filename = `${Date.now()}-${index}-${file.name}`;
-          const publicURL = await uploadImageMutations.mutateAsync({
+          return await uploadImageMutations.mutateAsync({
             file,
             userId: postData.profile_id,
             postId: postData.id,
             filename,
           });
-          return publicURL;
         })
       );
 
-      // Update the post
+      // Update post content and images
       await updatePost({
         id: postData.id,
         updatedPost: {
-          ...data,
+          ...cleanPostData,
           images_urls: uploadedImagesURLs,
         },
       });
-      navigate(`/profile/${postData.profile_id}`); // Navigate back to the profile view
+
+      // Remove old associations
+      await deletePostHashtags({post_id: postData.id}); 
+
+      const parsedHashtags = hashtags
+        .split(/\s+/)
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+
+      const upsertedHashtags = await Promise.all(
+        parsedHashtags.map((tag) => upsertHashtag({ name: tag }))
+      );
+
+      await Promise.all(
+        upsertedHashtags.map((hashtag) =>
+          upsertPostHashtag({ post_id: postData.id, hashtag_id: hashtag.id })
+        )
+      );
+
+      navigate(`/profile/${postData.profile_id}`);
     } catch (err) {
       console.error("Error updating post:", err.message);
     }
   };
 
-  // Handle post deletion
-   const handleDeletePost = async () => {
+  const handleDeletePost = async () => {
     if (!postData) return;
 
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
         await deletePost(postData.id);
-        navigate(`/profile/${postData.profile_id}`); // Navigate back to the profile view
+        navigate(`/profile/${postData.profile_id}`);
       } catch (error) {
-        console.error("Error deleteing post:", error.message);
+        console.error("Error deleting post:", error.message);
         alert("Error deleting the post. Please try again.");
       }
     }
   };
 
-
-  if (isLoading) {
-    return <Loading />; // Show loading state while fetching post data
-  }
-  if (error) {
-    return <ErrorMessage error={error.message} />; // Show loading state while fetching post data
-  }
+  if (isLoading) return <Loading />;
+  if (error) return <ErrorMessage error={error.message} />;
 
   return (
     <>
-      {/* Section Title */}
       <h2 className="text-2xl font-bold text-gray-100 text-center mb-4">
         Update Post
       </h2>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-gradient-to-r from-gray-900 p-6 rounded-lg shadow-md max-w-xl mx-auto">
-        <div>
-          <label className="block font-medium text-gray-400 mb-1">Title</label>
-          <input
-            type="text"
-            {...register("title", { required: "The title is required." })}
-            className="w-full border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
-          />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
-        </div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6 bg-gradient-to-r from-gray-900 p-6 rounded-lg shadow-md max-w-xl mx-auto"
+      >
+        <Input
+          id="title"
+          label="Title"
+          placeholder="Enter a title"
+          register={register}
+          required="The title is required."
+          error={errors.title}
+        />
 
         <div>
           <label className="block font-medium text-gray-400 mb-1">Content</label>
@@ -152,15 +184,26 @@ const UpdatePost = () => {
             {...register("content", { required: "The content cannot be empty." })}
             className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
           />
-          {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+          {errors.content && (
+            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+          )}
         </div>
+
+        <Input
+          id="hashtags"
+          label="Hashtags"
+          placeholder="Add hashtags separated by space, e.g. #rock #jazz"
+          register={register}
+          validation={{}}
+          error={errors.hashtags?.message}
+        />
 
         {/* Existing Images */}
         <div>
           <label className="block font-medium text-gray-400 mb-1">Existing Images</label>
           <div className="flex flex-wrap gap-4">
             {images
-              .filter((img) => typeof img === "string") // Only show existing images
+              .filter((img) => typeof img === "string")
               .map((imageUrl, index) => (
                 <div key={index} className="relative">
                   <img
@@ -180,22 +223,17 @@ const UpdatePost = () => {
           </div>
         </div>
 
-        {/* Image Uploader */}
         <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
 
-        {/* Cancel and Update Buttons */}
         <div className="flex justify-center gap-4">
           <Button
             type="button"
-            onClick={() => navigate("/explore")} // Navigate to /explore
+            onClick={() => navigate("/explore")}
             className="!bg-gray-500 hover:!bg-gray-600"
           >
             Cancel
           </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Updating..." : "Update"}
           </Button>
           <Button

@@ -1,6 +1,19 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import Input from "../ui/Input";
-import Button from "../ui/Button";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { Button } from "@mui/material";
+import Select from "../ui/Select";
+import { useHashtags } from "../../context/social/HashtagsContext";
+import { useProfileHashtags } from "../../context/social/ProfileHashtagsContext";
+
+const principalFields = new Set([
+  "instrument",
+  "composition_style",
+  "production_type",
+  "preferred_genres",
+  "music_genre",
+]);
 
 const RoleEditor = ({
   role,
@@ -13,101 +26,147 @@ const RoleEditor = ({
   fields,
   title,
 }) => {
-  const [newDetail, setNewDetail] = useState(
-    fields.reduce((acc, field) => ({ ...acc, [field.name]: field.default || "" }), {})
-  );
-
   const [editingDetail, setEditingDetail] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleAddDetail = () => {
-    for (const field of fields) {
-      if (field.required && !newDetail[field.name]?.trim()) {
-        setErrorMessage(`${field.label} is required.`);
-        setTimeout(() => setErrorMessage(""), 3000);
+  const { upsertHashtag } = useHashtags();
+  const { upsertProfileHashtag } = useProfileHashtags();
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: fields.reduce((acc, field) => ({ ...acc, [field.name]: field.default || "" }), {}),
+  });
+
+  useEffect(() => {
+    reset(fields.reduce((acc, field) => ({ ...acc, [field.name]: field.default || "" }), {}));
+  }, [details, fields, reset]);
+
+
+  const onSubmit = async (data) => {
+    try {
+      clearErrors("root");
+      const isValid = fields.every(field => !field.required || data[field.name]?.trim());
+      if (!isValid) {
+        setError("root", { message: "All required fields must be filled." });
         return;
       }
-    }
 
-    addDetails({
-      ...newDetail,
-      role_id: role.id,
-      profile_id: profileId,
-    })
-      .then(() => {
-        setNewDetail(fields.reduce((acc, field) => ({ ...acc, [field.name]: field.default || "" }), {}));
-        setErrorMessage("");
-        setSuccessMessage(`${title} added successfully!`);
-        setTimeout(() => setSuccessMessage(""), 3000);
 
-        // Fetch updated details
-        refetch()        
-      })
-      .catch((error) => {
-        console.error(`Error adding ${title.toLowerCase()}:`, error);
-        setErrorMessage(`Failed to add ${title.toLowerCase()}. Please try again.`);
+      await addDetails({
+        ...data,
+        role_id: role.id,
+        profile_id: profileId,
       });
-  };
 
-  const handleSaveDetail = (detail) => {
-    const updatedData = {
-      ...detail,
-      ...editingDetail?.[detail.id],
-    };
-
-    for (const field of fields) {
-      if (field.required && !updatedData[field.name]?.trim()) {
-        setErrorMessage(`${field.label} is required.`);
-        setTimeout(() => setErrorMessage(""), 3000);
-        return;
+      // Extract hashtags from principal fields
+      const hashtags = [];
+      for (const field of fields) {
+        if (principalFields.has(field.name) && data[field.name]) {
+          const values = data[field.name]
+            .split(",")
+            .map((val) => val.trim())
+            .filter(Boolean);
+          hashtags.push(...values.map((val) => `#${val.replace(/\s+/g, "")}`));
+        }
       }
-    }
 
-    updateDetails(detail.id, updatedData).then(() => {
-      setSuccessMessage(`${title} updated successfully!`);
+      try {
+        const upsertedHashtags = await Promise.all(
+          hashtags.map(async (tag) => {
+            const hashtag = await upsertHashtag({ name: tag });
+            return hashtag;
+          })
+        );
+      
+        await Promise.all(
+          upsertedHashtags.map(async (hashtag) => {
+            await upsertProfileHashtag({
+              profile_id: profileId,
+              hashtag_id: hashtag.id,
+            });
+          })
+        );
+        } catch (error) {
+        console.error("Error while upserting profile hashtags:", error.message);
+        }
+
+      reset();
+      setSuccessMessage(`${title} added successfully!`);
       setTimeout(() => setSuccessMessage(""), 3000);
       refetch();
-    });
-
-    setEditingDetail((prev) => {
-      const { [detail.id]: _, ...rest } = prev || {};
-      return rest;
-    });
+    } catch (err) {
+      console.error(`Error adding ${title.toLowerCase()}:`, err);
+      setError("root", { message: `Failed to add ${title.toLowerCase()}. Please try again.` });
+    }
   };
 
-  const handleDeleteDetail = (id) => {
-    console.log("id to delete:", id);
-    
-    deleteDetails(id)
-      .then(() => {
-        setSuccessMessage(`${title} deleted successfully!`);
-        setTimeout(() => setSuccessMessage(""), 3000);
+  const handleSaveDetail = async (detail) => {
+    const updated = {
+      ...detail,
+      ...(editingDetail?.[detail.id] || {}),
+    };
 
-        // Fetch updated details
-        refetch()
-      })
-      .catch((error) => {
-        console.error(`Error deleting ${title.toLowerCase()}:`, error);
-        setErrorMessage(`Failed to delete ${title.toLowerCase()}. Please try again.`);
+    const isValid = fields.every(field =>
+      !field.required || updated[field.name]?.toString().trim()
+    );
+
+    if (!isValid) {
+      setError("root", { message: "All required fields must be filled." });
+      return;
+    }
+
+    try {
+      await updateDetails(detail.id, { ...detail, ...updated });
+      setSuccessMessage(`${title} updated successfully!`);
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setEditingDetail((prev) => {
+        const { [detail.id]: _, ...rest } = prev || {};
+        return rest;
       });
+      refetch();
+    } catch (err) {
+      console.error(`Error updating ${title.toLowerCase()}:`, err);
+      setError("root", { message: `Failed to update ${title.toLowerCase()}. Please try again.` });
+    }
+  };
+
+  const handleDeleteDetail = async (id) => {
+    console.log(`Deleting ${title.toLowerCase()} with ID:`, id);
+    
+    try {
+      await deleteDetails(id);
+      setSuccessMessage(`${title} deleted successfully!`);
+      setTimeout(() => setSuccessMessage(""), 3000);
+      refetch();
+    } catch (err) {
+      console.error(`Error deleting ${title.toLowerCase()}:`, err);
+      setError("root", { message: `Failed to delete ${title.toLowerCase()}. Please try again.` });
+    }
   };
 
   return (
-    <div className="text-gray-800">
-      <h4 className="text-lg font-semibold mb-2">{title}</h4>
+    <div className="text-gray-900">
+      <h4 className="text-xl text-gray-200 font-semibold mb-4">{title}</h4>
+
       {successMessage && <p className="text-green-500 mb-2">{successMessage}</p>}
-      {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
+      {errors.root && <p className="text-red-500 mb-2">{errors.root.message}</p>}
+
       <ul className="space-y-4">
         {details.map((detail) => (
           <li
             key={detail.id}
-            className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+            className="bg-gray-100 p-4 rounded-2xl shadow-md border border-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
           >
             <div className="flex flex-col gap-2 w-full sm:w-auto">
               {fields.map((field) => (
-                <div key={field.name}>
-                  <strong>{field.label}:</strong>
+                <div key={field.name} className="text-sm">
+                  <span className="font-medium text-gray-700">{field.label}:</span>
                   {field.type === "select" ? (
                     <select
                       value={editingDetail?.[detail.id]?.[field.name] ?? detail[field.name]}
@@ -120,11 +179,9 @@ const RoleEditor = ({
                           },
                         }))
                       }
-                      className="ml-2 p-1 border rounded w-full sm:w-auto"
+                      className="ml-2 p-2 border border-gray-300 rounded-md bg-white"
                     >
-                      <option value="" disabled>
-                        Choose one
-                      </option>
+                      <option value="">Choose one</option>
                       {field.options.map((option) => (
                         <option key={option} value={option}>
                           {option}
@@ -144,70 +201,76 @@ const RoleEditor = ({
                           },
                         }))
                       }
-                      className="ml-2 p-1 border rounded w-full sm:w-auto"
-                      required={field.required}
+                      className="ml-2 p-2 border border-gray-300 rounded-md"
                     />
                   )}
                 </div>
               ))}
             </div>
-            <div className="flex gap-2 w-full sm:w-auto justify-end">
-              <button
+            <div className="flex gap-2 mx-auto">
+              <Button
                 onClick={() => handleSaveDetail(detail)}
-                className="bg-green-500 text-white text-xs px-4 py-2 rounded hover:bg-green-600"
+                className="!bg-sky-500 !text-white !px-3 !rounded-xl flex gap-1 !text-sm hover:!bg-sky-600"                
               >
+                <FiEdit2 size={15} />
                 Save
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handleDeleteDetail(detail.id)}
-                className="bg-red-500 text-white text-xs px-4 py-2 rounded hover:bg-red-600"
+                className="!bg-red-500 !text-white !px-3 !rounded-xl !text-sm flex gap-1 hover:!bg-red-600"
               >
-                ✕
-              </button>
+                <FiTrash2 size={17} />
+                Delete
+              </Button>
             </div>
           </li>
         ))}
       </ul>
-      <div className="mt-4">
-        {fields.map((field) => (
-          <div key={field.name} className="mb-4">
-            {field.type === "select" ? (
-              <>
-                <label className="block text-sm font-medium text-gray-700">{field.label}</label>
-                <select
-                  value={newDetail[field.name]}
-                  onChange={(e) =>
-                    setNewDetail({ ...newDetail, [field.name]: e.target.value })
-                  }
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value="" disabled>
-                    Choose one
-                  </option>
-                  {field.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </>
-            ) : (
-              <Input
-                label={field.label}
-                placeholder={field.placeholder}
-                type={field.type || "text"}
-                value={newDetail[field.name]}
-                onChange={(e) =>
-                  setNewDetail({ ...newDetail, [field.name]: e.target.value })
-                }
-              />
-            )}
-          </div>
-        ))}
-        <Button onClick={handleAddDetail} className="mt-2">
+
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 bg-gray-100 p-6 rounded-2xl shadow-inner border border-white">
+        <h5 className="text-md font-medium mb-4 text-gray-700">Add new {title.toLowerCase()}</h5>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {fields.map((field) => (
+            <div key={field.name}>
+              {field.type === "select" ? (
+                <Select
+                  id={field.name}
+                  label={field.label}
+                  options={field.options}
+                  register={register}
+                  validation={{
+                    required: field.required ? `${field.label} is required` : false,
+                  }}
+                  error={errors[field.name]}
+                  className="bg-white focus:bg-white"
+                  defaultOption="Choose one"
+                />
+              ) : (
+                <Input
+                  id={field.name}
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  type={field.type || "text"}
+                  register={register}
+                  validation={{
+                    required: field.required ? `${field.label} is required` : false,
+                  }}
+                  error={errors[field.name]?.message}
+                  className="bg-white"    
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 w-full flex justify-center">
+          <Button 
+          type="submit"
+          className="!text-white !w-1/2 !bg-green-600 !px-3 !rounded-xl flex gap-1 !text-sm hover:!bg-green-700"  
+          >
           Add
         </Button>
-      </div>
+        </div> 
+      </form>
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
-  useFetchProducerQuery,
+  useFetchProducersQuery,
+  useFetchProducerById,
   useAddProducerMutation,
   useUpdateProducerMutation,
   useDeleteProducerMutation,
@@ -11,7 +12,7 @@ const ProducerDetailsContext = createContext();
 ProducerDetailsContext.displayName = "ProducerDetailsContext";
 
 export const ProducerDetailsProvider = ({ children }) => {
-  const {data: composerDetails, isLoading: loading, error, refetch} = useFetchProducerQuery();
+  const {data: composerDetails, isLoading: loading, error} = useFetchProducersQuery();
   const addProducer = useAddProducerMutation().mutateAsync;
   const updateProducer = useUpdateProducerMutation().mutateAsync;
   const deleteProducer = useDeleteProducerMutation().mutateAsync;
@@ -20,8 +21,8 @@ export const ProducerDetailsProvider = ({ children }) => {
       composerDetails,
       loading,
       error,
-      refetch,
-      fetchProducer: useFetchProducerQuery,
+      fetchProducer: useFetchProducersQuery,
+      fetchProducerById: useFetchProducerById,
       addProducer,
       updateProducer,
       deleteProducer,

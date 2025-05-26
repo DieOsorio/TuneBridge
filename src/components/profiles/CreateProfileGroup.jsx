@@ -1,8 +1,8 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useProfileGroups } from "../../context/profile/ProfileGroupsContext";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ImageUploader from "../../utils/ImageUploader";
@@ -12,8 +12,8 @@ import { uploadFileToBucket } from "../../utils/avatarUtils";
 
 const CreateProfileGroup = () => {
   const { createProfileGroup } = useProfileGroups();
-  const { user } = useAuth(); // Get the current user
-  const navigate = useNavigate(); // Initialize useNavigate
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [avatar_url, setAvatar_url] = useState("");
@@ -46,25 +46,26 @@ const CreateProfileGroup = () => {
     try {
       let avatar = avatar_url;
 
-      // Handle avatar upload using the generalized function
       if (selectedFile) {
         avatar = await uploadFileToBucket(
-          selectedFile, 
-          "group-avatars", 
-          data.name, 
+          selectedFile,
+          "group-avatars",
+          data.name,
           avatar_url,
-          true,
+          true
         );
         setAvatar_url(avatar);
       }
 
-      // Include the created_by field with the user's ID
-      await createProfileGroup({ ...data, avatar_url: avatar, created_by: user.id });
-      reset(); // Reset the form after successful submission
+      await createProfileGroup({
+        ...data,
+        avatar_url: avatar,
+        created_by: user.id,
+      });
+
+      reset();
       setAvatar_url("");
       setPreview(null);
-
-      // Redirect to profile/user.id
       navigate(`/profile/${user.id}`);
     } catch (err) {
       setError(err.message || "Failed to create the group.");
@@ -74,7 +75,6 @@ const CreateProfileGroup = () => {
   };
 
   const handleCancel = () => {
-    // Redirect to profile/user.id
     navigate(`/profile/${user.id}`);
   };
 
@@ -82,6 +82,7 @@ const CreateProfileGroup = () => {
     <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-lg mx-auto">
       <h2 className="text-2xl font-semibold text-center mb-4">Create a Profile Group</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
@@ -91,15 +92,23 @@ const CreateProfileGroup = () => {
             </div>
           </div>
           <div className="my-4">
-            <ImageUploader onFilesUpdate={handleAvatarUpdate} amount={1} triggerRef={avatarClickRef} />
+            <ImageUploader
+              onFilesUpdate={handleAvatarUpdate}
+              amount={1}
+              triggerRef={avatarClickRef}
+            />
           </div>
         </div>
+
         <Input
+          id="name"
           label="Group Name"
-          {...register("name", { required: "Group name is required" })}
           placeholder="Enter group name"
+          register={register}
+          validation={{ required: "Group name is required" }}
           error={errors.name?.message}
         />
+
         <label htmlFor="bio" className="block text-sm font-medium text-gray-400">
           Bio
         </label>
@@ -109,21 +118,31 @@ const CreateProfileGroup = () => {
           placeholder="Enter a short bio"
           className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
         />
+
         <Input
+          id="country"
           label="Country"
-          {...register("country")}
           placeholder="Enter country"
+          register={register}
+          error={errors.country?.message}
         />
+
         <Input
+          id="city"
           label="City"
-          {...register("city")}
           placeholder="Enter city"
+          register={register}
+          error={errors.city?.message}
         />
+
         <Input
+          id="genre"
           label="Genre"
-          {...register("genre")}
           placeholder="Enter genre"
+          register={register}
+          error={errors.genre?.message}
         />
+
         <div className="flex justify-end space-x-4">
           <Button
             className="!bg-gray-500 hover:!bg-gray-600"

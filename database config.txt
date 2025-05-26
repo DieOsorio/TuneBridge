@@ -101,19 +101,21 @@ Database Configuration Summary
         
     ------------   /   ------------
 
-        Table: instrumentist_details => Stores specific details of an instrumentalist.
+        Table: instrument_details => Stores specific details of an instrumentalist.
 
         Columns:
 
             id (UUID): Detail ID.
 
+            profile_id (UUID): Linked to the profiles table.
+
             role_id (UUID): Linked to the roles table.
 
-            instruments (text array): List of instruments played by the user.
+            instrument (text): instrument played by the user.
 
-            years_of_experience (int, nullable): Years of experience.
+            years_of_experience (int2): Years of experience.
 
-            level (int, nullable): User's skill level.
+            level (text): User's skill level.
         
     ------------   /   ------------
 
@@ -131,6 +133,8 @@ Database Configuration Summary
 
             level (text)
 
+            profile_id (UUID)
+
     ------------   /   ------------
 
         Table: dj_details => Stores specific details of a DJ.
@@ -143,7 +147,7 @@ Database Configuration Summary
 
             preferred_genres (text)
 
-            events_played (text, nullable)
+            events_played (text)
 
             level (text)
 
@@ -161,11 +165,11 @@ Database Configuration Summary
 
             production_type (text)
 
-            years_of_experience (int, nullable)
+            years_of_experience (int2)
 
             level (text)
 
-            profile_id (UUID, ON DELETE/UPDATE CASCADE)
+            profile_id (UUID)
 
     ------------   /   ------------
 
@@ -240,7 +244,8 @@ Database Configuration Summary
 
             trigger_like: Creates a notification when a post is liked.
 
-            update_content_search_trigger: Updates content_search when title or content changes.
+            update_content_search_trigger: Updates `content_search` using `refresh_post_content_search()` when a post is inserted or updated.
+
 
     ------------   /   ------------
 
@@ -371,3 +376,31 @@ Database Configuration Summary
             is_read (boolean): Indicates whether the notification has been read. Defaults to false.
 
             message (text): A human-readable message describing the notification (optional if you want to display custom texts).
+
+    ------------   /   ------------
+
+        Table: hashtags => Stores unique hashtags that can be linked to posts.
+
+        Columns:
+
+            id (UUID): Unique identifier of the hashtag. Defaults to gen_random_uuid().
+
+            name (text): Hashtag text, expected to be lowercase and prefixed with # (e.g., #guitarist). Must be unique.
+
+            created_at (timestamp): Timestamp when the hashtag was created. Defaults to now().
+
+    ------------   /   ------------
+
+    Table: post_hashtags => Join table associating hashtags with posts.
+
+    Columns:
+
+        post_id (UUID, references social.posts.id): ID of the post.
+
+        hashtag_id (UUID, references social.hashtags.id): ID of the associated hashtag.
+
+        created_at (timestamp): Timestamp when the association was created. Defaults to now().
+
+     Triggers:
+
+            update_content_search_hashtags: Triggers `refresh_post_content_search()` when a hashtag is added, updated, or removed, to keep `posts.content_search` up to date.

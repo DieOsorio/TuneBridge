@@ -1,127 +1,146 @@
-import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
-import { supabase } from '../../supabase';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "../../supabase";
 
-// FETCH ALL SINGER DETAILS FOR A PROFILE
-export const useFetchSingerQuery = (roleId) => {
+// Fetch all singer details for a given roleId
+export const useFetchSingersQuery = (roleId) => {
   return useQuery({
-    queryKey: ["singerDetails", roleId],
-    queryFn: async() => {
-      if (!roleId) {
-        console.error("roleId is not valid");
-        return [];
-      }
+    queryKey: ["singerDetailsList", roleId],
+    queryFn: async () => {
+      if (!roleId) return [];
       const { data, error } = await supabase
-      .schema("music")
-      .from("singer_details")
-      .select("*")
-      .eq("role_id", roleId)
-
-      if (error) throw new Error(error.message)
+        .schema("music")
+        .from("singer_details")
+        .select("*")
+        .eq("role_id", roleId);
+      if (error) throw new Error(error.message);
       return data;
     },
     enabled: !!roleId,
-  })
-}
+  });
+};
 
-// ADD NEW SINGER INFORMATION
+// Fetch single singer detail by id
+export const useFetchSingerById = (id) => {
+  return useQuery({
+    queryKey: ["singerDetails", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("singer_details")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!id,
+  });
+};
+
+// Add new singer
 export const useAddSingerMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async({details}) => {
-      const { data, error}= await supabase
-      .schema("music")
-      .from("singer_details")
-      .insert(details)
-      .select();
-      
+    mutationFn: async ({ details }) => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("singer_details")
+        .insert(details)
+        .select();
       if (error) throw new Error(error.message);
       return data[0];
     },
 
-    //optimistic update
     onMutate: async ({ details }) => {
-      await queryClient.cancelQueries({queryKey: ["singerDetails"]});
-
-      const previousDetails = queryClient.getQueryData(["singerDetails"]);
-
+      const tempId = `temp-${Date.now()}`;
       const optimisticSinger = {
-        id: `temp-${Date.now()}`,
+        id: tempId,
         ...details,
         created_at: new Date().toISOString(),
-      }
+      };
 
-      queryClient.setQueryData(["singerDetails"], (old = []) => [
+      queryClient.setQueryData(["singerDetails", tempId], optimisticSinger);
+
+      queryClient.setQueryData(["singerDetailsList", details.role_id], (old = []) => [
         ...old,
         optimisticSinger,
-      ])
+      ]);
 
-      return { previousDetails};
+      return { tempId, roleId: details.role_id };
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["singerDetails"], context.previousDetails);
-      }
-    },
-
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["singerDetails"]});
-    }
-  })
-}
-
-// UPDATE AN EXISTING SINGER
-export const useUpdateSingerMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({id, details}) => {
-      const { data, error } = await supabase
-      .schema("music")
-      .from("singer_details")
-      .update(details)
-      .eq("id", id)
-      .select()
-      console.log(data);
-      
-      if (error) throw new Error(error.message)
-      return data[0]
-    },
-
-     // optimistic update
-     onMutate: async ({ id, details }) => {
-      await queryClient.cancelQueries({ queryKey: ["singerDetails", id] });
-
-      const previousDetails = queryClient.getQueryData(["singerDetails", id]);
-
-      queryClient.setQueryData(["singerDetails", id], (old = []) =>
-        old.map((singer) =>
-          singer.id === id
-            ? { ...singer, ...details }
-            : singer
-        )
-      );
-
-      return { previousDetails };
-    },
-
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(
-          ["singerDetails", _variables.id],
-          context.previousDetails
+    onError: (_err, _variables, context) => {
+      if (context?.tempId) {
+        queryClient.removeQueries({ queryKey: ["singerDetails", context.tempId] });
+        queryClient.setQueryData(["singerDetailsList", context.roleId], (old = []) =>
+          old.filter((item) => item.id !== context.tempId)
         );
       }
     },
 
-    onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["singerDetails", variables.id] });
+    onSuccess: (data, _variables, context) => {
+      if (context?.tempId) {
+        queryClient.removeQueries({ queryKey: ["singerDetails", context.tempId] });
+        queryClient.setQueryData(["singerDetailsList", context.roleId], (old = []) =>
+          old.map((item) => (item.id === context.tempId ? data : item))
+        );
+      }
+      queryClient.setQueryData(["singerDetails", data.id], data);
     },
-  })
-}
 
-// DELETE A SINGER
+    onSettled: (data) => {
+      if (data?.role_id) {
+        queryClient.invalidateQueries(["singerDetailsList", data.role_id]);
+      }
+    },
+  });
+};
+
+// Update singer
+export const useUpdateSingerMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, details }) => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("singer_details")
+        .update(details)
+        .eq("id", id)
+        .select();
+      if (error) throw new Error(error.message);
+      return data[0];
+    },
+
+    onMutate: async ({ id, details }) => {
+      await queryClient.cancelQueries(["singerDetails", id]);
+      const previous = queryClient.getQueryData(["singerDetails", id]);
+
+      queryClient.setQueryData(["singerDetails", id], (old = {}) => ({
+        ...old,
+        ...details,
+      }));
+
+      return { previous, id };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["singerDetails", context.id], context.previous);
+      }
+    },
+
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries(["singerDetails", variables.id]);
+      if (_data?.role_id) {
+        queryClient.invalidateQueries(["singerDetailsList", _data.role_id]);
+      }
+    },
+  });
+};
+
+// Delete singer
 export const useDeleteSingerMutation = () => {
   const queryClient = useQueryClient();
 
@@ -132,31 +151,32 @@ export const useDeleteSingerMutation = () => {
         .from("singer_details")
         .delete()
         .eq("id", id);
-
       if (error) throw new Error(error.message);
     },
 
-    // optimistic update
-    onMutate: async ({ id }) => {
-      await queryClient.cancelQueries({ queryKey: ["singerDetails"] });
+    onMutate: async ({ id, roleId }) => {
+      await queryClient.cancelQueries(["singerDetailsList", roleId]);
+      await queryClient.cancelQueries(["singerDetails", id]);
 
-      const previousDetails = queryClient.getQueryData(["singerDetails"]);
+      const previousList = queryClient.getQueryData(["singerDetailsList", roleId]);
 
-      queryClient.setQueryData(["singerDetails"], (old = []) =>
+      queryClient.setQueryData(["singerDetailsList", roleId], (old = []) =>
         old.filter((singer) => singer.id !== id)
       );
 
-      return { previousDetails };
+      queryClient.removeQueries({ queryKey: ["singerDetails", id] });
+
+      return { previousList, roleId };
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["singerDetails"], context.previousDetails);
+    onError: (_err, _variables, context) => {
+      if (context?.previousList) {
+        queryClient.setQueryData(["singerDetailsList", context.roleId], context.previousList);
       }
     },
 
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["singerDetails"] });
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries(["singerDetailsList", variables.roleId]);
     },
-  })
-} 
+  });
+};

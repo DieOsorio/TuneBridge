@@ -2,6 +2,7 @@ import React, { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   useFetchInstrumentsQuery,
+  useFetchInstrumentById,
   useAddInstrumentMutation,
   useUpdateInstrumentMutation,
   useDeleteInstrumentMutation,
@@ -23,6 +24,7 @@ export const InstrumentDetailsProvider = ({ children }) => {
       error,
       refetch,
       fetchInstruments: useFetchInstrumentsQuery,
+      fetchInstrumentById: useFetchInstrumentById,
       addInstrument,
       updateInstrument,
       deleteInstrument,

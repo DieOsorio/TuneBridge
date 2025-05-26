@@ -107,24 +107,3 @@ export const useDeleteRoleMutation = () => {
     },
   });
 }
-
-
-// Delete a role from a profile
-// export const deleteRole = async (supabase, roleId, setRoles, setError, setLoading) => {
-//   await withLoading(async () => {
-//     setError("");
-//     try {
-//       const { error } = await supabase
-//         .schema("music")
-//         .from("roles")
-//         .delete()
-//         .eq("id", roleId);
-//       if (error) throw error;
-
-//       // Update the roles state by removing the deleted role
-//       setRoles((prevRoles) => prevRoles.filter((role) => role.id !== roleId));
-//     } catch (err) {
-//       handleError(err, setError);
-//     }
-//   }, setLoading);
-// };
