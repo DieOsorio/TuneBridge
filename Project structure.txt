@@ -1,0 +1,168 @@
+music-connects
+├─ .env
+├─ backend functions.txt
+├─ database config.txt
+├─ eslint.config.js
+├─ h origin ï€¼branch-nameï€¾git status
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ structure.txt
+├─ vite.config.js
+├─ public
+│  ├─ rhythmic-hands-drumming-stockcake.jpg
+│  └─ for-landing-page
+│     ├─ musician-1.jpg
+│     ├─ musician-2.jpg
+│     └─ musician-3.jpg
+├─ src
+│  ├─ App.jsx
+│  ├─ index.css
+│  ├─ index.js
+│  ├─ main.jsx
+│  ├─ supabase.js
+│  ├─ assets
+│  │  └─ logo.png
+│  ├─ components
+│  │  ├─ ProtectedRoute.jsx
+│  │  ├─ auth
+│  │  │  ├─ AccountConfirmed.jsx
+│  │  │  ├─ Login.jsx
+│  │  │  └─ SignUp.jsx
+│  │  ├─ music
+│  │  │  ├─ ComposerEditor.jsx
+│  │  │  ├─ DisplayMusicInfo.jsx
+│  │  │  ├─ DisplayRoleInfo.jsx
+│  │  │  ├─ DjEditor.jsx
+│  │  │  ├─ EditMusicInfo.jsx
+│  │  │  ├─ InstrumentEditor.jsx
+│  │  │  ├─ MusicInfo.jsx
+│  │  │  ├─ ProducerEditor.jsx
+│  │  │  ├─ RoleDataEditor.jsx
+│  │  │  ├─ RoleEditor.jsx
+│  │  │  ├─ RoleItem.jsx
+│  │  │  └─ SingerEditor.jsx
+│  │  ├─ profiles
+│  │  │  ├─ CreateProfileGroup.jsx
+│  │  │  ├─ EditProfile.jsx
+│  │  │  ├─ ProfileAvatar.jsx
+│  │  │  ├─ ProfileCard.jsx
+│  │  │  ├─ ProfileCardSkeleton.jsx
+│  │  │  ├─ ProfileData.jsx
+│  │  │  ├─ ProfileHeader.jsx
+│  │  │  ├─ ProfileMinibox.jsx
+│  │  │  ├─ ProfilesList.jsx
+│  │  │  ├─ Sidebar.jsx
+│  │  │  └─ group
+│  │  │     ├─ GroupHeader.jsx
+│  │  │     ├─ GroupItem.jsx
+│  │  │     ├─ GroupMembersList.jsx
+│  │  │     └─ UserGroups.jsx
+│  │  ├─ social
+│  │  │  ├─ ConnectionCard.jsx
+│  │  │  ├─ ConnectionsList.jsx
+│  │  │  ├─ CreatePost.jsx
+│  │  │  ├─ Notifications.jsx
+│  │  │  ├─ NotificationsList.jsx
+│  │  │  ├─ PostCard.jsx
+│  │  │  ├─ PostCardSkeleton.jsx
+│  │  │  ├─ PostsList.jsx
+│  │  │  ├─ UpdatePost.jsx
+│  │  │  ├─ chat
+│  │  │  │  ├─ ChatHeader.jsx
+│  │  │  │  ├─ ChatPage.jsx
+│  │  │  │  ├─ ChatWindow.jsx
+│  │  │  │  ├─ ConversationItem.jsx
+│  │  │  │  ├─ ConversationList.jsx
+│  │  │  │  ├─ MessageInput.jsx
+│  │  │  │  ├─ MessageItem.jsx
+│  │  │  │  ├─ MessageList.jsx
+│  │  │  │  ├─ MiniProfileCard.jsx
+│  │  │  │  └─ comments
+│  │  │  │     ├─ CommentCard.jsx
+│  │  │  │     ├─ CommentMenu.jsx
+│  │  │  │     ├─ CommentsBox.jsx
+│  │  │  │     ├─ EditCommentBox.jsx
+│  │  │  │     └─ ReplyForm.jsx
+│  │  │  ├─ comments
+│  │  │  │  ├─ helpers
+│  │  │  │  │  └─ comments.js
+│  │  │  │  └─ CommentsBox.jsx
+│  │  │  ├─ ui
+│  │  │  │  ├─ Banner.jsx
+│  │  │  │  ├─ Button.jsx
+│  │  │  │  ├─ Footer.jsx
+│  │  │  │  ├─ HamburguerMenu.jsx
+│  │  │  │  ├─ Input.jsx
+│  │  │  │  ├─ Navbar.jsx
+│  │  │  │  └─ Select.jsx
+│  │  │  ├─ context
+│  │  │  │  ├─ AuthContext.jsx
+│  │  │  │  ├─ ThemeContext.jsx
+│  │  │  │  ├─ ViewContext.jsx
+│  │  │  │  ├─ music
+│  │  │  │  │  ├─ ComposerDetailsActions.js
+│  │  │  │  │  ├─ ComposerDetailsContext.jsx
+│  │  │  │  │  ├─ djDetailsActions.js
+│  │  │  │  │  ├─ DjDetailsContext.jsx
+│  │  │  │  │  ├─ instrumentDetailsActions.js
+│  │  │  │  │  ├─ InstrumentDetailsContext.jsx
+│  │  │  │  │  ├─ MusicContext.jsx
+│  │  │  │  │  ├─ ProducerDetailsActions.js
+│  │  │  │  │  ├─ ProducerDetailsContext.jsx
+│  │  │  │  │  ├─ rolesActions.js
+│  │  │  │  │  ├─ RolesContext.jsx
+│  │  │  │  │  ├─ SingerDetailsActions.js
+│  │  │  │  │  ├─ SingerDetailsContext.jsx
+│  │  │  │  ├─ profile
+│  │  │  │  │  ├─ profileActions.js
+│  │  │  │  │  ├─ ProfileContext.jsx
+│  │  │  │  │  ├─ profileGroupMembersActions.js
+│  │  │  │  │  ├─ ProfileGroupMembersContext.jsx
+│  │  │  │  │  ├─ profileGroupsActions.js
+│  │  │  │  │  ├─ ProfileGroupsContext.jsx
+│  │  │  │  ├─ social
+│  │  │  │  │  ├─ commentsActions.js
+│  │  │  │  │  ├─ CommentsContext.jsx
+│  │  │  │  │  ├─ hashtagsActions.js
+│  │  │  │  │  ├─ HashtagsContext.jsx
+│  │  │  │  │  ├─ imagesActions.js
+│  │  │  │  │  ├─ likesActions.js
+│  │  │  │  │  ├─ LikesContext.jsx
+│  │  │  │  │  ├─ notificationsActions.js
+│  │  │  │  │  ├─ NotificationsContext.jsx
+│  │  │  │  │  ├─ postHashtagsActions.js
+│  │  │  │  │  ├─ PostHashtagsContext.jsx
+│  │  │  │  │  ├─ postsActions.js
+│  │  │  │  │  ├─ PostsContext.jsx
+│  │  │  │  │  ├─ profileHashtagsActions.js
+│  │  │  │  │  ├─ ProfileHashtagsContext.jsx
+│  │  │  │  │  ├─ SocialContext.jsx
+│  │  │  │  │  ├─ userConnectionsActions.js
+│  │  │  │  │  ├─ UserConnectionsContext.jsx
+│  │  │  │  │  ├─ chat
+│  │  │  │  │  │  ├─ ChatContext.jsx
+│  │  │  │  │  │  ├─ ChatUIContext.jsx
+│  │  │  │  │  │  ├─ conversationsActions.js
+│  │  │  │  │  │  ├─ ConversationsContext.jsx
+│  │  │  │  │  │  ├─ messagesActions.js
+│  │  │  │  │  │  ├─ MessagesContext.jsx
+│  │  │  │  │  │  ├─ participantsActions.js
+│  │  │  │  │  │  └─ ParticipantsContext.jsx
+│  ├─ pages
+│  │  ├─ Edit.jsx
+│  │  ├─ Explore.jsx
+│  │  ├─ Feed.jsx
+│  │  ├─ LandingPage.jsx
+│  │  ├─ Profile.jsx
+│  │  ├─ ProfileGroups.jsx
+│  │  ├─ SignUpSuccess.jsx
+│  ├─ routes
+│  │  └─ AppRouter.jsx
+│  ├─ utils
+│  │  ├─ avatarUtils.js
+│  │  ├─ ErrorMessage.jsx
+│  │  ├─ helpers.js
+│  │  ├─ ImageUploader.jsx
+│  │  └─ Loading.jsx

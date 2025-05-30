@@ -6,8 +6,10 @@ import Input from "../ui/Input";
 import Loading from "../../utils/Loading";
 import SignUpSuccess from "../../pages/SignUpSuccess";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const SignUp = () => {
+  const { t } = useTranslation(["auth", "common"]);
   const { signUp, loading: authLoading, error: authError } = useAuth();
   const [success, setSuccess] = useState(false);
 
@@ -35,7 +37,9 @@ const SignUp = () => {
   return (
     <div className="text-gray-950 flex justify-center items-center h-screen">
       <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Sign Up</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">
+          {t("auth:signup.title")}
+        </h2>
 
         {authError && (
           <div className="text-red-500 text-sm mb-4">{authError}</div>
@@ -44,18 +48,18 @@ const SignUp = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             id="username"
-            label="Username"
-            placeholder="Your username"
+            label={t("common:form.username")}
+            placeholder={t("common:form.placeholders.username")}
             register={register}
             validation={{
-              required: "Username is required",
+              required: t("signup.errors.usernameRequired"),
               maxLength: {
                 value: 12,
-                message: "Username cannot exceed 12 characters",
+                message: t("signup.errors.usernameMax"),
               },
               pattern: {
                 value: /^[a-zA-Z0-9_.-]+$/,
-                message: "Only letters, numbers, underscores, hyphens and dots are allowed",
+                message: t("signup.errors.usernamePattern"),
               },
             }}
             error={errors.username}
@@ -63,15 +67,15 @@ const SignUp = () => {
 
           <Input
             id="email"
-            label="Email"
+            label={t("common:form.email")}
             type="email"
-            placeholder="Your email"
+            placeholder={t("common:form.placeholders.email")}
             register={register}
             validation={{
-              required: "Email is required",
+              required: t("signup.errors.emailRequired"),
               pattern: {
                 value: /^\S+@\S+$/i,
-                message: "Enter a valid email address",
+                message: t("signup.errors.emailInvalid"),
               },
             }}
             error={errors.email}
@@ -79,15 +83,15 @@ const SignUp = () => {
 
           <Input
             id="password"
-            label="Password"
+            label={t("common:form.password")}
             type="password"
-            placeholder="Your password"
+            placeholder={t("common:form.placeholders.password")}
             register={register}
             validation={{
-              required: "Password is required",
+              required: t("signup.errors.passwordRequired"),
               minLength: {
                 value: 6,
-                message: "Password must be at least 6 characters",
+                message: t("signup.errors.passwordMin"),
               },
             }}
             error={errors.password}
@@ -95,27 +99,27 @@ const SignUp = () => {
 
           <Input
             id="confirmPassword"
-            label="Confirm Password"
+            label={t("common:form.confirmPassword")}
             type="password"
-            placeholder="Confirm your password"
+            placeholder= {t("common:form.placeholders.confirmPassword")}
             register={register}
             validation={{
-              required: "Please confirm your password",
+              required: t("signup.errors.confirmRequired"),
               validate: (value) =>
-                value === watch("password") || "Passwords do not match",
+                value === watch("password") || t("signup.errors.passwordsNoMatch"),
             }}
             error={errors.confirmPassword}
           />
 
           <Button className="w-full" type="submit">
-            Sign Up
+            {t("auth:signup.button")}
           </Button>
         </form>
 
         <p className="text-sm text-center mt-4">
-          Already have an account?{" "}
+          {t("auth:signup.alreadyHaveAccount")}{" "}
           <Link to="/login" className="text-sky-600 hover:underline">
-            Log In
+            {t("auth:signup.loginHere")}
           </Link>
         </p>
       </div>

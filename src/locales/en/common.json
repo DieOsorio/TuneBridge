@@ -1,0 +1,47 @@
+{
+  "form": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "placeholders": {
+      "email": "Your email",
+      "password": "Your password",
+      "confirmPassword": "Confirm your password",
+      "username": "Your username"
+    },
+    "validation": {
+      "required": "{{field}} is required.",
+      "allRequired": "All required fields must be filled."
+    }
+  },
+  "loading": "Loading...",
+  "loadMore": "Load More",
+  "generic": {
+    "add": "Add",
+    "added": "Added",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "chooseOne": "Choose one",
+    "notAvailable": "N/A"
+  },
+  "messages": {
+    "success": {
+      "add": "{{item}} added successfully!",
+      "update": "{{item}} updated successfully!",
+      "delete": "{{item}} deleted successfully!"
+    },
+    "error": {
+      "add": "Failed to add {{item}}. Please try again.",
+      "update": "Failed to update {{item}}. Please try again.",
+      "delete": "Failed to delete {{item}}. Please try again.",
+      "load": "Failed to load data."
+    }
+  },
+  "aria": {
+    "delete": "Delete {{item}}"
+  },
+  "addNew": "Add new {{item}}"
+}

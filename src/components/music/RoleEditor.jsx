@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import Select from "../ui/Select";
 import { useHashtags } from "../../context/social/HashtagsContext";
 import { useProfileHashtags } from "../../context/social/ProfileHashtagsContext";
+import { useTranslation } from "react-i18next";
 
 const principalFields = new Set([
   "instrument",
@@ -26,6 +27,8 @@ const RoleEditor = ({
   fields,
   title,
 }) => {
+  const { t } = useTranslation("common")
+
   const [editingDetail, setEditingDetail] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -53,7 +56,7 @@ const RoleEditor = ({
       clearErrors("root");
       const isValid = fields.every(field => !field.required || data[field.name]?.trim());
       if (!isValid) {
-        setError("root", { message: "All required fields must be filled." });
+        setError("root", { message: t("form.validation.allRequired") });
         return;
       }
 
@@ -97,12 +100,12 @@ const RoleEditor = ({
         }
 
       reset();
-      setSuccessMessage(`${title} added successfully!`);
+      setSuccessMessage(t("message.success.add", {item: title}));
       setTimeout(() => setSuccessMessage(""), 3000);
       refetch();
     } catch (err) {
-      console.error(`Error adding ${title.toLowerCase()}:`, err);
-      setError("root", { message: `Failed to add ${title.toLowerCase()}. Please try again.` });
+      console.error(t("messages.error.add", {item: title.toLowerCase()}), err);
+      setError("root", { message: t("messages.error.add", {item: title.toLowerCase()}) });
     }
   };
 
@@ -117,13 +120,13 @@ const RoleEditor = ({
     );
 
     if (!isValid) {
-      setError("root", { message: "All required fields must be filled." });
+      setError("root", { message: t("form.validation.allRequired") });
       return;
     }
 
     try {
       await updateDetails(detail.id, { ...detail, ...updated });
-      setSuccessMessage(`${title} updated successfully!`);
+      setSuccessMessage(t("messages.success.update", {item: title}));
       setTimeout(() => setSuccessMessage(""), 3000);
       setEditingDetail((prev) => {
         const { [detail.id]: _, ...rest } = prev || {};
@@ -132,7 +135,7 @@ const RoleEditor = ({
       refetch();
     } catch (err) {
       console.error(`Error updating ${title.toLowerCase()}:`, err);
-      setError("root", { message: `Failed to update ${title.toLowerCase()}. Please try again.` });
+      setError("root", { message: t("messages.error.update", {title: title.toLowerCase()}) });
     }
   };
 
@@ -141,12 +144,12 @@ const RoleEditor = ({
     
     try {
       await deleteDetails(id);
-      setSuccessMessage(`${title} deleted successfully!`);
+      setSuccessMessage(t("messages.success.delete", {item: title}));
       setTimeout(() => setSuccessMessage(""), 3000);
       refetch();
     } catch (err) {
       console.error(`Error deleting ${title.toLowerCase()}:`, err);
-      setError("root", { message: `Failed to delete ${title.toLowerCase()}. Please try again.` });
+      setError("root", { message: t("messages.error.delete", {item: title.toLowerCase()}) });
     }
   };
 
@@ -181,10 +184,12 @@ const RoleEditor = ({
                       }
                       className="ml-2 p-2 border border-gray-300 rounded-md bg-white"
                     >
-                      <option value="">Choose one</option>
+                      <option value="">
+                        {t("generic.chooseOne")}
+                      </option>
                       {field.options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
+                        <option key={option.value} value={option.value}>
+                          {option.label}
                         </option>
                       ))}
                     </select>
@@ -213,14 +218,14 @@ const RoleEditor = ({
                 className="!bg-sky-500 !text-white !px-3 !rounded-xl flex gap-1 !text-sm hover:!bg-sky-600"                
               >
                 <FiEdit2 size={15} />
-                Save
+                {t("generic.save")}
               </Button>
               <Button
                 onClick={() => handleDeleteDetail(detail.id)}
                 className="!bg-red-500 !text-white !px-3 !rounded-xl !text-sm flex gap-1 hover:!bg-red-600"
               >
                 <FiTrash2 size={17} />
-                Delete
+                {t("generic.delete")}
               </Button>
             </div>
           </li>
@@ -228,7 +233,7 @@ const RoleEditor = ({
       </ul>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 bg-gray-100 p-6 rounded-2xl shadow-inner border border-white">
-        <h5 className="text-md font-medium mb-4 text-gray-700">Add new {title.toLowerCase()}</h5>
+        <h5 className="text-md font-medium mb-4 text-gray-700">{t("addNew", {item: title.toLowerCase()})}</h5>
         <div className="grid sm:grid-cols-2 gap-4">
           {fields.map((field) => (
             <div key={field.name}>
@@ -243,7 +248,7 @@ const RoleEditor = ({
                   }}
                   error={errors[field.name]}
                   className="bg-white focus:bg-white"
-                  defaultOption="Choose one"
+                  defaultOption={t("generic.chooseOne")}
                 />
               ) : (
                 <Input
@@ -267,7 +272,7 @@ const RoleEditor = ({
           type="submit"
           className="!text-white !w-1/2 !bg-green-600 !px-3 !rounded-xl flex gap-1 !text-sm hover:!bg-green-700"  
           >
-          Add
+          {t("generic.add")}
         </Button>
         </div> 
       </form>

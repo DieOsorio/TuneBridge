@@ -1,0 +1,93 @@
+{
+  "connections": {
+    "title": "Connections",
+    "pendingTitle": "Pending Connections"
+  },
+  "explore": {
+    "title": "Explore",
+    "description": "Dive into posts and profiles crafted by creators just like you.",
+    "tags": ["Music", "Art", "Technology", "Culture", "Inspiration"],
+    "tabs": {
+      "posts": "Posts",
+      "profiles": "Profiles"
+    }
+  },
+  "landingpage": {
+    "hero": {
+      "title": "Connect with other musicians",
+      "subtitle": "A place where your music and connections grow."
+    },
+    "features": {
+      "sectionTitle": "What can you do on TuneBridge?",
+      "cards": [
+        {
+          "title": "Share Your Music",
+          "description": "Upload your tracks, share your ideas, and get feedback from other musicians."
+        },
+        {
+          "title": "Connect with Others",
+          "description": "Find musicians, producers, and collaborators for your projects."
+        },
+        {
+          "title": "Collaborate in Real-Time",
+          "description": "Chat, share files, and work together in real-time."
+        }
+      ]
+    },
+    "trendingTracks": {
+      "sectionTitle": "Trending Tracks",
+      "tracks": [
+        {
+          "title": "Track 1",
+          "artist": "Artist Name"
+        },
+        {
+          "title": "Track 2",
+          "artist": "Artist Name"
+        },
+        {
+          "title": "Track 3",
+          "artist": "Artist Name"
+        }
+      ]
+    },
+    "callToAction": {
+      "title": "Join the Community!",
+      "subtitle": "Sign up now and take your music to the next level.",
+      "buttons": {
+        "signUp": "Sign Up",
+        "logIn": "Log In",
+        "joinUs": "Join Us"
+      }
+    }
+  },
+  "nav": {
+    "logo": "TuneBridge",
+    "links": {
+      "explore": "Explore",
+      "profile": "Profile"
+    },
+    "auth": {
+      "signIn": "Sign In",
+      "signOut": "Sign Out"
+    },
+    "language": {
+      "english": "English",
+      "spanish": "Español"
+    }
+  },
+   "footer": {
+    "copyright": "© {{year}} TuneBridge. All rights reserved.",
+    "followUs": "Follow us on social media!",
+    "social": {
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram"
+    }
+  },
+   "sidebar": {
+    "viewProfile": "View Profile",
+    "editProfile": "Edit Profile",
+    "editMusicInfo": "Edit Music Info"
+  }
+}

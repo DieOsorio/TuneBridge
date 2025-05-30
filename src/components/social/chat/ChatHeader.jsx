@@ -15,9 +15,11 @@ import ImageUploader from "../../../utils/ImageUploader";
 import { HiCamera } from "react-icons/hi";
 import { HiBars3 } from 'react-icons/hi2';
 import { useChatUI } from "../../../context/social/chat/ChatUIContext";
+import { useTranslation } from "react-i18next";
 
 
 const ChatHeader = ({ conversationId }) => {
+  const { t } = useTranslation("chat");
   // Fetch conversation data and update logic
   const { fetchConversation, updateConversation } = useConversations();
   const { data: conversation, isLoading, error } = fetchConversation(conversationId);
@@ -102,14 +104,16 @@ const ChatHeader = ({ conversationId }) => {
   if (!conversationId) {
     return (
       <div className="flex items-center gap-4 px-4 py-2 border-b border-sky-600">
-        <h2 className="text-lg font-semibold">Select a conversation</h2>
+        <h2 className="text-lg font-semibold">
+          {t("header.noConversation.title")}
+        </h2>
         <button
         onClick={toggleConversationList}
-        className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1"
+        className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1 cursor-pointer"
         aria-label={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
         title={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
       >
-        <HiBars3 size={30}/>
+        <HiBars3 size={30} title="Show Conversations" />
       </button>
       </div>
     );
@@ -155,10 +159,10 @@ const ChatHeader = ({ conversationId }) => {
               <button
                 ref={avatarTriggerRef}
                 className="absolute bottom-0 right-0 bg-black bg-opacity-50 p-1 rounded-full text-white hover:bg-opacity-80 transition"
-                title="Edit group avatar"
+                title={t("header.group.editAvatar")}
               >
                 <HiCamera
-                  title="Edit chat-group image"
+                  title={t("header.group.editAvatar")}
                   className="w-4 h-4 cursor-pointer"
                 />
               </button>
@@ -213,28 +217,28 @@ const ChatHeader = ({ conversationId }) => {
               <h2
                 className="text-lg font-semibold text-white cursor-pointer group-hover:underline"
                 onClick={() => setIsEditingTitle(true)}
-                title="Click to edit group title"
+                title={t("header.group.editTitle")}
               >
-                {editedTitle || "Untitled"}
+                {editedTitle || t("header.group.untitled")}
               </h2>
               <HiPencil
                 onClick={() => setIsEditingTitle(true)}
                 className="text-white cursor-pointer hover:text-sky-400 transition text-base"
-                title="Edit title"
+                title={t("header.group.editTitle")}
               />
             </>
           )}
         </div>
       ) : (
-        <h2 className="text-lg font-semibold">{title || "Untitled"}</h2>
+        <h2 className="text-lg font-semibold">{title || t("header.direct.untitled")}</h2>
       )}
 
       {/* Menu to show conversations*/}
       <button
         onClick={toggleConversationList}
         className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1"
-        aria-label={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
-        title={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
+        aria-label={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
+        title={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
       >
         <HiBars3 size={30}/>
       </button>
@@ -244,9 +248,9 @@ const ChatHeader = ({ conversationId }) => {
         <button
           onClick={handleConvertToGroup}
           className="ml-auto text-white hover:text-sky-400 transition text-xl"
-          title="Convert to group chat"
+          title={t("header.buttons.convertToGroup")}
         >
-          <HiUserGroup title="Convert to group chat" />
+          <HiUserGroup title={t("header.buttons.convertToGroup")} />
         </button>
       )}
     </div>
@@ -256,13 +260,15 @@ const ChatHeader = ({ conversationId }) => {
       <div className="flex flex-col items-center w-full md:w-auto md:items-end md:mt-0">
         {/* Toggle search visibility */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white font-semibold">Add participants</span>
+          <span className="text-sm text-white font-semibold">
+            {t("header.search.toggle")}
+          </span>
           <button
             onClick={() => setSearchVisible((prev) => !prev)}
             className="text-white text-lg hover:text-sky-400 transition ml-3"
-            title={searchVisible ? "Hide search" : "Show search"}
+            title={searchVisible ? t("header.search.hide") : t("header.search.show")}
           >
-            {searchVisible ? <HiMinus title="Hide searchbar" /> : <HiPlus title="Show searchbar" />}
+            {searchVisible ? <HiMinus title={t("header.search.hide")} /> : <HiPlus title={t("header.search.show")} />}
           </button>
         </div>
 
@@ -272,10 +278,13 @@ const ChatHeader = ({ conversationId }) => {
             <input
               type="text"
               {...register("searchTerm")}
-              placeholder="Search profiles..."
+              placeholder={t("header.search.placeholder")}
               className="mt-2 p-1 rounded-md bg-neutral-800 text-white text-sm border border-neutral-600"
             />
-            {isSearching && <span className="text-sm text-gray-400 mt-1">Searching...</span>}
+            {isSearching && 
+            <span className="text-sm text-gray-400 mt-1">
+              {t("header.search.searching")}
+            </span>}
             <div className="mt-2 flex flex-col gap-2">
               {/* List of profiles not already in the conversation */}
               {filteredResults.map((profile) => (
@@ -292,7 +301,9 @@ const ChatHeader = ({ conversationId }) => {
               ))}
               {/* No results message */}
               {!isSearching && searchTerm && filteredResults.length === 0 && (
-                <span className="text-sm text-gray-500">No profiles found.</span>
+                <span className="text-sm text-gray-500">
+                  {t("header.search.noResults")}
+                </span>
               )}
             </div>
           </>

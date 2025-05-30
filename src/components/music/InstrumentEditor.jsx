@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { useInstrumentsDetails } from "../../context/music/InstrumentDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const InstrumentEditor = ({ role, profileId }) => {
+  const { t } = useTranslation("music")
   const { 
     fetchInstruments, 
     addInstrument, 
@@ -28,25 +30,30 @@ const InstrumentEditor = ({ role, profileId }) => {
       addDetails={(details) => addInstrument({ details: sanitizeInput(details) })} 
       updateDetails={(id, details) => updateInstrument({id, details:sanitizeInput(details)})} // Sanitize input before updating
       deleteDetails={(id) => deleteInstrument({id})}
-      title="Instrument Detail"
+      title={t("roles.detailsTitle", {role:t("fields.instrument").toLowerCase()})}
       fields={[
         {
           name: "instrument",
-          label: "Instrument",
-          placeholder: "Enter instrument name",
+          label: t("fields.instrument"),
+          placeholder: t("placeholders.instrument"),
           required: true,
         },
         {
           name: "years_of_experience",
-          label: "Years of Experience",
+          label: t("fields.yearsOfExperience"),
           type: "number",
-          placeholder: "Enter years of experience",
+          placeholder: t("placeholders.yearsOfExperience"),
         },
         {
           name: "level",
-          label: "Level",
+          label: t("fields.level"),
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced", "Expert"], 
+          options: [
+            { value: "Beginner", label: t("levels.beginner") }, 
+            { value: "Intermediate", label: t("levels.intermediate") }, 
+            {value: "Advanced", label: t("levels.advanced") }, 
+            { value: "Expert", label: t("levels.expert") }
+          ], 
         },
       ]}
     />

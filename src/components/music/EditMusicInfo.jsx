@@ -8,8 +8,10 @@ import { useRoles } from "../../context/music/RolesContext";
 import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 import Select from "../ui/Select";
+import { useTranslation } from "react-i18next";
 
 const EditMusicInfo = ({ profileId }) => {
+  const { t } = useTranslation("music")
   const { fetchRoles } = useRoles();
   const { data: roles = [], isLoading, isError } = fetchRoles(profileId);
   const { addRole, deleteRole } = useRoles();
@@ -35,12 +37,12 @@ const EditMusicInfo = ({ profileId }) => {
     const roleName = data.selectedRole === "Other" ? data.customRole.trim() : data.selectedRole;
 
     if (roles.length >= 6) {
-      setError("selectedRole", { message: "You can have only 6 roles." });
+      setError("selectedRole", { message: t("edit.errors.maxRoles") });
       return;
     }
 
     if (!roleName) {
-      setError("selectedRole", { message: "Role cannot be empty." });
+      setError("selectedRole", { message: t("edit.errors.empty") });
       return;
     }
 
@@ -48,7 +50,7 @@ const EditMusicInfo = ({ profileId }) => {
       (role) => role.role.toLowerCase() === roleName.toLowerCase()
     );
     if (isDuplicate) {
-      setError("selectedRole", { message: "This role already exists." });
+      setError("selectedRole", { message: t("edit.errors.duplicate") });
       return;
     }
 
@@ -58,7 +60,7 @@ const EditMusicInfo = ({ profileId }) => {
       })
       .catch(() => {
         setError("selectedRole", {
-          message: "An error occurred while adding the role."
+          message: t("edit.errors.addError")
         });
       });
   };
@@ -72,30 +74,34 @@ const EditMusicInfo = ({ profileId }) => {
 
   return (
     <div className="p-6 bg-gradient-to-r from-gray-900 text-white rounded-b-2xl shadow-lg max-w-5xl mx-auto">
-      <h2 className="text-2xl text-center font-bold mb-4">Edit Music Information</h2>
+      <h2 className="text-2xl text-center font-bold mb-4">
+        {t("edit.title")}
+      </h2>
 
       {/* Add New Role */}
       <form onSubmit={handleSubmit(onSubmit)} className="mb-6 space-y-4">
-        <h3 className="text-xl font-semibold text-white">Add a new role</h3>
+        <h3 className="text-xl font-semibold text-white">
+          {t("edit.addRoleTitle")}
+        </h3>
 
         <div className="grid md:grid-cols-2 gap-4 items-center">
           <Select
             id="selectedRole"
-            label="Select a Role"
+            label={t("edit.selectLabel")}
             register={register}
-            validation={{ required: "Please select a role." }}
+            validation={{ required: t("edit.errors.requiredSelect") }}
             error={errors.selectedRole}
-            defaultOption="Choose a role"
+            defaultOption={t("edit.defaultOption")}
             options={["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]}
           />
 
           {selectedRole === "Other" && (
             <Input
               id="customRole"
-              label="Custom Role"
-              placeholder="Enter custom role"
+              label={t("edit.customLabel")}
+              placeholder={t("edit.customPlaceholder")}
               register={register}
-              validation={{ required: "Please enter a custom role." }}
+              validation={{ required: t("edit.errors.requiredCustom") }}
               error={errors.customRole}
               classForLabel="!text-gray-700"
             />
@@ -103,7 +109,7 @@ const EditMusicInfo = ({ profileId }) => {
 
           <div className={`${selectedRole === "Other" ? "md:col-span-2" : ""}`}>
             <Button type="submit" className="w-full md:w-auto md:mt-3">
-              Add Role
+              {t("edit.addButton")}
             </Button>
           </div>
         </div>
@@ -111,10 +117,14 @@ const EditMusicInfo = ({ profileId }) => {
 
       {/* Roles List */}
       <div className="mt-8">
-        <h3 className="text-xl font-semibold text-white mb-4">Your Roles</h3>
+        <h3 className="text-xl font-semibold text-white mb-4">
+          {t("edit.yourRoles")}
+        </h3>
 
         {roles.length === 0 ? (
-          <p className="text-gray-300">No roles available. Add a new role to get started.</p>
+          <p className="text-gray-300">
+            {t("edit.noRoles")}
+          </p>
         ) : (
           <div className="space-y-4">
             {roles.map((role) => (
@@ -126,7 +136,9 @@ const EditMusicInfo = ({ profileId }) => {
                   className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-700 rounded-t-lg"
                   onClick={() => handleRoleClick(role.id)}
                 >
-                  <span className="text-lg font-semibold text-white">{role.role}</span>
+                  <span className="text-lg font-semibold text-white">
+                    {t(`roles.${role.role.toLowerCase()}`)}
+                  </span>
 
                   <div className="flex items-center gap-2">
                     <FaChevronRight
@@ -140,7 +152,7 @@ const EditMusicInfo = ({ profileId }) => {
                         deleteRole(role.id);
                       }}
                       className="text-xs bg-red-500 text-white px-2 py-1 rounded-full hover:bg-red-600"
-                      aria-label={`Delete ${role.role}`}
+                      aria-label={t("music.edit.deleteRoleAria", { role: role.role })}
                     >
                       ✕
                     </button>

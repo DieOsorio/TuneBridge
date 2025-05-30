@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-const Banner = ({ title, subtitle, backgroundImage }) => {
+const Banner = ({ title, subtitle, backgroundImage, button }) => {
   const titleRef = useRef(null);
   const textRef = useRef(null);
   const buttonRef = useRef(null);
@@ -28,7 +28,7 @@ const Banner = ({ title, subtitle, backgroundImage }) => {
             ref={buttonRef}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg text-lg font-semibold hover:bg-blue-600 transition"
           >
-            Join Us
+            {button}
           </button>
         </Link>
       </div>

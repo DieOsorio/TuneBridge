@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { FaChevronDown } from 'react-icons/fa'
 
 function RoleItem({ role, expandedRole, handleRoleClick }) {
+  const { t } = useTranslation("music");
   const isExpanded = expandedRole === role.id;
 
   return (
@@ -10,7 +12,9 @@ function RoleItem({ role, expandedRole, handleRoleClick }) {
       `}
       onClick={() => handleRoleClick(role)}
     >
-      <span className="text-lg font-semibold tracking-wide">{role.role}</span>
+      <span className="text-lg font-semibold tracking-wide">
+        {t(`roles.${role.role.toLowerCase()}`)}
+      </span>
       <div className="mt-2 flex justify-center">
         <FaChevronDown
           className={`text-gray-400 transition-transform duration-200 ${

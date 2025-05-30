@@ -11,8 +11,10 @@ import ImageUploader from "../../utils/ImageUploader";
 import { IoIosCamera } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
+import { useTranslation } from "react-i18next";
 
 const EditProfile = ({ profile, onSave, onCancel }) => {
+  const { t } = useTranslation("profile");
   const { user } = useAuth();
   const { updateProfile } = useProfile();
   const { manageView } = useView();
@@ -97,13 +99,15 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
       manageView("about", "profile");
       if (onSave) onSave();
     } catch (error) {
-      setLocalError(error.message || "Error updating profile.");
+      setLocalError(error.message || t("edit.errors.updateFailed"));
     }
   };
 
   return (
     <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        {t("edit.title")}
+      </h2>
       {user && (
         <div
           ref={avatarClickRef}
@@ -134,17 +138,17 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
             htmlFor="bio"
             className="block text-sm font-medium text-gray-400"
           >
-            Bio
+            {t("edit.labels.bio")}
           </label>
           <textarea
             id="bio"
             {...register("bio", {
               maxLength: {
                 value: 100,
-                message: "Bio cannot exceed 100 characters",
+                message: t("edit.validation.bioMaxLength"),
               },
             })}
-            placeholder="Bio"            
+            placeholder={t("edit.placeholders.bio")}           
             className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
           />
           {errors.bio && (
@@ -156,8 +160,8 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
         </div>        
         <Input
           id="firstname"
-          label="First name"
-          placeholder="First name"
+          label={t("edit.labels.firstname")}
+          placeholder={t("edit.placeholders.firstname")}
           register={register}
           error={errors.firstname}
           classForLabel="!text-gray-400"
@@ -165,8 +169,8 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
 
         <Input
           id="lastname"
-          label="Last name"
-          placeholder="Last name"
+          label={t("edit.labels.lastname")}
+          placeholder={t("edit.placeholders.lastname")}
           register={register}
           error={errors.lastname}
           classForLabel="!text-gray-400"
@@ -174,8 +178,8 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
 
         <Input
           id="country"
-          label="Country"
-          placeholder="Country"
+          label={t("edit.labels.country")}
+          placeholder={t("edit.placeholders.country")}
           register={register}
           error={errors.country}
           classForLabel="!text-gray-400"
@@ -183,8 +187,8 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
 
         <Input
           id="city"
-          label="City"
-          placeholder="City"
+          label={t("edit.labels.city")}
+          placeholder={t("edit.placeholders.city")}
           register={register}
           error={errors.city}
           classForLabel="!text-gray-400"
@@ -193,19 +197,19 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
         <Input
           id="username"
           classForLabel="!text-gray-400"
-          label="Username"
-          placeholder="Username"
+          label={t("edit.labels.username")}
+          placeholder={t("edit.placeholders.username")}
           register={register}
           validation={{
-            required: "Username is required",
+            required: t("edit.validation.usernameRequired"),
             maxLength: {
               value: 12,
-              message: "Username cannot exceed 12 characters",
+              message: t("edit.validation.usernameMaxLength"),
             },
             pattern: {
               value: /^[a-zA-Z0-9_.-]+$/,
               message:
-                "Username can only contain letters, numbers, underscores, hyphens, and periods",
+                t("edit.validation.usernamePattern"),
             },
           }}
           error={errors.username}
@@ -213,8 +217,9 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
 
         <Select
           id="gender"
-          label="Gender"
-          defaultOption="Choose your gender"
+          label={t("edit.labels.gender")}
+          classForLabel="!text-gray-400"
+          defaultOption={t("edit.placeholders.genderDefault")}
           options={["Male", "Female", "Other"]}
           register={register}
           error={errors.gender}
@@ -222,7 +227,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
 
         <div className="sm:col-span-2">
           <label htmlFor="birthdate" className="block text-sm font-medium mb-2 text-gray-400">
-            Birthdate
+            {t("edit.labels.birthdate")}
           </label>
           <DatePicker
             value={watch("birthdate")}
@@ -240,7 +245,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
         </div>
         <div className="sm:col-span-2 flex justify-end mt-4">
           <Button className="mt-8" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save"}
+            {isSubmitting ? t("edit.buttons.saving") : t("edit.buttons.save")}
           </Button>
           <Button
             className="mt-8 ml-4 !bg-gray-500 hover:!bg-gray-600 text-white"
@@ -250,7 +255,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
               if (onCancel) onCancel();
             }}
           >
-            Cancel
+            {t("edit.buttons.cancel")}
           </Button>
         </div>
       </form>

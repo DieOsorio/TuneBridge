@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useMessages } from "../../../context/social/chat/MessagesContext";
 import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
+import { useTranslation } from "react-i18next";
 
 const MessageInput = ({ conversationId, senderId }) => {
+  const { t } = useTranslation("chat");
   const [content, setContent] = useState("");
   const { insertMessage } = useMessages();
   const { fetchParticipants } = useParticipants();
@@ -42,14 +44,14 @@ const MessageInput = ({ conversationId, senderId }) => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Write a message..."
+        placeholder={t("input.placeholder")}
         className="flex-1 resize-none rounded-lg border border-neutral-700 bg-neutral-950 text-white p-2 outline-none focus:ring-1 focus:ring-neutral-500"
       />
       <button
         type="submit"
         className="bg-sky-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-sky-700 transition"
       >
-        Send
+        {t("input.button")}
       </button>
     </form>
   );

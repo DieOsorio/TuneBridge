@@ -15,8 +15,10 @@ import Edit from "./Edit";
 import Notifications from "../components/social/Notifications";
 import { useProfile } from "../context/profile/ProfileContext";
 import UserGroups from "../components/profiles/group/UserGroups";
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
+  const { t } = useTranslation("profile"); // Initialize translation function
   const { identifier } = useParams(); // Get the profile identifier from the URL
   const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
   const { fetchProfile } = useProfile();
@@ -35,11 +37,11 @@ const Profile = () => {
   }
 
   if (error) {
-    return <ErrorMessage error={error.message || "Error loading profile."} />;
+    return <ErrorMessage error={error.message || t("profile.errorLoading")} />;
   }
 
   if (!profileData) {
-    return <div>No profile data available.</div>;
+    return <div>{t("profile.noData")}</div>;
   }
 
   // Check if the logged-in user is viewing their own profile
@@ -102,14 +104,14 @@ const Profile = () => {
 
             {internalView === "groups" && externalView === "profile" && (
               <div className="text-center text-gray-400 py-8">
-                User Groups is in development. Coming soon!
+                {t("profile.userGroupsComing")}
               </div>
             )}
 
             {/* Music View */}
             {internalView === "music" && externalView === "profile" && (
               <div className="text-center text-gray-400 py-8">
-                Music section is in development. Coming soon!
+                {t("profile.musicComing")}
               </div>
             )}      
               

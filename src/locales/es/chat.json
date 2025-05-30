@@ -1,0 +1,33 @@
+{
+  "header": {
+    "noConversation": {
+      "title": "Selecciona una conversación"
+    },
+    "group": {
+      "editTitle": "Haz clic para editar el nombre del grupo",
+      "untitled": "Sin título",
+      "editAvatar": "Editar avatar del grupo"
+    },
+    "direct": {
+      "untitled": "Sin título"
+    },
+    "buttons": {
+      "convertToGroup": "Convertir en grupo",
+      "showList": "Mostrar lista de conversaciones",
+      "hideList": "Ocultar lista de conversaciones"
+    },
+    "search": {
+      "toggle": "Agregar participantes",
+      "show": "Mostrar buscador",
+      "hide": "Ocultar buscador",
+      "placeholder": "Buscar perfiles...",
+      "searching": "Buscando...",
+      "noResults": "No se encontraron perfiles."
+    }
+  },
+  "list": "No se encontraron conversaciones.",
+  "input": {
+    "button": "Enviar",
+    "placeholder": "Escribe un mensaje..."
+  }
+}

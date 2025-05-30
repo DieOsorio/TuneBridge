@@ -3,9 +3,13 @@ import ProfilesList from "../components/profiles/ProfilesList";
 import PostsList from "../components/social/PostsList";
 import { useView } from "../context/ViewContext";
 import { FaCompass } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 function Explore() {
+  const { t } = useTranslation("ui");
   const { externalView, setExternalView } = useView();
+
+  const tags = t("explore.tags", {returnObjects: true});
 
   // Check if there is an external view, if there isn't set it to postList
   useEffect(() => {
@@ -22,15 +26,15 @@ function Explore() {
         <div className="flex items-center gap-3 mb-3">
           <FaCompass className="text-cyan-400 text-4xl animate-pulse" />
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
-            Explore
+            {t("explore.title")}
           </h1>
         </div>
         <p className="text-lg max-w-xl mx-auto text-cyan-200/90 font-light tracking-wide">
-          Dive into posts and profiles crafted by creators just like you.
+          {t("explore.description")}
         </p>
 
         <div className="flex justify-center flex-wrap gap-2 mt-4">
-          {["Music", "Art", "Technology", "Culture", "Inspiration"].map((tag) => (
+          {tags.map((tag) => (
             <span
               key={tag}
               className="text-xs cursor-pointer rounded-full bg-sky-600 px-3 py-1 font-semibold text-cyan-100 hover:bg-sky-500 transition"
@@ -52,7 +56,7 @@ function Explore() {
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
-            Posts
+            {t("explore.tabs.posts")}
           </button>
           <button
             onClick={() => setExternalView("profilesList")}
@@ -62,7 +66,7 @@ function Explore() {
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
-            Profiles
+            {t("explore.tabs.profiles")}
           </button>
         </div>
       </div>
