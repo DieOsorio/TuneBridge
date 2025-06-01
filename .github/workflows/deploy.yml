@@ -29,3 +29,4 @@ jobs:
         with:
           branch: deploy
           folder: dist
+          token: ${{ secrets.GH_PAT }}
