@@ -13,15 +13,20 @@ import { AiFillEdit } from "react-icons/ai";
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { manageView } = useView();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const {findConversation, createConversation} = useConversations();
   const { addParticipant } = useParticipants();
   const [isStartingChat, setIsStartingChat] = useState(false);
-
+  
+  const navigate = useNavigate();
   const isOwnProfile = user.id === profile.id; // Check if the logged-in user is the same as the profile being viewed
 
   const handleStartChat = async () => {
     if (isStartingChat) return;
+
+    if(isOwnProfile) { 
+      navigate("/chat")
+      return;
+    } 
 
     try {       
         const conversationData  = await findConversation({ myProfileId: user.id, otherProfileId: profile.id });

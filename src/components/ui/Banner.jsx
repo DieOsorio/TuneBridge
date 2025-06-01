@@ -2,7 +2,13 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-const Banner = ({ title, subtitle, backgroundImage, button }) => {
+const Banner = ({ 
+  title, 
+  subtitle, 
+  backgroundImage, 
+  button,
+  user 
+  }) => {
   const titleRef = useRef(null);
   const textRef = useRef(null);
   const buttonRef = useRef(null);
@@ -23,14 +29,16 @@ const Banner = ({ title, subtitle, backgroundImage, button }) => {
       <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
         <h1 ref={titleRef} className="text-5xl md:text-6xl font-bold mb-4">{title}</h1>
         <p ref={textRef} className="text-lg md:text-2xl max-w-xl mb-6">{subtitle}</p>
-        <Link to="/signup">
-          <button
-            ref={buttonRef}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg text-lg font-semibold hover:bg-blue-600 transition"
-          >
-            {button}
-          </button>
-        </Link>
+        {!user && (
+          <Link to="/signup">
+            <button
+              ref={buttonRef}
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg text-lg font-semibold hover:bg-blue-600 transition"
+            >
+              {button}
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

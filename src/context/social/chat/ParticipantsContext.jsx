@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {
   useFetchParticipantsQuery,
   useAddParticipantMutation,
+  useUpdateParticipantRoleMutation,
   useRemoveParticipantMutation,
 } from "./participantsActions";
 
@@ -12,10 +13,12 @@ ParticipantsContext.displayName = "ParticipantsContext";
 export const ParticipantsProvider = ({ children }) => {
   const addParticipant = useAddParticipantMutation().mutateAsync;
   const removeParticipant = useRemoveParticipantMutation().mutateAsync;
+  const updateParticipantRole = useUpdateParticipantRoleMutation().mutateAsync;
 
   const value = {
     fetchParticipants: useFetchParticipantsQuery,
     addParticipant,
+    updateParticipantRole,
     removeParticipant,
   };
 

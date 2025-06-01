@@ -1,10 +1,10 @@
 {
   "roles": {
-    "title": "Roles Musicales",
+    "title": "Perfil Musical",
     "none": "No se encontraron roles musicales.",
     "noData": "No hay información disponible para este rol.",
     "detailsTitle": "Detalles de {{role}}",
-    "instrumentalist": "Instrumentista",
+    "instrumentalist": "Instrumentos",
     "singer": "Cantante",
     "dj": "DJ",
     "producer": "Productor",
@@ -40,7 +40,7 @@
     "choose": "Elige uno"
   },
   "edit": {
-    "title": "Editar Información Musical",
+    "title": "Editar Perfil Musical",
     "addRoleTitle": "Agregar un nuevo rol",
     "selectLabel": "Selecciona un rol",
     "defaultOption": "Elige un rol",

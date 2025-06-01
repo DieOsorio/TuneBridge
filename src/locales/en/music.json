@@ -1,10 +1,10 @@
 {
   "roles": {
-    "title": "Music Roles",
+    "title": "Music Profile",
     "none": "No music-related roles found.",
     "noData": "No information available for this role.",
     "detailsTitle": "{{role}} Details",
-    "instrumentalist": "Instrumentalist",
+    "instrumentalist": "Instruments",
     "singer": "Singer",
     "dj": "DJ",
     "producer": "Producer",
@@ -39,7 +39,7 @@
     "expert": "Expert"
   },
   "edit": {
-    "title": "Edit Music Information",
+    "title": "Edit Music Profile",
     "addRoleTitle": "Add a new role",
     "selectLabel": "Select a Role",
     "defaultOption": "Choose a role",

@@ -69,7 +69,8 @@ const DisplayRoleInfo = ({ role, data }) => {
 // Reusable small component for consistent field rendering
 const Detail = ({ label, value }) => (
   <p className="text-sm text-gray-300 mb-1">
-    <span className="font-semibold text-gray-200">{label}:</span>{" "}
+    <span className="font-semibold text-gray-200">{label}: </span>
+    &nbsp;&nbsp;
     {value || "N/A"}
   </p>
 );

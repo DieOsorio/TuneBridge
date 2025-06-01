@@ -451,7 +451,7 @@ $$;
 
 
 
-
+-- Updates the content_search_roles field in profiles when roles related to a profile change
 CREATE OR REPLACE FUNCTION users.update_content_search_roles_trigger()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -474,7 +474,7 @@ $$;
 
 
 
-
+-- Updates the content_search_details field in profiles when hashtags or related details change
 CREATE OR REPLACE FUNCTION social.refresh_profile_content_search_details()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -527,6 +527,7 @@ $$ LANGUAGE plpgsql;
 
 
 
+-- Aggregates multiple search vectors into a single comprehensive content_search_all field in profiles
 CREATE OR REPLACE FUNCTION users.update_content_search_all()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -537,3 +538,21 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+-- Assigns the conversation creator as admin when a conversation is converted into a group
+create or replace function set_creator_as_admin()
+returns trigger as $$
+begin
+  -- Only executes if is_group changed to TRUE
+  if (NEW.is_group = true and OLD.is_group is distinct from NEW.is_group) then
+    update social.conversation_participants
+    set role = 'admin'
+    where conversation_id = NEW.id
+      and profile_id = NEW.created_by;
+  end if;
+
+  return NEW;
+end;
+$$ language plpgsql;

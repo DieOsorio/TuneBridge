@@ -12,11 +12,13 @@ import { supabase } from "../../supabase";
 import { useHashtags } from "../../context/social/HashtagsContext";
 import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 const UpdatePost = () => {
   const { t } = useTranslation("posts")
   const { postId } = useParams();
   const [images, setImages] = useState([]);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { fetchPost, updatePost, deletePost } = usePosts();
   const { upsertHashtag } = useHashtags();
   const { getHashtagsByPostId, deletePostHashtags, upsertPostHashtag } = usePostHashtags();
@@ -145,18 +147,19 @@ const UpdatePost = () => {
   };
 
   const handleDeletePost = async () => {
-    if (!postData) return;
-
-    if (window.confirm(t("update.errors.confirmDelete"))) {
-      try {
-        await deletePost(postData.id);
-        navigate(`/profile/${postData.profile_id}`);
-      } catch (error) {
-        console.error("Error deleting post:", error.message);
-        alert(t("update.errors.delete"));
-      }
-    }
+    setIsConfirmOpen(true);
   };
+
+  const confirmDelete = async () => {
+  try {
+    await deletePost(postData.id);
+    navigate(`/profile/${postData.profile_id}`);
+  } catch (error) {
+    console.error("Error deleting post:", error.message);
+  } finally {
+    setIsConfirmOpen(false);
+  }
+};
 
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error.message} />;
@@ -251,6 +254,14 @@ const UpdatePost = () => {
           </Button>
         </div>
       </form>
+
+       <ConfirmDialog
+          isOpen={isConfirmOpen}
+          title={t("update.buttons.delete")}
+          message={t("update.errors.confirmDelete")}
+          onConfirm={confirmDelete}
+          onCancel={() => setIsConfirmOpen(false)}
+        />
     </>
   );
 };

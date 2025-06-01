@@ -24,7 +24,7 @@
       "title": "Edit Profile",
       "navigation": {
         "editProfile": "Edit Profile",
-        "editMusicInfo": "Edit Music Info"
+        "editMusicInfo": "Edit Music Profile"
       },
       "labels": {
         "bio": "Bio",
