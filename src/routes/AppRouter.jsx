@@ -34,10 +34,10 @@ const AppRouter = () => {
           <Route path="/create-post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/group/:groupId" element={<ProtectedRoute><ProfileGroup /></ProtectedRoute>} />
           <Route path="/create-profile-group" element={<ProtectedRoute><CreateProfileGroup /></ProtectedRoute>} />
+          <Route path="/account-confirmed" element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />          
           <Route path="/chat/" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/edit-post/:postId" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
           <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-          <Route path="/account-confirmed" element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />          
           <Route path="/profile/:identifier" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Routes>
       </main>
