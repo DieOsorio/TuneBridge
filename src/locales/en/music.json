@@ -8,7 +8,8 @@
     "singer": "Singer",
     "dj": "DJ",
     "producer": "Producer",
-    "composer": "Composer"
+    "composer": "Composer",
+    "custom": "Custom Role"
   },
   "fields": {
     "instrument": "Instrument",
