@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const MiniProfileCard = ({ profile, onAdd }) => {
+  const { t } = useTranslation("common")
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
@@ -19,13 +21,15 @@ const MiniProfileCard = ({ profile, onAdd }) => {
         <span className="text-sm text-white">{profile.username}</span>
       </div>
       {added ? (
-        <span className="text-xs px-2 py-1 bg-green-600 text-white rounded-md">Added</span>
+        <span className="text-xs px-2 py-1 bg-green-600 text-white rounded-md">
+          {t("generic.added")}
+        </span>
       ) : (
         <button
           onClick={handleAdd}
           className="text-xs px-2 py-1 bg-sky-600 text-white rounded-md hover:bg-sky-700 transition"
         >
-          Add
+          {t("generic.add")}
         </button>
       )}
     </div>

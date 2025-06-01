@@ -1,7 +1,10 @@
 import React, {memo} from "react"
+import { useTranslation } from "react-i18next";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 function CommentMenu({ onMenu, onEdit, onDelete, menuRef, isMenuOpen }) {
+  const { t } = useTranslation("common")
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -17,13 +20,13 @@ function CommentMenu({ onMenu, onEdit, onDelete, menuRef, isMenuOpen }) {
             onClick={onEdit}
             className="block w-full text-center px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
-            Edit
+            {t("generic.edit")}
           </button>
           <button
             onClick={onDelete}
             className="block w-full text-center px-4 py-2 text-sm hover:bg-red-100 dark:hover:bg-red-950 text-red-600 dark:text-red-400"
           >
-            Delete
+            {t("generic.delete")}
           </button>
         </div>
       )}

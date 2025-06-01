@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const ProducerEditor = ({ role, profileId }) => {
+  const { t } = useTranslation("music")
   const {
     fetchProducer, 
     addProducer, 
@@ -27,25 +29,30 @@ const ProducerEditor = ({ role, profileId }) => {
       addDetails={(details) => addProducer({details: sanitizeInput(details)})} // Sanitize input before adding
       updateDetails={(id, details) => updateProducer({id, details: sanitizeInput(details)})} // Sanitize input before updating
       deleteDetails={(id) => deleteProducer({id})}
-      title="Producer Detail"
+      title={t("roles.detailsTitle", {role:t("roles.producer").toLowerCase()})}
       fields={[
         {
           name: "production_type",
-          label: "Production Type",
-          placeholder: "Enter production type",
+          label: t("fields.productionType"),
+          placeholder: t("placeholders.productionType"),
           required: true,
         },
         {
           name: "years_of_experience",
-          label: "Years of Experience",
+          label: t("fields.yearsOfExperience"),
           type: "number",
-          placeholder: "Enter years of experience",
+          placeholder: t("placeholders.yearsOfExperience"),
         },
         {
           name: "level",
-          label: "Level",
+          label: t("fields.level"),
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced", "Expert"],
+          options: [
+            { value: "Beginner", label: t("levels.beginner") }, 
+            { value: "Intermediate", label: t("levels.intermediate") }, 
+            {value: "Advanced", label: t("levels.advanced") }, 
+            { value: "Expert", label: t("levels.expert") }
+          ], 
         },
       ]}
     />

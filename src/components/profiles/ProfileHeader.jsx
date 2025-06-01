@@ -12,8 +12,10 @@ import { useParticipants } from '../../context/social/chat/ParticipantsContext';
 import { useState } from 'react';
 import { useNotifications } from '../../context/social/NotificationsContext';
 import { useMessages } from '../../context/social/chat/MessagesContext';
+import { useTranslation } from 'react-i18next';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
+    const { t } = useTranslation("profile");
     const { manageView } = useView();
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -123,21 +125,27 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end mt-6">
         <div>
           <div className="mb-4">
-            <Button onClick={() => manageView("about", "profile")}>About</Button>
+            <Button onClick={() => manageView("about", "profile")}>
+              {t("profile.navigation.about")}
+            </Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("music", "profile")}>Music</Button>
+            <Button onClick={() => manageView("music", "profile")}>
+              {t("profile.navigation.music")}
+            </Button>
           </div>
         </div>
 
         <div>
           <div className="mb-4">
             <Button onClick={() => manageView("displayPosts", "profile")}>
-              Posts
+              {t("profile.navigation.posts")}
             </Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("groups", "profile")}>Groups</Button>
+            <Button onClick={() => manageView("groups", "profile")}>
+              {t("profile.navigation.groups")}
+            </Button>
           </div>
         </div>
       </div>

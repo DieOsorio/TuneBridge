@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
 import { useAuth } from "../../context/AuthContext";

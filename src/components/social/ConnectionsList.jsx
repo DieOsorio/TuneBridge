@@ -1,7 +1,9 @@
 import ConnectionCard from './ConnectionCard';
 import { useUserConnections } from '../../context/social/UserConnectionsContext';
+import { useTranslation } from 'react-i18next';
 
 function ConnectionsList({ checkStatus, profileId }) {
+    const { t } = useTranslation("ui");
     const { userConnections } = useUserConnections()
     const { data: connections } = userConnections(profileId);
 
@@ -39,7 +41,7 @@ function ConnectionsList({ checkStatus, profileId }) {
             : conn.following_profile_id;
     };
 
-    const title = checkStatus === 'accepted' ? 'Connections' : 'Pending Connections';
+    const title = checkStatus === 'accepted' ? t("connections.title") : t("connections.pendingTitle");
 
     return (
         <>

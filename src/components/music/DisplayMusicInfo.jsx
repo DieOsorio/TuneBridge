@@ -10,8 +10,10 @@ import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
 import { useRoles } from "../../context/music/RolesContext";
 import { useSingerDetails } from "../../context/music/SingerDetailsContext";
 import RoleItem from "./RoleItem";
+import { useTranslation } from "react-i18next";
 
 const DisplayMusicInfo = ({ profileId }) => {
+  const { t } = useTranslation("music");
   const  [roleId, setRoleId]  = useState();
   const { fetchRoles } = useRoles();
   const { data: roles, isLoading: loading, error} = fetchRoles(profileId);
@@ -49,7 +51,7 @@ const DisplayMusicInfo = ({ profileId }) => {
   
   if (loading) return <Loading />
 
-  if (error) return <ErrorMessage error={error.message} />
+  if (error) return <ErrorMessage error={error.message || t("errors.fetch")}  />
 
   return (
     <div className="bg-gray-900 p-6 rounded-lg shadow-md">
@@ -57,11 +59,15 @@ const DisplayMusicInfo = ({ profileId }) => {
         <div className="p-3 bg-sky-900/30 rounded-full">
           <FaMusic className="text-sky-400 text-2xl animate-pulse" />
         </div>
-        <h3 className="text-3xl font-bold text-sky-500 tracking-wide">Music Roles</h3>
+        <h3 className="text-3xl font-bold text-sky-500 tracking-wide">
+          {t("roles.title")}
+        </h3>
       </div>
 
       {roles.length === 0 ? (
-        <p className="text-gray-500">No music-related roles found.</p>
+        <p className="text-gray-500">
+          {t("roles.none")}
+        </p>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -8,8 +8,10 @@ import Loading from "../../../utils/Loading"
 import { Link } from 'react-router-dom';
 import { useView } from '../../../context/ViewContext';
 import { useProfile } from '../../../context/profile/ProfileContext';
+import { useTranslation } from 'react-i18next';
 
 function CommentsBox({ postId }) {
+  const { t } = useTranslation("comments");
   const { manageView } = useView();
   const { user } = useAuth(); // logged user
   const { fetchProfile, profilesMap } = useProfile();
@@ -104,7 +106,7 @@ function CommentsBox({ postId }) {
             onClick={() => setShowAll(true)}
             className="mb-4 text-sky-700 dark:text-sky-400 text-sm hover:underline"
           >
-            More comments...
+            {t("box.loadMore")}
           </button>
         )}
   
@@ -125,7 +127,9 @@ function CommentsBox({ postId }) {
 
         {/* if there is no comments yet */}
         {comments?.length === 0 && (
-          <p className="italic text-zinc-600">Be the first one to comment on this posts.</p>
+          <p className="italic text-zinc-600">
+            {t("box.noComments")}
+          </p>
         )}
       </div>
   
@@ -141,7 +145,7 @@ function CommentsBox({ postId }) {
         <div className="flex-1">          
           <textarea
             {...register('comment', { required: true })}
-            placeholder="Write a comment..."
+            placeholder={t("box.placeholder")}
             className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 resize-none"
             rows={2}
           />
@@ -151,12 +155,14 @@ function CommentsBox({ postId }) {
             type="submit"
             className="mt-2 px-4 py-1 bg-sky-700 hover:bg-sky-800 text-white rounded-md text-sm"
             >
-            Send
+            {t("box.send")}
           </button>
           
           {/* error on submit */}
           {errors.comment && (
-            <span className="text-red-500 text-xs">Write something.</span>
+            <span className="text-red-500 text-xs">
+              {t("box.error")}
+            </span>
           )}
         </div>
       </form>

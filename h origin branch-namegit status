@@ -1,7 +1,0 @@
-[33m3c029bd[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m Added MusicContext with CRUD for music.roles, improved EditMusicInfo and DisplayMusicInfo components, and conditional Sidebar rendering in Profile
-[33ma200510[m[33m ([m[1;31morigin/main[m[33m)[m Refactor ProfileContext and fetchProfile logic
-[33mb1e5f8b[m some partial changes
-[33m3a0fbc0[m create serveral providers(context), fix some mistakes, new components
-[33m75f4925[m display user information in profile, update(edit) user information in profile-edit
-[33m0c178be[m Remove .env from version control
-[33m4baa472[m Initial commit: setup project structure, auth, and components

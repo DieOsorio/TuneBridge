@@ -8,8 +8,10 @@ import { useUploadPostImages } from "../../context/social/imagesActions";
 import { useView } from "../../context/ViewContext";
 import { useHashtags } from "../../context/social/HashtagsContext";
 import { usePostHashtags } from "../../context/social/PostHashtagsContext";
+import { useTranslation } from "react-i18next";
 
 const CreatePost = ({ id }) => {
+  const { t } = useTranslation("posts")
   const [images, setImages] = useState([]);
   const { createPost, updatePost } = usePosts();
   const { upsertHashtag } = useHashtags();
@@ -92,7 +94,7 @@ const CreatePost = ({ id }) => {
   return (
     <>
       <h2 className="text-2xl font-bold text-gray-100 text-center mb-4">
-        Create a New Post
+        {t("create.title")}
       </h2>
 
       <form
@@ -101,21 +103,22 @@ const CreatePost = ({ id }) => {
       >
         <Input
           id="title"
-          label="Title"
-          placeholder="Enter a title"
+          label={t("create.labels.title")}
+          placeholder={t("create.placeholders.title")}
           register={register}
-          validation={{ required: "Title is required." }}
+          validation={{ required: t("create.errors.title") }}
           error={errors.title?.message}
         />
 
         <div>
           <label htmlFor="content" className="block font-medium text-gray-400 mb-1">
-            Content
+            {t("create.labels.content")}
           </label>
           <textarea
             id="content"
+            placeholder={t("create.placeholders.content")}
             {...register("content", {
-              required: "Content must not be empty.",
+              required: t("create.errors.content"),
             })}
             className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
           />
@@ -126,8 +129,8 @@ const CreatePost = ({ id }) => {
 
         <Input
           id="hashtags"
-          label="Hashtags"
-          placeholder="Add hashtags separated by space, e.g. #rock #jazz"
+          label={t("create.labels.hashtags")}
+          placeholder={t("create.placeholders.hashtags")}
           register={register}
           validation={{}}
           error={errors.hashtags?.message}
@@ -140,7 +143,7 @@ const CreatePost = ({ id }) => {
           disabled={isSubmitting}
           className="ml-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700"
         >
-          {isSubmitting ? "Posting..." : "Post"}
+          {isSubmitting ? t("create.buttons.posting") : t("create.buttons.post")}
         </Button>
       </form>
     </>

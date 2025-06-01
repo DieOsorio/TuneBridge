@@ -64,10 +64,10 @@ const ConnectionCard = ({ profileId, connection }) => {
                         <div className="relative">
                             <button
                                 onClick={() => setMenuOpen((open) => !open)}
-                                className="text-gray-600 hover:text-gray-900"
-                                aria-label="Options"
+                                className="text-gray-600 hover:text-gray-900 cursor-pointer"
+                                aria-label="Options"                                
                             >
-                                <BsThreeDotsVertical />
+                                <BsThreeDotsVertical title="Options"/>
                             </button>
                             {menuOpen && (
                                 <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-50">

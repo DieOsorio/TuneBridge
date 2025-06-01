@@ -1,6 +1,7 @@
+-- Sends a notification when a comment is made on a post
 CREATE OR REPLACE FUNCTION public.notify_comment()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     INSERT INTO social.notifications (
@@ -18,20 +19,22 @@ BEGIN
         NOW(),
         (SELECT profile_id FROM social.posts WHERE id = NEW.post_id), -- Post owner
         'comment',
-        NEW.post_id, -- The ID of the commented post
-        NEW.profile_id, -- The user who commented
+        NEW.post_id,
+        NEW.profile_id,
         false,
         'Someone commented on your post!'
     );
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Sends a notification when a follow request is created
 CREATE OR REPLACE FUNCTION public.notify_follow_request()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     INSERT INTO social.notifications (
@@ -47,22 +50,24 @@ BEGIN
     VALUES (
         gen_random_uuid(),
         NOW(),
-        NEW.following_profile_id, -- The recipient of the follow request
+        NEW.following_profile_id,
         'follow_request',
-        NEW.id, -- The ID of the user_connections row
-        NEW.follower_profile_id, -- The user who sent the follow request
+        NEW.id,
+        NEW.follower_profile_id,
         false,
         'You have a new follow request!'
     );
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Sends a notification when a post is liked
 CREATE OR REPLACE FUNCTION public.notify_like()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     INSERT INTO social.notifications (
@@ -78,22 +83,24 @@ BEGIN
     VALUES (
         gen_random_uuid(),
         NOW(),
-        (SELECT profile_id FROM social.posts WHERE id = NEW.post_id), -- Post owner
+        (SELECT profile_id FROM social.posts WHERE id = NEW.post_id),
         'like',
-        NEW.post_id, -- The ID of the liked post
-        NEW.profile_id, -- The user who liked the post
+        NEW.post_id,
+        NEW.profile_id,
         false,
         'Someone liked your post!'
     );
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Sends a notification when a user joins a group
 CREATE OR REPLACE FUNCTION public.notify_profile_group_join()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
   INSERT INTO social.notifications (
@@ -109,22 +116,24 @@ BEGIN
   VALUES (
     gen_random_uuid(),
     NOW(),
-    NEW.profile_id, -- Notify the user (profile_id) who joined the group
+    NEW.profile_id,
     'group_join',
-    NEW.profile_group_id, -- The ID of the group
-    NEW.profile_id, -- The user who joined the group
+    NEW.profile_group_id,
+    NEW.profile_id,
     FALSE,
     'You have joined the group.'
   );
   RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Sends a notification when a user leaves a group
 CREATE OR REPLACE FUNCTION public.notify_profile_group_leave()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
   INSERT INTO social.notifications (
@@ -140,7 +149,7 @@ BEGIN
   VALUES (
     gen_random_uuid(),
     NOW(),
-    OLD.profile_group_id, -- or each admin
+    OLD.profile_group_id, -- Can be adjusted to notify group admins
     'group_leave',
     OLD.profile_group_id,
     OLD.profile_id,
@@ -149,13 +158,15 @@ BEGIN
   );
   RETURN OLD;
 END;
-$function$
+$function$;
 
 
 
+
+-- Prevents duplicate likes on the same post or comment by the same user
 CREATE OR REPLACE FUNCTION public.prevent_duplicate_likes()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     IF EXISTS (
@@ -168,13 +179,15 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Prevents adding the same participant to a conversation more than once
 CREATE OR REPLACE FUNCTION public.prevent_duplicate_participants()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     IF EXISTS (
@@ -187,13 +200,15 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Prevents duplicate usernames in the profiles table
 CREATE OR REPLACE FUNCTION public.prevent_duplicate_usernames()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     IF EXISTS (
@@ -206,24 +221,24 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Reassigns a new admin when the last admin leaves a group
 CREATE OR REPLACE FUNCTION public.reassign_admin_on_leave()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 DECLARE
   remaining_admins INT;
   new_admin UUID;
 BEGIN
-  -- Count remaining admins in the group
   SELECT COUNT(*) INTO remaining_admins
   FROM users.profile_group_members
   WHERE profile_group_id = OLD.profile_group_id AND role = 'admin' AND profile_id != OLD.profile_id;
 
-  -- If no admins left, assign a new one
   IF remaining_admins = 0 THEN
     SELECT profile_id INTO new_admin
     FROM users.profile_group_members
@@ -240,86 +255,103 @@ BEGIN
 
   RETURN OLD;
 END;
-$function$
+$function$;
 
 
 
+
+-- Soft deletes a message by setting the deleted_at timestamp
 CREATE OR REPLACE FUNCTION public.soft_delete_message()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     NEW.deleted_at = NOW();
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Updates the timestamp when a comment is updated
 CREATE OR REPLACE FUNCTION public.update_comment_timestamp()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Updates the timestamp when a connection is updated
 CREATE OR REPLACE FUNCTION public.update_connection_timestamp()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Updates the timestamp when a message is updated
 CREATE OR REPLACE FUNCTION public.update_message_timestamp()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Updates the timestamp when a post is updated
 CREATE OR REPLACE FUNCTION public.update_post_timestamp()
- RETURNS trigger
- LANGUAGE plpgsql
+RETURNS trigger
+LANGUAGE plpgsql
 AS $function$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$function$
+$function$;
 
 
 
+
+-- Automatically adds the creator of a group as an admin in the group members table
 CREATE OR REPLACE FUNCTION add_creator_to_group_members()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
 BEGIN
-  -- Insert the creator into the profile_group_members table
   INSERT INTO users.profile_group_members (profile_group_id, profile_id, role, joined_at)
   VALUES (NEW.id, NEW.created_by, 'admin', NOW());
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 
 
 
+
+-- Updates the searchable content field for a profile based on basic fields
 CREATE OR REPLACE FUNCTION users.update_profile_content_search()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
 BEGIN
   NEW.content_search :=
     to_tsvector('spanish', coalesce(NEW.username, '')) ||
@@ -338,32 +370,40 @@ BEGIN
     to_tsvector('english', coalesce(NEW.bio, ''));
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
+
 
 
  
-create or replace function public.create_profile_when_authenticated()
-returns trigger as $$
-begin
-  -- Solo crea perfil si el rol es 'authenticated' y no existe ya
-  if new.role = 'authenticated' then
-    insert into users.profiles (id, email, username)
-    values (
-      new.id,
-      new.email,
-      new.raw_user_meta_data->>'full_name'  -- Extrae el username
+-- Automatically creates a user profile upon authentication if it does not already exist
+CREATE OR REPLACE FUNCTION public.create_profile_when_authenticated()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  IF NEW.role = 'authenticated' THEN
+    INSERT INTO users.profiles (id, email, username)
+    VALUES (
+      NEW.id,
+      NEW.email,
+      NEW.raw_user_meta_data->>'full_name'
     )
-    on conflict (id) do nothing;
-  end if;
-  return new;
-end;
-$$ language plpgsql security definer;
+    ON CONFLICT (id) DO NOTHING;
+  END IF;
+  RETURN NEW;
+END;
+$$;
 
 
 
 
+
+-- Updates the content_search field for a post when its hashtags, title or content change
 CREATE OR REPLACE FUNCTION social.refresh_post_content_search()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
 DECLARE
   target_post_id uuid;
   hashtag_text TEXT;
@@ -372,7 +412,6 @@ DECLARE
   new_search tsvector;
   current_search tsvector;
 BEGIN
-  -- Determinar el ID del post afectado
   IF TG_TABLE_NAME = 'post_hashtags' THEN
     IF TG_OP = 'DELETE' THEN
       target_post_id := OLD.post_id;
@@ -383,7 +422,6 @@ BEGIN
     target_post_id := NEW.id;
   END IF;
 
-  -- Obtener hashtags asociados
   SELECT string_agg(h.name, ' ') INTO hashtag_text
   FROM social.post_hashtags ph
   JOIN social.hashtags h ON h.id = ph.hashtag_id
@@ -393,17 +431,14 @@ BEGIN
     hashtag_text := '';
   END IF;
 
-  -- Obtener título, contenido y content_search actual del post
   SELECT title, content, content_search INTO post_title, post_content, current_search
   FROM social.posts
   WHERE id = target_post_id;
 
-  -- Calcular el nuevo valor del campo content_search
   new_search :=
     to_tsvector('spanish', coalesce(post_title, '') || ' ' || coalesce(post_content, '') || ' ' || hashtag_text) ||
     to_tsvector('english', coalesce(post_title, '') || ' ' || coalesce(post_content, '') || ' ' || hashtag_text);
 
-  -- Actualizar solo si el contenido realmente cambió
   IF current_search IS DISTINCT FROM new_search THEN
     UPDATE social.posts
     SET content_search = new_search
@@ -412,10 +447,11 @@ BEGIN
 
   RETURN NULL;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 
 
+-- Updates the content_search_roles field in profiles when roles related to a profile change
 CREATE OR REPLACE FUNCTION users.update_content_search_roles_trigger()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -438,7 +474,7 @@ $$;
 
 
 
-
+-- Updates the content_search_details field in profiles when hashtags or related details change
 CREATE OR REPLACE FUNCTION social.refresh_profile_content_search_details()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -447,7 +483,7 @@ DECLARE
   new_search tsvector;
   current_search tsvector;
 BEGIN
-  -- Determinar el ID del perfil afectado
+  -- Determine the affected profile ID
   IF TG_TABLE_NAME = 'profile_hashtags' THEN
     IF TG_OP = 'DELETE' THEN
       target_profile_id := OLD.profile_id;
@@ -458,7 +494,7 @@ BEGIN
     target_profile_id := NEW.id;
   END IF;
 
-  -- Obtener hashtags asociados
+  -- Retrieve associated hashtags
   SELECT string_agg(h.name, ' ') INTO hashtag_text
   FROM social.profile_hashtags ph
   JOIN social.hashtags h ON h.id = ph.hashtag_id
@@ -468,17 +504,17 @@ BEGIN
     hashtag_text := '';
   END IF;
 
-  -- Obtener el valor actual de content_search_details
+  -- Get the current value of content_search_details
   SELECT content_search_details INTO current_search
   FROM users.profiles
   WHERE id = target_profile_id;
 
-  -- Calcular nuevo valor
+  -- Generate new search vector (Spanish + English)
   new_search :=
     to_tsvector('spanish', hashtag_text) ||
     to_tsvector('english', hashtag_text);
 
-  -- Actualizar solo si hubo cambios
+  -- Update only if there were changes
   IF current_search IS DISTINCT FROM new_search THEN
     UPDATE users.profiles
     SET content_search_details = new_search
@@ -491,7 +527,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-
+-- Aggregates multiple search vectors into a single comprehensive content_search_all field in profiles
 CREATE OR REPLACE FUNCTION users.update_content_search_all()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -502,3 +538,21 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+-- Assigns the conversation creator as admin when a conversation is converted into a group
+create or replace function set_creator_as_admin()
+returns trigger as $$
+begin
+  -- Only executes if is_group changed to TRUE
+  if (NEW.is_group = true and OLD.is_group is distinct from NEW.is_group) then
+    update social.conversation_participants
+    set role = 'admin'
+    where conversation_id = NEW.id
+      and profile_id = NEW.created_by;
+  end if;
+
+  return NEW;
+end;
+$$ language plpgsql;

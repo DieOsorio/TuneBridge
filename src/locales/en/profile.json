@@ -1,0 +1,63 @@
+{
+  "profile": {
+    "noData": "No profile data available.",
+    "errorLoading": "Error loading profile.",
+    "userGroupsComing": "User Groups is in development. Coming soon!",
+    "musicComing": "Music section is in development. Coming soon!",
+    "navigation": {
+      "about": "About",
+      "music": "Music",
+      "posts": "Posts",
+      "groups": "Groups"
+    },
+    "data": {
+      "firstname": "Name",
+      "lastname": "Last Name",
+      "country": "Country",
+      "city": "City",
+      "gender": "Gender",
+      "age": "Age",
+      "years": "years"
+    } 
+  },
+  "edit": {
+      "title": "Edit Profile",
+      "navigation": {
+        "editProfile": "Edit Profile",
+        "editMusicInfo": "Edit Music Profile"
+      },
+      "labels": {
+        "bio": "Bio",
+        "firstname": "First name",
+        "lastname": "Last name",
+        "country": "Country",
+        "city": "City",
+        "username": "Username",
+        "gender": "Gender",
+        "birthdate": "Birthdate"
+      },
+      "placeholders": {
+        "bio": "Bio",
+        "firstname": "First name",
+        "lastname": "Last name",
+        "country": "Country",
+        "city": "City",
+        "username": "Username",
+        "genderDefault": "Choose your gender"
+      },
+      "validation": {
+        "bioMaxLength": "Bio cannot exceed 100 characters",
+        "usernameRequired": "Username is required",
+        "usernameMaxLength": "Username cannot exceed 12 characters",
+        "usernamePattern": "Username can only contain letters, numbers, underscores, hyphens, and periods"
+      },
+      "buttons": {
+        "saving": "Saving...",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "updateFailed": "Error updating profile."
+      }
+    }
+}

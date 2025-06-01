@@ -7,6 +7,7 @@ import CommentMenu from "./CommentMenu";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { useView } from "../../../context/ViewContext";
 import { useLikes } from "../../../context/social/LikesContext";
+import { useTranslation } from "react-i18next";
 
 function CommentCard({ 
   comment, // comment object
@@ -18,6 +19,7 @@ function CommentCard({
   onReplySubmit,
   currentUserId 
 }) {
+  const { t } = useTranslation("comments");
   const { manageView } = useView();
   const [showAllReplies, setShowAllReplies] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -135,7 +137,7 @@ function CommentCard({
           <div className="flex justify-between items-center">
             {/* username from comment sender */}
             <div className="font-semibold text-zinc-700 dark:text-zinc-300">
-              {profile?.username || "Anonymous"}
+              {profile?.username || t("card.anonymous")}
             </div>
 
             <div className="flex items-center gap-2">
@@ -167,7 +169,7 @@ function CommentCard({
             onClick={toggleLike}
             disabled={likesLoading}
           >
-            <span>{hasLiked() ? "Liked" : "Like"}</span>
+            <span>{hasLiked() ? t("card.liked") : t("card.like")}</span>
             <span>{commentLikes().length}</span>
           </button>
 
@@ -175,7 +177,7 @@ function CommentCard({
               className="hover:underline"
               onClick={() => setShowReplyForm(!showReplyForm)}
               >
-              reply
+              {t("card.reply")}
             </button>
           </div>
         </div>
@@ -210,7 +212,7 @@ function CommentCard({
               >
                 <>
                   {showAllReplies ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                  {replies.length} {replies.length === 1 ? "reply" : "replies"}
+                  {replies.length === 1 ? t("card.replies", {count: replies.length}) : t("card.repliesPlural", {count: replies.length})}
                 </>
               </button>
 

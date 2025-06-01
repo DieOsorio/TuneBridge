@@ -1,0 +1,25 @@
+{
+  "card": {
+    "anonymous": "Anónimo",
+    "like": "Me gusta",
+    "liked": "Te gusta",
+    "reply": "Responder",
+    "replies": "{{count}} respuesta",
+    "repliesPlural": "{{count}} respuestas",
+    "placeholder": "Escribe una respuesta...",
+    "buttons": {
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "reply": "Responder"
+    }
+  },
+  "box": {
+    "loadMore": "Ver más comentarios...",
+    "noComments": "Sé el primero en comentar esta publicación.",
+    "placeholder": "Escribe un comentario...",
+    "send": "Enviar",
+    "error": "Escribe algo."
+  }
+}

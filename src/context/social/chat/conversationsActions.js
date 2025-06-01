@@ -128,8 +128,8 @@ export const useCreateConversationMutation = () => {
     },
 
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["conversations", variables.conversation.created_by] });
-      queryClient.invalidateQueries({ queryKey: ["conversation", variables.conversation.id] });
+      queryClient.invalidateQueries({ queryKey: ["conversations", variables.created_by] });
+      queryClient.invalidateQueries({ queryKey: ["conversation", variables.id] });
     },
   });
 };
@@ -170,9 +170,13 @@ export const useUpdateConversationMutation = () => {
     },
 
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["conversations", variables.conversation.created_by] });
-      queryClient.invalidateQueries({ queryKey: ["conversation", variables.conversation.id] });
-    },
+      if (variables?.conversation?.created_by) {
+        queryClient.invalidateQueries({ queryKey: ["conversations", variables.conversation.created_by] });
+      }
+      if (variables?.conversation?.id) {
+        queryClient.invalidateQueries({ queryKey: ["conversation", variables.conversation.id] });
+      }
+    }
   });
 };
 
@@ -210,8 +214,10 @@ export const useDeleteConversationMutation = () => {
     },
 
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["conversations", variables.conversation.created_by] });
-      queryClient.invalidateQueries({ queryKey: ["conversation", variables.conversation.id] });
+      queryClient.invalidateQueries({ queryKey: ["conversations", variables.created_by] });
+      if (variables.id) {
+        queryClient.invalidateQueries({ queryKey: ["conversation", variables.id] });
+      }
     },
   });
 };

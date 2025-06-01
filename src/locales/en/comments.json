@@ -1,0 +1,25 @@
+{
+  "card": {
+    "anonymous": "Anonymous",
+    "like": "Like",
+    "liked": "Liked",
+    "reply": "Reply",
+    "replies": "{{count}} reply",
+    "repliesPlural": "{{count}} replies",
+    "placeholder": "Write a reply...",
+    "buttons": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "reply": "Reply"
+    }
+  },
+  "box": {
+    "loadMore": "More comments...",
+    "noComments": "Be the first one to comment on this post.",
+    "placeholder": "Write a comment...",
+    "send": "Send",
+    "error": "Write something."
+  }
+}

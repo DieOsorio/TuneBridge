@@ -7,8 +7,10 @@ import { useView } from '../../context/ViewContext';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
+import { useTranslation } from 'react-i18next';
 
-const PostsList = ({ profileId, isOwnProfile }) => { 
+const PostsList = ({ profileId, isOwnProfile }) => {
+    const { t } = useTranslation(["posts", "common"]) 
     const { searchPosts, infinitePosts, infiniteUserPosts } = usePosts();  
     const { 
         data: userPostsData, 
@@ -56,7 +58,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                     <input
                         type="text"
                         {...register("searchTerm")}
-                        placeholder="Search posts..."
+                        placeholder={t("posts:placeholders.searchPosts")}
                         className="w-3xs border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
                     />
                 </form>
@@ -70,7 +72,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                         variant="contained"
                         onClick={() => navigate("/create-post")}
                     >
-                        Create Post
+                        {t("posts:buttons.createPost")}
                     </Button>
                 </div>
 
@@ -86,7 +88,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                         <PostCard key={post.id} post={post} />
                     ))
                 ) : searchTerm ? (
-                    <p className="col-span-full text-center text-gray-500">No posts match your search.</p>
+                    <p className="col-span-full text-center text-gray-500">{t("posts:messages.noMatch")}</p>
                 ) : allPostsData && allPostsData.pages.length > 0 ? (
                     allPostsData.pages.map((page, pageIndex) => (
                         <React.Fragment key={pageIndex}>
@@ -96,7 +98,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                         </React.Fragment>
                     ))
                 ) : (
-                    <p className="col-span-full text-center text-gray-500">No posts available.</p>
+                    <p className="col-span-full text-center text-gray-500">{t("posts:messages.empty")}</p>
                 )}
 
                 {/* Load More Button */}
@@ -106,7 +108,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                         onClick={() => fetchNextPage()}
                         disabled={isFetchingNextPage}
                     >
-                        {isFetchingNextPage ? 'Loading...' : 'Load More'}
+                        {isFetchingNextPage ? t("common:loading") : t("common:loadMore")}
                     </Button>
                 )}
             </div>
@@ -136,7 +138,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                         variant="contained"
                         onClick={() => manageView("createPost", "profile")}
                     >
-                        Create Post
+                        {t("posts:buttons.createPost")}
                     </Button>
                 </div>
             )}
@@ -149,7 +151,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                     </React.Fragment>
                 ))
             ) : (
-                <p className="col-span-full text-center text-gray-500">No posts available.</p>
+                <p className="col-span-full text-center text-gray-500">{t("posts:messages.empty")}</p>
             )}
              {/* Load More Button */}
              {hasNextPageUser && (
@@ -158,7 +160,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
                     onClick={() => fetchNextPageUser()}
                     disabled={isFetchingNextPageUser}
                 >
-                    {isFetchingNextPageUser ? 'Loading...' : 'Load More'}
+                    {isFetchingNextPageUser ? t("common:loading") : t("common:loadMore")}
                 </Button>
             )}
         </div>

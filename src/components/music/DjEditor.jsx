@@ -26,24 +26,29 @@ const DjEditor = ({ role, profileId }) => {
       addDetails={(details) => addDj({details: sanitizeInput(details)})} // Sanitize input before adding
       updateDetails={(id, details) => updateDj({id, details: sanitizeInput(details)})} // Sanitize input before updating
       deleteDetails={(id) => deleteDj({id})}
-      title="DJ Detail"
+      title={t("roles.detailsTitle", {role:t("roles.dj").toLowerCase()})}
       fields={[
         {
           name: "events_played",
-          label: "Events Played",
-          placeholder: "Enter events played",
+          label: t("fields.eventsPlayed"),
+          placeholder: t("placeholders.eventsPlayed"),
           required: true,
         },
         {
           name: "preferred_genres",
-          label: "Preferred Genres",
-          placeholder: "Enter preferred genres",
+          label: t("fields.preferredGenres"),
+          placeholder: t("placeholders.preferredGenres"),
         },
         {
           name: "level",
-          label: "Level",
+          label: t("fields.level"),
           type: "select",
-          options: ["Beginner", "Intermediate", "Advanced"], // Not required
+          options: [
+            { value: "Beginner", label: t("levels.beginner") }, 
+            { value: "Intermediate", label: t("levels.intermediate") }, 
+            {value: "Advanced", label: t("levels.advanced") }, 
+            { value: "Expert", label: t("levels.expert") }
+          ], 
         },
       ]}
     />

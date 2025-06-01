@@ -5,9 +5,16 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Loading from "../../utils/Loading";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
-  const { user, loading, signIn, error: authError } = useAuth();
+  const { t } = useTranslation(["auth", "common"]);
+  const { 
+    user, 
+    loading, 
+    signIn, error: 
+    authError 
+  } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -28,7 +35,7 @@ const Login = () => {
       setError("");
       await signIn(data.email, data.password);
     } catch (err) {
-      setError("Unable to log in. Please check your credentials.");
+      setError(t("auth:login.errors.authError", { error: err.message }));
     }
   };
 
@@ -39,7 +46,9 @@ const Login = () => {
   return (
     <div className="text-gray-950 flex justify-center items-center h-screen">
       <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Log In</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">
+          {t("auth:login.title")}
+        </h2>
 
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
         {authError && <div className="text-red-500 text-sm mb-4">{authError}</div>}
@@ -47,35 +56,39 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             id="email"
-            label="Email"
+            label={t("common:form.email")}
             type="email"
-            placeholder="Your email"
+            placeholder={t("common:form.placeholders.email")}
             autoComplete="email"
             register={register}
-            validation={{ required: "Email is required" }}
+            validation={{ 
+              required: t("auth:login.errors.emailRequired") 
+            }}
             error={errors.email}
           />
 
           <Input
             id="password"
-            label="Password"
+            label={t("common:form.password")}
             type="password"
-            placeholder="Your password"
+            placeholder={t("common:form.placeholders.password")}
             autoComplete="current-password"
             register={register}
-            validation={{ required: "Password is required" }}
+            validation={{ 
+              required: t("auth:login.errors.passwordRequired") 
+            }}
             error={errors.password}
           />
 
           <Button className="w-full" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Logging in..." : "Log In"}
+            {isSubmitting ? t("auth:login.button.loading") : t("auth:login.button.default")}
           </Button>
         </form>
 
         <p className="mt-4 text-sm text-center">
-          Don't have an account?{" "}
+          {t("auth:login.noAccount")}{" "}
           <Link to="/signup" className="text-blue-500 hover:underline">
-            Sign up here
+            {t("auth:login.signupHere")}
           </Link>
         </p>
       </div>

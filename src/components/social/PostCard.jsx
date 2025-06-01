@@ -29,10 +29,11 @@ import 'swiper/css/scrollbar';
 import 'swiper/css/zoom';
 import 'swiper/css/effect-coverflow';
 import { useProfile } from '../../context/profile/ProfileContext';
-import { Button } from '@mui/material';
 import { FaEdit } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 function PostCard({ post }) {
+  const { t } = useTranslation("posts")
   const { user } = useAuth(); // logged user
   const navigate = useNavigate(); // For navigation
 
@@ -200,7 +201,7 @@ function PostCard({ post }) {
             </Swiper>
           ) : (
             <p className="font-semibold text-center text-white">
-              No images available for this post.
+              {t('messages.noImages')}
             </p>
           )}
         </div>

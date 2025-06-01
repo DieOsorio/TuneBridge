@@ -5,10 +5,16 @@ import "react-loading-skeleton/dist/skeleton.css"; // Skeleton styles
 import Banner from "../components/ui/Banner";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const LandingPage = () => {
+  const { t } = useTranslation("ui");
   const { user } = useAuth();
   const isLoading = false; // Simulate loading state for skeletons
+
+
+  const features = t("landingpage.features.cards", { returnObjects: true})
+  const trendingTracks = t("landingpage.trendingTracks.tracks", { returnObjects: true });
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -19,9 +25,11 @@ const LandingPage = () => {
         transition={{ duration: 1 }}
       >
         <Banner
-          title="Connect with other musicians"
-          subtitle="A place where your music and connections grow."
+          title={t("landingpage.hero.title")}
+          subtitle={t("landingpage.hero.subtitle")}
           backgroundImage="/rhythmic-hands-drumming-stockcake.jpg"
+          button= {t("landingpage.callToAction.buttons.joinUs")}
+          user={user}
         />
       </motion.div>
 
@@ -33,7 +41,7 @@ const LandingPage = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
         >
-          What can you do on Music Connects?
+          {t("landingpage.features.sectionTitle")}
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {isLoading ? (
@@ -44,21 +52,18 @@ const LandingPage = () => {
             </>
           ) : (
             <>
-              <FeatureCard
-                icon={<FaMusic className="text-sky-500 mx-auto" />}
-                title="Share Your Music"
-                description="Upload your tracks, share your ideas, and get feedback from other musicians."
-              />
-              <FeatureCard
-                icon={<FaHandshake className="text-green-400 mx-auto" />}
-                title="Connect with Others"
-                description="Find musicians, producers, and collaborators for your projects."
-              />
-              <FeatureCard
-                icon={<FaMicrophoneAlt className="text-purple-400 mx-auto" />}
-                title="Collaborate in Real-Time"
-                description="Chat, share files, and work together in real-time."
-              />
+              {features.map(({ title, description}, i) => (
+                <FeatureCard 
+                  key={i}
+                  icon={
+                    i === 0 ? <FaMusic className="text-sky-500 mx-auto" /> :
+                    i === 1 ? <FaHandshake className="text-green-400 mx-auto" /> :
+                    <FaMicrophoneAlt className="text-purple-400 mx-auto" />
+                  }
+                  title={title}
+                  description={description}
+                />
+              ))}
             </>
           )}
         </div>
@@ -67,65 +72,51 @@ const LandingPage = () => {
       {/* Trending Tracks Section */}
       <section className="py-12 px-6 md:px-16">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-white">
-          Trending Tracks
+          {t("landingpage.trendingTracks.sectionTitle")}
         </h2>
         <div className="flex flex-col md:flex-row md:flex-wrap gap-6 justify-center">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
-            <img
-              src="/for-landing-page/musician-1.jpg"
-              alt="Track 1"
-              className="w-full h-40 object-cover rounded-lg mb-4"
-            />
-            <h3 className="text-xl font-bold text-white">Track 1</h3>
-            <p className="text-gray-400">Artist Name</p>
-          </div>
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
-            <img
-              src="/for-landing-page/musician-2.jpg"
-              alt="Track 2"
-              className="w-full h-40 object-cover rounded-lg mb-4"
-            />
-            <h3 className="text-xl font-bold text-white">Track 2</h3>
-            <p className="text-gray-400">Artist Name</p>
-          </div>
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
-            <img
-              src="/for-landing-page/musician-3.jpg"
-              alt="Track 3"
-              className="w-full h-40 object-cover rounded-lg mb-4"
-            />
-            <h3 className="text-xl font-bold text-white">Track 3</h3>
-            <p className="text-gray-400">Artist Name</p>
-          </div>
+          {trendingTracks.map(({ title, artist }, i) => (
+            <div key={i} className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-full md:w-1/3">
+              <img
+                src={`/for-landing-page/musician-${i + 1}.jpg`}
+                alt={`${title}`}
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-xl font-bold text-white">{title}</h3>
+              <p className="text-gray-400">{artist}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Call-to-Action Section */}
-      <motion.section
-        className="bg-gradient-to-r from-sky-700 to-purple-700 py-12 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 1 }}
-      >
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-          Join the Community!
-        </h2>
-        <p className="text-lg mb-6 text-gray-200">
-          Sign up now and take your music to the next level.
-        </p>
-        <div>
-          <Link 
-            to={"/signup"} 
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg mr-4">
-            Sign Up
-          </Link>
-          <Link 
-            to={"/login"} 
-            className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg">
-            Log In
-          </Link>
-        </div>
-      </motion.section>
+      { !user && (
+        <motion.section
+          className="bg-gradient-to-r from-sky-700 to-purple-700 py-12 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+            {t("landingpage.callToAction.title")}
+          </h2>
+          <p className="text-lg mb-6 text-gray-200">
+            {t("landingpage.callToAction.subtitle")}
+          </p>
+          <div>
+            <Link 
+              to={"/signup"} 
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg mr-4">
+              {t("landingpage.callToAction.buttons.signUp")}
+            </Link>
+            <Link 
+              to={"/login"} 
+              className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg">
+              {t("landingpage.callToAction.buttons.logIn")}
+            </Link>
+          </div>
+        </motion.section>
+      )}
     </div>
   );
 };

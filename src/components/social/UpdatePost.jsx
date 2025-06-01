@@ -11,10 +11,14 @@ import ErrorMessage from "../../utils/ErrorMessage";
 import { supabase } from "../../supabase";
 import { useHashtags } from "../../context/social/HashtagsContext";
 import { usePostHashtags } from "../../context/social/PostHashtagsContext";
+import { useTranslation } from "react-i18next";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 const UpdatePost = () => {
+  const { t } = useTranslation("posts")
   const { postId } = useParams();
   const [images, setImages] = useState([]);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const { fetchPost, updatePost, deletePost } = usePosts();
   const { upsertHashtag } = useHashtags();
   const { getHashtagsByPostId, deletePostHashtags, upsertPostHashtag } = usePostHashtags();
@@ -143,18 +147,19 @@ const UpdatePost = () => {
   };
 
   const handleDeletePost = async () => {
-    if (!postData) return;
-
-    if (window.confirm("Are you sure you want to delete this post?")) {
-      try {
-        await deletePost(postData.id);
-        navigate(`/profile/${postData.profile_id}`);
-      } catch (error) {
-        console.error("Error deleting post:", error.message);
-        alert("Error deleting the post. Please try again.");
-      }
-    }
+    setIsConfirmOpen(true);
   };
+
+  const confirmDelete = async () => {
+  try {
+    await deletePost(postData.id);
+    navigate(`/profile/${postData.profile_id}`);
+  } catch (error) {
+    console.error("Error deleting post:", error.message);
+  } finally {
+    setIsConfirmOpen(false);
+  }
+};
 
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error.message} />;
@@ -162,7 +167,7 @@ const UpdatePost = () => {
   return (
     <>
       <h2 className="text-2xl font-bold text-gray-100 text-center mb-4">
-        Update Post
+        {t("update.title")}
       </h2>
 
       <form
@@ -171,17 +176,19 @@ const UpdatePost = () => {
       >
         <Input
           id="title"
-          label="Title"
-          placeholder="Enter a title"
+          label={t("update.labels.title")}
+          placeholder={t("update.placeholders.title")}
           register={register}
-          required="The title is required."
+          required={t("update.errors.title")}
           error={errors.title}
         />
 
         <div>
-          <label className="block font-medium text-gray-400 mb-1">Content</label>
+          <label className="block font-medium text-gray-400 mb-1">
+            {t("update.labels.content")}
+          </label>
           <textarea
-            {...register("content", { required: "The content cannot be empty." })}
+            {...register("content", { required: t("update.errors.content") })}
             className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
           />
           {errors.content && (
@@ -191,8 +198,8 @@ const UpdatePost = () => {
 
         <Input
           id="hashtags"
-          label="Hashtags"
-          placeholder="Add hashtags separated by space, e.g. #rock #jazz"
+          label={t("update.labels.hashtags")}
+          placeholder={t("update.placeholders.hashtags")}
           register={register}
           validation={{}}
           error={errors.hashtags?.message}
@@ -200,7 +207,9 @@ const UpdatePost = () => {
 
         {/* Existing Images */}
         <div>
-          <label className="block font-medium text-gray-400 mb-1">Existing Images</label>
+          <label className="block font-medium text-gray-400 mb-1">
+            {t("update.labels.existingImages")}
+          </label>
           <div className="flex flex-wrap gap-4">
             {images
               .filter((img) => typeof img === "string")
@@ -231,20 +240,28 @@ const UpdatePost = () => {
             onClick={() => navigate("/explore")}
             className="!bg-gray-500 hover:!bg-gray-600"
           >
-            Cancel
+            {t("update.buttons.cancel")}
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Updating..." : "Update"}
+            {isSubmitting ? t("update.buttons.updating") : t("update.buttons.update")}
           </Button>
           <Button
             type="button"
             onClick={handleDeletePost}
             className="px-4 py-2 !bg-red-600 hover:!bg-red-700"
           >
-            Delete Post
+            {t("update.buttons.delete")}
           </Button>
         </div>
       </form>
+
+       <ConfirmDialog
+          isOpen={isConfirmOpen}
+          title={t("update.buttons.delete")}
+          message={t("update.errors.confirmDelete")}
+          onConfirm={confirmDelete}
+          onCancel={() => setIsConfirmOpen(false)}
+        />
     </>
   );
 };

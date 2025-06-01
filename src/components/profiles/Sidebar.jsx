@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaUserEdit, FaMusic, FaChevronRight } from "react-icons/fa";
 import { useView } from "../../context/ViewContext";
 import gsap from "gsap";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = ({ avatarUrl }) => {
+  const { t } = useTranslation("ui");
   const [isExpanded, setIsExpanded] = useState(false);
   const sidebarRef = useRef(null);  // Reference to the sidebar element
   const { manageView } = useView();
@@ -20,7 +22,7 @@ const Sidebar = ({ avatarUrl }) => {
   useEffect(() => {
     if (sidebarRef.current) {
       gsap.to(sidebarRef.current, {
-        width: isExpanded ? "14rem" : "4rem", // 16rem for expanded, 4rem for collapsed
+        width: isExpanded ? "16rem" : "4rem", // 16rem for expanded, 4rem for collapsed
         duration: 0.3,
         ease: "circ.inOut", // Smooth easing for the transition
       });
@@ -31,7 +33,7 @@ const Sidebar = ({ avatarUrl }) => {
     {
       external: "profile",
       internal: "about",
-      label: "View Profile",
+      label: t("sidebar.viewProfile"),
       icon: (
         <img
           src={avatarUrl}
@@ -42,11 +44,11 @@ const Sidebar = ({ avatarUrl }) => {
     },
     { external: "edit",
       internal: "editProfile", 
-      label: "Edit Profile", 
+      label: t("sidebar.editProfile"), 
       icon: <FaUserEdit /> },
     { external: "edit",
       internal: "editMusicInfo", 
-      label: "Edit Music Info", 
+      label: t("sidebar.editMusicInfo"), 
       icon: <FaMusic /> },
   ];
 

@@ -6,8 +6,10 @@ import ErrorMessage from "../../../utils/ErrorMessage";
 import ConversationItem from "./ConversationItem";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatUI } from "../../../context/social/chat/ChatUIContext";
+import { useTranslation } from "react-i18next";
 
 const ConversationList = () => {
+  const { t } = useTranslation("chat");
   const { user } = useAuth();
   const { fetchConversations } = useConversations();
   const { data: conversations, isLoading, error } = fetchConversations(user.id);
@@ -46,7 +48,9 @@ const ConversationList = () => {
           />
         ))
       ) : (
-        <p className="text-gray-400 p-4">No conversations found.</p>
+        <p className="text-gray-400 p-4">
+          {t("list")}
+        </p>
       )}
     </div>
   );

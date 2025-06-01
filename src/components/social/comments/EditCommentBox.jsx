@@ -1,6 +1,9 @@
 import React, {memo} from 'react';
+import { useTranslation } from 'react-i18next';
 
 function EditCommentBox({ value, onChange, onSave, onCancel }) {
+  const { t } = useTranslation("common")
+
   return (
     <div className="flex-1 mt-2 place-items-end">
       <textarea
@@ -12,15 +15,15 @@ function EditCommentBox({ value, onChange, onSave, onCancel }) {
       <div className="flex gap-2 mt-2 justify-center">
         <button
           onClick={() => onSave()}
-          className="px-3 py-1 w-16 bg-green-600 hover:bg-green-700 text-white rounded text-sm"
+          className="px-3 py-1 w-18 bg-green-600 hover:bg-green-700 text-white rounded text-sm"
         >
-          Save
+          {t("generic.save")}
         </button>
         <button
           onClick={() => onCancel()}
-          className="px-3 py-1 w-16 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm"
+          className="px-3 py-1 w-18 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm"
         >
-          Cancel
+          {t("generic.cancel")}
         </button>
       </div>
     </div>

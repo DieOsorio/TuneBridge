@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth to access signOut
 import { useView } from "../../context/ViewContext";
+import { useTranslation } from "react-i18next";
 
 const HamburgerMenu = ({ id }) => {
+  const { t } = useTranslation("ui");
   const [isOpen, setIsOpen] = useState(false);
   const { signOut } = useAuth(); // Access signOut from AuthContext
   const { manageView } = useView();
@@ -50,7 +52,7 @@ const HamburgerMenu = ({ id }) => {
                   toggleMenu();
                 }}
               >
-                Explore
+                {t("nav.links.explore")}
               </Link>
             </li>
             <li className="md:hidden">
@@ -62,7 +64,7 @@ const HamburgerMenu = ({ id }) => {
                   toggleMenu();
                 }}
               >
-                Profile
+                {t("nav.links.profile")}
               </Link>
             </li>
             <li>
@@ -70,7 +72,7 @@ const HamburgerMenu = ({ id }) => {
                 onClick={signOut}
                 className="w-full text-left px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
               >
-                Sign Out
+                {t("nav.auth.signOut")}
               </button>
             </li>
           </ul>
