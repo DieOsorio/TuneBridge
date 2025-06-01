@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      const savedPath = sessionStorage.getItem("redirect-path");
+      if (savedPath) {
+        sessionStorage.removeItem("redirect-path");
+        window.history.replaceState(null, "", savedPath);
+      }
+    </script>
     <title>TuneBridge</title>
   </head>
   <body>

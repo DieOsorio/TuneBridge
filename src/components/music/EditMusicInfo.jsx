@@ -92,7 +92,15 @@ const EditMusicInfo = ({ profileId }) => {
             validation={{ required: t("edit.errors.requiredSelect") }}
             error={errors.selectedRole}
             defaultOption={t("edit.defaultOption")}
-            options={["Composer", "DJ", "Instrumentalist", "Producer", "Singer", "Other"]}
+            options={[
+              { value: "Composer", label: t("roles.composer") },
+              { value: "DJ", label: t("roles.dj") },
+              { value: "Instrumentalist", label: t("roles.instrumentalist") },
+              { value: "Producer", label: t("roles.producer") },
+              { value: "Singer", label: t("roles.singer") },
+              { value: "Other", label: t("roles.custom") }
+            ]}
+
           />
 
           {selectedRole === "Other" && (
