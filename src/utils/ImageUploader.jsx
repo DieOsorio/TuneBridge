@@ -7,7 +7,7 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 // Registrar el plugin
 registerPlugin(FilePondPluginImagePreview);
 
-const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
+const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null, classForLabel }) => {
   const [files, setFiles] = useState([]);
   const pondRef = useRef();
 
@@ -32,7 +32,7 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null }) => {
 
   return (
     <div className={amount === 1 ? 'hidden' : ''}>
-      <label className="block font-medium text-gray-400 mb-1">Upload Images</label>
+      <label className={`block font-medium text-sm mb-2 ${classForLabel}`}>Upload Images</label>
       <FilePond
         ref={pondRef}
         files={files}

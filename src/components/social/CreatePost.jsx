@@ -108,10 +108,11 @@ const CreatePost = ({ id }) => {
           register={register}
           validation={{ required: t("create.errors.title") }}
           error={errors.title?.message}
+          classForLabel="text-gray-400 text-center md:text-left"
         />
 
         <div>
-          <label htmlFor="content" className="block font-medium text-gray-400 mb-1">
+          <label htmlFor="content" className="block text-center md:text-left text-sm font-medium text-gray-400 mb-2">
             {t("create.labels.content")}
           </label>
           <textarea
@@ -120,7 +121,7 @@ const CreatePost = ({ id }) => {
             {...register("content", {
               required: t("create.errors.content"),
             })}
-            className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
+            className="w-full border border-gray-400 rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
           />
           {errors.content && (
             <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
@@ -134,14 +135,19 @@ const CreatePost = ({ id }) => {
           register={register}
           validation={{}}
           error={errors.hashtags?.message}
+          classForLabel="text-gray-400 text-center md:text-left"
         />
 
-        <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
+        <ImageUploader
+          amount={3}
+          onFilesUpdate={onFileUpdate}
+          classForLabel="text-gray-400 text-center md:text-left"
+        />
 
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="ml-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700"
+          className="mx-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700"
         >
           {isSubmitting ? t("create.buttons.posting") : t("create.buttons.post")}
         </Button>

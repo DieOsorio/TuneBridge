@@ -181,15 +181,16 @@ const UpdatePost = () => {
           register={register}
           required={t("update.errors.title")}
           error={errors.title}
+          classForLabel="text-gray-400 text-center md:text-left"
         />
 
         <div>
-          <label className="block font-medium text-gray-400 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-2">
             {t("update.labels.content")}
           </label>
           <textarea
             {...register("content", { required: t("update.errors.content") })}
-            className="w-full border rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
+            className="w-full border border-gray-400 rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
           />
           {errors.content && (
             <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
@@ -203,11 +204,12 @@ const UpdatePost = () => {
           register={register}
           validation={{}}
           error={errors.hashtags?.message}
+          classForLabel="text-gray-400 text-center md:text-left"
         />
 
         {/* Existing Images */}
         <div>
-          <label className="block font-medium text-gray-400 mb-1">
+          <label className="block text-sm font-medium text-gray-400 mb-2">
             {t("update.labels.existingImages")}
           </label>
           <div className="flex flex-wrap gap-4">
@@ -232,7 +234,11 @@ const UpdatePost = () => {
           </div>
         </div>
 
-        <ImageUploader amount={3} onFilesUpdate={onFileUpdate} />
+        <ImageUploader
+          amount={3}
+          onFilesUpdate={onFileUpdate}
+          classForLabel="text-gray-400 text-center md:text-left"
+        />
 
         <div className="flex justify-center gap-4">
           <Button
@@ -261,6 +267,9 @@ const UpdatePost = () => {
           message={t("update.errors.confirmDelete")}
           onConfirm={confirmDelete}
           onCancel={() => setIsConfirmOpen(false)}
+          confirmLabel={t("update.buttons.delete")}
+          color={"error"}
+          cancelLabel={t("update.buttons.cancel")}
         />
     </>
   );

@@ -15,7 +15,7 @@ function NotificationsList({ profileId }) {
 
     if (isLoading) return <Loading />;
     if (error) return <ErrorMessage error={error.message} />;
-    if (!notifications || notifications.length === 0) return <div className="p-4">No notifications.</div>;
+    if (!notifications || notifications.length === 0) return <div className="p-4 max-w-4xl mx-auto">No notifications.</div>;
 
     return (
         <ul className="divide-y divide-gray-700 p-4 bg-gradient-to-l to-gray-900 rounded-lg shadow-md">

@@ -73,7 +73,7 @@ const EditMusicInfo = ({ profileId }) => {
   if (isError) return <ErrorMessage error={isError.message} />;
 
   return (
-    <div className="p-6 bg-gradient-to-r from-gray-900 text-white rounded-b-2xl shadow-lg max-w-5xl mx-auto">
+    <div className="p-6 bg-gradient-to-r  from-gray-900 text-white rounded-b-2xl shadow-lg max-w-4xl mx-auto">
       <h2 className="text-2xl text-center font-bold mb-4">
         {t("edit.title")}
       </h2>

@@ -74,7 +74,7 @@ const Sidebar = ({ avatarUrl }) => {
             className="flex items-center gap-4 p-5 cursor-pointer hover:bg-sky-600 transition-all duration-300 ease-in-out"
             onClick={() => manageView(option.internal, option.external)}
           >
-            <span className="text-xl flex-shrink-0">{option.icon}</span>
+            <span className="text-xl flex-shrink-0 text-yellow-600">{option.icon}</span>
             <span
               className={`whitespace-nowrap transition-opacity duration-300 ease-in-out ${
                 isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"

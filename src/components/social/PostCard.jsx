@@ -138,7 +138,7 @@ function PostCard({ post }) {
               {post.profile_id === user.id && (
                 <FaEdit
                   title="Edit Post"
-                  className="text-gray-400 cursor-pointer hover:text-sky-600" 
+                  className="text-yellow-600 hover:text-yellow-700 cursor-pointer" 
                   onClick={handleEditClick} 
                   size={40}
                 />
@@ -236,7 +236,7 @@ function PostCard({ post }) {
       )}
 
       {/* Text content of the post */}
-      <p className="text-gray-300 mx-auto rounded-md bg-gray-900 font-semibold border-gray-400 border-1 sm:ml-auto sm:w-140 p-4 my-4">
+      <p className="text-gray-300 mx-auto rounded-md bg-gray-900 font-semibold border-sky-700 border-1 sm:ml-auto sm:w-140 p-4 my-4">
         {post.content}
       </p>
 
