@@ -50,7 +50,7 @@ function Explore() {
         <div className="flex gap-8">
           <button
             onClick={() => setExternalView("postsList")}
-            className={`pb-2 text-lg font-medium transition ${
+            className={`px-4 py-2 text-lg font-medium transition rounded-lg ${
               externalView === "postsList"
                 ? "border-b-2 border-sky-600 text-sky-500"
                 : "text-gray-400 hover:text-gray-200"
@@ -60,7 +60,7 @@ function Explore() {
           </button>
           <button
             onClick={() => setExternalView("profilesList")}
-            className={`pb-2 text-lg font-medium transition ${
+            className={`px-4 py-2 text-lg font-medium transition rounded-lg ${
               externalView === "profilesList"
                 ? "border-b-2 border-sky-600 text-sky-500"
                 : "text-gray-400 hover:text-gray-200"

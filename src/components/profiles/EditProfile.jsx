@@ -113,7 +113,10 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
           ref={avatarClickRef}
           className="relative w-fit mx-auto cursor-pointer group"
         >
-          <ProfileAvatar avatar_url={preview || avatar_url} />
+          <ProfileAvatar
+            avatar_url={preview || avatar_url}
+            gender={watch("gender")}
+          />
           <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md group-hover:opacity-100 opacity-80 transition-opacity">
             <IoIosCamera size={20} className="text-gray-700" />
           </div>

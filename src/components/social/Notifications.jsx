@@ -11,7 +11,7 @@ function Notifications({ profileId }) {
         <div className="flex space-x-8 justify-center">
           <span
             onClick={() => setInternalView("allNotifications")}
-            className={`cursor-pointer px-4 py-2 text-lg rounded-lg font-semibold transition-all duration-300 ${
+            className={`cursor-pointer px-4 py-2 text-sm sm:text-base text-center rounded-lg font-semibold transition-all duration-300 ${
               internalView === "allNotifications"
                 ? "border-b-2 border-sky-600 text-white shadow-lg"
                 : "hover:text-sky-600 text-gray-300"
@@ -22,7 +22,7 @@ function Notifications({ profileId }) {
 
           <span
             onClick={() => setInternalView("pending")}
-            className={`cursor-pointer px-4 py-2 text-lg rounded-lg font-semibold transition-all duration-300 ${
+            className={`cursor-pointer px-4 py-2 text-sm sm:text-base text-center rounded-lg font-semibold transition-all duration-300 ${
               internalView === "pending"
                 ? "border-b-2 border-sky-600 text-white shadow-lg"
                 : "hover:text-sky-600 text-gray-300"

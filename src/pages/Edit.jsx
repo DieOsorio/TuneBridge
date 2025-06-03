@@ -29,7 +29,7 @@ function Edit({ profileData }) {
                         <button
                         key={view}
                         onClick={() => manageView(view, "edit")}
-                        className={`px-4 py-2 text-sm sm:text-base rounded-b-lg font-semibold transition-all duration-300 focus:outline-none
+                        className={`px-4 py-2 text-sm sm:text-base text-center rounded-b-lg font-semibold transition-all duration-300 focus:outline-none
                             ${
                             isActive
                                 ? "border-b-2 border-yellow-600 text-white shadow-lg"
