@@ -31,6 +31,8 @@ import 'swiper/css/effect-coverflow';
 import { useProfile } from '../../context/profile/ProfileContext';
 import { FaEdit } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { useHashtags } from '../../context/social/HashtagsContext';
+import { usePostHashtags } from '../../context/social/PostHashtagsContext';
 
 function PostCard({ post }) {
   const { t } = useTranslation("posts")
@@ -43,11 +45,13 @@ function PostCard({ post }) {
   const { insertLike, deleteLike, userLikes } = useLikes(); // custom hooks to manage the likes
   const { data: likes } = userLikes(user.id); // retrieve the likes associated with logged user
   const { manageView } = useView(); // manage the views
+  const { getHashtagsByPostId } = usePostHashtags(); // fetch post hashtags
+  const { data: hashtags } = getHashtagsByPostId(post.id); // retrieve hashtags associated with the post
   const [showMinibox, setShowMinibox] = useState(false); // manage minibox visibility
   const [showComments, setShowComments] = useState(false); // manage comments visibility
   const [isModalOpen, setIsModalOpen] = useState(false); // manage modal visibility
   const [currentImage, setCurrentImage] = useState(null); // current image in modal
-
+  
   // Prefetch profile info to view in the minibox
   const prefetchProfile = usePrefetchProfile();
 
@@ -123,6 +127,8 @@ function PostCard({ post }) {
               <ProfileAvatar
                 avatar_url={profile.avatar_url}
                 className="!w-15 !h-15 mx-auto"
+                gender={profile.gender}
+                alt={`${profile.username}'s avatar`}
               />
             </Link>
             {showMinibox && (
@@ -178,6 +184,7 @@ function PostCard({ post }) {
           </div>
         </div>
 
+
         {/* Images of the post */}
         <div className="w-full max-w-[600px] mx-auto p-4 bg-gradient-to-l from-gray-900 rounded-md">
           {post.images_urls && post.images_urls.length > 0 ? (
@@ -204,7 +211,7 @@ function PostCard({ post }) {
               {t('messages.noImages')}
             </p>
           )}
-        </div>
+        </div>        
 
       </div>
       {/* Modal for full-size image */}
@@ -234,6 +241,21 @@ function PostCard({ post }) {
           </div>
         </div>
       )}
+
+      {/* Hashtags */}
+        <div className="flex gap-2 mt-4 sm:mt-0 justify-center">
+          {hashtags && hashtags.length > 0 && (
+            hashtags.map((hashtag) => (
+              <Link
+                key={hashtag.id}
+                // to={`/hashtag/${hashtag.hashtags.name}`}
+                className="text-sm text-sky-500 hover:underline"
+              >
+                {hashtag.hashtags.name}
+              </Link>
+            ))
+          )}
+        </div>
 
       {/* Text content of the post */}
       <p className="text-gray-300 mx-auto rounded-md bg-gray-900 font-semibold border-sky-700 border-1 sm:ml-auto sm:w-140 p-4 my-4">

@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im"
 import { useView } from "../../context/ViewContext";
+import ProfileAvatar from "./ProfileAvatar";
 
 const ProfileCard = ({ profile }) => {
     const { user } = useAuth();
@@ -13,6 +14,7 @@ const ProfileCard = ({ profile }) => {
     const [hoverText, setHoverText] = useState("");
     const { manageView } = useView();
     
+    // Find the connection status between the logged-in user and the profile
     const userConnection = connections?.find(
         (conn) => {
             const isLoggedUserInvolved = 
@@ -24,20 +26,20 @@ const ProfileCard = ({ profile }) => {
           
     const status = userConnection?.status ?? "connect";
     
-
+    // Function to handle connection status change
     const handleConnect = async () => {
         if (status === "connect") {
             await addConnection({
                 follower_profile_id: user.id,
                 following_profile_id: profile.id,
                 status: "pending",
-            }); // Call the server to follow the user        
-        } 
-        else {
+            }); // Call the server to follow the user
+        } else {
             await deleteConnection(userConnection.id); // Call the server to unfollow the user
         }
     };
 
+    // Function to determine the hover text based on the connection status
     const getHoverText = () => {
         if (status === "pending") return "cancel request";
         else if (status === "accepted") return "unconnect";
@@ -47,13 +49,17 @@ const ProfileCard = ({ profile }) => {
 
     return (
         <div className="flex flex-col w-60 h-90 text-gray-800 items-center gap-2 border rounded-lg shadow-sm bg-gray-200">
+            {/* Profile avatar with link to profile */}
             <Link onClick={() => manageView("about", "profile")} to={`/profile/${profile.id}`}>
-            <img
-                src={profile.avatar_url || "/default-avatar.png"}
+            <ProfileAvatar
+                avatar_url={profile.avatar_url}
                 alt={`${profile.username}'s avatar`}
-                className="w-60 h-50 object-cover"
+                className="object-cover h-50 w-60"
+                list={true}
+                gender={profile.gender}
             />
             </Link>
+            {/* Profile name and location */}
             <div className="text-center">
                 <h3 className="font-semibold text-lg">{profile.username}</h3>
                 {profile.city && profile.country ? (
@@ -66,6 +72,7 @@ const ProfileCard = ({ profile }) => {
                     <p className="text-gray-500">{profile.city}</p>
                 ) : null}
             </div>
+
             <div className="mt-auto py-4">
                 <button
                     className="relative font-bold cursor-pointer w-50 bg-gray-500 text-white px-4 py-2 rounded h-10 overflow-hidden flex items-center gap-2"
@@ -73,7 +80,7 @@ const ProfileCard = ({ profile }) => {
                     onMouseEnter={() => setHoverText(getHoverText())}
                     onMouseLeave={() => setHoverText(null)}
                 >
-                    {/* Ícono alineado a la izquierda del texto */}
+                    {/* Icon aligned to the left of the text */}
                     <span className="pl-1">
                         {status === "connect" && <IoPersonAdd className="text-green-50" />}
                         {status === "accepted" && !hoverText && (
@@ -89,7 +96,7 @@ const ProfileCard = ({ profile }) => {
                         {status === "blocked" && hoverText && <IoPerson className="" />}
                     </span>
 
-                    {/* Texto (centrado sobre el resto del botón) */}
+                    {/* Text (centered over the rest of the button) */}
                     <span
                         className={`absolute inset-0 flex items-center justify-center transition-opacity duration-400 ${
                             hoverText ? "opacity-0" : "opacity-100"

@@ -138,7 +138,12 @@ function CommentsBox({ postId }) {
         <Link
         onClick={() => manageView("about", "profile")} 
         to={`/profile/${profile.id}`}>
-          <ProfileAvatar avatar_url={profile.avatar_url} className="!w-10 !h-10" />
+          <ProfileAvatar
+            avatar_url={profile.avatar_url}
+            className="!w-10 !h-10"
+            gender={profile.gender}
+            alt={`${profile.username}'s avatar`}
+          />
         </Link>
 
         {/* write a comment */}

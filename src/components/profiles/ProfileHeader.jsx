@@ -69,7 +69,8 @@ function ProfileHeader({ isOwnProfile, profileData }) {
           <ProfileAvatar
             onClick={() => manageView("about", "profile")}
             avatar_url={profileData.avatar_url}
-            className="flex-shrink-0" // Ensure the avatar is round and does not shrink
+            className="flex-shrink-0"
+            gender={profileData.gender}
           />
           <div className="flex flex-col gap-2 flex-grow">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 break-words">
