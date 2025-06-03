@@ -41,24 +41,25 @@ const HamburgerMenu = ({ id }) => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 w-48 bg-gray-900 text-white rounded-md shadow-lg mt-2 p-4 transition-all">
-          <ul className="space-y-2">
-            <li className="md:hidden">
-              <Link
-                to="/explore"
-                className="block px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
-                onClick={() => {
-                  manageView(null, "postsList");
-                  toggleMenu();
-                }}
-              >
-                {t("nav.links.explore")}
+        <div className="absolute right-0 w-48 bg-gray-900 text-white rounded-md shadow-lg mt-2 p-4 transition-all border border-sky-700 z-50">
+          {id ? (
+            <ul className="space-y-2">
+              <li className="md:hidden">
+                <Link
+                  to="/explore"
+                  className="block px-4 border-b border-gray-500 py-2 text-lg hover:bg-gray-800 rounded-md transition"
+                  onClick={() => {
+                    manageView(null, "postsList");
+                    toggleMenu();
+                  }}
+                >
+                  {t("nav.links.explore")}
               </Link>
             </li>
             <li className="md:hidden">
               <Link
                 to={`/profile/${id}`}
-                className="block px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
+                className="block px-4 py-2 text-lg border-b border-gray-500 hover:bg-gray-800 rounded-md transition"
                 onClick={() => {
                   manageView("about", "profile");
                   toggleMenu();
@@ -70,14 +71,36 @@ const HamburgerMenu = ({ id }) => {
             <li>
               <button
                 onClick={signOut}
-                className="w-full text-left px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
+                className="w-full text-left border-b border-gray-500 px-4 py-2 text-lg hover:bg-gray-800 rounded-md transition"
               >
                 {t("nav.auth.signOut")}
               </button>
             </li>
           </ul>
-        </div>
-      )}
+          ) : (
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  onClick={toggleMenu}
+                  to="/login"
+                  className="block px-4 py-2 text-lg border-b border-gray-500 hover:bg-gray-800 rounded-md transition"
+                >
+                  {t("nav.auth.signIn")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  onClick={toggleMenu}
+                  to="/signup"
+                  className="block px-4 py-2 text-lg border-b border-gray-500 hover:bg-gray-800 rounded-md transition"
+                >
+                  {t("nav.auth.signUp")}
+                </Link>
+              </li>
+            </ul>
+          )}
+      </div>
+    )}
     </div>
   );
 };

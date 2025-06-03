@@ -61,7 +61,7 @@ const Navbar = () => {
         <select
           onChange={handleLanguageChange}
           value={i18n.language}
-          className="bg-gray-800 text-white rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+          className="bg-gray-800 text-white rounded px-2 py-1 text-sm border border-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           <option value="en">
             {t("nav.language.english")}
@@ -71,18 +71,10 @@ const Navbar = () => {
           </option>
         </select>
 
-        {/* Auth Buttons */}
-        {user ? (
-          // Hamburger Menu for Small Screens
-          <HamburgerMenu id={user.id} />
-        ) : (
-          <Link
-            to="/login"
-            className="font-medium bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            {t("nav.auth.signIn")}
-          </Link>
-        )}
+          {/* Hamburger Menu for Small Screens */}
+            {!user && <HamburgerMenu />}
+          {/* Hamburger Menu for Small Screens */}
+          {user && <HamburgerMenu id={user.id} />}
       </div>
     </nav>
   );
