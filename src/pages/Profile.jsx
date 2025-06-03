@@ -16,6 +16,7 @@ import Notifications from "../components/social/Notifications";
 import { useProfile } from "../context/profile/ProfileContext";
 import UserGroups from "../components/profiles/group/UserGroups";
 import { useTranslation } from "react-i18next";
+import MusicSection from "../components/music/MusicSection";
 
 const Profile = () => {
   const { t } = useTranslation("profile"); // Initialize translation function
@@ -86,7 +87,7 @@ const Profile = () => {
 
         {/* Default Profile View */}
         {externalView === "profile" && (
-          <div className="bg-gradient-to-l to-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8">
+          <div className="bg-gradient-to-l max-w-4xl mx-auto to-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8">
             {internalView === "about" && (
               <>
                 <ProfileData profileData={profileData} />
@@ -110,12 +111,13 @@ const Profile = () => {
 
             {/* Music View */}
             {internalView === "music" && externalView === "profile" && (
-              <div className="text-center text-gray-400 py-8">
-                {t("profile.musicComing")}
-              </div>
-            )}      
-              
-            {/* Connections List View */} 
+              <MusicSection 
+                profileId={profileData.id}
+                isOwnProfile={isOwnProfile}
+              />
+            )}
+
+            {/* Connections List View */}
             {externalView === "profile" && internalView === "about" && (
             <ConnectionsList
               profileId={profileData.id}

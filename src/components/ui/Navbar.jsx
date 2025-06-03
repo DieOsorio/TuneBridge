@@ -4,6 +4,7 @@ import HamburgerMenu from "./HamburguerMenu";
 import { useView } from "../../context/ViewContext";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n"; // Import i18n for language support
+import Logo from "./Logo";
 
 const Navbar = () => {
   const { t } = useTranslation("ui");
@@ -21,9 +22,7 @@ const Navbar = () => {
     <nav className="w-full bg-gradient-to-t from-gray-950 to-gray-800 shadow-lg text-gray-300 p-4 flex items-center justify-between relative z-20">
       {/* Logo Placeholder */}
       <Link to="/" className="flex items-center gap-2">
-        <h3 className="text-2xl font-bold">
-          {t("nav.logo")}
-        </h3>
+        <Logo text={t("nav.logo")} />
       </Link>
 
       {/* Navigation Links (Hidden on Small Screens) */}
