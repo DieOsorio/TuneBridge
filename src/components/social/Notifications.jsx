@@ -7,14 +7,14 @@ function Notifications({ profileId }) {
 
   return (
     <>
-      <div className="bg-gradient-to-b from-gray-800 to-gray-950 text-white p-4 rounded-t-lg h-25">
-        <div className="max-w-6xl mx-auto flex space-x-8 justify-center">
+      <div className="bg-gradient-to-b max-w-4xl mx-auto from-gray-800 to-gray-950 text-white p-4 rounded-t-lg h-25">
+        <div className="flex space-x-8 justify-center">
           <span
             onClick={() => setInternalView("allNotifications")}
-            className={`cursor-pointer text-lg font-medium transition-all duration-300 ${
+            className={`cursor-pointer px-4 py-2 text-lg rounded-lg font-semibold transition-all duration-300 ${
               internalView === "allNotifications"
-                ? "border-b-4 border-blue-500"
-                : "hover:text-blue-400"
+                ? "border-b-2 border-sky-600 text-white shadow-lg"
+                : "hover:text-sky-600 text-gray-300"
             }`}
           >
             All Notifications
@@ -22,10 +22,10 @@ function Notifications({ profileId }) {
 
           <span
             onClick={() => setInternalView("pending")}
-            className={`cursor-pointer text-lg font-medium transition-all duration-300 ${
+            className={`cursor-pointer px-4 py-2 text-lg rounded-lg font-semibold transition-all duration-300 ${
               internalView === "pending"
-                ? "border-b-4 border-blue-500"
-                : "hover:text-blue-400"
+                ? "border-b-2 border-sky-600 text-white shadow-lg"
+                : "hover:text-sky-600 text-gray-300"
             }`}
           >
             Pending Connections

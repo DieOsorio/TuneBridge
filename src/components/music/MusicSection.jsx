@@ -43,9 +43,18 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
   const onSubmit = async (data) => {
     try {
       if (editingId) {
-        await updateMediaLink({ id: editingId, updatedMediaLink: data });
+        await updateMediaLink({ 
+          id: editingId, 
+          updatedLink: {
+            ...data,
+            profile_id: profileId,
+          },
+        });
       } else {
-        await insertMediaLink({ ...data, profile_id: profileId });
+        await insertMediaLink({ 
+          ...data, 
+          profile_id: profileId 
+        });
       }
       reset();
       setEditingId(null);
@@ -93,15 +102,15 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
             register={register}
             error={errors.title}
           />
-        <Select
-          id="media_type"
-          label={t("media.form.type")}
-          options={mediaTypeOptions}
-          defaultOption={t("media.form.typePlaceholder")}
-          register={register}
-          validation={{ required: t("media.form.typeRequired") }}
-          error={errors.media_type}
-        />
+          <Select
+            id="media_type"
+            label={t("media.form.type")}
+            options={mediaTypeOptions}
+            defaultOption={t("media.form.typePlaceholder")}
+            register={register}
+            validation={{ required: t("media.form.typeRequired") }}
+            error={errors.media_type}
+          />
         <div className="flex justify-center gap-4 mt-4">
           <Button
           type="submit"
@@ -128,11 +137,11 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
         {mediaLinks.map((media) => (
           <li
             key={media.id}
-            className="shadow-sm"
+            className="shadow-sm p-4 rounded-lg bg-gradient-to-l to-gray-800"
           >
             <div className="mb-2 mt-8">
               <p className="font-medium">
-                {media.title || media.media_type}
+                {media.title}
               </p>
             </div>
 
@@ -152,10 +161,8 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
                     src={getSpotifyEmbedUrl(media.url)}
                     width="100%"
                     height="80"
-                    frameBorder="0"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"
-                    className="my-auto"
                   />
                 </div>
               ) : (
@@ -170,7 +177,7 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
               <div className="flex gap-4 justify-center"> 
                 <Button
                   onClick={() => handleEdit(media.id)}
-                  className="px-2 py-1 bg-yellow-700 hover:bg-yellow-800"
+                  className="px-2 py-1 bg-yellow-600 hover:bg-yellow-700"
                 >
                   {t("media.actions.edit")}
                 </Button>
