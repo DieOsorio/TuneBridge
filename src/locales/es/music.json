@@ -60,6 +60,29 @@
       "requiredCustom": "Por favor ingresa un rol personalizado."
     }
   },
+  "media": {
+    "title": "Medios musicales",
+    "form": {
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "title": "Título (opcional)",
+      "titlePlaceholder": "Mi video",
+      "type": "Tipo de medio",
+      "typePlaceholder": "Selecciona una opción",
+      "add": "Agregar",
+      "update": "Actualizar",
+      "cancel": "Cancelar",
+      "requiredType": "Este campo es obligatorio"
+    },
+    "player": {
+      "unsupported": "Tipo de medio no soportado"
+    },
+    "actions": {
+      "edit": "Editar",
+      "delete": "Eliminar"
+    }
+  },
+
   "errors": {
     "fetch": "Error al cargar los roles musicales."
   }

@@ -59,6 +59,28 @@
       "requiredCustom": "Please enter a custom role."
     }
   },
+  "media": {
+    "title": "Music Media",
+    "form": {
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "title": "Title (optional)",
+      "titlePlaceholder": "My video",
+      "type": "Media Type",
+      "typePlaceholder": "Select an option",
+      "add": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "requiredType": "This field is required"
+    },
+    "player": {
+      "unsupported": "Unsupported media type"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
   "errors": {
     "fetch": "Error loading music roles."
   }
