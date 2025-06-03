@@ -75,7 +75,7 @@ const HamburgerMenu = ({ id }) => {
                 {t("nav.links.profile")}
               </Link>
             </li>
-            <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+            <li className="px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
               <MdLogout size={26} className="text-sky-600" />
               <button
                 onClick={signOut}
