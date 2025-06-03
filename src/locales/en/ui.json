@@ -68,8 +68,9 @@
       "profile": "Profile"
     },
     "auth": {
-      "signIn": "Sign In",
-      "signOut": "Sign Out"
+      "signIn": "Log In",
+      "signOut": "Log Out",
+      "signUp": "Sign Up"
     },
     "language": {
       "english": "English",

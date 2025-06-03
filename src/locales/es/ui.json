@@ -69,7 +69,8 @@
     },
     "auth": {
       "signIn": "Iniciar sesión",
-      "signOut": "Cerrar sesión"
+      "signOut": "Cerrar sesión",
+      "signUp": "Registrarse"
     },
     "language": {
       "english": "Inglés",

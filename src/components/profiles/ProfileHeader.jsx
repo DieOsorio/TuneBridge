@@ -143,7 +143,10 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             </Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("groups", "profile")}>
+            <Button 
+              onClick={() => manageView("groups", "profile")}
+              className='!bg-amber-800 hover:!bg-amber-900'
+            >
               {t("profile.navigation.groups")}
             </Button>
           </div>
