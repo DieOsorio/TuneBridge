@@ -158,7 +158,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
             <p className="text-sm text-red-500 mt-1">{errors.bio.message}</p>
           )}
           <p className="text-sm text-gray-500 mt-1">
-            {watch("bio")?.length || 0}/100 characters used
+            {watch("bio")?.length || 0}/100 {t("edit.labels.bioCount")}
           </p>
         </div>        
         <Input
@@ -246,8 +246,12 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
             }}
           />
         </div>
-        <div className="sm:col-span-2 flex justify-end mt-4">
-          <Button className="mt-8" type="submit" disabled={isSubmitting}>
+        <div className="sm:col-span-2 flex justify-center mt-4">
+          <Button 
+            className="mt-8 !bg-green-700 hover:!bg-green-800 text-white" 
+            type="submit" 
+            disabled={isSubmitting}            
+            >
             {isSubmitting ? t("edit.buttons.saving") : t("edit.buttons.save")}
           </Button>
           <Button
