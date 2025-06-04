@@ -1,4 +1,4 @@
-music-connects
+TuneBridge
 │
 ├── .env
 ├── backend functions.txt
@@ -186,4 +186,10 @@ music-connects
 │   │       ├── music.json
 │   │       ├── posts.json
 │   │       ├── profile.json
-│   │      
+│   │       └── ui.json
+│   │
+│   └── utils
+│       ├── constants.js
+│       ├── functions.js
+│       ├── getEnvVars.js
+│       └── supabaseHelper.js
