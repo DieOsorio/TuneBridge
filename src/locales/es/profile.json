@@ -10,6 +10,12 @@
       "posts": "Publicaciones",
       "groups": "Grupos"
     },
+    "titles": {
+        "chat": "Chat",
+        "startChat": "Iniciar Chat",
+        "notifications": "Notificaciones",
+        "settings": "Configuraciones"
+      },
     "data": {
       "firstname": "Nombre",
       "lastname": "Apellido",
@@ -34,7 +40,8 @@
         "city": "Ciudad",
         "username": "Usuario",
         "gender": "Género",
-        "birthdate": "Fecha de Nacimiento"
+        "birthdate": "Fecha de Nacimiento",
+        "bioCount": "Caracteres utilizados"
       },
       "placeholders": {
         "bio": "Bio",

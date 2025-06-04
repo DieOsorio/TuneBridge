@@ -27,14 +27,15 @@ const EditMusicInfo = ({ profileId }) => {
   } = useForm({
     defaultValues: {
       selectedRole: "",
-      customRole: ""
+      // customRole: ""
     }
   });
 
   const selectedRole = watch("selectedRole");
 
   const onSubmit = (data) => {
-    const roleName = data.selectedRole === "Other" ? data.customRole.trim() : data.selectedRole;
+    // const roleName = data.selectedRole === "Other" ? data.customRole.trim() : data.selectedRole;
+    const roleName = data.selectedRole;
 
     if (roles.length >= 6) {
       setError("selectedRole", { message: t("edit.errors.maxRoles") });
@@ -97,13 +98,13 @@ const EditMusicInfo = ({ profileId }) => {
               { value: "DJ", label: t("roles.dj") },
               { value: "Instrumentalist", label: t("roles.instrumentalist") },
               { value: "Producer", label: t("roles.producer") },
-              { value: "Singer", label: t("roles.singer") },
-              { value: "Other", label: t("roles.custom") }
+              { value: "Singer", label: t("roles.singer") }
+              // { value: "Other", label: t("roles.custom") }
             ]}
 
           />
 
-          {selectedRole === "Other" && (
+          {/* {selectedRole === "Other" && (
             <Input
               id="customRole"
               label={t("edit.customLabel")}
@@ -113,7 +114,7 @@ const EditMusicInfo = ({ profileId }) => {
               error={errors.customRole}
               classForLabel="!text-gray-700"
             />
-          )}
+          )} */}
 
           <div className={`${selectedRole === "Other" ? "md:col-span-2" : ""}`}>
             <Button type="submit" className="w-full md:w-auto md:mt-3">

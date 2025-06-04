@@ -31,7 +31,6 @@ import 'swiper/css/effect-coverflow';
 import { useProfile } from '../../context/profile/ProfileContext';
 import { FaEdit } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-import { useHashtags } from '../../context/social/HashtagsContext';
 import { usePostHashtags } from '../../context/social/PostHashtagsContext';
 
 function PostCard({ post }) {
@@ -245,9 +244,9 @@ function PostCard({ post }) {
       {/* Hashtags */}
         <div className="flex gap-2 mt-4 sm:mt-0 justify-center">
           {hashtags && hashtags.length > 0 && (
-            hashtags.map((hashtag) => (
+            hashtags.map((hashtag) => (              
               <Link
-                key={hashtag.id}
+                key={hashtag.hashtag_id}
                 // to={`/hashtag/${hashtag.hashtags.name}`}
                 className="text-sm text-sky-500 hover:underline"
               >

@@ -114,6 +114,7 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
         <div className="flex justify-center gap-4 mt-4">
           <Button
           type="submit"
+          className="!bg-green-700 hover:!bg-green-800"
         >
           {editingId ? t("media.form.update") : t("media.form.add")}
         </Button>

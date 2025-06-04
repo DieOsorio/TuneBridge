@@ -215,14 +215,18 @@ const RoleEditor = ({
             <div className="flex gap-2 mx-auto">
               <Button
                 onClick={() => handleSaveDetail(detail)}
-                className="!bg-sky-500 !text-white !px-3 !rounded-xl flex gap-1 !text-sm hover:!bg-sky-600"                
+                color="success"
+                variant="contained"
+                className="!text-white !px-3 !rounded-xl flex gap-1 !text-sm"                
               >
                 <FiEdit2 size={15} />
                 {t("generic.save")}
               </Button>
               <Button
                 onClick={() => handleDeleteDetail(detail.id)}
-                className="!bg-red-500 !text-white !px-3 !rounded-xl !text-sm flex gap-1 hover:!bg-red-600"
+                color="error"
+                variant="contained"
+                className="!text-white !px-3 !rounded-xl !text-sm flex gap-1"
               >
                 <FiTrash2 size={17} />
                 {t("generic.delete")}
@@ -270,7 +274,9 @@ const RoleEditor = ({
         <div className="mt-4 w-full flex justify-center">
           <Button 
           type="submit"
-          className="!text-white !w-1/2 !bg-green-600 !px-3 !rounded-xl flex gap-1 !text-sm hover:!bg-green-700"  
+          color="success"
+          variant="contained"
+          className="!text-white !w-1/2 !px-3 !rounded-xl flex gap-1 !text-sm"  
           >
           {t("generic.add")}
         </Button>

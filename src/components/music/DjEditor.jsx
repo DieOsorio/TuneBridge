@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { useDjDetails } from "../../context/music/DjDetailsContext";
 import RoleEditor from "./RoleEditor";
 
 const DjEditor = ({ role, profileId }) => {
+  const { t } = useTranslation("music");
   const { 
     fetchDj, 
     addDj, 

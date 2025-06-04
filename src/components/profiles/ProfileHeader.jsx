@@ -87,6 +87,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
               className="w-8 h-8 text-white cursor-pointer"
               onClick={handleStartChat}
               disabled={isStartingChat}
+              title={t("profile.titles.startChat")}
             />
           )}
           {isOwnProfile && (
@@ -95,6 +96,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                 <IoChatbubblesSharp
                   className="w-8 h-8 text-white cursor-pointer"
                   onClick={() => navigate("/chat")}
+                  title={t("profile.titles.chat")}
                 />
                 {!loadingUnreadMessages && unreadMessagesCount?.total > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
@@ -105,11 +107,13 @@ function ProfileHeader({ isOwnProfile, profileData }) {
               <IoIosSettings
                 className="w-8 h-8 text-white cursor-pointer"
                 onClick={() => manageView("editProfile", "edit")}
+                title={t("profile.titles.settings")}
               />
               <div className="relative">
                 <BsFillBellFill
                   className="w-7 h-7 text-white cursor-pointer"
                   onClick={() => manageView("allNotifications", "notifications")}
+                  title={t("profile.titles.notifications")}
                 />
                 {!isLoading && unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">

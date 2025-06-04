@@ -8,8 +8,14 @@
       "about": "About",
       "music": "Music",
       "posts": "Posts",
-      "groups": "Groups"
+      "groups": "Groups"      
     },
+    "titles": {
+        "chat": "Chat",
+        "startChat": "Start Chat",
+        "notifications": "Notifications",
+        "settings": "Settings"
+      },
     "data": {
       "firstname": "Name",
       "lastname": "Last Name",
@@ -34,7 +40,8 @@
         "city": "City",
         "username": "Username",
         "gender": "Gender",
-        "birthdate": "Birthdate"
+        "birthdate": "Birthdate",
+        "bioCount": "Characters used"
       },
       "placeholders": {
         "bio": "Bio",
