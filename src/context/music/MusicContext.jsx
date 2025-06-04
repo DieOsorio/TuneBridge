@@ -1,4 +1,3 @@
-import React from "react";
 import { RolesProvider } from "./RolesContext";
 import { InstrumentDetailsProvider } from "./InstrumentDetailsContext";
 import { SingerDetailsProvider } from "./SingerDetailsContext";
