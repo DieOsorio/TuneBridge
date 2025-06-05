@@ -1,7 +1,9 @@
 {
   "connections": {
     "title": "Connections",
-    "pendingTitle": "Pending Connections"
+    "pendingTitle": "Pending Connections",
+    "noPendingConnections": "You have no pending connections",
+    "noConnections": "No connections yet"
   },
   "explore": {
     "title": "Explore",

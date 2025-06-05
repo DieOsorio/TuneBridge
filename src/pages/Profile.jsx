@@ -61,14 +61,7 @@ const Profile = () => {
         <div className="max-w-4xl y mx-auto">
           <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />
         </div>
-
-        {/* Posts View */}
-        {externalView === "profile" && internalView === "displayPosts" && (
-          <PostsList 
-          isOwnProfile={isOwnProfile}
-          profileId={profileData.id} />
-        )}
-
+        
         {/* Create Post View */}
         {isOwnProfile && externalView === "profile" && internalView === "createPost" && (
           <CreatePost id={user.id} />
@@ -88,11 +81,19 @@ const Profile = () => {
         {/* Default Profile View */}
         {externalView === "profile" && (
           <div className="bg-gradient-to-l max-w-4xl mx-auto to-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8">
+            {/* About View */}
             {internalView === "about" && (
               <>
                 <ProfileData profileData={profileData} />
                 <DisplayMusicInfo profileId={profileData.id} />
               </>
+            )}
+
+            {/* Posts View */}
+            {externalView === "profile" && internalView === "displayPosts" && (
+              <PostsList 
+              isOwnProfile={isOwnProfile}
+              profileId={profileData.id} />
             )}
 
             {/* User Groups View */}

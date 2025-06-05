@@ -8,7 +8,7 @@
   "messages":{
     "empty": "No posts available.",
     "noMatch": "No posts match your search.",
-    "noImages": "No images available for this post."    
+    "noImages": "No images available for this post."
   },
   "create": {
     "title": "Create a New Post",

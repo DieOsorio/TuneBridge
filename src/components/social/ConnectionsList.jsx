@@ -30,11 +30,6 @@ function ConnectionsList({ checkStatus, profileId }) {
         return false;
     });
 
-    // If there is not filtered connections return null
-    if (filteredConnections.length === 0) {
-        return null;
-    }
-
     const getOtherProfileId = (conn) => {
         return conn.following_profile_id === profileId
             ? conn.follower_profile_id
@@ -44,18 +39,22 @@ function ConnectionsList({ checkStatus, profileId }) {
     const title = checkStatus === 'accepted' ? t("connections.title") : t("connections.pendingTitle");
 
     return (
-        <>
-            <h2 className="text-lg text-center font-semibold">{title}</h2>
-            <div className={`w-full bg-gradient-to-l from-gray-900 py-4 flex flex-wrap justify-center rounded-lg gap-4`}>
-                {filteredConnections.map((conn) => (
-                    <ConnectionCard
-                        key={conn.id}
-                        connection={conn}
-                        profileId={getOtherProfileId(conn)}
-                    />
-                ))}
-            </div>
-        </>
+        <div className={`max-w-4xl mx-auto w-full bg-gradient-to-l from-gray-900 py-4 flex flex-wrap justify-center rounded-lg gap-4`}>
+            {filteredConnections.length > 0  
+            ? filteredConnections.map((conn) => (
+                <ConnectionCard
+                    key={conn.id}
+                    connection={conn}
+                    profileId={getOtherProfileId(conn)}
+                />
+            ))
+            : <div className="text-gray-400">
+                {checkStatus === 'pending' 
+                ? t("connections.noPendingConnections") 
+                : t("connections.noConnections")
+              }</div>
+            }
+        </div>
     );
 }
 
