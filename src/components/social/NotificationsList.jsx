@@ -18,7 +18,7 @@ function NotificationsList({ profileId }) {
     if (!notifications || notifications.length === 0) return <div className="p-4 max-w-4xl mx-auto">No notifications.</div>;
 
     return (
-        <ul className="divide-y divide-gray-700 p-4 bg-gradient-to-l to-gray-900 rounded-lg shadow-md">
+        <ul className="divide-y max-w-4xl mx-auto divide-gray-700 p-4 bg-gradient-to-l to-gray-900 rounded-lg shadow-md">
             {notifications.map((notif) => (
                 <li
                     key={notif.id}
@@ -26,7 +26,7 @@ function NotificationsList({ profileId }) {
                     onClick={() => handleMarkAsRead(notif.id)}
                 >
                     <span className={notif.is_read ? "text-gray-400" : "text-white font-semibold"}>
-                        {notif.message}
+                        • {notif.message}
                     </span>
                 </li>
             ))}

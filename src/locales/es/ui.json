@@ -1,7 +1,9 @@
 {
   "connections": {
     "title": "Conexiones",
-    "pendingTitle": "Conexiones Pendientes"
+    "pendingTitle": "Conexiones Pendientes",
+    "noPendingConnections": "No hay conexiones pendientes",
+    "noConnections": "No hay conexiones aún"
   },
   "explore": {
     "title": "Explorar",
