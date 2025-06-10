@@ -1,10 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  replaceOptimisticItem,
+  invalidateKeys,
+} from "../helpers/cacheHandler";
+import { profileGroupMembersKeyFactory, userGroupsKeyFactory } from "../helpers/profile/profileKeys";
 
 // FETCH ALL MEMBERS OF A GROUP
 export const useFetchGroupMembersQuery = (profileGroupId) => {
   return useQuery({
-    queryKey: ["profileGroupMembers", profileGroupId],
+    queryKey: profileGroupMembersKeyFactory({ profileGroupId }).all,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("users")
@@ -22,7 +29,7 @@ export const useFetchGroupMembersQuery = (profileGroupId) => {
 // FETCH ALL GROUPS A USER IS PART OF
 export const useFetchUserGroupsQuery = (userId) => {
   return useQuery({
-    queryKey: ["userGroups", userId],
+    queryKey: userGroupsKeyFactory({ userId }).all,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("users")
@@ -55,41 +62,38 @@ export const useAddGroupMemberMutation = () => {
 
     // Optimistic update
     onMutate: async (member) => {
-      await queryClient.cancelQueries({
-        queryKey: ["profileGroupMembers", member.profile_group_id],
-      });
-
-      const previousMembers = queryClient.getQueryData([
-        "profileGroupMembers",
-        member.profile_group_id,
-      ]);
-
       const optimisticMember = {
-        id: `temp-${Date.now()}`,
+        id: member.id || `temp-${Date.now()}`,
         ...member,
         joined_at: new Date().toISOString(),
       };
-
-      queryClient.setQueryData(
-        ["profileGroupMembers", member.profile_group_id],
-        (old = []) => [optimisticMember, ...old]
-      );
-
-      return { previousMembers };
+      const previousData = optimisticUpdate({
+        queryClient,
+        keyFactory: profileGroupMembersKeyFactory,
+        entity: optimisticMember,
+        type: "add",
+      });
+      return { previousData, optimisticMember };
     },
 
     onError: (err, _variables, context) => {
-      if (context?.previousMembers) {
-        queryClient.setQueryData(
-          ["profileGroupMembers", context.previousMembers.profile_group_id],
-          context.previousMembers
-        );
-      }
+      rollbackCache({ queryClient, previousData: context?.previousData });
+    },
+
+    onSuccess: (data, _variables, context) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: profileGroupMembersKeyFactory,
+        entity: context.optimisticMember,
+        newEntity: data,
+      });
     },
 
     onSettled: (data, _error, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["profileGroupMembers", variables.profile_group_id],
+      invalidateKeys({
+        queryClient,
+        keyFactory: () =>
+          profileGroupMembersKeyFactory({ profileGroupId: variables.profile_group_id }),
       });
     },
   });
@@ -113,35 +117,24 @@ export const useRemoveGroupMemberMutation = () => {
 
     // Optimistic update
     onMutate: async ({ profileGroupId, profileId }) => {
-      await queryClient.cancelQueries({
-        queryKey: ["profileGroupMembers", profileGroupId],
+      const previousData = optimisticUpdate({
+        queryClient,
+        keyFactory: profileGroupMembersKeyFactory,
+        entity: { profile_group_id: profileGroupId, profile_id: profileId },
+        type: "remove",
+        idKey: "profile_id",
       });
-
-      const previousMembers = queryClient.getQueryData([
-        "profileGroupMembers",
-        profileGroupId,
-      ]);
-
-      queryClient.setQueryData(
-        ["profileGroupMembers", profileGroupId],
-        (old = []) => old.filter((member) => member.profile_id !== profileId)
-      );
-
-      return { previousMembers };
+      return { previousData, profileGroupId, profileId };
     },
 
     onError: (err, _variables, context) => {
-      if (context?.previousMembers) {
-        queryClient.setQueryData(
-          ["profileGroupMembers", context.previousMembers.profile_group_id],
-          context.previousMembers
-        );
-      }
+      rollbackCache({ queryClient, previousData: context?.previousData });
     },
 
-    onSettled: (data, _error, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["profileGroupMembers", variables.profileGroupId],
+    onSettled: (data, _error, context) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: () => profileGroupMembersKeyFactory({ profileGroupId: context?.profileGroupId }),
       });
     },
   });

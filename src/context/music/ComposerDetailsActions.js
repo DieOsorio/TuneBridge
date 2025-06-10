@@ -1,10 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import { composerDetailsKeyFactory } from "../helpers/music/musicKeys";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../helpers/cacheHandler";
 
 // Fetch all composer details for a given roleId
 export const useFetchComposersQuery = (roleId) => {
   return useQuery({
-    queryKey: ["composerDetailsList", roleId],
+    queryKey: composerDetailsKeyFactory({ roleId }).all,
     queryFn: async () => {
       if (!roleId) return [];
       const { data, error } = await supabase
@@ -22,7 +29,7 @@ export const useFetchComposersQuery = (roleId) => {
 // Fetch single composer detail by id
 export const useFetchComposerById = (id) => {
   return useQuery({
-    queryKey: ["composerDetails", id],
+    queryKey: composerDetailsKeyFactory({ id }).single,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("music")
@@ -40,7 +47,6 @@ export const useFetchComposerById = (id) => {
 // Add new composer
 export const useAddComposerMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ details }) => {
       const { data, error } = await supabase
@@ -51,51 +57,42 @@ export const useAddComposerMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ details }) => {
-      const tempId = `temp-${Date.now()}`;
-      const optimisticComposer = {
-        id: tempId,
-        ...details,
-        created_at: new Date().toISOString(),
-      };
-
-      // Cache individual composer
-      queryClient.setQueryData(["composerDetails", tempId], optimisticComposer);
-
-      // Cache list of composers for role
-      queryClient.setQueryData(["composerDetailsList", details.role_id], (old = []) => [
-        ...old,
-        optimisticComposer,
-      ]);
-
-      return { tempId, roleId: details.role_id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: {
+          id: `temp-${Date.now()}`,
+          ...details,
+          created_at: new Date().toISOString(),
+          roleId: details.role_id,
+        },
+        type: "add",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.tempId) {
-        queryClient.removeQueries({ queryKey: ["composerDetails", context.tempId] });
-        queryClient.setQueryData(["composerDetailsList", context.roleId], (old = []) =>
-          old.filter((item) => item.id !== context.tempId)
-        );
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
-    onSuccess: (data, _variables, context) => {
-      const realId = data.id;
-      if (context?.tempId) {
-        queryClient.removeQueries({ queryKey: ["composerDetails", context.tempId] });
-        queryClient.setQueryData(["composerDetailsList", context.roleId], (old = []) =>
-          old.map((item) => (item.id === context.tempId ? data : item))
-        );
-      }
-      queryClient.setQueryData(["composerDetails", realId], data);
+    onSuccess: (newComposer, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: {
+          id: variables.id || variables.tempId || `temp-${Date.now()}`,
+          roleId: variables.role_id || variables.roleId,
+        },
+        newEntity: newComposer,
+      });
     },
-
-    onSettled: (data) => {
-      if (data?.role_id) {
-        queryClient.invalidateQueries(["composerDetailsList", data.role_id]);
-      }
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: { roleId: variables.role_id || variables.roleId },
+      });
     },
   });
 };
@@ -103,7 +100,6 @@ export const useAddComposerMutation = () => {
 // Update composer
 export const useUpdateComposerMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, details }) => {
       const { data, error } = await supabase
@@ -115,27 +111,34 @@ export const useUpdateComposerMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ id, details }) => {
-      await queryClient.cancelQueries(["composerDetails", id]);
-
-      const previous = queryClient.getQueryData(["composerDetails", id]);
-      queryClient.setQueryData(["composerDetails", id], (old = {}) => ({ ...old, ...details }));
-
-      return { previous, id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: { id, ...details },
+        type: "update",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(["composerDetails", context.id], context.previous);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
+    onSuccess: (newComposer, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: { id: variables.id },
+        newEntity: newComposer,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries(["composerDetails", variables.id]);
-      if (_data?.role_id) {
-        queryClient.invalidateQueries(["composerDetailsList", _data.role_id]);
-      }
+      invalidateKeys({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: { id: variables.id, roleId: variables.role_id || variables.roleId },
+      });
     },
   });
 };
@@ -143,7 +146,6 @@ export const useUpdateComposerMutation = () => {
 // Delete composer
 export const useDeleteComposerMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id }) => {
       const { error } = await supabase
@@ -153,30 +155,26 @@ export const useDeleteComposerMutation = () => {
         .eq("id", id);
       if (error) throw new Error(error.message);
     },
-
     onMutate: async ({ id, roleId }) => {
-      await queryClient.cancelQueries(["composerDetailsList", roleId]);
-      await queryClient.cancelQueries(["composerDetails", id]);
-
-      const previousList = queryClient.getQueryData(["composerDetailsList", roleId]);
-
-      queryClient.setQueryData(["composerDetailsList", roleId], (old = []) =>
-        old.filter((composer) => composer.id !== id)
-      );
-
-      queryClient.removeQueries({ queryKey: ["composerDetails", id] });
-
-      return { previousList, roleId };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: { id, roleId },
+        type: "remove",
+      });
     },
-
-    onError: (_err, _vars, context) => {
-      if (context?.previousList) {
-        queryClient.setQueryData(["composerDetailsList", context.roleId], context.previousList);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries(["composerDetailsList", variables.roleId]);
+      invalidateKeys({
+        queryClient,
+        keyFactory: composerDetailsKeyFactory,
+        entity: { roleId: variables.roleId },
+      });
     },
   });
 };

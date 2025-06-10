@@ -1,6 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
 import { nestComments } from "../../components/social/comments/helpers/comments";
+import { commentKeyFactory } from "../helpers/social/socialKeys";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../helpers/cacheHandler";
 
 // FETCH COMMENTS FROM A SPECIFIC POST
 export const useFetchCommentsQuery = (postId) => {
@@ -25,138 +32,157 @@ export const useFetchCommentsQuery = (postId) => {
 // INSERT NEW COMMENT
 export const useInsertCommentMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async( comment ) => {
-      const { data, error} = await supabase
-      .schema("social")
-      .from("comments")
-      .insert(comment)
-      .select();
-      
+    mutationFn: async (comment) => {
+      const { data, error } = await supabase
+        .schema("social")
+        .from("comments")
+        .insert(comment)
+        .select();
       if (error) throw new Error(error.message);
       return data[0];
     },
-
-    //optimistic update
-    onMutate: async ( comment ) => {
-      await queryClient.cancelQueries({queryKey: ["comments"]});
-
-      const previousDetails = queryClient.getQueryData(["comments"]);
-
-      const optimisticData = {
-        id: `temp-${Date.now()}`,
+    onMutate: async (comment) => {
+      // Add temp id and created_at for optimistic UI
+      const optimisticComment = {
         ...comment,
+        id: comment.id ?? `temp-${Date.now()}`,
         created_at: new Date().toISOString(),
-      }
-
-      queryClient.setQueryData(["comments"], (old = []) => [
-        ...old,
-        optimisticData,
-      ])
-
-      return { previousDetails};
+        postId: comment.post_id,
+      };
+      return optimisticUpdate({
+        queryClient,
+        entity: optimisticComment,
+        keyFactory: commentKeyFactory,
+        type: "add",
+      });
     },
-
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["comments"], context.previousDetails);
-      }
+    onSuccess: (newComment, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        entity: {
+          ...variables,
+          postId: variables.post_id,
+        },
+        newEntity: newComment,
+        keyFactory: commentKeyFactory,
+      });
     },
-
+    onError: (_err, _variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["comments", variables.post_id] });
-    }
-  })
-}
+      invalidateKeys({
+        queryClient,
+        entity: {
+          ...variables,
+          postId: variables.post_id,
+        },
+        keyFactory: commentKeyFactory,
+      });
+    },
+  });
+};
 
 // UPDATE COMMENT
 export const useUpdateCommentMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ({id, updatedComment}) => {
-      
+    mutationFn: async ({ id, updatedComment }) => {
       const { data, error } = await supabase
-      .schema("social")
-      .from("comments")
-      .update(updatedComment)
-      .eq("id", id)
-      .select()
-      
-      if (error) throw new Error(error.message)
-      return data[0]
+        .schema("social")
+        .from("comments")
+        .update(updatedComment)
+        .eq("id", id)
+        .select();
+      if (error) throw new Error(error.message);
+      return data[0];
     },
-
-     // optimistic update
-     onMutate: async ({ id, updatedComment, post_id }) => {
-      await queryClient.cancelQueries({ queryKey: ["comments", post_id] });
-
-      const previousDetails = queryClient.getQueryData(["comments", post_id]);
-
-      queryClient.setQueryData(["comments", post_id], (old = []) =>
-        old.map((c) =>
-          c.id === id
-            ? { ...c, ...updatedComment }
-            : c
-        )
-      );
-
-      return { previousDetails, post_id };
+    onMutate: async ({ id, updatedComment, post_id }) => {
+      return optimisticUpdate({
+        queryClient,
+        entity: {
+          id,
+          ...updatedComment,
+          postId: post_id,
+        },
+        keyFactory: commentKeyFactory,
+        type: "update",
+      });
     },
-
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(
-          ["comments", context.post_id],
-          context.previousDetails
-        );
-      }
+    onSuccess: (newComment, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        entity: {
+          id: variables.id,
+          ...variables.updatedComment,
+          postId: variables.post_id,
+        },
+        newEntity: newComment,
+        keyFactory: commentKeyFactory,
+      });
     },
-
+    onError: (_err, _variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["comments", variables.post_id] });
+      invalidateKeys({
+        queryClient,
+        entity: {
+          id: variables.id,
+          ...variables.updatedComment,
+          postId: variables.post_id,
+        },
+        keyFactory: commentKeyFactory,
+      });
     },
-  })
-}
+  });
+};
 
 // DELETE COMMENT
 export const useDeleteCommentMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ( comment ) => {
+    mutationFn: async (comment) => {
       const { error } = await supabase
         .schema("social")
         .from("comments")
         .delete()
         .eq("id", comment.id);
-      
       if (error) throw new Error(error.message);
     },
-
-    // optimistic update
-    onMutate: async ( comment ) => {
-      await queryClient.cancelQueries({ queryKey: ["comments", comment.post_id] });
-
-      const previousDetails = queryClient.getQueryData(["comments", comment.post_id]);
-
-      queryClient.setQueryData(["comments", comment.post_id], (old = []) =>
-        old.filter((c) => c.id !== comment.id)
-      );
-
-      return { previousDetails, post_id: comment.post_id };
+    onMutate: async (comment) => {
+      return optimisticUpdate({
+        queryClient,
+        entity: {
+          id: comment.id,
+          postId: comment.post_id,
+        },
+        keyFactory: commentKeyFactory,
+        type: "remove",
+      });
     },
-
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["comments", context.post_id], context.previousDetails);
-      }
+    onError: (_err, _variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
-    onSettled: (_data, _error, variables, context) => {
-      if (context?.post_id)
-      queryClient.invalidateQueries({ queryKey: ["comments", context.post_id] });
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        entity: {
+          id: variables.id,
+          postId: variables.post_id,
+        },
+        keyFactory: commentKeyFactory,
+      });
     },
-  })
-} 
+  });
+};

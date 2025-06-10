@@ -1,11 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { supabase } from "../../supabase";
+import { notificationKeyFactory } from "../helpers/social/socialKeys";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../helpers/cacheHandler";
 
 // FETCH USER NOTIFICATIONS
 export const useUserNotificationsQuery = (profile_id) => {
   return useQuery({
-    queryKey: ["userNotifications", profile_id],
+    queryKey: notificationKeyFactory({ profileId: profile_id }).all,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -24,7 +31,6 @@ export const useUserNotificationsQuery = (profile_id) => {
 // INSERT NOTIFICATION
 export const useInsertNotificationMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (notification) => {
       const { data, error } = await supabase
@@ -38,33 +44,27 @@ export const useInsertNotificationMutation = () => {
     },
 
     onMutate: async (notification) => {
-      await queryClient.cancelQueries({ queryKey: ["userNotifications", notification.profile_id] });
-
-      const previousData = queryClient.getQueryData(["userNotifications", notification.profile_id]);
-
-      const optimisticNotification = {
-        id: `temp-${Date.now()}`,
-        ...notification,
-        created_at: new Date().toISOString(),
-        is_read: false,
-      };
-
-      queryClient.setQueryData(["userNotifications", notification.profile_id], (old = []) => [
-        optimisticNotification,
-        ...old,
-      ]);
-
-      return { previousData };
+      return optimisticUpdate({
+        queryClient,
+        entity: notification,
+        keyFactory: notificationKeyFactory,
+        type: "add",
+      });
     },
-
-    onError: (_err, variables, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(["userNotifications", variables.profile_id], context.previousData);
-      }
+    onSuccess: (newNotification, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        entity: variables,
+        newEntity: newNotification,
+        keyFactory: notificationKeyFactory,
+      });
     },
-
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["userNotifications", variables.profile_id] });
+      invalidateKeys({
+        queryClient,
+        entity: variables,
+        keyFactory: notificationKeyFactory,
+      });
     },
   });
 };
@@ -72,7 +72,6 @@ export const useInsertNotificationMutation = () => {
 // UPDATE NOTIFICATION (e.g., mark as read)
 export const useUpdateNotificationMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, updatedFields }) => {
       const { data, error } = await supabase
@@ -86,28 +85,27 @@ export const useUpdateNotificationMutation = () => {
       return data[0];
     },
     onMutate: async ({ id, updatedFields, profile_id }) => {
-      // Cancel ongoing queries for userNotifications
-      await queryClient.cancelQueries(["userNotifications", profile_id]);
-
-      // Get the current cache data
-      const previousData = queryClient.getQueryData(["userNotifications", profile_id]);
-
-      // Optimistically update the cache
-      queryClient.setQueryData(["userNotifications", profile_id], (old = []) =>
-        old.map((notif) =>
-          notif.id === id ? { ...notif, ...updatedFields } : notif
-        )
-      );
-
-      return { previousData };
+      return optimisticUpdate({
+        queryClient,
+        entity: { id, ...updatedFields, profile_id },
+        keyFactory: notificationKeyFactory,
+        type: "update",
+      });
     },
-    onError: (_err, _variables, context) => {
-      // Rollback the cache to the previous state on error
-      queryClient.setQueryData(["userNotifications", context.profile_id], context.previousData);
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        entity: variables,
+        keyFactory: notificationKeyFactory,
+        previousData: context,
+      });
     },
     onSettled: (_data, _error, variables) => {
-      // Invalidate the query to refetch the latest data
-      queryClient.invalidateQueries(["userNotifications", variables.profile_id]);
+      invalidateKeys({
+        queryClient,
+        entity: variables,
+        keyFactory: notificationKeyFactory,
+      });
     },
   });
 };
@@ -131,7 +129,7 @@ export const useNotificationsRealtime = (profile_id) => {
         },
         () => {
           queryClient.invalidateQueries({
-            queryKey: ["userNotifications", profile_id],
+            queryKey: notificationKeyFactory({ profileId: profile_id }).all,
           });
         }
       )

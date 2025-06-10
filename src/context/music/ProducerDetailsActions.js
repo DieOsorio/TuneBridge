@@ -1,10 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import { producerDetailsKeyFactory } from "../helpers/music/musicKeys";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../helpers/cacheHandler";
 
 // Fetch all producer details for a given roleId
 export const useFetchProducersQuery = (roleId) => {
   return useQuery({
-    queryKey: ["producerDetailsList", roleId],
+    queryKey: producerDetailsKeyFactory({ roleId }).all,
     queryFn: async () => {
       if (!roleId) return [];
       const { data, error } = await supabase
@@ -22,7 +29,7 @@ export const useFetchProducersQuery = (roleId) => {
 // Fetch a single producer detail by id
 export const useFetchProducerById = (id) => {
   return useQuery({
-    queryKey: ["producerDetails", id],
+    queryKey: producerDetailsKeyFactory({ id }).single,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("music")
@@ -40,7 +47,6 @@ export const useFetchProducerById = (id) => {
 // Add new producer
 export const useAddProducerMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ details }) => {
       const { data, error } = await supabase
@@ -51,49 +57,42 @@ export const useAddProducerMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ details }) => {
-      const tempId = `temp-${Date.now()}`;
-      const optimisticProducer = {
-        id: tempId,
-        ...details,
-        created_at: new Date().toISOString(),
-      };
-
-      queryClient.setQueryData(["producerDetails", tempId], optimisticProducer);
-
-      queryClient.setQueryData(["producerDetailsList", details.role_id], (old = []) => [
-        ...old,
-        optimisticProducer,
-      ]);
-
-      return { tempId, roleId: details.role_id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: {
+          id: `temp-${Date.now()}`,
+          ...details,
+          created_at: new Date().toISOString(),
+          roleId: details.role_id,
+        },
+        type: "add",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.tempId) {
-        queryClient.removeQueries({ queryKey: ["producerDetails", context.tempId] });
-        queryClient.setQueryData(["producerDetailsList", context.roleId], (old = []) =>
-          old.filter((item) => item.id !== context.tempId)
-        );
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
-    onSuccess: (data, _variables, context) => {
-      const realId = data.id;
-      if (context?.tempId) {
-        queryClient.removeQueries({ queryKey: ["producerDetails", context.tempId] });
-        queryClient.setQueryData(["producerDetailsList", context.roleId], (old = []) =>
-          old.map((item) => (item.id === context.tempId ? data : item))
-        );
-      }
-      queryClient.setQueryData(["producerDetails", realId], data);
+    onSuccess: (newProducer, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: {
+          id: variables.id || variables.tempId || `temp-${Date.now()}`,
+          roleId: variables.role_id || variables.roleId,
+        },
+        newEntity: newProducer,
+      });
     },
-
-    onSettled: (data) => {
-      if (data?.role_id) {
-        queryClient.invalidateQueries(["producerDetailsList", data.role_id]);
-      }
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: { roleId: variables.role_id || variables.roleId },
+      });
     },
   });
 };
@@ -101,7 +100,6 @@ export const useAddProducerMutation = () => {
 // Update producer
 export const useUpdateProducerMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, details }) => {
       const { data, error } = await supabase
@@ -110,33 +108,37 @@ export const useUpdateProducerMutation = () => {
         .update(details)
         .eq("id", id)
         .select();
-        
-      if (error) throw new Error(error.message);    
+      if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ id, details }) => {
-      await queryClient.cancelQueries(["producerDetails", id]);
-
-      const previousDetails = queryClient.getQueryData(["producerDetails", id]);
-      queryClient.setQueryData(["producerDetails", id], (old = {}) => ({ ...old, ...details }));
-
-      return { previousDetails, id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: { id, ...details },
+        type: "update",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["producerDetails", context.id], context.previousDetails);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
+    onSuccess: (newProducer, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: { id: variables.id },
+        newEntity: newProducer,
+      });
+    },
     onSettled: (_data, _err, variables) => {
-      if (variables?.id) {
-        queryClient.invalidateQueries(["producerDetails", variables.id]);
-      }
-      if (_data?.role_id) {
-        queryClient.invalidateQueries(["producerDetailsList", _data.role_id]);
-      }
+      invalidateKeys({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: { id: variables.id, roleId: variables.role_id || variables.roleId },
+      });
     },
   });
 };
@@ -144,7 +146,6 @@ export const useUpdateProducerMutation = () => {
 // Delete producer
 export const useDeleteProducerMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id }) => {
       const { error } = await supabase
@@ -154,30 +155,26 @@ export const useDeleteProducerMutation = () => {
         .eq("id", id);
       if (error) throw new Error(error.message);
     },
-
     onMutate: async ({ id, roleId }) => {
-      await queryClient.cancelQueries(["producerDetails", id]);
-      await queryClient.cancelQueries(["producerDetailsList", roleId]);
-
-      const previousList = queryClient.getQueryData(["producerDetailsList", roleId]);
-
-      queryClient.setQueryData(["producerDetailsList", roleId], (old = []) =>
-        old.filter((producer) => producer.id !== id)
-      );
-
-      queryClient.removeQueries({ queryKey: ["producerDetails", id] });
-
-      return { previousList, roleId };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: { id, roleId },
+        type: "remove",
+      });
     },
-
-    onError: (_err, _vars, context) => {
-      if (context?.previousList) {
-        queryClient.setQueryData(["producerDetailsList", context.roleId], context.previousList);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries(["producerDetailsList", variables.roleId]);
+      invalidateKeys({
+        queryClient,
+        keyFactory: producerDetailsKeyFactory,
+        entity: { roleId: variables.roleId },
+      });
     },
   });
 };

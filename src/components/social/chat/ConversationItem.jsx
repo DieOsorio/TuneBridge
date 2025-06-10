@@ -7,7 +7,7 @@ import { useProfile } from "../../../context/profile/ProfileContext";
 const ConversationItem = ({ conversation, isSelected, onClick }) => {
   const { user } = useAuth();
   const { fetchParticipants } = useParticipants();
-  const {data: participants, isLoading: isParticipantsLoading, error: errorParticipants} = fetchParticipants(conversation.id)
+  const {data: participants = [], isLoading: isParticipantsLoading, error: errorParticipants} = fetchParticipants(conversation.id)
 
   const { fetchProfile } = useProfile();
   const otherParticipant = participants?.find((p) => p.profile_id !== user.id);

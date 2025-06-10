@@ -1,11 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import { hashtagKeyFactory } from "../helpers/social/socialKeys";
 
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../helpers/cacheHandler";
 
 // Fetch all hashtags
 export const useFetchHashtagsQuery = () => {
   return useQuery({
-    queryKey: ["hashtags"],
+    queryKey: hashtagKeyFactory().all,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -34,9 +41,34 @@ export const useUpsertHashtagMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["hashtags"] });
+    onMutate: async (newHashtag) => {
+      return optimisticUpdate({
+        queryClient,
+        queryKey: hashtagKeyFactory().all,
+        entity: newHashtag,
+        type: "add",
+      });
     },
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
+    onSuccess: (newHashtag, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        queryKey: hashtagKeyFactory().all,
+        optimisticEntity: variables,
+        realEntity: newHashtag,
+      });
+    },
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        queryKey: hashtagKeyFactory().all,
+      });
+    }
   });
 };
 
@@ -54,8 +86,25 @@ export const useDeleteHashtagMutation = () => {
 
       if (error) throw new Error(error.message);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["hashtags"] });
+    onMutate: async (id) => {
+      return optimisticUpdate({
+        queryClient,
+        queryKey: hashtagKeyFactory().all,
+        entity: { id },
+        type: "remove",
+      });
     },
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        queryKey: hashtagKeyFactory().all,
+      });
+    }
   });
 };

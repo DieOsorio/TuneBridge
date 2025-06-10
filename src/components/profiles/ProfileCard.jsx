@@ -9,7 +9,7 @@ import ProfileAvatar from "./ProfileAvatar";
 
 const ProfileCard = ({ profile }) => {
     const { user } = useAuth();
-    const { addConnection, deleteConnection, userConnections } = useUserConnections();
+    const { addConnection, deleteConnection, userConnections, updateConnection } = useUserConnections();
     const { data: connections } = userConnections(profile.id)
     const [hoverText, setHoverText] = useState("");
     const { manageView } = useView();
@@ -34,8 +34,29 @@ const ProfileCard = ({ profile }) => {
                 following_profile_id: profile.id,
                 status: "pending",
             }); // Call the server to follow the user
-        } else {
-            await deleteConnection(userConnection.id); // Call the server to unfollow the user
+        } else if (status === "pending") {
+            await deleteConnection({
+                id: userConnection.id,
+                follower_profile_id: user.id,
+                following_profile_id: profile.id,
+            }); // Call the server to unfollow the user
+        } else if (status === " accepted") {
+            await deleteConnection({
+                id: userConnection.id,
+                follower_profile_id: user.id,
+                following_profile_id: profile.id,
+            }); // Call the server to unconnect the user
+        } else if (status === "blocked") {
+            await updateConnection({
+                connection: {
+                    id: userConnection.id,
+                    follower_profile_id: user.id,
+                    following_profile_id: profile.id,
+                },
+                updatedConnection: {
+                    status: "accepted",
+                },
+            }); // Call the server to unblock the user
         }
     };
 

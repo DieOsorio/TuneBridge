@@ -1,10 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import { djDetailsKeyFactory } from "../helpers/music/musicKeys";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../helpers/cacheHandler";
 
 // FETCH ALL DJ DETAILS FOR A ROLE
 export const useFetchDjsQuery = (roleId) => {
   return useQuery({
-    queryKey: ["djDetailsList", roleId],
+    queryKey: djDetailsKeyFactory({ roleId }).all,
     queryFn: async () => {
       if (!roleId) return [];
       const { data, error } = await supabase
@@ -22,7 +29,7 @@ export const useFetchDjsQuery = (roleId) => {
 // FETCH SINGLE DJ BY ID
 export const useFetchDjById = (id) => {
   return useQuery({
-    queryKey: ["djDetails", id],
+    queryKey: djDetailsKeyFactory({ id }).single,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("music")
@@ -40,7 +47,6 @@ export const useFetchDjById = (id) => {
 // ADD NEW DJ
 export const useAddDjMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ details }) => {
       const { data, error } = await supabase
@@ -51,48 +57,42 @@ export const useAddDjMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ details }) => {
-      const tempId = `temp-${Date.now()}`;
-      const optimisticDj = {
-        id: tempId,
-        ...details,
-        created_at: new Date().toISOString(),
-      };
-
-      queryClient.setQueryData(["djDetails", tempId], optimisticDj);
-
-      queryClient.setQueryData(["djDetailsList", details.role_id], (old = []) => [
-        ...old,
-        optimisticDj,
-      ]);
-
-      return { tempId, roleId: details.role_id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: {
+          id: `temp-${Date.now()}`,
+          ...details,
+          created_at: new Date().toISOString(),
+          roleId: details.role_id,
+        },
+        type: "add",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.tempId) {
-        queryClient.removeQueries({ queryKey: ["djDetails", context.tempId] });
-        queryClient.setQueryData(["djDetailsList", context.roleId], (old = []) =>
-          old.filter((item) => item.id !== context.tempId)
-        );
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
-    onSuccess: (data, _variables, context) => {
-      if (context?.tempId) {
-        queryClient.removeQueries({ queryKey: ["djDetails", context.tempId] });
-        queryClient.setQueryData(["djDetailsList", context.roleId], (old = []) =>
-          old.map((item) => (item.id === context.tempId ? data : item))
-        );
-      }
-      queryClient.setQueryData(["djDetails", data.id], data);
+    onSuccess: (newDj, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: {
+          id: variables.id || variables.tempId || `temp-${Date.now()}`,
+          roleId: variables.role_id || variables.roleId,
+        },
+        newEntity: newDj,
+      });
     },
-
-    onSettled: (data) => {
-      if (data?.role_id) {
-        queryClient.invalidateQueries(["djDetailsList", data.role_id]);
-      }
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: { roleId: variables.role_id || variables.roleId },
+      });
     },
   });
 };
@@ -100,7 +100,6 @@ export const useAddDjMutation = () => {
 // UPDATE DJ
 export const useUpdateDjMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, details }) => {
       const { data, error } = await supabase
@@ -112,30 +111,34 @@ export const useUpdateDjMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ id, details }) => {
-      await queryClient.cancelQueries(["djDetails", id]);
-      const previous = queryClient.getQueryData(["djDetails", id]);
-
-      queryClient.setQueryData(["djDetails", id], (old = {}) => ({
-        ...old,
-        ...details,
-      }));
-
-      return { previous, id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: { id, ...details },
+        type: "update",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(["djDetails", context.id], context.previous);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
+    onSuccess: (newDj, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: { id: variables.id },
+        newEntity: newDj,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries(["djDetails", variables.id]);
-      if (_data?.role_id) {
-        queryClient.invalidateQueries(["djDetailsList", _data.role_id]);
-      }
+      invalidateKeys({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: { id: variables.id, roleId: variables.role_id || variables.roleId },
+      });
     },
   });
 };
@@ -143,7 +146,6 @@ export const useUpdateDjMutation = () => {
 // DELETE DJ
 export const useDeleteDjMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id }) => {
       const { error } = await supabase
@@ -153,30 +155,26 @@ export const useDeleteDjMutation = () => {
         .eq("id", id);
       if (error) throw new Error(error.message);
     },
-
     onMutate: async ({ id, roleId }) => {
-      await queryClient.cancelQueries(["djDetailsList", roleId]);
-      await queryClient.cancelQueries(["djDetails", id]);
-
-      const previousList = queryClient.getQueryData(["djDetailsList", roleId]);
-
-      queryClient.setQueryData(["djDetailsList", roleId], (old = []) =>
-        old.filter((dj) => dj.id !== id)
-      );
-
-      queryClient.removeQueries({ queryKey: ["djDetails", id] });
-
-      return { previousList, roleId };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: { id, roleId },
+        type: "remove",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previousList) {
-        queryClient.setQueryData(["djDetailsList", context.roleId], context.previousList);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries(["djDetailsList", variables.roleId]);
+      invalidateKeys({
+        queryClient,
+        keyFactory: djDetailsKeyFactory,
+        entity: { roleId: variables.roleId },
+      });
     },
   });
 };

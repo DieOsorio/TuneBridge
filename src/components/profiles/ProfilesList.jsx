@@ -23,7 +23,7 @@ const ProfilesList = () => {
     } = infiniteProfiles();
 
     // Search profiles query
-    const { data: searchResults, isLoading: isSearching } = searchProfiles(searchTerm);
+    const { data: searchResults = [], isLoading: isSearching } = searchProfiles(searchTerm);
 
     // Handle errors and loading states
     if (profileError) {
