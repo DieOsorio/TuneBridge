@@ -1,5 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../supabase";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../../helpers/cacheHandler";
+import { conversationKeyFactory } from "../../helpers/social/socialKeys";
+
 
 // FIND CONVERSATION
 export const useFindConversationWithUser = () => {
@@ -44,7 +52,7 @@ export const useFindConversationWithUser = () => {
 // FETCH A CONVERSATION
 export const useFetchConversationQuery = (conversationId) => {
   return useQuery({
-    queryKey: ["conversation", conversationId],
+    queryKey: conversationKeyFactory({ id: conversationId }).single,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -62,24 +70,21 @@ export const useFetchConversationQuery = (conversationId) => {
 // FETCH CONVERSATIONS FOR A USER
 export const useFetchConversationsQuery = (profileId) => {
   return useQuery({
-    queryKey: ["conversations", profileId],
+    queryKey: conversationKeyFactory({ profileId }).all,
     queryFn: async () => {
       const { data: conversationParticipants, error: participantError } = await supabase
         .schema("social")
         .from("conversation_participants")
         .select("conversation_id")
         .eq("profile_id", profileId);
-
       if (participantError) throw new Error(participantError.message);
       const conversationIds = conversationParticipants.map((p) => p.conversation_id);
-
       const { data, error } = await supabase
         .schema("social")
         .from("conversations")
         .select("*")
         .in("id", conversationIds)
         .order("updated_at", { ascending: false });
-
       if (error) throw new Error(error.message);
       return data;
     },
@@ -90,7 +95,6 @@ export const useFetchConversationsQuery = (profileId) => {
 // CREATE CONVERSATION
 export const useCreateConversationMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (conversation) => {
       const { data, error } = await supabase
@@ -98,38 +102,49 @@ export const useCreateConversationMutation = () => {
         .from("conversations")
         .insert(conversation)
         .select();
-
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async (conversation) => {
-      await queryClient.cancelQueries({ queryKey: ["conversations", conversation.created_by] });
-
-      const previousDetails = queryClient.getQueryData(["conversations", conversation.created_by]);
-      const optimisticData = {
-        id: `temp-${Date.now()}`,
+      const optimisticConv = {
+        id: conversation.id || `temp-${Date.now()}`,
         ...conversation,
         created_at: new Date().toISOString(),
       };
-
-      queryClient.setQueryData(["conversations", conversation.created_by], (old = []) => [
-        ...old,
-        optimisticData,
-      ]);
-
-      return { previousDetails, created_by: conversation.created_by };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { ...optimisticConv, profileId: conversation.created_by },
+        type: "add",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["conversations", context.created_by], context.previousDetails);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
+    onSuccess: (newConversation, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { id: variables.id || variables.tempId || `temp-${Date.now()}`, profileId: variables.created_by },
+        newEntity: newConversation,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["conversations", variables.created_by] });
-      queryClient.invalidateQueries({ queryKey: ["conversation", variables.id] });
+      invalidateKeys({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { profileId: variables.created_by },
+      });
+      if (variables.id) {
+        invalidateKeys({
+          queryClient,
+          keyFactory: conversationKeyFactory,
+          entity: { id: variables.id },
+        });
+      }
     },
   });
 };
@@ -137,7 +152,6 @@ export const useCreateConversationMutation = () => {
 // UPDATE CONVERSATION
 export const useUpdateConversationMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ conversation, updates }) => {
       const { data, error } = await supabase
@@ -146,44 +160,53 @@ export const useUpdateConversationMutation = () => {
         .update(updates)
         .eq("id", conversation.id)
         .select();
-
       if (error) throw new Error(error.message);
       return data[0];
     },
-
     onMutate: async ({ conversation, updates }) => {
-      await queryClient.cancelQueries({ queryKey: ["conversations", conversation.created_by] });
-
-      const previousDetails = queryClient.getQueryData(["conversations", conversation.created_by]);
-
-      queryClient.setQueryData(["conversations", conversation.created_by], (old = []) =>
-        old.map((c) => (c.id === conversation.id ? { ...c, ...updates } : c))
-      );
-
-      return { previousDetails, created_by: conversation.created_by };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { ...conversation, ...updates, profileId: conversation.created_by },
+        type: "update",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["conversations", context.created_by], context.previousDetails);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
+    onSuccess: (newConversation, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { id: variables.conversation.id, profileId: variables.conversation.created_by },
+        newEntity: newConversation,
+      });
+    },
     onSettled: (_data, _error, variables) => {
       if (variables?.conversation?.created_by) {
-        queryClient.invalidateQueries({ queryKey: ["conversations", variables.conversation.created_by] });
+        invalidateKeys({
+          queryClient,
+          keyFactory: conversationKeyFactory,
+          entity: { profileId: variables.conversation.created_by },
+        });
       }
       if (variables?.conversation?.id) {
-        queryClient.invalidateQueries({ queryKey: ["conversation", variables.conversation.id] });
+        invalidateKeys({
+          queryClient,
+          keyFactory: conversationKeyFactory,
+          entity: { id: variables.conversation.id },
+        });
       }
-    }
+    },
   });
 };
 
 // DELETE CONVERSATION
 export const useDeleteConversationMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (conversation) => {
       const { error } = await supabase
@@ -191,32 +214,34 @@ export const useDeleteConversationMutation = () => {
         .from("conversations")
         .delete()
         .eq("id", conversation.id);
-
       if (error) throw new Error(error.message);
     },
-
     onMutate: async (conversation) => {
-      await queryClient.cancelQueries({ queryKey: ["conversations", conversation.created_by] });
-
-      const previousDetails = queryClient.getQueryData(["conversations", conversation.created_by]);
-
-      queryClient.setQueryData(["conversations", conversation.created_by], (old = []) =>
-        old.filter((c) => c.id !== conversation.id)
-      );
-
-      return { previousDetails, created_by: conversation.created_by };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { ...conversation, profileId: conversation.created_by },
+        type: "remove",
+      });
     },
-
-    onError: (_err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["conversations", context.created_by], context.previousDetails);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["conversations", variables.created_by] });
+      invalidateKeys({
+        queryClient,
+        keyFactory: conversationKeyFactory,
+        entity: { profileId: variables.created_by },
+      });
       if (variables.id) {
-        queryClient.invalidateQueries({ queryKey: ["conversation", variables.id] });
+        invalidateKeys({
+          queryClient,
+          keyFactory: conversationKeyFactory,
+          entity: { id: variables.id },
+        });
       }
     },
   });

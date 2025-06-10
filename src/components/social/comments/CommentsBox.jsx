@@ -26,8 +26,8 @@ function CommentsBox({ postId }) {
   const { data: comments } = fetchComments(postId) // retrieve comments from a specific post
   const [showAll, setShowAll] = useState(false);// show/hide all comments
   // obtain all the data (id, avatar_url and username) for each profile that left a comment
-  const profileIds = comments?.map(comment => comment.profile_id) ?? [];
-  const { data: profileMap, isLoading: profilesLoading} = profilesMap(profileIds);  
+  const profileIds = collectProfileIds(comments ?? []);
+  const { data: profileMap, isLoading: profilesLoading } = profilesMap(profileIds);  
   
   // Form with react-hook-form
   const {
@@ -173,6 +173,20 @@ function CommentsBox({ postId }) {
       </form>
     </div>
   );  
+}
+
+function collectProfileIds(comments = []) {
+  const ids = new Set();
+  function recurse(commentsArr) {
+    for (const c of commentsArr) {
+      if (c.profile_id) ids.add(c.profile_id);
+      if (Array.isArray(c.replies) && c.replies.length > 0) {
+        recurse(c.replies);
+      }
+    }
+  }
+  recurse(comments);
+  return Array.from(ids);
 }
 
 export default CommentsBox;

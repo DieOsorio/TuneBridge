@@ -1,10 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  replaceOptimisticItem,
+  invalidateKeys,
+} from "../helpers/cacheHandler";
+import { profileGroupsKeyFactory } from "../helpers/profile/profileKeys";
 
 // FETCH ALL PROFILE GROUPS
 export const useFetchProfileGroupsQuery = () => {
   return useQuery({
-    queryKey: ["profileGroups"],
+    queryKey: profileGroupsKeyFactory().all,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("users")
@@ -21,7 +28,7 @@ export const useFetchProfileGroupsQuery = () => {
 // FETCH A SPECIFIC PROFILE GROUP
 export const useFetchProfileGroupQuery = (id) => {
   return useQuery({
-    queryKey: ["profileGroups", id],
+    queryKey: profileGroupsKeyFactory({ id }).single,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("users")
@@ -55,32 +62,35 @@ export const useCreateProfileGroupMutation = () => {
 
     // Optimistic update
     onMutate: async (group) => {
-      await queryClient.cancelQueries({ queryKey: ["profileGroups"] });
-
-      const previousGroups = queryClient.getQueryData(["profileGroups"]);
-
       const optimisticGroup = {
-        id: `temp-${Date.now()}`,
+        id: group.id || `temp-${Date.now()}`,
         ...group,
         created_at: new Date().toISOString(),
       };
-
-      queryClient.setQueryData(["profileGroups"], (old = []) => [
-        optimisticGroup,
-        ...old,
-      ]);
-
-      return { previousGroups };
+      const previousData = optimisticUpdate({
+        queryClient,
+        keyFactory: profileGroupsKeyFactory,
+        entity: optimisticGroup,
+        type: "add",
+      });
+      return { previousData, optimisticGroup };
     },
 
     onError: (err, _variables, context) => {
-      if (context?.previousGroups) {
-        queryClient.setQueryData(["profileGroups"], context.previousGroups);
-      }
+      rollbackCache({ queryClient, previousData: context?.previousData });
+    },
+
+    onSuccess: (data, _variables, context) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: profileGroupsKeyFactory,
+        entity: context.optimisticGroup,
+        newEntity: data,
+      });
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["profileGroups"] });
+      invalidateKeys({ queryClient, keyFactory: profileGroupsKeyFactory });
     },
   });
 };
@@ -104,34 +114,35 @@ export const useUpdateProfileGroupMutation = () => {
 
     // Optimistic update
     onMutate: async ({ id, updatedGroup }) => {
-      await queryClient.cancelQueries({ queryKey: ["profileGroups"] });
-
-      const previousGroups = queryClient.getQueryData(["profileGroups"]);
-
-      queryClient.setQueryData(["profileGroups"], (old = []) =>
-        old.map((group) =>
-          group.id === id ? { ...group, ...updatedGroup } : group
-        )
-      );
-
-      // Update the specific group query data
-      queryClient.setQueryData(["profileGroups", id], (old) => ({
-        ...old,
-        ...updatedGroup,
-      }));
-
-      return { previousGroups };
+      const optimisticGroup = { id, ...updatedGroup };
+      const previousData = optimisticUpdate({
+        queryClient,
+        keyFactory: profileGroupsKeyFactory,
+        entity: optimisticGroup,
+        type: "update",
+      });
+      return { previousData, optimisticGroup };
     },
 
     onError: (err, _variables, context) => {
-      if (context?.previousGroups) {
-        queryClient.setQueryData(["profileGroups"], context.previousGroups);
-      }
+      rollbackCache({ queryClient, previousData: context?.previousData });
+    },
+
+    onSuccess: (data, _variables, context) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: profileGroupsKeyFactory,
+        entity: context.optimisticGroup,
+        newEntity: data,
+      });
     },
 
     onSettled: (data, _error, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ["profileGroups"] });
-      queryClient.invalidateQueries({ queryKey: ["profileGroups", id] });
+      invalidateKeys({
+        queryClient,
+        keyFactory: () => profileGroupsKeyFactory({ id }),
+      });
+      invalidateKeys({ queryClient, keyFactory: profileGroupsKeyFactory });
     },
   });
 };
@@ -153,28 +164,25 @@ export const useDeleteProfileGroupMutation = () => {
 
     // Optimistic update
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ["profileGroups"] });
-
-      const previousGroups = queryClient.getQueryData(["profileGroups"]);
-
-      queryClient.setQueryData(["profileGroups"], (old = []) =>
-        old.filter((group) => group.id !== id)
-      );
-
-      // Remove the specific group query data
-      queryClient.removeQueries({ queryKey: ["profileGroups", id] });
-
-      return { previousGroups };
+      const previousData = optimisticUpdate({
+        queryClient,
+        keyFactory: profileGroupsKeyFactory,
+        entity: { id },
+        type: "remove",
+      });
+      return { previousData, id };
     },
 
     onError: (err, _variables, context) => {
-      if (context?.previousGroups) {
-        queryClient.setQueryData(["profileGroups"], context.previousGroups);
-      }
+      rollbackCache({ queryClient, previousData: context?.previousData });
     },
 
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["profileGroups"] });
+    onSettled: (data, _error, context) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: () => profileGroupsKeyFactory({ id: context?.id }),
+      });
+      invalidateKeys({ queryClient, keyFactory: profileGroupsKeyFactory });
     },
   });
 };

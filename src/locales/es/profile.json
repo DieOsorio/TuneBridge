@@ -24,7 +24,16 @@
       "gender": "Género",
       "age": "Edad",
       "years": "años"
-    }    
+    },
+    "connection": {
+      "loading": "Checking connection...",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "pending": "Pending",
+      "block": "Block",
+      "unblock": "Unblock",
+      "blockedByOther": "You are blocked by this user."
+    }     
   },
   "edit": {
       "title": "Editar Perfil",

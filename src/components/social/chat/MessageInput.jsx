@@ -8,7 +8,7 @@ const MessageInput = ({ conversationId, senderId }) => {
   const [content, setContent] = useState("");
   const { insertMessage } = useMessages();
   const { fetchParticipants } = useParticipants();
-  const { data: participants } = fetchParticipants(conversationId);
+  const { data: participants = [] } = fetchParticipants(conversationId);
   
   const handleSubmit = async (e) => {
     e.preventDefault();

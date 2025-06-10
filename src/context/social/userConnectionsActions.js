@@ -1,10 +1,23 @@
-import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from '../../supabase';
+
+// helpers for optimistic updates and cache management
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem
+} from '../helpers/cacheHandler';
+
+// Define keys for connections
+import { 
+  connectionKeyFactory
+ } from '../helpers/social/socialKeys';
 
 // FETCH ALL CONNECTIONS FOR A PROFILE
 export const useFetchConnectionsQuery = (profileId) => {
   return useQuery({
-    queryKey: ["connections", profileId],
+    queryKey: connectionKeyFactory({ follower_profile_id: profileId }).follower,
     queryFn: async() => {
       if (!profileId) {
         console.error("profileId is not valid");
@@ -23,6 +36,24 @@ export const useFetchConnectionsQuery = (profileId) => {
   })
 }
 
+// Get the connection between two specific profiles
+export const useConnectionBetweenProfiles = (profileA, profileB) => {
+  return useQuery({
+    queryKey: connectionKeyFactory({ follower_profile_id: profileA, following_profile_id: profileB }).between,
+    queryFn: async () => {
+      if (!profileA || !profileB) return null;
+      const { data, error } = await supabase
+        .schema("social")
+        .from("user_connections")
+        .select("*")
+        .or(`and(follower_profile_id.eq.${profileA},following_profile_id.eq.${profileB}),and(follower_profile_id.eq.${profileB},following_profile_id.eq.${profileA})`)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!profileA && !!profileB,
+  });
+};
 
 // ADD NEW CONNECTION (FOLLOW)
 export const useAddConnectionMutation = () => {
@@ -42,123 +73,130 @@ export const useAddConnectionMutation = () => {
 
     //optimistic update
     onMutate: async ( connection ) => {
-      await queryClient.cancelQueries({queryKey: ["connections"]});
-
-      const previousDetails = queryClient.getQueryData(["connections"]);
-
-      const optimisticData = {
-        id: `temp-${Date.now()}`,
-        ...connection,
-        created_at: new Date().toISOString(),
-      }
-
-      queryClient.setQueryData(["connections"], (old = []) => [
-        ...old,
-        optimisticData,
-      ])
-
-      return { previousDetails};
+      return await optimisticUpdate({
+        queryClient,
+        entity: connection,
+        keyFactory: connectionKeyFactory,
+        type: "add",
+      });
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["connections"], context.previousDetails);
-      }
+    onSuccess: (newConnection, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        entity: variables,
+        newEntity: newConnection,
+        keyFactory: connectionKeyFactory
+      });
     },
 
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["connections"]});
+    onError: (_err, variables, context) => {
+     rollbackCache({
+        queryClient,
+        entity: variables,
+        keyFactory: connectionKeyFactory,
+        previousData: context
+      });
+    },
+
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        entity: variables,
+        keyFactory: connectionKeyFactory
+      });
     }
   })
 }
 
-
-// UPDATE AN CONNECTION
+// UPDATE A CONNECTION
 export const useUpdateConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({id, updatedConnection}) => {
+    mutationFn: async ({connection, updatedConnection}) => {
       const { data, error } = await supabase
       .schema("social")
       .from("user_connections")
       .update(updatedConnection)
-      .eq("id", id)
-      .select()      
-      
+      .eq("id", connection.id)
+      .select()
+
       if (error) throw new Error(error.message)
       return data[0]
     },
 
      // optimistic update
-     onMutate: async ({ id, updatedConnection }) => {
-      await queryClient.cancelQueries({ queryKey: ["connections", id] });
-
-      const previousDetails = queryClient.getQueryData(["connections", id]);
-
-      queryClient.setQueryData(["connections", id], (old = []) =>
-        old.map((conn) =>
-          conn.id === id
-            ? { ...conn, ...updatedConnection }
-            : conn
-        )
-      );
-
-      return { previousDetails };
+     onMutate: async ({ connection }) => {
+      return await optimisticUpdate({
+        queryClient,
+        entity: connection,
+        keyFactory: connectionKeyFactory,
+        type: "update",
+      });
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(
-          ["connections", _variables.id],
-          context.previousDetails
-        );
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        entity: variables.connection,
+        keyFactory: connectionKeyFactory,
+        previousData: context
+      });
     },
 
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["connections"] });
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        entity: variables.connection,
+        keyFactory: connectionKeyFactory
+      });
     },
   })
 }
-
 
 // DELETE CONNECTION (UNFOLLOW)
 export const useDeleteConnectionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ( id ) => {
+    mutationFn: async ( connection ) => {
       const { error } = await supabase
         .schema("social")
         .from("user_connections")
         .delete()
-        .eq("id", id);
-      
+        .eq("id", connection.id);
+
+        
       if (error) throw new Error(error.message);
     },
 
     // optimistic update
-    onMutate: async ( id ) => {
-      await queryClient.cancelQueries({ queryKey: ["connections"] });
-
-      const previousDetails = queryClient.getQueryData(["connections"]);
-
-      queryClient.setQueryData(["connections"], (old = []) =>
-        old.filter((conn) => conn.id !== id)
-      );
-
-      return { previousDetails };
+    onMutate: async ( connection ) => {
+      return await optimisticUpdate({
+        queryClient,
+        entity: connection,
+        keyFactory: connectionKeyFactory,
+        type: "remove",
+      });
     },
 
-    onError: (err, _variables, context) => {
-      if (context?.previousDetails) {
-        queryClient.setQueryData(["connections"], context.previousDetails);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        entity: variables,
+        keyFactory: connectionKeyFactory,
+        previousData: context
+      });
     },
 
-    onSettled: (_data, _error) => {
-      queryClient.invalidateQueries({ queryKey: ["connections"] });
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        entity: variables,
+        keyFactory: connectionKeyFactory
+      });
     },
   })
-} 
+}
+

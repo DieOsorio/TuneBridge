@@ -1,16 +1,22 @@
-import { useQuery, useMutation, useQueryClient, queryOptions } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from '../../supabase';
+import { roleKeyFactory } from '../helpers/music/musicKeys';
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from '../helpers/cacheHandler';
 
 // Fetch all roles for a profile
 export const useFetchRolesQuery = (profileId) => {
   return useQuery({
-    queryKey: ["roles", profileId],
+    queryKey: roleKeyFactory({ profileId }).all,
     queryFn: async () => {
       if (!profileId) {
-        console.error("profileId is not avialable");
-        return [];                
+        console.error("profileId is not available");
+        return [];
       }
-
       const { data, error } = await supabase
         .schema("music")
         .from("roles")
@@ -21,12 +27,11 @@ export const useFetchRolesQuery = (profileId) => {
     },
     enabled: !!profileId,
   });
-}
+};
 
 // Add a role to a profile
 export const useAddRoleMutation = () => {
-    const queryClient = useQueryClient();
-
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ profileId, roleName }) => {
       const { data, error } = await supabase
@@ -34,76 +39,82 @@ export const useAddRoleMutation = () => {
         .from("roles")
         .insert({ profile_id: profileId, role: roleName })
         .select();
-               
       if (error) throw new Error(error.message);
       return data[0];
     },
-
-    //optimistic update
-    onMutate: async ({profileId, roleName}) => {
-        await queryClient.cancelQueries({queryKey: ["roles", profileId]});
-
-        const previousRoles = queryClient.getQueryData(["roles", profileId]);
-
-        const optimisticRole = {
-            id: `temp-${Date.now()}`,
-            profile_id: profileId,
-            role: roleName,
-            created_at: new Date().toISOString(),
-        };
-
-        queryClient.setQueryData(["roles", profileId], (old = []) => [...old,optimisticRole]);
-
-        return { previousRoles };
+    onMutate: async ({ profileId, roleName }) => {
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: roleKeyFactory,
+        entity: {
+          id: `temp-${Date.now()}`,
+          profile_id: profileId,
+          role: roleName,
+          created_at: new Date().toISOString(),
+          profileId,
+        },
+        type: "add",
+      });
     },
-
-    onError: (err, _variables, context) => {
-        if (context?.previousRoles) {
-            queryClient.setQueryData(["roles", _variables.profileId]);
-        }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
+    onSuccess: (newRole, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: roleKeyFactory,
+        entity: {
+          id: variables.id || `temp-${Date.now()}`,
+          profileId: variables.profileId,
+        },
+        newEntity: newRole,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-        queryClient.invalidateQueries({ queryKey: ["roles", variables.profileId]});
+      invalidateKeys({
+        queryClient,
+        keyFactory: roleKeyFactory,
+        entity: { profileId: variables.profileId },
+      });
     },
   });
-}
+};
 
 // Delete a role from a profile
 export const useDeleteRoleMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (roleId) => {
+    mutationFn: async ({ id, profileId }) => {
       const { error } = await supabase
         .schema("music")
         .from("roles")
         .delete()
-        .eq("id", roleId);
+        .eq("id", id);
       if (error) throw new Error(error.message);
     },
-
-    // Optimistic update
-    onMutate: async (roleId) => {
-     await queryClient.cancelQueries({ queryKey: ["roles"]});
-     
-        const previousRoles = queryClient.getQueryData(["roles"]);
-
-        queryClient.setQueryData(["roles"], (old) =>
-        old ? old.filter((role) => role.id !== roleId) : []
-        );
-
-        return { previousRoles };
+    onMutate: async ({ id, profileId }) => {
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: roleKeyFactory,
+        entity: { id, profileId },
+        type: "remove",
+      });
     },
-
-    onError: (err, roleId, context) => {
-        if (context?.previousRoles) {
-            queryClient.setQueryData(["roles"], context.previousRoles);
-        }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
     },
-
-    onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ["roles"]});
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: roleKeyFactory,
+        entity: { profileId: variables.profileId },
+      });
     },
   });
-}
+};

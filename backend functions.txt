@@ -556,3 +556,14 @@ begin
   return NEW;
 end;
 $$ language plpgsql;
+
+
+
+-- 
+CREATE OR REPLACE FUNCTION delete_messages_on_conversation_delete()
+RETURNS TRIGGER AS $$
+BEGIN
+  DELETE FROM social.messages WHERE conversation_id = OLD.id;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;

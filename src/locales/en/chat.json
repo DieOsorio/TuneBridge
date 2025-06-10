@@ -43,5 +43,19 @@
   "input": {
     "button": "Send",
     "placeholder": "Write a message..."
+  },
+  "message": {
+    "deleted": "This message has been deleted.",
+    "edit": {
+      "title": "Edit Message",
+      "placeholder": "Edit your message..."
+    },
+    "delete": {
+      "title": "Delete Message"
+    },
+    "reply": {
+      "title": "Reply to Message",
+      "placeholder": "Type your reply..."
+    }
   }
 }

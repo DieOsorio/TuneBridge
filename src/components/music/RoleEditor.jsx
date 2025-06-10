@@ -100,7 +100,7 @@ const RoleEditor = ({
         }
 
       reset();
-      setSuccessMessage(t("message.success.add", {item: title}));
+      setSuccessMessage(t("messages.success.add", {item: title}));
       setTimeout(() => setSuccessMessage(""), 3000);
       refetch();
     } catch (err) {

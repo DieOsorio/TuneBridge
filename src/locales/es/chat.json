@@ -43,5 +43,19 @@
   "input": {
     "button": "Enviar",
     "placeholder": "Escribe un mensaje..."
+  },
+  "message": {
+    "deleted": "Este mensaje ha sido eliminado.",
+    "edit": {
+      "title": "Editar mensaje",
+      "placeholder": "Edita tu mensaje..."
+    },
+    "delete": {
+      "title": "Eliminar mensaje"
+    },
+    "reply": {
+      "title": "Responder al mensaje",
+      "placeholder": "Escribe tu respuesta..."
+    }
   }
 }

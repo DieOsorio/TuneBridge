@@ -1,11 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../supabase";
 import { useEffect } from "react";
+import { messageKeyFactory } from "../../helpers/social/socialKeys";
+import {
+  optimisticUpdate,
+  rollbackCache,
+  invalidateKeys,
+  replaceOptimisticItem,
+} from "../../helpers/cacheHandler";
 
 // TOTAL UNREAD MESSAGES
 export const useTotalUnreadMessages = (profileId) => {
   return useQuery({
-    queryKey: ["total-unread-messages", profileId],
+    queryKey: messageKeyFactory({ profileId }).totalUnread,
     queryFn: async () => {
       // 1. Obtener las conversaciones del usuario
       const { data: conversations, error: convError } = await supabase
@@ -57,7 +64,7 @@ export const useTotalUnreadMessages = (profileId) => {
 // CHECK UNREAD MESSAGES
 export const useUnreadMessages = ({ conversationId, profileId }) => {
   return useQuery({
-    queryKey: ["unread-messages", conversationId, profileId],
+    queryKey: messageKeyFactory({ conversationId, profileId }).unread,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -88,7 +95,6 @@ export const useMarkMessagesAsReadMutation = () => {
 
   return useMutation({
     mutationFn: async ({ messageIds, profileId, conversationId }) => {
-
       const updates = messageIds.map(async (id) => {
         const { data: existingData, error: fetchError } = await supabase
           .schema("social")
@@ -96,34 +102,32 @@ export const useMarkMessagesAsReadMutation = () => {
           .select("read_by")
           .eq("id", id)
           .single();
-          
         if (fetchError) throw new Error(fetchError.message);
-
         const currentReadBy = existingData?.read_by || [];
-
         if (currentReadBy.includes(profileId)) {
-          console.log(`Message ${id} already read by ${profileId}`);
           return;
         }
-
         const updatedReadBy = [...currentReadBy, profileId];
-
         const { data, error } = await supabase
           .schema("social")
           .from("messages")
           .update({ read_by: updatedReadBy })
           .eq("id", id)
           .select();
-
         if (error) throw new Error(error.message);
         return data;
       });
-
       return Promise.all(updates);
     },
-
-    onSettled: (_data, _error, { conversationId }) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", conversationId] });
+    onSettled: (_data, _error, { conversationId, profileId }) => {
+      invalidateKeys({
+        queryClient,
+        queryKey: messageKeyFactory({ conversationId, profileId }).unread,
+      });
+      invalidateKeys({
+        queryClient,
+        queryKey: messageKeyFactory({ conversationId }).all,
+      });
     },
   });
 };
@@ -133,10 +137,8 @@ export const useMarkMessagesAsReadMutation = () => {
 // REALTIME MESSAGES
 export const useMessagesRealtime = (conversation_id) => {
   const queryClient = useQueryClient();
-
   useEffect(() => {
     if (!conversation_id) return;
-
     const channel = supabase
       .channel("realtime-messages")
       .on(
@@ -148,13 +150,13 @@ export const useMessagesRealtime = (conversation_id) => {
           filter: `conversation_id=eq.${conversation_id}`,
         },
         () => {
-          queryClient.invalidateQueries({
-            queryKey: ["messages", conversation_id],
+          invalidateKeys({
+            queryClient,
+            queryKey: messageKeyFactory({ conversationId: conversation_id }).all,
           });
         }
       )
       .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
     };
@@ -164,7 +166,7 @@ export const useMessagesRealtime = (conversation_id) => {
 // FETCH MESSAGES FROM A CONVERSATION
 export const useFetchMessagesQuery = (conversationId) => {
   return useQuery({
-    queryKey: ["messages", conversationId],
+    queryKey: messageKeyFactory({ conversationId }).all,
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -184,7 +186,6 @@ export const useFetchMessagesQuery = (conversationId) => {
 // INSERT NEW MESSAGE
 export const useInsertMessageMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (message) => {
       const { data, error } = await supabase
@@ -192,35 +193,42 @@ export const useInsertMessageMutation = () => {
         .from("messages")
         .insert(message)
         .select();
-
       if (error) throw new Error(error.message);
       return data[0];
     },
     onMutate: async (message) => {
-      await queryClient.cancelQueries({ queryKey: ["messages", message.conversation_id] });
-
-      const previousMessages = queryClient.getQueryData(["messages", message.conversation_id]);
-
-      const optimisticMessage = {
-        id: `temp-${Date.now()}`,
+      const optimisticMsg = {
+        id: message.id || `temp-${Date.now()}`,
         ...message,
         created_at: new Date().toISOString(),
       };
-
-      queryClient.setQueryData(["messages", message.conversation_id], (old = []) => [
-        ...old,
-        optimisticMessage,
-      ]);
-
-      return { previousMessages };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { ...optimisticMsg, conversationId: message.conversation_id },
+        type: "add",
+      });
     },
-    onError: (_err, _vars, context) => {
-      if (context?.previousMessages) {
-        queryClient.setQueryData(["messages", _vars.conversation_id], context.previousMessages);
-      }
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
+    onSuccess: (newMessage, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { id: variables.id || variables.tempId || `temp-${Date.now()}`, conversationId: variables.conversation_id },
+        newEntity: newMessage,
+      });
     },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", variables.conversation_id] });
+      invalidateKeys({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { conversationId: variables.conversation_id },
+      });
     },
   });
 };
@@ -228,21 +236,52 @@ export const useInsertMessageMutation = () => {
 // UPDATE MESSAGE
 export const useUpdateMessageMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ({ id, updatedFields }) => {
+    mutationFn: async ({ id, updatedFields, conversation_id }) => {
       const { data, error } = await supabase
         .schema("social")
         .from("messages")
         .update(updatedFields)
         .eq("id", id)
         .select();
-
       if (error) throw new Error(error.message);
       return data[0];
     },
+    onMutate: async ({ id, updatedFields, conversation_id }) => {
+      // Get the previous messages from cache
+      const key = messageKeyFactory({ conversationId: conversation_id }).all;
+      const prev = queryClient.getQueryData(key);
+      // Find the original message
+      const original = Array.isArray(prev) ? prev.find(m => m.id === id) : undefined;
+      // Merge updated fields into the original message for optimistic update
+      const optimisticEntity = original ? { ...original, ...updatedFields } : { id, ...updatedFields, conversationId: conversation_id };
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: optimisticEntity,
+        type: "update",
+      });
+    },
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
+    onSuccess: (newMessage, variables) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { id: variables.id, conversationId: variables.conversation_id },
+        newEntity: newMessage,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", variables.conversation_id] });
+      invalidateKeys({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { conversationId: variables.conversation_id },
+      });
     },
   });
 };
@@ -250,19 +289,35 @@ export const useUpdateMessageMutation = () => {
 // DELETE MESSAGE (soft delete)
 export const useDeleteMessageMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ({ id }) => {
+    mutationFn: async ({ id, conversation_id }) => {
       const { error } = await supabase
         .schema("social")
         .from("messages")
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", id);
-
       if (error) throw new Error(error.message);
     },
+    onMutate: async ({ id, conversation_id }) => {
+      return optimisticUpdate({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { id, conversationId: conversation_id },
+        type: "remove",
+      });
+    },
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        previousData: context,
+      });
+    },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", variables.conversation_id] });
+      invalidateKeys({
+        queryClient,
+        keyFactory: messageKeyFactory,
+        entity: { conversationId: variables.conversation_id },
+      });
     },
   });
 };

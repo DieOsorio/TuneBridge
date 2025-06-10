@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import ProfileAvatar from "../../profiles/ProfileAvatar";
 
 const MiniProfileCard = ({ profile, onAdd }) => {
   const { t } = useTranslation("common")
@@ -11,12 +12,13 @@ const MiniProfileCard = ({ profile, onAdd }) => {
   };
 
   return (
-    <div className="flex items-center justify-between p-2 bg-neutral-900 rounded-lg border border-neutral-700">
+    <div className="flex items-center justify-between p-2 gap-2 bg-neutral-900 rounded-lg border border-neutral-700">
       <div className="flex items-center gap-2">
-        <img
+        <ProfileAvatar
           src={profile.avatar_url}
           alt={profile.username}
-          className="w-8 h-8 rounded-full object-cover"
+          className="!w-8 !h-8"
+          gender={profile.gender}
         />
         <span className="text-sm text-white">{profile.username}</span>
       </div>

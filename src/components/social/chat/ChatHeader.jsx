@@ -31,7 +31,7 @@ const ChatHeader = ({ conversationId }) => {
 
   // Fetch participants of the conversation
   const { fetchParticipants, addParticipant, removeParticipant } = useParticipants();
-  const { data: participants, isLoading: isParticipantsLoading } = fetchParticipants(conversationId);
+  const { data: participants = [], isLoading: isParticipantsLoading } = fetchParticipants(conversationId);
 
   // Fetch current user profile and search logic
   const { fetchProfile, searchProfiles } = useProfile();
@@ -46,7 +46,17 @@ const ChatHeader = ({ conversationId }) => {
   const { isConversationListVisible, toggleConversationList } = useChatUI();
 
   // Get the other participant's profile in direct chats
-  const otherParticipant = participants?.find((p) => p.profile_id !== user.id);
+  let safeParticipants = [];
+  if (Array.isArray(participants)) {
+    safeParticipants = participants;
+  } else if (participants && Array.isArray(participants.pages)) {
+    safeParticipants = participants.pages.flat();
+  }
+  if (!Array.isArray(safeParticipants)) {
+    console.error("participants is not an array", participants);
+    safeParticipants = [];
+  }
+  const otherParticipant = safeParticipants.find((p) => p.profile_id !== user.id);
   const { data: otherProfile } = fetchProfile(otherParticipant?.profile_id);
 
   // Form handling for search input
@@ -55,13 +65,13 @@ const ChatHeader = ({ conversationId }) => {
 
   // Search results and filtering logic
   const { data: searchResults, isLoading: isSearching } = searchProfiles(searchTerm);
-  const participantsIds = participants?.map((p) => p.profile_id) || [];
+  const participantsIds = safeParticipants.map((p) => p.profile_id) || [];
   const filteredResults = searchResults?.filter(
     (profile) => !participantsIds.includes(profile.id)
   ) || [];
 
   const isGroup = conversation?.is_group;
-  const isAdmin = participants?.some(
+  const isAdmin = safeParticipants.some(
     (p) => p.profile_id === user.id && p.role === "admin"
   );
   const avatarTriggerRef = useRef();

@@ -1,10 +1,11 @@
-import React, { createContext, useContext} from "react";
+import { createContext, useContext} from "react";
 import PropTypes from "prop-types";
 import {
   useFetchConnectionsQuery,
   useAddConnectionMutation,
   useUpdateConnectionMutation,
   useDeleteConnectionMutation,
+  useConnectionBetweenProfiles,
 } from "./userConnectionsActions";
 
 const UserConnectionsContext = createContext();
@@ -24,7 +25,8 @@ export const UserConnectionsProvider = ({ children }) => {
     addConnection,
     updateConnection,
     deleteConnection,
-    userConnections: useFetchConnectionsQuery,    
+    userConnections: useFetchConnectionsQuery,
+    connectionBetweenProfiles: useConnectionBetweenProfiles,    
   }
 
   return (

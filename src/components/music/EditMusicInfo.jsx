@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import Input from "../ui/Input";
 import Button from "../ui/Button";
 import RoleDataEditor from "./RoleDataEditor";
 import { useRoles } from "../../context/music/RolesContext";
@@ -158,7 +157,7 @@ const EditMusicInfo = ({ profileId }) => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteRole(role.id);
+                        deleteRole({ id: role.id, profileId: profileId });
                       }}
                       className="text-xs bg-red-500 text-white px-2 py-1 rounded-full hover:bg-red-600"
                       aria-label={t("music.edit.deleteRoleAria", { role: role.role })}
