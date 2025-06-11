@@ -153,7 +153,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 mx-auto sm:ml-auto sm:mb-auto items-center relative">
+        <div className="flex gap-4 ml-auto sm:mb-auto items-center relative">
           {!isOwnProfile && (
             <>
               <IoChatboxSharp

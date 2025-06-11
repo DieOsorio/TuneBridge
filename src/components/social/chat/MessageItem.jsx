@@ -154,6 +154,7 @@ const MessageItem = ({ message, isMine }) => {
                     >
                       {t("message.delete.title")}
                     </button>
+                    <div className="border-t border-sky-700" />
                     <button
                       className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-yellow-500"
                       onClick={handleEdit}

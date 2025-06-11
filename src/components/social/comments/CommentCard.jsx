@@ -135,7 +135,7 @@ function CommentCard({
       </Link>
       {/* comment box */}
       <div className="flex flex-col w-full">
-        <div className="bg-gray-100 dark:bg-zinc-900 p-3 rounded-lg shadow-sm">
+        <div className="bg-zinc-900 p-3 rounded-lg shadow-sm">
           <div className="flex justify-between items-center">
             {/* username from comment sender */}
             <div className="font-semibold text-zinc-700 dark:text-zinc-300">
