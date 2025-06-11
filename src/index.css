@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
- /* Custom styles for the FilePond component */
+body {
+  background: #030712 !important; /* fallback solid */
+  min-height: 100vh;
+  color: #fff;
+}
+
+/* Custom styles for the FilePond component */
 .filepond--drop-label {
   color: #9ca7b9 !important;
   background-color: #020207 !important;
