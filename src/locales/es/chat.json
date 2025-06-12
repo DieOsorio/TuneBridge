@@ -6,7 +6,8 @@
     "group": {
       "editTitle": "Haz clic para editar el nombre del grupo",
       "untitled": "Sin título",
-      "editAvatar": "Editar avatar del grupo"
+      "editAvatar": "Editar avatar del grupo",
+      "info": "Información del grupo"
     },
     "direct": {
       "untitled": "Sin título"
@@ -15,7 +16,8 @@
       "convertToGroup": "Convertir en grupo",
       "showList": "Mostrar lista de conversaciones",
       "hideList": "Ocultar lista de conversaciones",
-      "leaveConversation": "Salir del chat"
+      "leaveConversation": "Salir del chat",
+      "leaveGroup": "Salir del grupo"
     },
     "convert": {
       "title": "Convertir en chat de grupo",
@@ -37,6 +39,12 @@
       "placeholder": "Buscar perfiles...",
       "searching": "Buscando...",
       "noResults": "No se encontraron perfiles."
+    },
+    "confirm": {
+      "remove": "¿Eliminar participante?",
+      "promote": "¿Promover a admin?",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar"
     }
   },
   "list": "No se encontraron conversaciones.",
@@ -57,5 +65,23 @@
       "title": "Responder al mensaje",
       "placeholder": "Escribe tu respuesta..."
     }
+  },
+  "groupOverview": {
+    "participants": "Participantes",
+    "role": {
+      "admin": "admin",
+      "member": "miembro"
+    },
+    "actions": {
+      "promote": "Promover a admin",
+      "remove": "Eliminar participante",
+      "viewProfile": "Ver perfil",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    },
+    "menu": {
+      "open": "Abrir acciones de participante"
+    },
+    "untitled": "Grupo sin título"
   }
 }

@@ -1,22 +1,21 @@
 // Context and utility imports
 import { useConversations } from "../../../context/social/chat/ConversationsContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
-import MiniProfileCard from "./MiniProfileCard";
 import { useAuth } from "../../../context/AuthContext";
 import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
 import { useProfile } from "../../../context/profile/ProfileContext";
 import { useForm } from "react-hook-form";
-import { HiUserGroup, HiMinus, HiPlus, HiPencil, HiOutlineUserRemove, HiOutlineTrash } from "react-icons/hi";
-import { useState, useEffect, useRef } from "react";
+import { HiUserGroup, HiOutlineUserRemove } from "react-icons/hi";
+import { HiInformationCircle, HiEllipsisVertical } from "react-icons/hi2";
+import { useEffect, useRef, useState } from "react";
 import { uploadFileToBucket } from "../../../utils/avatarUtils";
-import ImageUploader from "../../../utils/ImageUploader";
-import { HiCamera } from "react-icons/hi";
 import { HiBars3 } from 'react-icons/hi2';
 import { useChatUI } from "../../../context/social/chat/ChatUIContext";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../../ui/ConfirmDialog";
+import GroupOverview from "./GroupOverview";
 
 
 const ChatHeader = ({ conversationId }) => {
@@ -43,6 +42,8 @@ const ChatHeader = ({ conversationId }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [isConvertConfirmOpen, setIsConvertConfirmOpen] = useState(false);
+  const [isGroupOverviewOpen, setIsGroupOverviewOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { isConversationListVisible, toggleConversationList } = useChatUI();
 
   // Get the other participant's profile in direct chats
@@ -161,7 +162,7 @@ const ChatHeader = ({ conversationId }) => {
   // Convert direct chat to group
   const handleConvertToGroup = async () => {
     try {
-      await updateConversation({ conversation, updates: { is_group: true } });
+      await updateConversation({ conversation, updates: { avatar_url: "https://cdn4.iconfinder.com/data/icons/avatar-1-2/100/Avatar-16-512.png", is_group: true, title: t("header.group.untitled") } });
     } catch (err) {
       console.error("Failed to convert to group chat:", err.message);
     } finally {
@@ -179,228 +180,126 @@ const ChatHeader = ({ conversationId }) => {
     : otherProfile?.username;
 
   return (
-  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 bg-gradient-to-l from-gray-900 px-4 py-2 border-b-2 border-sky-600">
-    
-    {/* Left side: avatar and title */}
-    <div className="flex items-center gap-4">
-      {conversation?.avatar_url ? (
-        <div className="relative">
-          {isGroup ? (
-            <>
-              <img
-                src={conversation.avatar_url}
-                alt="Group Avatar"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-
-              {isAdmin && (
-                <>
-                  <button
-                  ref={avatarTriggerRef}
-                  className="absolute bottom-0 right-0 bg-black bg-opacity-50 p-1 rounded-full text-white hover:bg-opacity-80 transition"
-                  title={t("header.group.editAvatar")}
-                  >
-                  <HiCamera
-                    title={t("header.group.editAvatar")}
-                    className="w-4 h-4 cursor-pointer"
-                  />
-                  </button>
-
-                  <ImageUploader
-                    onFilesUpdate={handleGroupAvatarUpload}
-                    amount={1}
-                    triggerRef={avatarTriggerRef}
-                  />
-                </>
-              )}
-            </>
-          ) : (
-            <Link to={`/profile/${otherProfile?.id}`}>
-              <img
-                src={otherProfile?.avatar_url}
-                alt="User Avatar"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-            </Link>
-          )}
-        </div>
-      ) : (
-        <div className="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-white text-sm">
-          {title?.charAt(0).toUpperCase() || "?"}
-        </div>
-      )}
-
-      {/* Title with editable logic for group chats */}
-      {isGroup ? (
-        <div className="flex items-center gap-2 group">
-          {isEditingTitle ? (
-            <input
-              type="text"
-              value={editedTitle}
-              onChange={(e) => setEditedTitle(e.target.value)}
-              onBlur={() => {
-                setIsEditingTitle(false);
-                const trimmed = editedTitle.trim();
-                if (trimmed && trimmed !== conversation?.title) {
-                  updateConversation({ conversation, updates: { title: trimmed } });
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.target.blur();
-                }
-              }}
-              autoFocus
-              className={`bg-transparent border-b ${
-                isAdmin ? "border-sky-500" : "border-transparent"
-              } text-lg font-semibold text-white focus:outline-none ${
-                !isAdmin ? "cursor-not-allowed opacity-50" : ""
-              }`}
-              disabled={!isAdmin}
+    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 bg-gradient-to-l from-gray-900 px-4 py-2 border-b-2 border-sky-600">
+      <div className="flex items-center gap-4 w-full relative">
+        {conversation?.avatar_url ? (
+          <div className="relative">
+            <img
+              src={avatarUrl}
+              alt="Group Avatar"
+              className="w-10 h-10 bg-amber-600 rounded-full object-cover"
             />
-          ) : (
-             <>
-              <h2
-                className={`text-lg font-semibold text-white ${
-                  isAdmin ? "cursor-pointer group-hover:underline" : ""
-                }`}
-                onClick={() => isAdmin && setIsEditingTitle(true)}
-                title={isAdmin ? t("header.group.editTitle") : ""}
-              >
-                {editedTitle || t("header.group.untitled")}
-              </h2>
-              {isAdmin && (
-                <HiPencil
-                  onClick={() => setIsEditingTitle(true)}
-                  className="text-white cursor-pointer hover:text-sky-400 transition text-base"
-                  title={t("header.group.editTitle")}
-                />
-              )}
-            </>
-          )}
-        </div>
-      ) : (
-        <h2 className="text-lg font-semibold">{title || t("header.direct.untitled")}</h2>
-      )}
-      {/* Leave/Delete Chat */}
-      <button
-        onClick={() => setIsLeaveConfirmOpen(true)}
-        className="text-red-400 hover:text-red-600 transition mt-2 md:mt-0 text-sm font-semibold"
-        title={t("header.buttons.leaveConversation")}
-        color="error"
-      >
-        {isGroup ? (
-          <HiOutlineUserRemove size={18}  />
+          </div>
         ) : (
-          <HiOutlineTrash size={18} />
+          <div className="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-white text-sm">
+            {title?.charAt(0).toUpperCase() || "?"}
+          </div>
         )}
-      </button>
-
-      <ConfirmDialog
-        isOpen={isLeaveConfirmOpen}
-        title={t("header.leave.title")}
-        message={
-          isGroup
-            ? t("header.leave.groupMessage")
-            : t("header.leave.directMessage")
-        }
-        confirmLabel={t("header.leave.confirm")}
-        cancelLabel={t("header.leave.cancel")}
-        onConfirm={handleLeaveConversation}
-        onCancel={() => setIsLeaveConfirmOpen(false)}
-        color="error"
-      />
-            
-      {/* Convert direct chat to group button */}
-      {!isGroup && (
-        <button
-          onClick={() => setIsConvertConfirmOpen(true)}
-          className="text-white hover:text-sky-400 transition text-xl"
-          title={t("header.buttons.convertToGroup")}
-        >
-          <HiUserGroup title={t("header.buttons.convertToGroup")} />
-        </button>
-      )}
-
-      <ConfirmDialog
-        isOpen={isConvertConfirmOpen}
-        title={t("header.convert.title")}
-        message={t("header.convert.message")}
-        confirmLabel={t("header.convert.confirm")}
-        cancelLabel={t("header.convert.cancel")}
-        onConfirm={handleConvertToGroup}
-        onCancel={() => setIsConvertConfirmOpen(false)}
-        color="success"
-      />
-
-      {/* Menu to show conversations*/}
-      <button
-        onClick={toggleConversationList}
-        className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1"
-        aria-label={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
-        title={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
-      >
-        <HiBars3 size={30}/>
-      </button>            
-    </div>
-
-    {/* Right side: search and add participants */}
-    {isGroup && isAdmin && (
-      <div className="flex flex-col items-center w-full md:w-auto md:items-end md:mt-0">
-        {/* Toggle search visibility */}
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-white font-semibold">
-            {t("header.search.toggle")}
-          </span>
+        <h2 className="text-lg font-semibold text-white">{title || t("header.group.untitled")}</h2>
+        {/* Group Overview Button */}
+        {isGroup && (
           <button
-            onClick={() => setSearchVisible((prev) => !prev)}
-            className="text-white text-lg hover:text-sky-400 transition ml-3"
-            title={searchVisible ? t("header.search.hide") : t("header.search.show")}
+            onClick={() => setIsGroupOverviewOpen(true)}
+            className="ml-auto px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold flex items-center gap-1"
+            style={{ marginLeft: 'auto' }}
+            title={t("header.group.info")}
           >
-            {searchVisible ? <HiMinus title={t("header.search.hide")} /> : <HiPlus title={t("header.search.show")} />}
+            <HiInformationCircle size={18} className="inline-block text-base text-gray-300" />
+            {t("header.group.info")}
           </button>
-        </div>        
-
-        {/* Search input and results */}
-        {searchVisible && (
-          <>
-            <input
-              type="text"
-              {...register("searchTerm")}
-              placeholder={t("header.search.placeholder")}
-              className="mt-2 p-1 rounded-md bg-neutral-800 text-white text-sm border border-neutral-600"
-            />
-            {isSearching && 
-            <span className="text-sm text-gray-400 mt-1">
-              {t("header.search.searching")}
-            </span>}
-            <div className="mt-2 flex flex-col gap-2">
-              {/* List of profiles not already in the conversation */}
-              {filteredResults.map((profile) => (
-                <MiniProfileCard
-                  key={profile.id}
-                  profile={profile}
-                  onAdd={() =>
-                    addParticipant({
-                      conversation_id: conversationId,
-                      profile_id: profile.id,
-                    })
-                  }
-                />
-              ))}
-              {/* No results message */}
-              {!isSearching && searchTerm && filteredResults.length === 0 && (
-                <span className="text-sm text-gray-500">
-                  {t("header.search.noResults")}
-                </span>
-              )}
-            </div>
-          </>
         )}
+        {/* Three dots menu for direct chats, far right */}
+        {!isGroup && (
+          <div className="ml-auto relative flex items-center">
+            <button
+              className="p-1 rounded-full hover:bg-gray-800 text-gray-300"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={t("header.menu.open")}
+            >
+              <HiEllipsisVertical size={22} />
+            </button>
+            {menuOpen && (
+              <div className="absolute right-7 mt-28 w-48 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
+                <ul className="py-1">
+                  <li>
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-white"
+                      onClick={() => {
+                        if (otherParticipant?.profile_id) navigate(`/profile/${otherParticipant.profile_id}`);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      {t("groupOverview.actions.viewProfile")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-sky-700 text-white"
+                      onClick={() => {
+                        setIsConvertConfirmOpen(true);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      {t("header.buttons.convertToGroup")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-red-700 text-white"
+                      onClick={() => {
+                        setIsLeaveConfirmOpen(true);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      {t("header.buttons.leaveConversation")}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+        {!isGroup && (
+          <ConfirmDialog
+            isOpen={isLeaveConfirmOpen}
+            title={t("header.leave.title")}
+            message={t("header.leave.directMessage")}
+            confirmLabel={t("header.leave.confirm")}
+            cancelLabel={t("header.leave.cancel")}
+            onConfirm={handleLeaveConversation}
+            onCancel={() => setIsLeaveConfirmOpen(false)}
+            color="error"
+          />
+        )}
+        <ConfirmDialog
+          isOpen={isConvertConfirmOpen}
+          title={t("header.convert.title")}
+          message={t("header.convert.message")}
+          confirmLabel={t("header.convert.confirm")}
+          cancelLabel={t("header.convert.cancel")}
+          onConfirm={handleConvertToGroup}
+          onCancel={() => setIsConvertConfirmOpen(false)}
+          color="success"
+        />
+        {/* Menu to show conversations*/}
+        <button
+          onClick={toggleConversationList}
+          className="md:hidden text-white bg-sky-600 text-2xl mr-2 ml-auto rounded-md p-1"
+          aria-label={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
+          title={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
+        >
+          <HiBars3 size={30}/>
+        </button>
       </div>
-    )}
-  </div>
-);
+      {/* GroupOverview Modal */}
+      {isGroupOverviewOpen && (
+        <GroupOverview
+          conversation={conversation}
+          onClose={() => setIsGroupOverviewOpen(false)}
+        />
+      )}
+    </div>
+  );
 };
 
 export default ChatHeader;
