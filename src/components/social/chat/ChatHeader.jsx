@@ -182,6 +182,7 @@ const ChatHeader = ({ conversationId }) => {
   return (
     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 bg-gradient-to-l from-gray-900 px-4 py-2 border-b-2 border-sky-600">
       <div className="flex items-center gap-4 w-full relative">
+        {/* Avatar and Title */}
         {conversation?.avatar_url ? (
           <div className="relative">
             <img
@@ -196,11 +197,11 @@ const ChatHeader = ({ conversationId }) => {
           </div>
         )}
         <h2 className="text-lg font-semibold text-white">{title || t("header.group.untitled")}</h2>
-        {/* Group Overview Button */}
+        {/* Group Overview Button for md+ screens */}
         {isGroup && (
           <button
             onClick={() => setIsGroupOverviewOpen(true)}
-            className="ml-auto px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold flex items-center gap-1"
+            className="ml-auto px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold items-center gap-1 hidden md:flex"
             style={{ marginLeft: 'auto' }}
             title={t("header.group.info")}
           >
@@ -291,6 +292,17 @@ const ChatHeader = ({ conversationId }) => {
           <HiBars3 size={30}/>
         </button>
       </div>
+      {/* Group Overview Button for small screens (below avatar/title) */}
+      {isGroup && (
+        <button
+          onClick={() => setIsGroupOverviewOpen(true)}
+          className="mt-2 mr-auto px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold flex items-center gap-1 md:hidden"
+          title={t("header.group.info")}
+        >
+          <HiInformationCircle size={20} className="inline-block text-base text-gray-300" />
+          {t("header.group.info")}
+        </button>
+      )}
       {/* GroupOverview Modal */}
       {isGroupOverviewOpen && (
         <GroupOverview

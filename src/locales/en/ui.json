@@ -8,11 +8,22 @@
   "explore": {
     "title": "Explore",
     "description": "Dive into posts and profiles crafted by creators just like you.",
-    "tags": ["Music", "Art", "Technology", "Culture", "Inspiration"],
+    "tags": [
+      "Music", 
+      "Guitar", 
+      "Singer", 
+      "Jazz", 
+      "DJ", 
+      "Violin", 
+      "Classic"
+    ],
     "tabs": {
       "posts": "Posts",
       "profiles": "Profiles"
     }
+  },
+  "hashtags": {
+    "description": "Discover profiles and posts related to the hashtag #{{hashtag}}."
   },
   "landingpage": {
     "hero": {

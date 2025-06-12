@@ -14,6 +14,7 @@ import UpdatePost from "../components/social/UpdatePost";
 import CreateProfileGroup from "../components/profiles/CreateProfileGroup";
 import ProfileGroup from "../pages/ProfileGroups";
 import CreatePost from "../components/social/CreatePost";
+import Hashtag from "../pages/Hashtag";
 
 const AppRouter = () => {
     
@@ -39,6 +40,7 @@ const AppRouter = () => {
           <Route path="/edit-post/:postId" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
           <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/profile/:identifier" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/hashtag/:hashtag" element={<Hashtag />} />
         </Routes>
       </main>
       <Footer />

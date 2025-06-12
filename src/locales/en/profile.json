@@ -33,7 +33,10 @@
       "block": "Block",
       "unblock": "Unblock",
       "blockedByOther": "You are blocked by this user."
-    } 
+    }
+  },
+  "hashtags": {
+    "empty": "No profiles matched your search."
   },
   "edit": {
       "title": "Edit Profile",

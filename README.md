@@ -115,9 +115,6 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 
 - **Music Section:**
   - Support for more platforms beyond YouTube and Spotify (e.g., automatic embed and display logic based on the link, for both audio and video content).
-  
-- **Hashtag System:**
-  - A fully functional hashtag system will be implemented, allowing users to click on a hashtag and view a dedicated section with all related posts and/or profiles.
 
 - **Profile Groups (Band-Oriented):**
   - A new section called "Groups" is in development, where users can create and manage band-oriented profile groups.

@@ -80,7 +80,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
 
       if (selectedFile) {
         // Use the generalized function to upload the avatar
-        avatar = await uploadFileToBucket(
+        avatar = uploadFileToBucket(
           selectedFile, 
           "avatars", 
           user.id, 

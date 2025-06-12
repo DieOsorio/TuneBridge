@@ -1,40 +1,43 @@
 {
   "profile": {
-    "noData": "No hay datos de perfil disponibles.",
-    "errorLoading": "Error al cargar el perfil.",
-    "userGroupsComing": "Los Grupos de Usuarios están en desarrollo. ¡Próximamente!",
-    "musicComing": "La sección de Música está en desarrollo. ¡Próximamente!",
-    "navigation": {
-      "about": "Acerca de",
-      "music": "Música",
-      "posts": "Publicaciones",
-      "groups": "Grupos"
-    },
-    "titles": {
-        "chat": "Chat",
-        "startChat": "Iniciar Chat",
-        "notifications": "Notificaciones",
-        "settings": "Configuraciones"
+      "noData": "No hay datos de perfil disponibles.",
+      "errorLoading": "Error al cargar el perfil.",
+      "userGroupsComing": "Los Grupos de Usuarios están en desarrollo. ¡Próximamente!",
+      "musicComing": "La sección de Música está en desarrollo. ¡Próximamente!",
+      "navigation": {
+        "about": "Acerca de",
+        "music": "Música",
+        "posts": "Publicaciones",
+        "groups": "Grupos"
       },
-    "data": {
-      "firstname": "Nombre",
-      "lastname": "Apellido",
-      "country": "País",
-      "city": "Ciudad",
-      "gender": "Género",
-      "age": "Edad",
-      "years": "años"
+      "titles": {
+          "chat": "Chat",
+          "startChat": "Iniciar Chat",
+          "notifications": "Notificaciones",
+          "settings": "Configuraciones"
+        },
+      "data": {
+        "firstname": "Nombre",
+        "lastname": "Apellido",
+        "country": "País",
+        "city": "Ciudad",
+        "gender": "Género",
+        "age": "Edad",
+        "years": "años"
+      },
+      "connection": {
+        "loading": "Comprobando conexión...",
+        "connect": "Conectar",
+        "disconnect": "Desconectar",
+        "pending": "Pendiente",
+        "block": "Bloquear",
+        "unblock": "Desbloquear",
+        "blockedByOther": "Estás bloqueado por este usuario."
+      }    
+  },  
+  "hashtags": {
+      "empty": "No se encontraron perfiles que coincidan con tu búsqueda."
     },
-    "connection": {
-      "loading": "Checking connection...",
-      "connect": "Connect",
-      "disconnect": "Disconnect",
-      "pending": "Pending",
-      "block": "Block",
-      "unblock": "Unblock",
-      "blockedByOther": "You are blocked by this user."
-    }     
-  },
   "edit": {
       "title": "Editar Perfil",
       "navigation": {

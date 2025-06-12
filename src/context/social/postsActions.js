@@ -141,6 +141,8 @@ export const useCreatePostMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async(post) => {
+      console.log("Creating post:", post);
+      
       const { data, error}= await supabase
         .schema("social")
         .from("posts")

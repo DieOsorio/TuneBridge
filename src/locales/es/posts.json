@@ -10,6 +10,9 @@
     "noMatch": "Ninguna publicación coincide con tu búsqueda.",
     "noImages": "No hay imágenes disponibles para esta publicación."
   },
+  "hashtags": {
+    "empty": "No se encontraron publicaciones con este hashtag."
+  },
   "create": {
     "title": "Crear una nueva publicación",
     "labels": {
