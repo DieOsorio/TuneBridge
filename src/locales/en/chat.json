@@ -6,7 +6,8 @@
     "group": {
       "editTitle": "Click to edit group title",
       "untitled": "Untitled",
-      "editAvatar": "Edit group avatar"
+      "editAvatar": "Edit group avatar",
+      "info": "Group info"
     },
     "direct": {
       "untitled": "Untitled"
@@ -15,7 +16,8 @@
       "convertToGroup": "Convert to group chat",
       "showList": "Show conversation list",
       "hideList": "Hide conversation list",
-      "leaveConversation": "Leave Chat"
+      "leaveConversation": "Leave Chat",
+      "leaveGroup": "Leave Group"
     },
     "convert": {
       "title": "Convert to Group Chat",
@@ -57,5 +59,33 @@
       "title": "Reply to Message",
       "placeholder": "Type your reply..."
     }
+  },
+  "groupOverview": {
+    "participants": "Participants",
+    "role": {
+      "admin": "admin",
+      "member": "member"
+    },
+    "actions": {
+      "promote": "Promote to admin",
+      "remove": "Remove participant",
+      "viewProfile": "View profile",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "menu": {
+      "open": "Open participant actions"
+    },
+    "untitled": "Untitled Group",
+    "confirm": {
+      "remove": "Remove participant?",
+      "promote": "Promote to admin?",
+      "viewProfile": "View profile",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    }
+  },
+  "profile": {
+    "viewProfile": "View profile"
   }
 }
