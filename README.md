@@ -113,23 +113,11 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 
 ## 🔧 Future Improvements
 
-- **Chat Enhancements:**
-  - Users will be able to edit and delete their own messages.
-  - In group chats, admins will be able to promote other users to admin status.
-  - Admins will be able to remove participants from a group conversation.
-
-- **Profile Features:**
-  - Users will be able to connect, disconnect, or block others directly from their profile page (not just from the ProfileCard).
-  - When viewing someone’s profile, the connection status will be visible, with the option to connect if not already connected.
-
 - **Music Section:**
   - Support for more platforms beyond YouTube and Spotify (e.g., automatic embed and display logic based on the link, for both audio and video content).
   
 - **Hashtag System:**
   - A fully functional hashtag system will be implemented, allowing users to click on a hashtag and view a dedicated section with all related posts and/or profiles.
-
-- **Advanced Search Engine:**
-  - Users will be able to search using more specific filters (e.g., find only guitarists from Montevideo).
 
 - **Profile Groups (Band-Oriented):**
   - A new section called "Groups" is in development, where users can create and manage band-oriented profile groups.

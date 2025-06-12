@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import ProfilesList from "../components/profiles/ProfilesList";
 import PostsList from "../components/social/PostsList";
 import { useView } from "../context/ViewContext";
 import { FaCompass } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import ProfilesSearch from "../components/profiles/ProfilesSearch";
 
 function Explore() {
   const { t } = useTranslation("ui");
@@ -74,7 +74,7 @@ function Explore() {
       {/* Content */}
       <div className="p-4">
         {externalView === "postsList" && <PostsList />}
-        {externalView === "profilesList" && <ProfilesList />}
+        {externalView === "profilesList" && <ProfilesSearch />}
       </div>
     </div>
   );

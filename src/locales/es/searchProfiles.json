@@ -1,0 +1,34 @@
+{
+  "country": {
+    "defaultOption": "Todos los países",
+    "options": [
+      { "value": "Uruguay", "label": "Uruguay" },
+      { "value": "Argentina", "label": "Argentina" }
+    ]
+  },
+  "city": {
+    "defaultOption": "Todas las ciudades",
+    "options": [
+      { "value": "Montevideo", "label": "Montevideo" },
+      { "value": "Buenos Aires", "label": "Buenos Aires" }
+    ]
+  },
+  "role": {
+    "defaultOption": "Todos los roles",
+    "options": [
+      { "value": "Instrumentalist", "label": "Instrumentista" },
+      { "value": "Singer", "label": "Cantante" },
+      { "value": "DJ", "label": "DJ" },
+      { "value": "Producer", "label": "Productor/a" },
+      { "value": "Composer", "label": "Compositor/a" }
+    ]
+  },
+  "instrument": {
+    "defaultOption": "Todos los instrumentos",
+    "options": [
+      { "value": "Guitar", "label": "Guitarra" },
+      { "value": "Piano", "label": "Piano" },
+      { "value": "Drums", "label": "Batería" }
+    ]
+  }
+}
