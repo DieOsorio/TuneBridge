@@ -8,11 +8,22 @@
   "explore": {
     "title": "Explorar",
     "description": "Sumérgete en publicaciones y perfiles creados por artistas como tú.",
-    "tags": ["Música", "Arte", "Tecnología", "Cultura", "Inspiración"],
+    "tags": [
+      "Música",
+      "Guitarra",
+      "Cantante",
+      "Jazz",
+      "DJ",
+      "Violín",
+      "Clásico"
+    ],
     "tabs": {
       "posts": "Publicaciones",
       "profiles": "Perfiles"
     }
+  },
+  "hashtags": {
+    "description": "Descubre perfiles y publicaciones relacionadas con el hashtag #{{hashtag}}."
   },
   "landingpage": {
     "hero": {

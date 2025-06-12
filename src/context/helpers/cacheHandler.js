@@ -28,6 +28,10 @@ function extractKeysFromFactory(keyFactory, entity) {
 export function optimisticUpdate({ queryClient, keyFactory, entity, type, idKey = 'id' }) {
   const keys = extractKeysFromFactory(keyFactory, entity);
   const previousData = {};
+  const isMatch = (item, entity) => {
+    if (typeof idKey === 'function') return idKey(item, entity);
+    return item && entity && item[idKey] !== undefined && entity[idKey] !== undefined && item[idKey] === entity[idKey];
+  };
   keys.forEach((key) => {
     const prev = queryClient.getQueryData(key);
     previousData[key] = prev;
@@ -38,15 +42,18 @@ export function optimisticUpdate({ queryClient, keyFactory, entity, type, idKey 
       if (Array.isArray(prev)) {
         queryClient.setQueryData(
           key,
-          prev.map((item) => (item && item[idKey] === entity[idKey] ? { ...item, ...entity } : item))
+          prev.map((item) => (isMatch(item, entity) ? { ...item, ...entity } : item))
         );
-      } else if (prev && prev[idKey] === entity[idKey]) {
+      } else if (isMatch(prev, entity)) {
         queryClient.setQueryData(key, { ...prev, ...entity });
       }
     } else if (type === 'remove') {
       if (Array.isArray(prev)) {
-        queryClient.setQueryData(key, prev.filter((item) => item && item[idKey] !== entity[idKey]));
-      } else if (prev && prev[idKey] === entity[idKey]) {
+        queryClient.setQueryData(
+          key,
+          prev.filter((item) => !isMatch(item, entity))
+        );
+      } else if (isMatch(prev, entity)) {
         queryClient.setQueryData(key, undefined);
       }
     }
@@ -63,41 +70,16 @@ export function rollbackCache({ queryClient, previousData }) {
 
 export function replaceOptimisticItem({ queryClient, keyFactory, entity, newEntity, idKey = 'id' }) {
   const keys = extractKeysFromFactory(keyFactory, entity);
+  const isMatch = (item, entity) => {
+    if (typeof idKey === 'function') return idKey(item, entity);
+    return item && entity && item[idKey] !== undefined && entity[idKey] !== undefined && item[idKey] === entity[idKey];
+  };
   keys.forEach((key) => {
     const prev = queryClient.getQueryData(key);
     if (Array.isArray(prev)) {
       queryClient.setQueryData(
         key,
-        prev.map((item) => {
-          if (!item || !entity) return item;
-          if (item[idKey] !== undefined && entity[idKey] !== undefined && item[idKey] === entity[idKey]) {
-            return newEntity;
-          }
-          if (
-            typeof item[idKey] === 'string' &&
-            typeof entity[idKey] === 'string' &&
-            item[idKey] && entity[idKey] &&
-            (item[idKey].startsWith('temp-') || entity[idKey].startsWith('temp-')) &&
-            item[idKey] === entity[idKey]
-          ) {
-            return newEntity;
-          }
-          if (
-            item.follower_profile_id !== undefined && entity.follower_profile_id !== undefined &&
-            item.following_profile_id !== undefined && entity.following_profile_id !== undefined &&
-            item.follower_profile_id === entity.follower_profile_id &&
-            item.following_profile_id === entity.following_profile_id
-          ) {
-            return newEntity;
-          }
-          if (
-            item.created_by !== undefined && entity.created_by !== undefined &&
-            item.created_by === entity.created_by
-          ) {
-            return newEntity;
-          }
-          return item;
-        })
+        prev.map((item) => (isMatch(item, entity) ? newEntity : item))
       );
     }
   });

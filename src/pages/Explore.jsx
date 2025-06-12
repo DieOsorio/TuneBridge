@@ -4,6 +4,7 @@ import { useView } from "../context/ViewContext";
 import { FaCompass } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import ProfilesSearch from "../components/profiles/ProfilesSearch";
+import { Link } from "react-router-dom";
 
 function Explore() {
   const { t } = useTranslation("ui");
@@ -35,12 +36,13 @@ function Explore() {
 
         <div className="flex justify-center flex-wrap gap-2 mt-4">
           {tags.map((tag) => (
-            <span
+            <Link
               key={tag}
+              to={`/hashtag/${tag}`}
               className="text-xs cursor-pointer rounded-full bg-sky-600 px-3 py-1 font-semibold text-cyan-100 hover:bg-sky-500 transition"
             >
               #{tag}
-            </span>
+            </Link>
           ))}
         </div>
       </div>

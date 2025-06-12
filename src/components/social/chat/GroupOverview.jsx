@@ -10,6 +10,7 @@ import ConfirmDialog from "../../ui/ConfirmDialog";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ProfileAvatar from "../../profiles/ProfileAvatar";
+import { uploadFileToBucket } from "../../../utils/avatarUtils";
 
 function ParticipantRow({ participant, isSelf, isAdmin, menuOpen, setMenuOpen, setConfirmDialog, navigate, t }) {
   const { fetchProfile } = useProfile();
@@ -102,6 +103,7 @@ export default function GroupOverview({ conversation, onClose }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(conversation.title || "");
   const [isUploading, setIsUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
   const avatarTriggerRef = useRef();
   const navigate = useNavigate();
 
@@ -127,11 +129,19 @@ export default function GroupOverview({ conversation, onClose }) {
     if (isUploading) return;
     setIsUploading(true);
     try {
-      // Use your uploadFileToBucket util if needed
-      // const newUrl = await uploadFileToBucket(...)
-      // For now, just simulate
-      const newUrl = URL.createObjectURL(files[0]);
-      await updateConversation({ conversation, updates: { avatar_url: newUrl } });
+      setPreview(URL.createObjectURL(files[0]));
+      // Use the generalized function to upload the avatar to the correct bucket
+      const newUrl = await uploadFileToBucket(
+        files[0],
+        "chat-group-avatars",
+        conversation.id,
+        conversation.avatar_url,
+        true
+      );
+      if (newUrl && newUrl !== conversation.avatar_url) {
+        await updateConversation({ conversation, updates: { avatar_url: newUrl } });
+        setPreview(null); // Clear preview after successful upload
+      }
     } finally {
       setIsUploading(false);
     }
@@ -195,7 +205,7 @@ export default function GroupOverview({ conversation, onClose }) {
         <div className="flex flex-col items-center gap-4 mb-6">
           <div className="relative">
             <ProfileAvatar
-              avatar_url={conversation.avatar_url}
+              avatar_url={preview || conversation.avatar_url}
               className="w-20 h-20 bg-amber-600"
             />
             {isAdmin && (
@@ -204,6 +214,7 @@ export default function GroupOverview({ conversation, onClose }) {
                   ref={avatarTriggerRef}
                   className="absolute bottom-0 right-0 bg-black bg-opacity-50 p-2 rounded-full text-white hover:bg-opacity-80 transition"
                   title={t("groupOverview.avatar.edit")}
+                  disabled={isUploading}
                 >
                   <HiCamera className="w-5 h-5 cursor-pointer" />
                 </button>

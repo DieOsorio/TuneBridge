@@ -9,14 +9,18 @@ import { useView } from "../../context/ViewContext";
 import { useHashtags } from "../../context/social/HashtagsContext";
 import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const CreatePost = ({ id }) => {
+const CreatePost = () => {
+  const { user } = useAuth(); // logged user
   const { t } = useTranslation("posts")
   const [images, setImages] = useState([]);
   const { createPost, updatePost } = usePosts();
   const { upsertHashtag } = useHashtags();
   const { upsertPostHashtag } = usePostHashtags();
   const { manageView } = useView();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -37,7 +41,7 @@ const CreatePost = ({ id }) => {
       // Create post without images
       const post = await createPost({
         ...cleanPostData,
-        profile_id: id,
+        profile_id: user.id,
         images_urls: [],
       });
 
@@ -67,7 +71,7 @@ const CreatePost = ({ id }) => {
           const filename = `${Date.now()}-${index}-${file.name}`;
           const publicURL = await uploadImageMutations.mutateAsync({
             file,
-            userId: id,
+            userId: user.id,
             postId: post.id,
             filename,
           });
@@ -85,7 +89,7 @@ const CreatePost = ({ id }) => {
 
       reset();
       setImages([]);
-      manageView("about", "profile");
+      navigate('/explore');
     } catch (err) {
       console.error("Error creating post:", err.message);
     }

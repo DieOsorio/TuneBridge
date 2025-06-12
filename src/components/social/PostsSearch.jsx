@@ -48,7 +48,7 @@ const PostsSearch = () => {
                     type="text"
                     {...register("searchTerm")}
                     placeholder={t("posts:placeholders.searchPosts")}
-                    className="w-3xs border rounded-lg p-2 focus:outline-none focus:ring focus:ring-brown-300"
+                    className="border rounded-lg p-2 focus:outline-none focus:ring"
                 />
             </form>
 

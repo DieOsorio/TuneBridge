@@ -10,6 +10,9 @@
     "noMatch": "No posts match your search.",
     "noImages": "No images available for this post."
   },
+  "hashtags": {
+    "empty": "No posts found with this hashtag."
+  },
   "create": {
     "title": "Create a New Post",
     "labels": {

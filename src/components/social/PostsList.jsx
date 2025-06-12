@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PostsSearch from './PostsSearch';
 
-const PostsList = ({ profileId, isOwnProfile }) => {
+const PostsList = ({ profileId, posts, disableSearch }) => {
     const { t } = useTranslation(["posts", "common"]) 
     const { infiniteUserPosts } = usePosts();  
     const { 
@@ -19,7 +19,7 @@ const PostsList = ({ profileId, isOwnProfile }) => {
     } = infiniteUserPosts(profileId); // Fetch posts based on profileId
 
     // Display all posts or search results
-    if (!profileId) return <PostsSearch />;
+    if (!profileId && !disableSearch) return <PostsSearch />;
 
     // Display posts for a specific user
     if (isLoadingUserPosts) {
@@ -34,6 +34,25 @@ const PostsList = ({ profileId, isOwnProfile }) => {
     if (errorUserPosts) return <ErrorMessage error={errorUserPosts.message} />;
 
     const allUserPosts = userPostsData ? userPostsData.pages.flat() : [];
+
+    // If posts are provided (e.g. from hashtag page), render them directly
+    if (posts) {
+        return (
+            <div className="mx-auto text-center w-full">
+                <div className="grid grid-cols-1 gap-4">
+                    {posts.length > 0 ? (
+                        posts.map((post) => (
+                            <PostCard key={post.id} post={post} />
+                        ))
+                    ) : (
+                        <p className="col-span-full text-center text-gray-500">
+                            {t("posts:messages.empty")}
+                        </p>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="mx-auto text-center w-full">

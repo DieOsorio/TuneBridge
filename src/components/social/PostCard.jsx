@@ -244,15 +244,20 @@ function PostCard({ post }) {
       {/* Hashtags */}
         <div className="flex gap-2 mt-4 sm:mt-0 justify-center">
           {hashtags && hashtags.length > 0 && (
-            hashtags.map((hashtag) => (              
-              <Link
-                key={hashtag.hashtag_id}
-                // to={`/hashtag/${hashtag.hashtags.name}`}
-                className="text-sm text-sky-500 hover:underline"
-              >
-                {hashtag.hashtags.name}
-              </Link>
-            ))
+            hashtags.map((hashtag) => {
+              const tagName = hashtag.hashtags.name.startsWith('#')
+                ? hashtag.hashtags.name.slice(1)
+                : hashtag.hashtags.name;
+              return (
+                <Link
+                  key={hashtag.hashtag_id}
+                  to={`/hashtag/${tagName}`}
+                  className="text-sm text-sky-500 hover:underline"
+                >
+                  {hashtag.hashtags.name}
+                </Link>
+              );
+            })
           )}
         </div>
 

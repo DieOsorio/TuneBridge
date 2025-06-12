@@ -148,7 +148,7 @@ const ProfilesSearch = () => {
                                 defaultOption={filter.defaultOption}
                                 options={filter.options}
                                 register={register}
-                                className="!min-w-[180px]"
+                                className="!min-w-[210px]"
                             />
                         ))}
                     </div>
