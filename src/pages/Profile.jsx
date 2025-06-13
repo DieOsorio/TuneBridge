@@ -51,9 +51,9 @@ const Profile = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-transparent text-white">
       {/* Render Sidebar only if it's the user's own profile */}
-      {isOwnProfile && (
+      {/* {isOwnProfile && (
         <Sidebar avatarUrl={profileData.avatar_url} className="md:w-1/4" />
-      )}
+      )} */}
 
       {/* Main Content */}
       <div className="flex-1 p-4 md:p-8 gap-8">

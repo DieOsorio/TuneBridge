@@ -11,19 +11,19 @@ import { useTranslation } from "react-i18next";
 const getColorForProfile = (profileId) => {
   const colors = [
     "bg-emerald-600",
-    "bg-yellow-600",
-    "bg-purple-600",
-    "bg-green-600",
-    "bg-red-600",
-    "bg-pink-600",
-    "bg-indigo-600",
-    "bg-blue-600",
-    "bg-orange-600",
+    "bg-yellow-700",
+    "bg-purple-700",
+    "bg-green-800",
+    "bg-red-800",
+    "bg-pink-800",
+    "bg-indigo-500",
+    "bg-blue-800",
+    "bg-orange-700",
     "bg-teal-600",
-    "bg-fuchsia-600",
-    "bg-cyan-600",
-    "bg-lime-600",
-    "bg-rose-600",
+    "bg-fuchsia-800",
+    "bg-cyan-700",
+    "bg-lime-700",
+    "bg-rose-800",
     "bg-violet-600"
   ];
   let hash = 0;

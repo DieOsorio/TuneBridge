@@ -1,6 +1,13 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+html {
+  font-family: 'Inter', system-ui, sans-serif;
+}
 
 body {
+  font-family: inherit;
+  font-optical-sizing: auto !important;
   background: #030712 !important; /* fallback solid */
   min-height: 100vh;
   color: #fff;
@@ -74,5 +81,20 @@ body {
 .MuiTypography-root {
   color: #373839 !important; 
   font-weight: 600 !important; 
+}
+
+/* Custom pulse animation */
+@keyframes custom-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.15);
+    filter: brightness(1.2);
+  }
+}
+.animate-custom-pulse {
+  animation: custom-pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite;
 }
 

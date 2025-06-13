@@ -5,8 +5,9 @@ import { usePosts } from '../../context/social/PostsContext';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PostsSearch from './PostsSearch';
+import { FiPlus } from 'react-icons/fi';
 
-const PostsList = ({ profileId, posts, disableSearch }) => {
+const PostsList = ({ profileId, posts, disableSearch, isOwnProfile }) => {
     const { t } = useTranslation(["posts", "common"]) 
     const { infiniteUserPosts } = usePosts();  
     const { 
@@ -56,6 +57,27 @@ const PostsList = ({ profileId, posts, disableSearch }) => {
 
     return (
         <div className="mx-auto text-center w-full">
+            {/* Create Post Icon for own profile */}
+            {isOwnProfile && (
+                <div className="w-full flex justify-end mb-4 relative">
+                    <div className="group flex items-center">
+                        <button
+                            type="button"
+                            onClick={() => window.location.assign('/create-post')}
+                            className="text-emerald-500 hover:text-emerald-700 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-colors"
+                            style={{ fontSize: 28 }}
+                        >
+                            <FiPlus size={28} />
+                        </button>
+                        <span
+                            className="ml-2 whitespace-nowrap text-emerald-500 font-semibold text-base bg-gray-900 px-3 py-1 rounded-lg shadow transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none"
+                            style={{ willChange: 'opacity, transform' }}
+                        >
+                            {t("posts:buttons.createPost")}
+                        </span>
+                    </div>
+                </div>
+            )}
             <div className="grid grid-cols-1 gap-4">
                 {allUserPosts.length > 0 ? (
                     allUserPosts.map((post) => (

@@ -5,6 +5,7 @@ import { FaCompass } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import ProfilesSearch from "../components/profiles/ProfilesSearch";
 import { Link } from "react-router-dom";
+import ShinyText from "../components/ui/ShinyText";
 
 function Explore() {
   const { t } = useTranslation("ui");
@@ -25,9 +26,9 @@ function Explore() {
       {/* Header */}      
       <div className="text-center py-8 bg-gradient-to-r mb-3 from-sky-950 via-sky-900 to-sky-950 rounded-b-lg shadow-lg flex flex-col items-center">
         <div className="flex items-center gap-3 mb-3">
-          <FaCompass className="text-cyan-400 text-4xl animate-pulse" />
+          <FaCompass className="text-sky-500 text-4xl animate-custom-pulse" />
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
-            {t("explore.title")}
+            <ShinyText text={t("explore.title")} speed={3} />
           </h1>
         </div>
         <p className="text-lg max-w-xl mx-auto text-cyan-200/90 font-light tracking-wide">

@@ -7,6 +7,7 @@ import PostCard from './PostCard';
 import PostCardSkeleton from './PostCardSkeleton';
 import ErrorMessage from '../../utils/ErrorMessage';
 import { usePosts } from '../../context/social/PostsContext';
+import { FiPlus } from 'react-icons/fi';
 
 const PostsSearch = () => {
     const { t } = useTranslation(["posts", "common"]);
@@ -42,28 +43,30 @@ const PostsSearch = () => {
 
     return (
         <div className="flex flex-col mx-auto text-center">
-            {/* Search Form */}
-            <form onSubmit={handleSubmit(() => {})} className="mb-5">
+            {/* Search Form + Create Post Icon */}
+            <form onSubmit={handleSubmit(() => {})} className="mb-5 relative flex items-center justify-center">
                 <input
                     type="text"
                     {...register("searchTerm")}
                     placeholder={t("posts:placeholders.searchPosts")}
-                    className="border rounded-lg p-2 focus:outline-none focus:ring"
+                    className="border rounded-lg p-2 focus:outline-none focus:ring w-full max-w-md"
                 />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center group">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/create-post")}
+                        className="text-emerald-500 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-colors"
+                    >
+                        <FiPlus size={28} />
+                    </button>
+                    <span
+                        className="ml-2 whitespace-nowrap text-emerald-500 font-semibold text-base bg-gray-900 px-3 py-1 rounded-lg shadow transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none"
+                        style={{ willChange: 'opacity, transform' }}
+                    >
+                        {t("posts:buttons.createPost")}
+                    </span>
+                </div>
             </form>
-
-            {/* Create Post Button */}
-            <div className="my-5">
-                <Button
-                    className="!w-1/2 md:!w-1/3 !font-bold"
-                    color="success"
-                    size="large"
-                    variant="contained"
-                    onClick={() => navigate("/create-post")}
-                >
-                    {t("posts:buttons.createPost")}
-                </Button>
-            </div>
 
             {/* Display Posts */}
             {isSearching ? (

@@ -17,6 +17,7 @@ import { useUserConnections } from '../../context/social/UserConnectionsContext'
 import { FiMoreVertical } from "react-icons/fi";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im"
+import StarBorder from '../ui/StarBorder';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
@@ -297,7 +298,8 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             </Button>
           </div>
           <div className="sm:mb-4">
-            <Button 
+            <Button
+              starBorder
               onClick={() => manageView("groups", "profile")}
               className='!bg-amber-800 hover:!bg-amber-900'
             >
