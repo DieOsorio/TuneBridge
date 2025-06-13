@@ -20,37 +20,49 @@ function ProfileData({ profileData }) {
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-lg text-gray-300">
         {profileData.firstname &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">{t("profile.data.firstname")}:</span>
+          <span className="font-semibold w-32 text-gray-500">
+            {t("profile.data.firstname")}:
+          </span>
           <span>{profileData.firstname}</span>
         </li>}
 
         {profileData.lastname &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">{t("profile.data.lastname")}:</span>
+          <span className="font-semibold w-32 text-gray-500">
+            {t("profile.data.lastname")}:
+          </span>
           <span>{profileData.lastname}</span>
         </li>}
 
         {profileData.country &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">{t("profile.data.country")}:</span>
+          <span className="font-semibold w-32 text-gray-500">
+            {t("profile.data.country")}:
+          </span>
           <span>{profileData.country}</span>
         </li>}
 
         {profileData.city &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">{t("profile.data.city")}:</span>
+          <span className="font-semibold w-32 text-gray-500">
+            {t("profile.data.city")}:
+          </span>
           <span>{profileData.city}</span>
         </li>}
 
         {profileData.gender &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">{t("profile.data.gender")}:</span>
-          <span>{profileData.gender}</span>
+          <span className="font-semibold w-32 text-gray-500">
+            {t("profile.data.gender")}:
+          </span>
+          <span>{t(`edit.placeholders.genderOptions.${profileData.gender}`)}</span>
         </li>}
 
         {profileData.birthdate &&
         <li className="flex items-center">
-          <span className="font-semibold w-32 text-gray-500">{t("profile.data.age")}:</span>
+          <span className="font-semibold w-32 text-gray-500">
+            {t("profile.data.age")}:
+          </span>
           <span>{calculateAge(profileData.birthdate)} {t("profile.data.years")}</span>
         </li>}
       </ul>

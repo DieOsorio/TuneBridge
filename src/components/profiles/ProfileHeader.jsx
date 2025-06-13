@@ -40,30 +40,42 @@ function ProfileHeader({ isOwnProfile, profileData }) {
 
     const handleStartChat = async () => {
         if (isStartingChat) return;
+        setIsStartingChat(true);
+        try {
+            // Always fetch all conversations between these two users
+            const allConversations = await findConversation({ myProfileId: user.id, otherProfileId: profileData.id, all: true });
+            let oneOnOne = null;
+            let group = null;
+            if (Array.isArray(allConversations)) {
+                oneOnOne = allConversations.find(c => !c.is_group);
+                group = allConversations.find(c => c.is_group);
+            } else if (allConversations && typeof allConversations === 'object') {
+                if (allConversations.is_group) group = allConversations;
+                else oneOnOne = allConversations;
+            }
 
-        try {       
-            const conversationData  = await findConversation({ myProfileId: user.id, otherProfileId: profileData.id });
-
-          if (conversationData) {
-            navigate(`/chat/${conversationData.id}`);
-          } else {
-              
-            const newConv = await createConversation({
-                created_by: user.id,
-                avatar_url: profileData.avatar_url,
-                title: profileData.username
-            });        
-    
-            // Add participants to the new conversation
-            const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
-            const otherUser = { conversation_id: newConv.id, profile_id: profileData.id };
-            await addParticipant(loggedUser);
-            await addParticipant(otherUser);
-    
-            navigate(`/chat/${newConv.id}`);
-          }  
+            if (oneOnOne) {
+                // Always prefer the one-on-one if it exists
+                navigate(`/chat/${oneOnOne.id}`);
+            } else if (group) {
+                // If only a group exists, navigate to the group (or show a message)
+                navigate(`/chat/${group.id}`);
+                // Optionally, show a toast: "You already have a group chat with this user."
+            } else {
+                // No conversation exists, create a new one-on-one
+                const newConv = await createConversation({
+                    created_by: user.id,
+                    avatar_url: profileData.avatar_url,
+                    title: profileData.username
+                });
+                const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
+                const otherUser = { conversation_id: newConv.id, profile_id: profileData.id };
+                await addParticipant(loggedUser);
+                await addParticipant(otherUser);
+                navigate(`/chat/${newConv.id}`);
+            }
         } catch (err) {
-          console.error("Error iniciando conversación:", err);
+            console.error("Error iniciando conversación:", err);
         } finally {
             setIsStartingChat(false);
         }

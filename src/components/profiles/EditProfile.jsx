@@ -223,7 +223,13 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
           label={t("edit.labels.gender")}
           classForLabel="!text-gray-400"
           defaultOption={t("edit.placeholders.genderDefault")}
-          options={["Male", "Female", "Other"]}
+          options={[
+            { value: "male", label: t("edit.placeholders.genderOptions.male") },
+            { value: "female", label: t("edit.placeholders.genderOptions.female") },
+            { value: "other", label: t("edit.placeholders.genderOptions.other") }
+          ]}
+          value={watch("gender")}
+          onChange={e => setValue("gender", e.target.value)}
           register={register}
           error={errors.gender}
         />

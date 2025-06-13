@@ -6,19 +6,25 @@ import { useMessages } from "../../../context/social/chat/MessagesContext";
 import { useState, useRef, useEffect } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
-import { useConversations } from "../../../context/social/chat/ConversationsContext";
 
 // Deterministic color by profile ID (consistent across messages)
 const getColorForProfile = (profileId) => {
-  if (!profileId || typeof profileId !== "string" || !profileId.length) return "bg-gray-500";
   const colors = [
-    "bg-emerald-500",
-    "bg-yellow-500",
-    "bg-purple-500",
+    "bg-emerald-600",
+    "bg-yellow-600",
+    "bg-purple-600",
     "bg-green-600",
-    "bg-red-500",
-    "bg-pink-500",
-    "bg-indigo-500",
+    "bg-red-600",
+    "bg-pink-600",
+    "bg-indigo-600",
+    "bg-blue-600",
+    "bg-orange-600",
+    "bg-teal-600",
+    "bg-fuchsia-600",
+    "bg-cyan-600",
+    "bg-lime-600",
+    "bg-rose-600",
+    "bg-violet-600"
   ];
   let hash = 0;
   for (let i = 0; i < profileId.length; i++) {

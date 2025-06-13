@@ -62,7 +62,13 @@
         "country": "Country",
         "city": "City",
         "username": "Username",
-        "genderDefault": "Choose your gender"
+        "genderDefault": "Choose your gender",
+        "genderOptions": {
+          "male": "Male",
+          "female": "Female",
+          "other": "Other"
+        }
+
       },
       "validation": {
         "bioMaxLength": "Bio cannot exceed 100 characters",
