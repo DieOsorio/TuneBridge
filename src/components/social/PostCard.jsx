@@ -6,7 +6,7 @@ import { FcLike } from "react-icons/fc";
 import { LiaCommentsSolid } from "react-icons/lia";
 import { Link, useNavigate } from 'react-router-dom';
 import { useView } from '../../context/ViewContext';
-import { usePrefetchProfile, useProfileQuery } from '../../context/profile/profileActions';
+import { usePrefetchProfile } from '../../context/profile/profileActions';
 import ErrorMessage from '../../utils/ErrorMessage';
 import Loading from '../../utils/Loading';
 import { useLikes } from '../../context/social/LikesContext';

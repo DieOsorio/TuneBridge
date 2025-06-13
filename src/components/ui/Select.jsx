@@ -8,6 +8,8 @@ const Select = ({
   validation = {},
   error,
   classForLabel = "",
+  value, // allow controlled value
+  onChange, // allow controlled onChange
 }) => {
   return (
     <div className="mb-4">
@@ -18,10 +20,12 @@ const Select = ({
       )}
       <select
         id={id}
-        {...(register ? register(id, validation) : {})}
+        {...(register && !value && !onChange ? register(id, validation) : {})}
         className={`w-full px-4 py-2 rounded-md border ${
           error ? "border-red-500" : "border-gray-400"
         } focus:bg-gray-900 ${className}`}
+        value={value !== undefined ? value : undefined}
+        onChange={onChange}
       >
         {defaultOption && <option value="">{defaultOption}</option>}
         {options.map((option, index) => (

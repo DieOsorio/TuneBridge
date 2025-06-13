@@ -87,6 +87,15 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 
 ---
 
+### 👥 Group Chat Management
+
+- All group management (avatar/title edit, participant actions) is handled in a dedicated Group Overview modal for clarity and ease of use.
+- Robust participant management: add, promote to admin, remove, and leave group, all with real-time UI updates and optimistic cache handling.
+- Direct chat actions (visit profile, convert to group, delete/leave) are available in a right-aligned three-dots menu for a clean interface.
+- Participant search and add is available in group chats, with instant feedback and confirmation dialogs for sensitive actions.
+
+---
+
 ### 🔗 Connection System
 
 - Users can **send connection requests** to others
@@ -108,6 +117,27 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 - Fully bilingual: **English** and **Spanish**
 - All UI text is managed via `react-i18next`
 - Translation files organized by feature (`auth.json`, `chat.json`, `profile.json`, etc.)
+
+---
+
+### #️⃣ Hashtag System
+
+- Users can add hashtags to their posts (up to 3 per post).
+- Hashtags are clickable throughout the app (in posts, Explore page, etc.).
+- Clicking a hashtag navigates to a dedicated hashtag page (`/hashtag/:tag`).
+- The hashtag page displays all posts and profiles related to that hashtag.
+- Users can toggle between posts and profiles using a navigation bar on the hashtag page.
+- Hashtag links are formatted for user-friendly navigation (no # in the URL, but # in the label).
+
+---
+
+### 🔍 Advanced Search & Filters
+
+- Easily search for posts and profiles using a single search bar.
+- Filter musician profiles by country, city, role, and instrument to find exactly who you need.
+- Instantly switch between basic and advanced search with a simple filter toggle.
+- All filter options and search results are available in both English and Spanish.
+- Enjoy a modern, user-friendly interface with clear feedback and fast results.
 
 ---
 

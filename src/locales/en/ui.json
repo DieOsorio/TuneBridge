@@ -34,33 +34,37 @@
       "sectionTitle": "What can you do on TuneBridge?",
       "cards": [
         {
-          "title": "Share Your Music",
-          "description": "Upload your tracks, share your ideas, and get feedback from other musicians."
+          "title": "Find Musicians & Bands",
+          "description": "Search and filter profiles by country, city, role, and instrument. Discover new talent and connect instantly."
         },
         {
-          "title": "Connect with Others",
-          "description": "Find musicians, producers, and collaborators for your projects."
+          "title": "Share Posts & Hashtags",
+          "description": "Create posts with images and hashtags. Explore trending topics and join the conversation."
         },
         {
-          "title": "Collaborate in Real-Time",
-          "description": "Chat, share files, and work together in real-time."
+          "title": "Real-Time Chat & Groups",
+          "description": "Chat one-on-one or in groups, manage participants, and collaborate in real time."
         }
       ]
     },
-    "trendingTracks": {
-      "sectionTitle": "Trending Tracks",
-      "tracks": [
+    "howItWorks": {
+      "sectionTitle": "How TuneBridge Works",
+      "steps": [
         {
-          "title": "Track 1",
-          "artist": "Artist Name"
+          "title": "Create Your Profile",
+          "description": "Sign up, add your music info, and upload a profile picture to get started."
         },
         {
-          "title": "Track 2",
-          "artist": "Artist Name"
+          "title": "Find & Connect",
+          "description": "Search for musicians, bands, or collaborators by role, instrument, or location. Send connection requests and grow your network."
         },
         {
-          "title": "Track 3",
-          "artist": "Artist Name"
+          "title": "Share & Explore",
+          "description": "Post your music, ideas, and updates with images and hashtags. Discover trending topics and join the conversation."
+        },
+        {
+          "title": "Chat & Collaborate",
+          "description": "Start real-time chats, create group conversations, and manage your music projects together."
         }
       ]
     },
@@ -71,6 +75,94 @@
         "signUp": "Sign Up",
         "logIn": "Log In",
         "joinUs": "Join Us"
+      }
+    },
+    "screenshots": {
+      "sectionTitle": "App Look & Feel",
+      "description": "A glimpse into the TuneBridge app interface and features.",
+      "profile": {
+        "title": "Profile & Setup",
+        "description": "Create, edit, and personalize your musician profile.",
+        "images": [
+          {
+            "src": "/for-landing-page/profile-setup-1-EN.jpg",
+            "alt": "Profile creation form",
+            "caption": "Edit your profile details and upload a profile picture."
+          },
+          {
+            "src": "/for-landing-page/profile-setup-2-EN.jpg",
+            "alt": "Profile roles and details",
+            "caption": "Complete your profile with music roles and details."
+          },
+          {
+            "src": "/for-landing-page/profile-setup-3-EN.jpg",
+            "alt": "Profile view",
+            "caption": "Showcase your profile to the TuneBridge community."
+          }
+        ]
+      },
+      "chat": {
+        "title": "Real-time Chat",
+        "description": "One-on-one and group chat with musicians.",
+        "images": [
+          {
+            "src": "/for-landing-page/chat-1-EN.jpg",
+            "alt": "Direct chat",
+            "caption": "Start a private conversation with any musician."
+          },
+          {
+            "src": "/for-landing-page/chat-2-EN.jpg",
+            "alt": "Group chat",
+            "caption": "Create and manage group chats for your band or project."
+          },
+          {
+            "src": "/for-landing-page/chat-3-EN.jpg",
+            "alt": "Group management",
+            "caption": "Add, promote, or remove participants in real time."
+          }
+        ]
+      },
+      "explore": {
+        "title": "Explore & Discover",
+        "description": "Find musicians, posts, and trending hashtags.",
+        "images": [
+          {
+            "src": "/for-landing-page/explore-1-EN.jpg",
+            "alt": "Explore page",
+            "caption": "Browse posts and profiles from the global music community."
+          },
+          {
+            "src": "/for-landing-page/explore-2-EN.jpg",
+            "alt": "Advanced search",
+            "caption": "Filter musicians by country, city, role, and instrument."
+          },
+          {
+            "src": "/for-landing-page/explore-3-EN.jpg",
+            "alt": "Trending hashtags",
+            "caption": "Discover trending topics and join the conversation."
+          }
+        ]
+      },
+      "posts": {
+        "title": "Posts & Hashtags",
+        "description": "Share your music, ideas, and connect with hashtags.",
+        "images": [
+          {
+            "src": "/for-landing-page/posts-1-EN.jpg",
+            "alt": "Create post",
+            "caption": "Create posts with images, text, and up to 3 hashtags."
+          },
+          {
+            "src": "/for-landing-page/posts-2-EN.jpg",
+            "alt": "Post feed",
+            "caption": "Like, comment, and explore posts from other musicians."
+          },
+          {
+            "src": "/for-landing-page/posts-3-EN.jpg",
+            "alt": "Hashtag page",
+            "caption": "Click a hashtag to see all related posts and profiles."
+          }
+        ]
       }
     }
   },

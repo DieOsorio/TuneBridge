@@ -22,37 +22,49 @@ const ProfileMinibox = ({ profile, isLoading }) => {
 
   const handleStartChat = async () => {
     if (isStartingChat) return;
+    setIsStartingChat(true);
 
     if(isOwnProfile) { 
       navigate("/chat")
+      setIsStartingChat(false);
       return;
     } 
 
     try {       
-        const conversationData  = await findConversation({ myProfileId: user.id, otherProfileId: profile.id });
+      // Always fetch all conversations between these two users
+      const allConversations = await findConversation({ myProfileId: user.id, otherProfileId: profile.id, all: true });
+      let oneOnOne = null;
+      let group = null;
+      if (Array.isArray(allConversations)) {
+        oneOnOne = allConversations.find(c => !c.is_group);
+        group = allConversations.find(c => c.is_group);
+      } else if (allConversations && typeof allConversations === 'object') {
+        if (allConversations.is_group) group = allConversations;
+        else oneOnOne = allConversations;
+      }
 
-      if (conversationData) {
-        navigate(`/chat/${conversationData.id}`);
+      if (oneOnOne) {
+        navigate(`/chat/${oneOnOne.id}`);
+      } else if (group) {
+        navigate(`/chat/${group.id}`);
       } else {
-          
+        // No conversation exists, create a new one-on-one
         const newConv = await createConversation({
-            created_by: user.id,
-            avatar_url: profile.avatar_url,
-            title: profile.username
+          created_by: user.id,
+          avatar_url: profile.avatar_url,
+          title: profile.username
         });        
-
-        // Vincular a ambos usuarios como participantes
+        // Add both users as participants
         const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
         const otherUser = { conversation_id: newConv.id, profile_id: profile.id };
         await addParticipant(loggedUser);
         await addParticipant(otherUser);
-
         navigate(`/chat/${newConv.id}`);
-      }  
+      }
     } catch (err) {
       console.error("Error iniciando conversación:", err);
     } finally {
-        setIsStartingChat(false);
+      setIsStartingChat(false);
     }
   };
 
