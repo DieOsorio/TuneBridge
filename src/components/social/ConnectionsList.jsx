@@ -38,8 +38,19 @@ function ConnectionsList({ checkStatus, profileId }) {
 
     const title = checkStatus === 'accepted' ? t("connections.title") : t("connections.pendingTitle");
 
+    // Show count for accepted connections
+    const showCount = checkStatus === 'accepted';
+
     return (
         <div className={`max-w-4xl mx-auto w-full bg-gradient-to-l from-gray-900 py-4 flex flex-wrap justify-center rounded-lg gap-4`}>
+            <div className="w-full flex items-center justify-between px-4 mb-2">
+                <h2 className="text-xl font-bold text-white">
+                  {title}
+                  {showCount && (
+                    <span className="ml-2 text-sky-400 text-lg font-semibold">({filteredConnections.length})</span>
+                  )}
+                </h2>
+            </div>
             {filteredConnections.length > 0  
             ? filteredConnections.map((conn) => (
                 <ConnectionCard

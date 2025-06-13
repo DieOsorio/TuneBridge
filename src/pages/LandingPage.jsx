@@ -148,7 +148,7 @@ const LandingPage = () => {
       </motion.section>
 
       {/* App Screenshots Feature Blocks Section */}
-      <section className="py-16 px-6 md:px-16 bg-gradient-to-r from-gray-900 to-sky-950">
+      <section className="hidden sm:block py-16 px-6 md:px-16 bg-gradient-to-r from-gray-900 to-sky-950">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-white">
           {screenshotsSectionTitle}
         </h2>
@@ -160,41 +160,57 @@ const LandingPage = () => {
             <div key={key} className="w-full">
               <h3 className="text-2xl md:text-3xl font-bold text-sky-300 mb-2 text-center">{title}</h3>
               <p className="text-center text-gray-300 mb-6 max-w-2xl mx-auto">{description}</p>
-              <div className="max-w-4xl mx-auto">
-                <Swiper
-                  modules={[Navigation, Pagination, A11y, EffectCoverflow]}
-                  effect="coverflow"
-                  coverflowEffect={{
-                    rotate: 30,
-                    stretch: 0,
-                    depth: 200,
-                    modifier: 1,
-                    slideShadows: true,
-                  }}
-                  spaceBetween={0}
-                  slidesPerView={1}
-                  navigation
-                  pagination={{ clickable: true }}
-                  className="rounded-xl shadow-2xl"
-                  style={{ maxHeight: '50rem' }}
-                >
-                  {images.map((img, idx) => (
-                    <SwiperSlide key={idx}>
-                      <div className="flex flex-col items-center p-4 justify-center w-full h-full" style={{ minHeight: '24rem' }}>
-                        <img
-                          src={img.src}
-                          alt={img.alt}
-                          className="rounded-xl max-h-96 object-contain"
-                          style={{ maxHeight: '24rem', maxWidth: '100%' }}
-                          onClick={() => openModal(img.src)}
-                        />
-                        <div className="mt-4 text-center text-base md:text-lg text-gray-200 bg-sky-950 bg-opacity-80 px-4 py-2 rounded-xl max-w-lg shadow">
-                          {img.caption}
+              {/* Tablet/Desktop: Swiper carousel only */}
+              <div className="hidden sm:block max-w-4xl mx-auto w-full">
+                {images.length > 0 && (
+                  <Swiper
+                    modules={[Navigation, Pagination, A11y, EffectCoverflow]}
+                    effect="coverflow"
+                    coverflowEffect={{
+                      rotate: 30,
+                      stretch: 0,
+                      depth: 200,
+                      modifier: 1,
+                      slideShadows: true,
+                    }}
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    navigation
+                    pagination={{ clickable: true }}
+                    centeredSlides
+                    breakpoints={{
+                      640: {
+                        slidesPerView: 1,
+                        effect: 'coverflow',
+                        navigation: true,
+                      },
+                      1024: {
+                        slidesPerView: 1,
+                        effect: 'coverflow',
+                        navigation: true,
+                      },
+                    }}
+                    className="rounded-xl shadow-2xl px-0 sm:px-2"
+                    style={{ maxHeight: '50rem' }}
+                  >
+                    {images.map((img, idx) => (
+                      <SwiperSlide key={idx}>
+                        <div className="flex flex-col items-center p-1 sm:p-4 justify-center w-full h-full" style={{ minHeight: '18rem' }}>
+                          <img
+                            src={img.src}
+                            alt={img.alt}
+                            className="rounded-xl w-full max-w-[95vw] sm:max-w-full max-h-[60vw] sm:max-h-96 object-contain cursor-pointer"
+                            style={{ maxHeight: '60vw', minHeight: '180px', maxWidth: '95vw' }}
+                            onClick={() => openModal(img.src)}
+                          />
+                          <div className="mt-2 sm:mt-4 text-center text-base sm:text-lg md:text-xl text-gray-100 bg-sky-950 bg-opacity-90 px-2 sm:px-4 py-2 rounded-xl w-full max-w-[95vw] sm:max-w-lg shadow font-semibold" style={{lineHeight:'1.4'}}>
+                            {img.caption}
+                          </div>
                         </div>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
               </div>
             </div>
           ))}
@@ -288,7 +304,7 @@ const FeatureCardSkeleton = () => (
 const Step = ({ number, title, description }) => (
   <div className="flex flex-col items-center relative z-10">
     <div className="bg-sky-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold mb-4 border-4 border-sky-900">{number}</div>
-    <h3 className="text-lg font-semibold mb-2 bg-sky-950 px-3 py-1 rounded-2xl relative z-10">{title}</h3>
+    <h3 className="text-lg font-semibold mb-2 bg-sky-950 px-3 text-center py-1 rounded-2xl relative z-10">{title}</h3>
     <p className="text-gray-400 text-center">{description}</p>
   </div>
 );

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DisplayRoleInfo from "./DisplayRoleInfo";
-import { FaChevronDown, FaChevronUp, FaMusic } from "react-icons/fa";
+import { FaChevronUp } from "react-icons/fa";
 import  Loading  from "../../utils/Loading"
 import  ErrorMessage  from "../../utils/ErrorMessage"
 import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
@@ -11,6 +11,7 @@ import { useRoles } from "../../context/music/RolesContext";
 import { useSingerDetails } from "../../context/music/SingerDetailsContext";
 import RoleItem from "./RoleItem";
 import { useTranslation } from "react-i18next";
+import ShinyText from "../ui/ShinyText";
 
 const DisplayMusicInfo = ({ profileId }) => {
   const { t } = useTranslation("music");
@@ -55,13 +56,10 @@ const DisplayMusicInfo = ({ profileId }) => {
 
   return (
     <div className="bg-gray-900 p-6 rounded-lg shadow-md">
-      <div className="flex items-center justify-center gap-3 mb-6">
-        <div className="p-3 bg-sky-900/30 rounded-full">
-          <FaMusic className="text-sky-400 text-2xl animate-pulse" />
-        </div>
+      <div className="flex items-center justify-center gap-3 mb-6">          
         <h3 className="text-3xl font-bold text-sky-500 tracking-wide">
-          {t("roles.title")}
-        </h3>
+          <ShinyText text={t("roles.title")} speed={3} />
+        </h3>        
       </div>
 
       {roles.length === 0 ? (
