@@ -1,0 +1,45 @@
+{
+  "userGroups": {
+    "yourGroups": "Your Groups",
+    "groups": "Groups",
+    "createNewGroup": "Create New Group",
+    "notInAnyGroups": "You are not part of any groups yet.",
+    "userNotInAnyGroups": "This user is not part of any groups yet."
+  },
+  "groupMembersList": {
+    "members": "Members",
+    "admins": "Admins",
+    "addMember": "Add Member",
+    "removeMember": "Remove Member",
+    "makeAdmin": "Make Admin",
+    "removeAdmin": "Remove Admin",
+    "noMembers": "No members in this group yet."
+  },
+  "groupItem": {
+    "groupName": "Group Name",
+    "groupDescription": "Group Description",
+    "viewGroup": "View Group"
+  },
+  "createProfileGroup": {
+    "editGroup": "Edit Group",
+    "leaveGroup": "Leave Group",
+    "deleteGroup": "Delete Group",
+    "confirmDelete": "Are you sure you want to delete this group? This action cannot be undone.",
+    "confirmLeave": "Are you sure you want to leave this group?",
+    "role": "Role",
+    "admin": "Admin",
+    "member": "Member",
+    "musician": "Musician",
+    "manager": "Manager",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "groupMembers": "Group Members",
+    "profileIdLabel": "Profile ID",
+    "profileIdPlaceholder": "Enter profile ID",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter username",
+    "errorLoadingGroupData": "Error loading group data.",
+    "noGroupData": "No group data available."
+  }
+}

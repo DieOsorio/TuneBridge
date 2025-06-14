@@ -12,7 +12,7 @@ import LandingPage from "../pages/LandingPage";
 import ChatPage from "../components/social/chat/ChatPage";
 import UpdatePost from "../components/social/UpdatePost";
 import CreateProfileGroup from "../components/profiles/CreateProfileGroup";
-import ProfileGroup from "../pages/ProfileGroups";
+import ProfileGroup from "../pages/ProfileGroup";
 import CreatePost from "../components/social/CreatePost";
 import Hashtag from "../pages/Hashtag";
 

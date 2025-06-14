@@ -1,0 +1,45 @@
+{
+  "userGroups": {
+    "yourGroups": "Tus Grupos",
+    "groups": "Grupos",
+    "createNewGroup": "Crear Nuevo Grupo",
+    "notInAnyGroups": "Aún no formas parte de ningún grupo.",
+    "userNotInAnyGroups": "Este usuario no forma parte de ningún grupo."
+  },
+  "groupMembersList": {
+    "members": "Miembros",
+    "admins": "Administradores",
+    "addMember": "Agregar Miembro",
+    "removeMember": "Eliminar Miembro",
+    "makeAdmin": "Hacer Administrador",
+    "removeAdmin": "Quitar Administrador",
+    "noMembers": "Aún no hay miembros en este grupo."
+  },
+  "groupItem": {
+    "groupName": "Nombre del Grupo",
+    "groupDescription": "Descripción del Grupo",
+    "viewGroup": "Ver Grupo"
+  },
+  "createProfileGroup": {
+    "editGroup": "Editar Grupo",
+    "leaveGroup": "Salir del Grupo",
+    "deleteGroup": "Eliminar Grupo",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.",
+    "confirmLeave": "¿Estás seguro de que deseas salir de este grupo?",
+    "role": "Rol",
+    "admin": "Administrador",
+    "member": "Miembro",
+    "musician": "Músico",
+    "manager": "Manager",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "add": "Agregar",
+    "groupMembers": "Miembros del Grupo",
+    "profileIdLabel": "ID de Perfil",
+    "profileIdPlaceholder": "Ingresa el ID de perfil",
+    "usernameLabel": "Usuario",
+    "usernamePlaceholder": "Ingresa el nombre de usuario",
+    "errorLoadingGroupData": "Error al cargar los datos del grupo.",
+    "noGroupData": "No hay datos disponibles del grupo."
+  }
+}

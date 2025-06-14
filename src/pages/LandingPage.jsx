@@ -177,19 +177,7 @@ const LandingPage = () => {
                     slidesPerView={1}
                     navigation
                     pagination={{ clickable: true }}
-                    centeredSlides
-                    breakpoints={{
-                      640: {
-                        slidesPerView: 1,
-                        effect: 'coverflow',
-                        navigation: true,
-                      },
-                      1024: {
-                        slidesPerView: 1,
-                        effect: 'coverflow',
-                        navigation: true,
-                      },
-                    }}
+                    centeredSlides={true}
                     className="rounded-xl shadow-2xl px-0 sm:px-2"
                     style={{ maxHeight: '50rem' }}
                   >

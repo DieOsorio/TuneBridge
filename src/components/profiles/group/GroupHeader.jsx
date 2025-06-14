@@ -6,7 +6,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
   const { manageView } = useView(); // Manage internal/external views
 
   return (
-    <div className="bg-gradient-to-l from-amber-800 to-amber-950 mb-4 p-4 rounded-b-lg">
+    <div className="bg-gradient-to-l from-amber-950 to-amber-800 mb-4 p-4 rounded-b-lg">
       <div className="flex items-center gap-4">
         <ProfileAvatar avatar_url={groupData.avatar_url} />
         <div>
