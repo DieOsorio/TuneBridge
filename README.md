@@ -143,9 +143,6 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 
 ## 🔧 Future Improvements
 
-- **Music Section:**
-  - Support for more platforms beyond YouTube and Spotify (e.g., automatic embed and display logic based on the link, for both audio and video content).
-
 - **Profile Groups (Band-Oriented):**
   - A new section called "Groups" is in development, where users can create and manage band-oriented profile groups.
   - Each group will have a distinct profile layout to differentiate it from individual user profiles.

@@ -1,5 +1,6 @@
 .shiny-text {
-  color: #05a3f1bd; /* Adjust this color to change intensity/style */
+  --shiny-primary: #05a3f1bd; /* Change this variable to set the primary color */
+  color: var(--shiny-primary);
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0) 40%,

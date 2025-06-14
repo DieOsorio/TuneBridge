@@ -10,6 +10,9 @@ import { useTranslation } from "react-i18next";
 const mediaTypeOptions = [
   { value: "youtube", label: "YouTube" },
   { value: "spotify", label: "Spotify" },
+  { value: "soundcloud", label: "SoundCloud" },
+  { value: "vimeo", label: "Vimeo" },
+  { value: "file", label: "Direct Audio/Video URL" },
 ];
 
 const MusicSection = ({ profileId, isOwnProfile }) => {
@@ -71,12 +74,17 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
     return `https://open.spotify.com/embed/${type}/${id}`;
   };
 
-
   const handleEdit = (id) => setEditingId(id);
   const handleDelete = async (id) => {
     const toDelete = mediaLinks.find((m) => m.id === id);
     if (toDelete) await deleteMediaLink(toDelete);
   };
+
+  // Sort mediaLinks: all Spotify first, then the rest
+  const sortedMediaLinks = [
+    ...mediaLinks.filter((m) => m.media_type === 'spotify'),
+    ...mediaLinks.filter((m) => m.media_type !== 'spotify'),
+  ];
 
   return (
     <section>
@@ -135,7 +143,7 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
 
       {/* Media List */}
       <ul className="space-y-4 text-center">
-        {mediaLinks.map((media) => (
+        {sortedMediaLinks.map((media) => (
           <li
             key={media.id}
             className="shadow-sm p-4 rounded-lg bg-gradient-to-l to-gray-800"
@@ -147,16 +155,8 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
             </div>
 
             <div className="mb-6">
-              {media.media_type === "youtube" ? (
-                <div className="aspect-video max-w-full bg-[#FF0033] p-1 rounded-lg">
-                  <ReactPlayer 
-                    url={media.url} 
-                    controls 
-                    width="100%" 
-                    height="100%" 
-                  />
-                </div>
-              ) : media.media_type === "spotify" ? (
+              {/* Use ReactPlayer for all supported types except Spotify */}
+              {media.media_type === "spotify" ? (
                 <div className="rounded-lg bg-[#1db954] p-1">
                   <iframe
                     src={getSpotifyEmbedUrl(media.url)}
@@ -167,9 +167,14 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
                   />
                 </div>
               ) : (
-                <p className="text-red-500">
-                  {t("media.player.unsupported", { type: media.media_type })}
-                </p>
+                <div className="aspect-video max-w-full bg-gray-900 p-1 rounded-lg">
+                  <ReactPlayer 
+                    url={media.url} 
+                    controls 
+                    width="100%" 
+                    height="100%" 
+                  />
+                </div>
               )}
             </div>
 

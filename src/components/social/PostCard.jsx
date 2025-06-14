@@ -136,20 +136,18 @@ function PostCard({ post }) {
           </div>
 
           {/* Utility buttons */}
-          <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-8 mt-6">
-          
+          <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-3 sm:gap-8 mt-6">
             {/* Edit button for the logged-in user's posts */}
-            <div className="w-10 h-10 flex items-center justify-center">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
               {post.profile_id === user.id && (
                 <FaEdit
                   title="Edit Post"
                   className="text-yellow-600 hover:text-yellow-700 cursor-pointer" 
                   onClick={handleEditClick} 
-                  size={40}
+                  size={32}
                 />
               )}
             </div>
-
             {/* Like hearts */}
             <div
               onMouseEnter={() => setIsHovered(true)}
@@ -164,28 +162,28 @@ function PostCard({ post }) {
                 transition={{ duration: 0.4 }}
               >
                 {alreadyLiked || isHovered ? (
-                  <FcLike className="w-10 h-10" />
+                  <FcLike className="w-8 h-8 sm:w-10 sm:h-10" />
                 ) : (
-                  <FcLikePlaceholder className="w-10 h-10" />
+                  <FcLikePlaceholder className="w-8 h-8 sm:w-10 sm:h-10" />
                 )}
               </motion.div>
             </div>
-
             {/* Show/hide comments box */}
             <LiaCommentsSolid
-              size={40}
+              size={32}
               title="Post Comments"
               onClick={() => setShowComments((prev) => !prev)}
               className={`text-gray-400 cursor-pointer hover:text-sky-600 ${
                 showComments && "text-sky-600"
-              }`}
+              } sm:!w-10 sm:!h-10`}
             />
           </div>
         </div>
 
 
         {/* Images of the post */}
-        <div className="w-full max-w-[600px] mx-auto p-4 bg-gradient-to-l from-gray-900 rounded-md">
+        {/* Desktop/Tablet Swiper */}
+        <div className="w-full max-w-[600px] flex-1 mx-auto bg-gradient-to-l from-gray-900 rounded-md hidden sm:flex">
           {post.images_urls && post.images_urls.length > 0 ? (
             <Swiper
               modules={[Navigation, Pagination, Scrollbar, Zoom]}
@@ -193,13 +191,15 @@ function PostCard({ post }) {
               navigation
               pagination={{ clickable: true }}
               scrollbar={{ draggable: true }}
+              style={{ width: '100%', height: '100%' }}
             >
               {post.images_urls.map((url, index) => (
                 <SwiperSlide key={index}>
                   <img
                     src={url}
                     alt={`Post image ${index}`}
-                    className="w-full max-h-[400px] sm:max-h-[500px] object-contain rounded cursor-pointer"
+                    className="w-full max-h-[500px] object-contain rounded cursor-pointer"
+                    style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
                     onClick={() => openModal(url)}
                   />
                 </SwiperSlide>
@@ -210,7 +210,43 @@ function PostCard({ post }) {
               {t('messages.noImages')}
             </p>
           )}
-        </div>        
+        </div>
+        {/* Mobile Image Displayer */}
+        <div className="w-full mx-auto p-0 bg-gradient-to-l from-gray-900 rounded-md block sm:hidden">
+          {post.images_urls && post.images_urls.length > 0 ? (
+            post.images_urls.length === 1 ? (
+              <img
+                src={post.images_urls[0]}
+                alt="Post image"
+                className="w-full h-[60vw] min-h-[180px] max-h-[70vh] object-contain rounded cursor-pointer"
+                onClick={() => openModal(post.images_urls[0])}
+              />
+            ) : (
+              <Swiper
+                modules={[Pagination, Scrollbar, Zoom]}
+                slidesPerView={1}
+                pagination={{ clickable: true }}
+                scrollbar={{ draggable: true }}
+                style={{ minHeight: '60vw', maxHeight: '70vh' }}
+              >
+                {post.images_urls.map((url, index) => (
+                  <SwiperSlide key={index}>
+                    <img
+                      src={url}
+                      alt={`Post image ${index}`}
+                      className="w-full h-full min-h-[180px] max-h-[70vh] object-contain rounded cursor-pointer"
+                      onClick={() => openModal(url)}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )
+          ) : (
+            <p className="font-semibold text-center text-white">
+              {t('messages.noImages')}
+            </p>
+          )}
+        </div>
 
       </div>
       {/* Modal for full-size image */}

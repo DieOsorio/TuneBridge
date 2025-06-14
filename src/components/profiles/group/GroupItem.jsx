@@ -1,11 +1,12 @@
-import React from "react";
 import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
 import { useNavigate } from "react-router-dom";
 import Button from "../../ui/Button";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
+import { useTranslation } from "react-i18next";
 
 const GroupItem = ({ groupId }) => {
+  const { t } = useTranslation("profileGroup");
   const { fetchProfileGroup } = useProfileGroups(); // Fetch group details
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const GroupItem = ({ groupId }) => {
         className="mt-4  !bg-amber-700 hover:!bg-amber-800"
         onClick={() => navigate(`/group/${group.id}`)}
       >
-        View Group
+        {t("groupItem.viewGroup", "View Group")}
       </Button>
     </div>
   );

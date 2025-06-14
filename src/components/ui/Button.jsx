@@ -33,7 +33,7 @@ const Button = ({
         <button
           type={type}
           onClick={onClick}
-          className="inner-content"
+          className="inner-content cursor-pointer"
           style={{
             width: '100%',
             boxSizing: 'border-box',

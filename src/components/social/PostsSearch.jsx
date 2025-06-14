@@ -51,7 +51,8 @@ const PostsSearch = () => {
                     placeholder={t("posts:placeholders.searchPosts")}
                     className="border rounded-lg p-2 focus:outline-none focus:ring w-full max-w-md"
                 />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center group">
+                {/* Desktop: Plus icon beside search */}
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:flex items-center group">
                     <button
                         type="button"
                         onClick={() => navigate("/create-post")}
@@ -67,6 +68,19 @@ const PostsSearch = () => {
                     </span>
                 </div>
             </form>
+            {/* Mobile: Plus icon below search */}
+            <div className="flex justify-center items-center sm:hidden mb-4">
+                <button
+                    type="button"
+                    onClick={() => navigate("/create-post")}
+                    className="text-emerald-500 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-colors"
+                >
+                    <FiPlus size={32} />
+                </button>
+                <span className="text-emerald-500 font-semibold text-base mt-1">
+                    {t("posts:buttons.createPost")}
+                </span>
+            </div>
 
             {/* Display Posts */}
             {isSearching ? (

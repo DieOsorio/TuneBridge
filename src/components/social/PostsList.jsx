@@ -70,9 +70,12 @@ const PostsList = ({ profileId, posts, disableSearch, isOwnProfile }) => {
                             <FiPlus size={28} />
                         </button>
                         <span
-                            className="ml-2 whitespace-nowrap text-emerald-500 font-semibold text-base bg-gray-900 px-3 py-1 rounded-lg shadow transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none"
+                            className="hidden sm:flex ml-2 whitespace-nowrap text-emerald-500 font-semibold text-base bg-gray-900 px-3 py-1 rounded-lg shadow transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none"
                             style={{ willChange: 'opacity, transform' }}
                         >
+                            {t("posts:buttons.createPost")}
+                        </span>
+                        <span className="text-emerald-500 font-semibold text-base mt-1 sm:hidden">
                             {t("posts:buttons.createPost")}
                         </span>
                     </div>
