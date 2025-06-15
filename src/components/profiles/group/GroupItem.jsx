@@ -4,14 +4,21 @@ import Button from "../../ui/Button";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import { useTranslation } from "react-i18next";
+import { useView } from "../../../context/ViewContext";
 
 const GroupItem = ({ groupId }) => {
   const { t } = useTranslation("profileGroup");
   const { fetchProfileGroup } = useProfileGroups(); // Fetch group details
   const navigate = useNavigate();
+  const { manageView } = useView();
 
   // Fetch the profile group data
   const { data: group, isLoading, error } = fetchProfileGroup(groupId);
+
+  const handleViewGroup = () => {
+    manageView("members", "group");
+    navigate(`/group/${group.id}`);
+  }
 
   if (isLoading) {
     return (
@@ -36,7 +43,7 @@ const GroupItem = ({ groupId }) => {
       <p className="text-sm text-gray-400">{group.bio}</p>
       <Button
         className="mt-4  !bg-amber-700 hover:!bg-amber-800"
-        onClick={() => navigate(`/group/${group.id}`)}
+        onClick={handleViewGroup}
       >
         {t("groupItem.viewGroup", "View Group")}
       </Button>

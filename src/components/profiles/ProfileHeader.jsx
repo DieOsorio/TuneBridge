@@ -91,20 +91,12 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       });
     };
     const handleDisconnect = async () => {
-      if (connection) await deleteConnection({
-        id: connection.id,
-        follower_profile_id: user.id,
-        following_profile_id: profileData.id
-      });
+      if (connection) await deleteConnection(connection);
     };
     const handleBlock = async () => {
       if (connection) {
         await updateConnection({ 
-          connection: {
-            id: connection.id,
-            follower_profile_id: user.id,
-            following_profile_id: profileData.id
-          },
+          connection,
           updatedConnection: { status: 'blocked' }
         });
       } else {
@@ -118,11 +110,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const handleUnblock = async () => {
       if (connection) {
         await updateConnection({
-          connection: {
-            id: connection.id,
-            follower_profile_id: user.id,
-            following_profile_id: profileData.id
-          },
+          connection,
           updatedConnection: { status: 'accepted' }
         });
       }

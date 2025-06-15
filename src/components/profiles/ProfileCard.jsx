@@ -35,24 +35,12 @@ const ProfileCard = ({ profile }) => {
                 status: "pending",
             }); // Call the server to follow the user
         } else if (status === "pending") {
-            await deleteConnection({
-                id: userConnection.id,
-                follower_profile_id: user.id,
-                following_profile_id: profile.id,
-            }); // Call the server to unfollow the user
+            await deleteConnection(userConnection); // Call the server to unfollow the user
         } else if (status === " accepted") {
-            await deleteConnection({
-                id: userConnection.id,
-                follower_profile_id: user.id,
-                following_profile_id: profile.id,
-            }); // Call the server to unconnect the user
+            await deleteConnection(userConnection); // Call the server to unconnect the user
         } else if (status === "blocked") {
             await updateConnection({
-                connection: {
-                    id: userConnection.id,
-                    follower_profile_id: user.id,
-                    following_profile_id: profile.id,
-                },
+                connection: userConnection,
                 updatedConnection: {
                     status: "accepted",
                 },

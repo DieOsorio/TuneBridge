@@ -1,10 +1,11 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   useFetchGroupMembersQuery,
   useFetchUserGroupsQuery,
   useAddGroupMemberMutation,
   useRemoveGroupMemberMutation,
+  useUpdateGroupMemberMutation,
 } from "./profileGroupMembersActions";
 
 const ProfileGroupMembersContext = createContext();
@@ -12,12 +13,14 @@ ProfileGroupMembersContext.displayName = "ProfileGroupMembersContext";
 
 export const ProfileGroupMembersProvider = ({ children }) => {
   const addGroupMember = useAddGroupMemberMutation().mutateAsync;
+  const updateGroupMember = useUpdateGroupMemberMutation().mutateAsync;
   const removeGroupMember = useRemoveGroupMemberMutation().mutateAsync;
 
   const value = {
     fetchUserGroups: useFetchUserGroupsQuery,
     fetchGroupMembers: useFetchGroupMembersQuery,
     addGroupMember,
+    updateGroupMember,
     removeGroupMember,
   };
 
