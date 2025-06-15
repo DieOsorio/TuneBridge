@@ -38,12 +38,15 @@ const ConnectionCard = ({ profileId, connection }) => {
 
     const handleAccept = async() => {
         if (!connection.id) return console.warn("Connection ID is missing");
-        await updateConnection({connection: {id: connection.id}, updatedConnection: {status: "accepted"}});
+        await updateConnection({
+            connection, 
+            updatedConnection: {status: "accepted"}
+        });
     }
 
     const handleReject = async () => {
         if (!connection.id) return console.warn("Connection ID is missing");
-        await deleteConnection(connection.id);
+        await deleteConnection(connection);
     }
 
     return (

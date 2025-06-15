@@ -214,10 +214,9 @@ const RoleEditor = ({
             </div>
             <div className="flex gap-2 mx-auto">
               <Button
-                onClick={() => handleSaveDetail(detail)}
-                color="success"
+                onClick={() => handleSaveDetail(detail)}                
                 variant="contained"
-                className="!text-white !px-3 !rounded-xl flex gap-1 !text-sm"                
+                className="!text-white !bg-emerald-700 hover:!bg-emerald-800 !px-3 !rounded-xl flex gap-1 !text-sm"                
               >
                 <FiEdit2 size={15} />
                 {t("generic.save")}
@@ -274,9 +273,8 @@ const RoleEditor = ({
         <div className="mt-4 w-full flex justify-center">
           <Button 
           type="submit"
-          color="success"
           variant="contained"
-          className="!text-white !w-1/2 !px-3 !rounded-xl flex gap-1 !text-sm"  
+          className="!text-white !bg-emerald-700 hover:!bg-emerald-800 !w-1/2 !px-3 !rounded-xl flex gap-1 !text-sm"  
           >
           {t("generic.add")}
         </Button>

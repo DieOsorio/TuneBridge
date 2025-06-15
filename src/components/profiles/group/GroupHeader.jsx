@@ -21,6 +21,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
         <div>
           <div className="sm:mb-4">
             <Button
+              className="!bg-sky-700 hover:!bg-sky-800"
               onClick={() => manageView("posts", "group")}
             >
               View Posts
@@ -35,22 +36,23 @@ const GroupHeader = ({ groupData, isAdmin }) => {
               {/* Edit Group Button */}
               <div className="mb-4">
                 <Button
+                  className="!bg-sky-700 hover:!bg-sky-800"
                   onClick={() => manageView("edit", "group")}
                 >
                   Edit Group
                 </Button>
-              </div>
-
-              {/* Manage Members Button */}
-              <div className="sm:mb-4">
-                <Button
-                  onClick={() => manageView("members", "group")}
-                >
-                  Manage Members
-                </Button>
-              </div>
+              </div>              
             </>
           )}
+          {/* Manage Members Button */}
+            <div className="sm:mb-4">
+              <Button
+                className="!bg-sky-700 hover:!bg-sky-800"
+                onClick={() => manageView("members", "group")}
+              >
+                Members
+              </Button>
+            </div>
         </div>
       </div>
     </div>

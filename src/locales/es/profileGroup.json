@@ -13,7 +13,13 @@
     "removeMember": "Eliminar Miembro",
     "makeAdmin": "Hacer Administrador",
     "removeAdmin": "Quitar Administrador",
-    "noMembers": "Aún no hay miembros en este grupo."
+    "noMembers": "Aún no hay miembros en este grupo.",
+    "role": {
+      "admin": "Administrador",
+      "member": "Miembro",
+      "musician": "Músico",
+      "manager": "Manager"
+    }
   },
   "groupItem": {
     "groupName": "Nombre del Grupo",
@@ -26,6 +32,7 @@
     "deleteGroup": "Eliminar Grupo",
     "confirmDelete": "¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.",
     "confirmLeave": "¿Estás seguro de que deseas salir de este grupo?",
+    "confirmRemove": "¿Estás seguro de que deseas eliminar a este miembro del grupo?",
     "role": "Rol",
     "admin": "Administrador",
     "member": "Miembro",
@@ -34,6 +41,7 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "add": "Agregar",
+    "adding": "Agregando...",
     "groupMembers": "Miembros del Grupo",
     "profileIdLabel": "ID de Perfil",
     "profileIdPlaceholder": "Ingresa el ID de perfil",

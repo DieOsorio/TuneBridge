@@ -61,7 +61,7 @@ export const useAllProfilesQuery = () => {
   });
 };
 
-// Fetch a single profile
+// Fetch a single profile by id or username
 export const useProfileQuery = (identifier) => {
   const isUUID = identifier && identifier.includes("-") && identifier.length === 36;
   const queryKey = isUUID
@@ -81,9 +81,9 @@ export const useProfileQuery = (identifier) => {
       return data;
     },
     enabled: !!identifier,
+    retry: false,
   });
 };
-
 
 // Map through an array of profile IDs and access each one
 export const useProfilesMap = (profileIds = []) => {

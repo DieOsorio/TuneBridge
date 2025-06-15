@@ -73,7 +73,7 @@ export const useAddConnectionMutation = () => {
 
     //optimistic update
     onMutate: async ( connection ) => {
-      return await optimisticUpdate({
+      return optimisticUpdate({
         queryClient,
         entity: connection,
         keyFactory: connectionKeyFactory,
@@ -127,10 +127,10 @@ export const useUpdateConnectionMutation = () => {
     },
 
      // optimistic update
-     onMutate: async ({ connection }) => {
-      return await optimisticUpdate({
+     onMutate: async ({ connection, updatedConnection }) => {
+      return optimisticUpdate({
         queryClient,
-        entity: connection,
+        entity: { ...connection, ...updatedConnection},
         keyFactory: connectionKeyFactory,
         type: "update",
       });
@@ -173,7 +173,7 @@ export const useDeleteConnectionMutation = () => {
 
     // optimistic update
     onMutate: async ( connection ) => {
-      return await optimisticUpdate({
+      return optimisticUpdate({
         queryClient,
         entity: connection,
         keyFactory: connectionKeyFactory,

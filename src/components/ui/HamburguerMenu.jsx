@@ -44,7 +44,7 @@ const HamburgerMenu = ({ id }) => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-2 w-50 bg-gray-900 text-white rounded-md shadow-lg mt-2 p-4 transition-all border border-sky-700 z-50">
+        <div className="absolute right-5 w-55 bg-gray-900 text-white rounded-md shadow-lg mt-2 p-4 transition-all border border-sky-700 z-50">
           {id ? (
             <ul className="space-y-2">
               <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">

@@ -15,18 +15,20 @@ const ConfirmDialog = ({
   onCancel, 
   confirmLabel, 
   cancelLabel,
-  color }) => {
+  className,
+  color 
+}) => {
   return (
     <Dialog open={isOpen} onClose={onCancel}>
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle className="!bg-gray-300 !text-center !mb-6">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className="!justify-center">
         {onCancel && 
         (<Button 
           onClick={onCancel} 
-          className="!bg-gray-500 hover:!bg-gray-600" 
+          className="!min-w-30 !bg-gray-500 hover:!bg-gray-600" 
           variant="contained"
         >
           {cancelLabel}
@@ -37,6 +39,7 @@ const ConfirmDialog = ({
           onClick={onConfirm} 
           color= {color}
           variant="contained"
+          className={`!min-w-30 ${className}`}
         >
           {confirmLabel}
         </Button>

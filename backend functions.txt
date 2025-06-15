@@ -135,30 +135,57 @@ CREATE OR REPLACE FUNCTION public.notify_profile_group_leave()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
+DECLARE
+  acting_user_id UUID;
+  acting_user_id_text TEXT;
 BEGIN
-  INSERT INTO social.notifications (
-    id,
-    created_at,
-    profile_id,
-    type,
-    entity_id,
-    from_user_id,
-    is_read,
-    message
-  )
-  VALUES (
-    gen_random_uuid(),
-    NOW(),
-    OLD.profile_group_id, -- Can be adjusted to notify group admins
-    'group_leave',
-    OLD.profile_group_id,
-    OLD.profile_id,
-    FALSE,
-    'A member has left the group.'
-  );
+  -- Get the user ID executing the action from the JWT claims as text
+  acting_user_id_text := current_setting('request.jwt.claims', true)::json->>'sub';
+
+  -- Cast acting_user_id_text to UUID for later use
+  acting_user_id := acting_user_id_text::uuid;
+
+  -- Compare UUID types directly without casting OLD.profile_id to text
+  IF acting_user_id = OLD.profile_id THEN
+    -- Case: user left voluntarily → notify other group members
+    INSERT INTO social.notifications (
+      id, created_at, profile_id, type, entity_id, from_user_id, is_read, message
+    )
+    SELECT
+      gen_random_uuid(),
+      NOW(),
+      pgm.profile_id,         -- recipient
+      'group_member_left',
+      OLD.profile_group_id,
+      OLD.profile_id,         -- the user who left
+      FALSE,
+      'A member has left your group.'
+    FROM users.profile_group_members pgm
+    WHERE pgm.profile_group_id = OLD.profile_group_id
+      AND pgm.profile_id != OLD.profile_id; -- don't notify the user who left
+
+  ELSE
+    -- Case: user was removed by another → notify only the removed user
+    INSERT INTO social.notifications (
+      id, created_at, profile_id, type, entity_id, from_user_id, is_read, message
+    )
+    VALUES (
+      gen_random_uuid(),
+      NOW(),
+      OLD.profile_id,          -- recipient
+      'group_member_removed',
+      OLD.profile_group_id,
+      acting_user_id,          -- user who removed
+      FALSE,
+      'You have been removed from the group.'
+    );
+  END IF;
+
   RETURN OLD;
 END;
 $function$;
+
+
 
 
 

@@ -99,12 +99,68 @@ export const useAddGroupMemberMutation = () => {
   });
 };
 
+// UPDATE A MEMBER IN A GROUP
+export const useUpdateGroupMemberMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ profileGroupId, profileId, updates }) => {
+      
+      const { data, error } = await supabase
+        .schema("users")
+        .from("profile_group_members")
+        .update(updates)
+        .eq("profile_group_id", profileGroupId)
+        .eq("profile_id", profileId)
+        .select();
+
+      if (error) throw new Error(error.message);
+      return data[0];
+    },
+
+    // Optimistic update
+    onMutate: async ({ profileGroupId, profileId, updates }) => {
+      const optimisticMember = { ...updates, profile_group_id: profileGroupId, profile_id: profileId };
+      const previousData = optimisticUpdate({
+        queryClient,
+        keyFactory: profileGroupMembersKeyFactory,
+        entity: optimisticMember,
+        type: "update",
+        idKey: "profile_id",
+      });
+      return { previousData, optimisticMember, profileGroupId };
+    },
+
+    onError: (err, _variables, context) => {
+      rollbackCache({ queryClient, previousData: context?.previousData });
+    },
+
+    onSuccess: (data, _variables, context) => {
+      replaceOptimisticItem({
+        queryClient,
+        keyFactory: profileGroupMembersKeyFactory,
+        entity: context.optimisticMember,
+        newEntity: data,
+        idKey: "profile_id",
+      });
+    },
+
+    onSettled: (_data, _error, variables) => {
+      invalidateKeys({
+        queryClient,
+        keyFactory: () => profileGroupMembersKeyFactory({ profileGroupId: variables.profileGroupId }),
+      });
+    },
+  });
+};
+
 // REMOVE A MEMBER FROM A GROUP
 export const useRemoveGroupMemberMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ profileGroupId, profileId }) => {
+      
       const { error } = await supabase
         .schema("users")
         .from("profile_group_members")
