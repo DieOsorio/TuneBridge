@@ -125,7 +125,7 @@ const ProfilesSearch = () => {
                     <input
                         type="text"
                         {...register("searchTerm")}
-                        placeholder="Search profiles..."
+                        placeholder={t("search")}
                         className="border rounded-lg p-2 focus:outline-none focus:ring"
                     />
                     <button

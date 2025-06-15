@@ -32,7 +32,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
       username: "",
       gender: "",
       country: "",
-      birthdate: "",
+      birthdate: null,
       city: "",
       firstname: "",
       lastname: "",

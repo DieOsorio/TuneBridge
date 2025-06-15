@@ -30,5 +30,6 @@
       { "value": "Piano", "label": "Piano" },
       { "value": "Drums", "label": "Drums" }
     ]
-  }
+  },
+  "search": "Search profiles..."
 }

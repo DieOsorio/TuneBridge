@@ -3,11 +3,13 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import { useTranslation } from 'react-i18next';
 
 // Registrar el plugin
 registerPlugin(FilePondPluginImagePreview);
 
 const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null, classForLabel }) => {
+  const { t } = useTranslation("ui");
   const [files, setFiles] = useState([]);
   const pondRef = useRef();
 
@@ -32,7 +34,9 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null, classForL
 
   return (
     <div className={amount === 1 ? 'hidden' : ''}>
-      <label className={`block font-medium text-sm mb-2 ${classForLabel}`}>Upload Images</label>
+      <label className={`block font-medium text-sm mb-2 ${classForLabel}`}>
+        {t("imageUploader.upload")}
+      </label>
       <FilePond
         ref={pondRef}
         files={files}
@@ -40,7 +44,7 @@ const ImageUploader = ({ onFilesUpdate, amount = 1, triggerRef = null, classForL
         allowMultiple={amount > 1}
         maxFiles={amount}
         name="images"
-        labelIdle={amount > 1 ? `Drag the images or click to select (max ${amount})` : ''}
+        labelIdle={amount > 1 ? `${t("imageUploader.drag")} (max ${amount})` : ''}
         style={{
           backgroundColor: '#1a202c',
           border: '2px dashed #4a5568',
