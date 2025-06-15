@@ -45,14 +45,14 @@ function ParticipantRow({ participant, isSelf, isAdmin, menuOpen, setMenuOpen, s
         <div className="relative">
           <button
             ref={buttonRef}
-            className="p-1 rounded-full hover:bg-gray-800 text-gray-300"
+            className="p-1 rounded-full cursor-pointer hover:bg-gray-800 text-gray-300"
             onClick={() => setMenuOpen(menuOpen === participant.profile_id ? null : participant.profile_id)}
             aria-label={t("groupOverview.menu.open")}
           >
             <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><circle cx="4" cy="10" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="16" cy="10" r="2"/></svg>
           </button>
           {menuOpen === participant.profile_id && (
-            <div className={`absolute right-0 w-40 bg-gray-800 border border-gray-700 rounded shadow-lg z-10 ${openUpwards ? 'bottom-full mb-2' : 'mt-2'}`}>
+            <div className={`absolute right-0 w-45 bg-gray-800 border border-gray-700 rounded shadow-lg z-10 ${openUpwards ? 'bottom-full mb-2' : 'mt-2'}`}>
               <ul className="py-1">
                 <li>
                   <button
@@ -98,7 +98,7 @@ export default function GroupOverview({ conversation, onClose }) {
   const { updateConversation } = useConversations();
   const { fetchParticipants, addParticipant, removeParticipant, updateParticipantRole } = useParticipants();
   const { data: participants = [] } = fetchParticipants(conversation.id);
-  const { fetchProfile, searchProfiles } = useProfile();
+  const { searchProfiles } = useProfile();
   const { t } = useTranslation("chat");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(conversation.title || "");

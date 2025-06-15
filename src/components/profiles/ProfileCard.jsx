@@ -6,8 +6,10 @@ import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-ic
 import { ImBlocked } from "react-icons/im"
 import { useView } from "../../context/ViewContext";
 import ProfileAvatar from "./ProfileAvatar";
+import { useTranslation } from "react-i18next";
 
 const ProfileCard = ({ profile }) => {
+    const { t } = useTranslation("profile");
     const { user } = useAuth();
     const { addConnection, deleteConnection, userConnections, updateConnection } = useUserConnections();
     const { data: connections } = userConnections(profile.id)
@@ -50,9 +52,9 @@ const ProfileCard = ({ profile }) => {
 
     // Function to determine the hover text based on the connection status
     const getHoverText = () => {
-        if (status === "pending") return "cancel request";
-        else if (status === "accepted") return "unconnect";
-        else if (status === "blocked") return "unblocked"; 
+        if (status === "pending") return t("profile.connection.cancelRequest");
+        else if (status === "accepted") return t("profile.connection.disconnect");
+        else if (status === "blocked") return t("profile.connection.unblock"); 
         return null
     }
 
@@ -107,14 +109,14 @@ const ProfileCard = ({ profile }) => {
 
                     {/* Text (centered over the rest of the button) */}
                     <span
-                        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-400 ${
+                        className={`absolute inset-0 text-[13px] flex items-center justify-center transition-opacity duration-400 ${
                             hoverText ? "opacity-0" : "opacity-100"
                         }`}
                     >
-                        {status}
+                        {t(`profile.connection.${status}`)}
                     </span>
                     <span
-                        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-400 ${
+                        className={`absolute inset-0 text-[13px] flex items-center justify-center transition-opacity duration-400 ${
                             hoverText ? "opacity-100" : "opacity-0"
                         }`}
                     >

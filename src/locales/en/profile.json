@@ -29,10 +29,12 @@
       "loading": "Checking connection...",
       "connect": "Connect",
       "disconnect": "Disconnect",
+      "accepted": "Connected",
       "pending": "Pending",
       "block": "Block",
       "unblock": "Unblock",
-      "blockedByOther": "You are blocked by this user."
+      "blockedByOther": "You are blocked by this user.",
+      "cancelRequest": "Cancel requests"
     }
   },
   "hashtags": {

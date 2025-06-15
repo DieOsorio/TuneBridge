@@ -85,17 +85,17 @@
         "description": "Create, edit, and personalize your musician profile.",
         "images": [
           {
-            "src": "/for-landing-page/profile-setup-1-EN.jpg",
+            "src": "/for-landing-page/profile-setup-1-EN.png",
             "alt": "Profile creation form",
             "caption": "Edit your profile details and upload a profile picture."
           },
           {
-            "src": "/for-landing-page/profile-setup-2-EN.jpg",
+            "src": "/for-landing-page/profile-setup-2-EN.png",
             "alt": "Profile roles and details",
             "caption": "Complete your profile with music roles and details."
           },
           {
-            "src": "/for-landing-page/profile-setup-3-EN.jpg",
+            "src": "/for-landing-page/profile-setup-3-EN.png",
             "alt": "Profile view",
             "caption": "Showcase your profile to the TuneBridge community."
           }
@@ -106,17 +106,17 @@
         "description": "One-on-one and group chat with musicians.",
         "images": [
           {
-            "src": "/for-landing-page/chat-1-EN.jpg",
+            "src": "/for-landing-page/chat-1-EN.png",
             "alt": "Direct chat",
             "caption": "Start a private conversation with any musician."
           },
           {
-            "src": "/for-landing-page/chat-2-EN.jpg",
+            "src": "/for-landing-page/chat-2-EN.png",
             "alt": "Group chat",
             "caption": "Create and manage group chats for your band or project."
           },
           {
-            "src": "/for-landing-page/chat-3-EN.jpg",
+            "src": "/for-landing-page/chat-3-EN.png",
             "alt": "Group management",
             "caption": "Add, promote, or remove participants in real time."
           }
@@ -127,17 +127,17 @@
         "description": "Find musicians, posts, and trending hashtags.",
         "images": [
           {
-            "src": "/for-landing-page/explore-1-EN.jpg",
+            "src": "/for-landing-page/explore-1-EN.png",
             "alt": "Explore page",
             "caption": "Browse posts and profiles from the global music community."
           },
           {
-            "src": "/for-landing-page/explore-2-EN.jpg",
+            "src": "/for-landing-page/explore-2-EN.png",
             "alt": "Advanced search",
             "caption": "Filter musicians by country, city, role, and instrument."
           },
           {
-            "src": "/for-landing-page/explore-3-EN.jpg",
+            "src": "/for-landing-page/explore-3-EN.png",
             "alt": "Trending hashtags",
             "caption": "Discover trending topics and join the conversation."
           }
@@ -148,17 +148,17 @@
         "description": "Share your music, ideas, and connect with hashtags.",
         "images": [
           {
-            "src": "/for-landing-page/posts-1-EN.jpg",
+            "src": "/for-landing-page/posts-1-EN.png",
             "alt": "Create post",
             "caption": "Create posts with images, text, and up to 3 hashtags."
           },
           {
-            "src": "/for-landing-page/posts-2-EN.jpg",
+            "src": "/for-landing-page/posts-2-EN.png",
             "alt": "Post feed",
             "caption": "Like, comment, and explore posts from other musicians."
           },
           {
-            "src": "/for-landing-page/posts-3-EN.jpg",
+            "src": "/for-landing-page/posts-3-EN.png",
             "alt": "Hashtag page",
             "caption": "Click a hashtag to see all related posts and profiles."
           }
@@ -195,5 +195,9 @@
     "viewProfile": "View Profile",
     "editProfile": "Edit Profile",
     "editMusicInfo": "Edit Music Profile"
+  },
+  "imageUploader": {
+    "upload": "Upload Images",
+    "drag": "Drag the images or click to select"
   }
 }
