@@ -1,8 +1,10 @@
 import { useView } from "../../context/ViewContext";
 import NotificationsList from "./NotificationsList";
 import ConnectionsList from "./ConnectionsList"; 
+import { useTranslation } from "react-i18next";
 
 function Notifications({ profileId }) {
+  const { t } = useTranslation("profile");
   const { internalView, setInternalView } = useView();
 
   return (
@@ -17,7 +19,7 @@ function Notifications({ profileId }) {
                 : "hover:text-sky-600 text-gray-300"
             }`}
           >
-            All Notifications
+            {t("profile.internNav.notifications")}
           </span>
 
           <span
@@ -28,7 +30,7 @@ function Notifications({ profileId }) {
                 : "hover:text-sky-600 text-gray-300"
             }`}
           >
-            Pending Connections
+            {t("profile.internNav.pending")}
           </span>
         </div>
       </div>

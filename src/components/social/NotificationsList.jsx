@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { useNotifications } from "../../context/social/NotificationsContext";
 import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 
 function NotificationsList({ profileId }) {
+    const { t } = useTranslation("profile")
     const { userNotifications, notificationsRealtime, updateNotification } = useNotifications();
     const { data: notifications, isLoading, error } = userNotifications(profileId);
 
@@ -20,7 +22,7 @@ function NotificationsList({ profileId }) {
 
     if (isLoading) return <Loading />;
     if (error) return <ErrorMessage error={error.message} />;
-    if (!notifications || notifications.length === 0) return <div className="p-4 max-w-4xl mx-auto">No notifications.</div>;
+    if (!notifications || notifications.length === 0) return <div className="p-4 max-w-4xl mx-auto">{t("profile.noNotifications")}</div>;
 
     return (
         <ul className="divide-y max-w-4xl mx-auto divide-gray-700 p-4 bg-gradient-to-l to-gray-900 rounded-lg shadow-md">

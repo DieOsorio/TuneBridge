@@ -4,6 +4,7 @@
     "errorLoading": "Error loading profile.",
     "userGroupsComing": "User Groups is in development. Coming soon!",
     "musicComing": "Music section is in development. Coming soon!",
+    "noNotifications": "No notifications",
     "navigation": {
       "about": "About",
       "ads": "Music Ads",
@@ -15,6 +16,10 @@
         "startChat": "Start Chat",
         "notifications": "Notifications",
         "settings": "Settings"
+      },
+      "internNav": {
+        "notifications": "Notifications",
+        "pending": "Pending Connections"
       },
     "data": {
       "firstname": "Name",
