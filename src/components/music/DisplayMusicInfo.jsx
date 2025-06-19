@@ -92,7 +92,7 @@ const DisplayMusicInfo = ({ profileId }) => {
                     ? djDetails
                     : roles.find((role) => role.id === expandedRole)?.role === "Producer"
                     ? producerDetails
-                    : composerDetails // Add composerDetails for the Composer role
+                    : composerDetails
                 }
               />
               <div
