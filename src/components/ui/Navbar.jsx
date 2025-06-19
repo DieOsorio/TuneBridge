@@ -40,17 +40,19 @@ const Navbar = () => {
             {t("nav.links.explore")}
           </Link>
         )}
+        {user && (
           <Link
-            to="/ads"
-            onClick={() => manageView(null, "ads")}
-            className={`font-medium ${
-              isActive("/ads")
-                ? "text-sky-400"
-                : "hover:text-sky-300"
-            }`}
+          to="/ads"
+          onClick={() => manageView(null, "ads")}
+          className={`font-medium ${
+            isActive("/ads")
+              ? "text-sky-400"
+              : "hover:text-sky-300"
+          }`}
           >
             {t("nav.links.ads")}
           </Link>
+        )}
         {user && (
           <Link
             to={`/profile/${user.id}`}
