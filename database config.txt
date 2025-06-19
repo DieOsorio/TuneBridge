@@ -30,7 +30,7 @@ Schema: users
         trigger_update_content_search_details: Updates `content_search_details` based on profile_hashtags.
         trigger_update_profile_content_search_all: Updates `content_search_all` from all other vectors.
 
-    ------------   *   ------------
+    -------- * --------
 
     Table: profile_groups => Stores general information about profile groups (e.g., a band).
 
@@ -50,7 +50,7 @@ Schema: users
 
         add_creator_to_group_members: Automatically adds the creator to profile_group_members with role "admin".
 
-    ------------   *   ------------
+    -------- * --------
 
     Table: profile_group_members => Associates individual profiles with profile groups, including role and join date.
 
@@ -84,6 +84,8 @@ Schema: music
 
         trigger_update_profile_content_search_roles: Updates `content_search_roles` on insert or update.
 
+    -------- * --------
+
     Table: instrument_details => Stores specific details of an instrumentalist.
 
     Columns:
@@ -94,6 +96,8 @@ Schema: music
         instrument (text)
         years_of_experience (int2)
         level (text)
+    
+    -------- * --------
 
     Table: singer_details => Stores specific details of a singer.
 
@@ -106,6 +110,8 @@ Schema: music
         level (text)
         profile_id (UUID)
 
+    -------- * --------
+
     Table: dj_details => Stores specific details of a DJ.
 
     Columns:
@@ -116,6 +122,8 @@ Schema: music
         events_played (text)
         level (text)
         profile_id (UUID)
+
+    -------- * --------
 
     Table: producer_details => Stores specific details of a producer.
 
@@ -128,6 +136,8 @@ Schema: music
         level (text)
         profile_id (UUID)
 
+    -------- * --------
+
     Table: composer_details => Stores specific details of a composer.
 
     Columns:
@@ -139,9 +149,41 @@ Schema: music
         level (text)
         profile_id (UUID)
 
+    -------- * --------
+    
+    Table: user_media_links => All the media links associated with a profile or a profile_group are here
+
+    Columns:
+        id (UUID)
+        created_at (timestamptz)
+        profile_id (UUID, references users.profiles.id)
+        url: (text)
+        profile_group_id: (UUID, references users.profile_groups.id)
+        media_type: (text) (spotify, youtube, file, etc)
+        title: (text)
+        description: (text)
+
+
 ------------   *   ------------
 
+
 Schema: social
+
+    Table: musician_ads => A search oriented announcements for musicians
+
+    Columns:
+
+        id (UUID) PK
+        profile_id (UUID) references users.profiles.id
+        group_id (UUID) references users.profile_groups.id
+        ad_type (text) check (ad_type IN ('looking', 'offering')) NN
+        looking_for (text[]) eg. "bassist" "singer"
+        genres (text[])
+        locations (text)
+        description(text) NN
+        created_at (timestamp)
+
+    -------- * --------
 
     Table: profile_hashtags => Associates user profiles with hashtags (used for content_search_details).
 
@@ -155,12 +197,16 @@ Schema: social
 
         trigger_update_profile_content_search_details: Updates `content_search_details` based on associated hashtags.
 
+    -------- * --------
+
     Table: hashtags => Stores unique hashtags.
 
     Columns:
 
         id (UUID)
         name (text)
+
+    -------- * --------
 
     Table: user_connections => Stores user connections (friendships, followers).
 
@@ -176,6 +222,8 @@ Schema: social
 
         trigger_follow_request: Creates a notification when a follow request is sent.
         trigger_update_connection_timestamp: Updates `updated_at` when status changes.
+
+    -------- * --------
 
     Table: posts => Stores user posts.
 
@@ -196,6 +244,8 @@ Schema: social
         trigger_like: Creates a notification when a post is liked.
         update_content_search_trigger: Calls `refresh_post_content_search()` to update `content_search`.
 
+    -------- * --------
+
     Table: comments => Stores comments on posts.
 
     Columns:
@@ -211,6 +261,8 @@ Schema: social
         trigger_update_comments_timestamp: Updates `updated_at` when edited.
         trigger_comment: Creates a notification when a comment is added.
 
+    -------- * --------
+
     Table: likes => Stores likes on posts and comments.
 
     Columns:
@@ -225,26 +277,32 @@ Schema: social
 
         prevent_duplicate_likes: Ensures uniqueness on likes per user per post/comment.
 
+    -------- * --------
+
     Table: conversations => Stores chat conversations.
 
     Columns:
 
-        id (UUID)
+        id (UUID) PK
         created_at (timestamp)
         updated_at (timestamp)
         avatar_url (text)
         title (text)
         is_group (boolean)
-        created_by (UUID)
+        created_by (UUID) FK(users.profile.id)
+
+    -------- * --------
 
     Table: conversation_participants => Participants of conversations.
 
     Columns:
 
-        conversation_id (UUID)
-        profile_id (UUID)
+        conversation_id (UUID) FK(social.conversations.id)
+        profile_id (UUID) FK(users.profile.id)
         joined_at (timestamp)
         role (text)
+
+    -------- * --------
 
     Table: messages => Chat messages within conversations.
 
@@ -266,6 +324,8 @@ Schema: social
         trigger_update_message_timestamp: Updates `updated_at` when edited.
         trigger_soft_delete_message: Implements soft delete.
 
+    -------- * --------
+
     Table: notifications => Stores system/user notifications.
 
     Columns:
@@ -278,3 +338,38 @@ Schema: social
         from_user_id (UUID)
         is_read (boolean)
         message (text)
+
+------------   *   ------------
+
+Schema: groups
+
+    Table: group_events => Internal group calendar.
+
+    Columns:
+
+        id (UUID)
+        profile_group_id (UUID) REFERENCES users.profile_groups(id)
+        title (text),
+        description (text),
+        location (text),
+        type (text) CHECK (type IN ('rehearsal', 'gig', 'meeting'))
+        start_time (timestamp)
+        end_time (timestamp) 
+        created_by (UUID) REFERENCES users.profiles(id)
+        created_at (timestamp)
+
+    -------- * --------
+
+    Table: event_rsvps => To manage if the member will attend or not to the event.
+
+    Columns:
+
+        event_id (UUID) REFERENCES groups.group_events(id)
+        profile_id (UUID) REFERENCES users.profiles(id)
+        status (text) CHECK (status IN ('attending', 'not_attending', 'pending')) NOT NULL DEFAULT 'pending'
+        updated_at (timestamp) DEFAULT now(),
+        PRIMARY KEY (event_id, profile_id)
+
+    Triggers:
+
+        rsvp_updated: on update, updates updated_at

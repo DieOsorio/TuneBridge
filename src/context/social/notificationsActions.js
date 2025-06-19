@@ -11,6 +11,7 @@ import {
 
 // FETCH USER NOTIFICATIONS
 export const useUserNotificationsQuery = (profile_id) => {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: notificationKeyFactory({ profileId: profile_id }).all,
     queryFn: async () => {
@@ -22,6 +23,13 @@ export const useUserNotificationsQuery = (profile_id) => {
         .order("created_at", { ascending: false });
 
       if (error) throw new Error(error.message);
+
+      data.forEach((notif) => {
+        queryClient.setQueryData(
+          notificationKeyFactory({ id: notif.id }).single,
+          notif
+        )
+      })
       return data;
     },
     enabled: !!profile_id
@@ -31,6 +39,7 @@ export const useUserNotificationsQuery = (profile_id) => {
 // INSERT NOTIFICATION
 export const useInsertNotificationMutation = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (notification) => {
       const { data, error } = await supabase
@@ -44,25 +53,48 @@ export const useInsertNotificationMutation = () => {
     },
 
     onMutate: async (notification) => {
+      const completeNotification = {
+        ...notification,
+        profile_id: notification.profile_id || profile_id,
+      };
+
       return optimisticUpdate({
         queryClient,
-        entity: notification,
+        entity: completeNotification,
         keyFactory: notificationKeyFactory,
         type: "add",
       });
     },
+
     onSuccess: (newNotification, variables) => {
+      const completeNotification = {
+        ...variables,
+        profile_id: variables.profile_id || profile_id,
+      }
       replaceOptimisticItem({
         queryClient,
-        entity: variables,
+        entity: completeNotification,
         newEntity: newNotification,
         keyFactory: notificationKeyFactory,
       });
     },
+
+    onError: (_err, variables, context) => {
+      rollbackCache({
+        queryClient,
+        entity: variables,
+        keyFactory: notificationKeyFactory,
+        previousData: context
+      });
+    },
+
     onSettled: (_data, _error, variables) => {
       invalidateKeys({
         queryClient,
-        entity: variables,
+        entity: {
+          ...variables,
+          profile_id: variables.profile_id || profile_id,
+        },
         keyFactory: notificationKeyFactory,
       });
     },
@@ -72,8 +104,10 @@ export const useInsertNotificationMutation = () => {
 // UPDATE NOTIFICATION (e.g., mark as read)
 export const useUpdateNotificationMutation = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: async ({ id, updatedFields }) => {
+    mutationFn: async (notif) => {
+      const { id, profile_id, ...updatedFields} = notif
       const { data, error } = await supabase
         .schema("social")
         .from("notifications")
@@ -84,10 +118,11 @@ export const useUpdateNotificationMutation = () => {
       if (error) throw new Error(error.message);
       return data[0];
     },
-    onMutate: async ({ id, updatedFields, profile_id }) => {
+
+    onMutate: async (notif) => {  
       return optimisticUpdate({
         queryClient,
-        entity: { id, ...updatedFields, profile_id },
+        entity: notif,
         keyFactory: notificationKeyFactory,
         type: "update",
       });
@@ -95,15 +130,14 @@ export const useUpdateNotificationMutation = () => {
     onError: (_err, variables, context) => {
       rollbackCache({
         queryClient,
-        entity: variables,
-        keyFactory: notificationKeyFactory,
+        entity: variables.notif,
         previousData: context,
       });
     },
     onSettled: (_data, _error, variables) => {
       invalidateKeys({
         queryClient,
-        entity: variables,
+        entity: variables.notif,
         keyFactory: notificationKeyFactory,
       });
     },

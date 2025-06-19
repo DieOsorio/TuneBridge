@@ -44,8 +44,10 @@ export const profileHashtagKeyFactory = ({ profileId } = {}) => ({
 
 // --- NOTIFICATIONS KEY FACTORY ---
 export const USER_NOTIFICATIONS_KEY = (profileId) => ["userNotifications", profileId];
-export const notificationKeyFactory = ({ profileId } = {}) => ({
+export const NOTIFICATION_KEY = (notificationId) => ["notification", notificationId];
+export const notificationKeyFactory = ({ profileId, id } = {}) => ({
   all: profileId ? USER_NOTIFICATIONS_KEY(profileId) : undefined,
+  single: id ? NOTIFICATION_KEY(id) : undefined,
 });
 
 // --- LIKES KEY FACTORY ---
@@ -87,4 +89,19 @@ export const CONVERSATION_KEY = (conversationId) => ["conversation", conversatio
 export const conversationKeyFactory = ({ id, createdBy, profileId } = {}) => ({
   all: profileId ? CONVERSATIONS_KEY(profileId) : createdBy ? CONVERSATIONS_KEY(createdBy) : undefined,
   single: id ? CONVERSATION_KEY(id) : undefined,
+});
+
+// --- MUSICIAN ADS KEY FACTORY ---
+export const MUSICIAN_ADS_KEY = () => ["musicianAds"];
+export const MUSICIAN_AD_KEY = (adId) => ["musicianAd", adId];
+export const USER_MUSICIAN_ADS_KEY = (profileId) => ["userMusicianAds", profileId];
+export const GROUP_MUSICIAN_ADS_KEY = (groupId) => ["groupMusicianAds", groupId];
+export const MUSICIAN_ADS_SEARCH_KEY = (query) => ["searchMusicianAds", query];
+
+export const musicianAdKeyFactory = ({ adId, profileId, groupId, searchTerm } = {}) => ({
+  all: MUSICIAN_ADS_KEY(),
+  single: adId ? MUSICIAN_AD_KEY(adId) : undefined,
+  user: profileId ? USER_MUSICIAN_ADS_KEY(profileId) : undefined,
+  group: groupId ? GROUP_MUSICIAN_ADS_KEY(groupId) : undefined,
+  search: searchTerm ? MUSICIAN_ADS_SEARCH_KEY(searchTerm) : undefined,
 });

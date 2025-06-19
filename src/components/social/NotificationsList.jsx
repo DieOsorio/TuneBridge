@@ -9,8 +9,13 @@ function NotificationsList({ profileId }) {
     // Call the notificationsRealtime hook directly
     notificationsRealtime(profileId);
 
-    const handleMarkAsRead = async (notifId) => {     
-        await updateNotification({id: notifId, updatedFields:{ is_read: true }});
+    const handleMarkAsRead = async (notif) => {   
+        if (notif.is_read) return;
+
+        await updateNotification({
+            ...notif, 
+            is_read: true,
+        });
     };
 
     if (isLoading) return <Loading />;
@@ -23,7 +28,7 @@ function NotificationsList({ profileId }) {
                 <li
                     key={notif.id}
                     className="py-2 cursor-pointer hover:bg-gray-800 transition"
-                    onClick={() => handleMarkAsRead(notif.id)}
+                    onClick={() => handleMarkAsRead(notif)}
                 >
                     <span className={notif.is_read ? "text-gray-400" : "text-white font-semibold"}>
                         • {notif.message}

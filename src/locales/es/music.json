@@ -81,7 +81,8 @@
     },
     "actions": {
       "edit": "Editar",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "seeMore": "Ver más"
     }
   },
 

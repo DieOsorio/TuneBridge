@@ -19,6 +19,19 @@ const GroupHeader = ({ groupData, isAdmin }) => {
       <div className="flex flex-col sm:flex-row gap-4 justify-end mt-4">
         {/* View Posts Button (Visible to Everyone) */}
         <div>
+          {isAdmin && (
+            <>
+              {/* Calendar Button */}
+              <div className="mb-4">
+                <Button
+                  className="!bg-sky-700 hover:!bg-sky-800"
+                  onClick={() => manageView("calendar", "group")}
+                >
+                  Calendar
+                </Button>
+              </div>              
+            </>
+          )}
           <div className="sm:mb-4">
             <Button
               className="!bg-sky-700 hover:!bg-sky-800"

@@ -80,7 +80,8 @@
     },
     "actions": {
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "seeMore": "See more"
     }
   },
   "errors": {

@@ -13,38 +13,15 @@ import { conversationKeyFactory } from "../../helpers/social/socialKeys";
 export const useFindConversationWithUser = () => {
   return useMutation({
     mutationFn: async ({ myProfileId, otherProfileId }) => {
-      const { data: myConversations, error: error1 } = await supabase
+      const { data, error } = await supabase
         .schema("social")
-        .from("conversation_participants")
-        .select("conversation_id")
-        .eq("profile_id", myProfileId);
+        .rpc("find_one_on_one_conversation", {
+          profile_a: myProfileId,
+          profile_b: otherProfileId,
+        });
 
-      if (error1) throw new Error(error1.message);
-
-      const conversationIds = myConversations.map((item) => item.conversation_id);
-      if (conversationIds.length === 0) return null;
-
-      const { data: sharedConversations, error: error2 } = await supabase
-        .schema("social")
-        .from("conversation_participants")
-        .select("conversation_id")
-        .in("conversation_id", conversationIds)
-        .eq("profile_id", otherProfileId);
-
-      if (error2) throw new Error(error2.message);
-      if (sharedConversations.length === 0) return null;
-
-      const sharedId = sharedConversations[0].conversation_id;
-
-      const { data, error: error3 } = await supabase
-        .schema("social")
-        .from("conversations")
-        .select("*")
-        .eq("id", sharedId)
-        .single();
-
-      if (error3) throw new Error(error3.message);
-      return data;
+      if (error) throw new Error(error.message);
+      return data?.[0] || null;
     },
   });
 };

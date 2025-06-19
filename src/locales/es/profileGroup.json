@@ -6,48 +6,158 @@
     "notInAnyGroups": "Aún no formas parte de ningún grupo.",
     "userNotInAnyGroups": "Este usuario no forma parte de ningún grupo."
   },
+
+  "manageMembers": {
+    "labels": {
+      "role": "Rol",
+      "admin": "Administrador",
+      "member": "Miembro",
+      "musician": "Músico",
+      "manager": "Manager"
+    },
+    "validations": {
+      "role": "Rol es obligatorio"
+    },
+    "buttons": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "leaveGroup": "Abandonar Grupo",
+      "removeMember": "Eliminar Miembro"
+    }
+  },
+
   "groupMembersList": {
-    "members": "Miembros",
-    "admins": "Administradores",
-    "addMember": "Agregar Miembro",
-    "removeMember": "Eliminar Miembro",
-    "makeAdmin": "Hacer Administrador",
-    "removeAdmin": "Quitar Administrador",
-    "noMembers": "Aún no hay miembros en este grupo.",
     "role": {
       "admin": "Administrador",
       "member": "Miembro",
       "musician": "Músico",
       "manager": "Manager"
+    },
+    "confirmDialog": {
+      "titles": {
+        "deleteGroup": "Eliminar Grupo",
+        "leaveGroup": "Abandonar Grupo",
+        "removeMember": "Eliminar Miembro"
+      },
+      "labels": {
+        "leaveGroup": "Abandonar Grupo",
+        "removeMember": "Eliminar Miembro",
+        "cancel": "Cancelar"
+      },
+      "messages": {
+        "confirmDelete": "¿Estás seguro de que deseas eliminar este grupo?",
+        "confirmLeave": "¿Estás seguro de que deseas salir de este grupo?",
+        "confirmRemove": "¿Estás seguro de que deseas eliminar a este miembro del grupo?"
+      },
+      "buttons": {
+        "save": "Guardar"
+      }
+    },
+    "messages": {
+      "noMembers": "Aún no hay miembros en este grupo.",
+      "members": "Miembros"
+    },
+    "buttons": {
+      "manage": "Manejar",
+      "leave": "Abandonar Group"
     }
   },
+
+  "groupMembers": {
+    "title": "Miembros del Grupo",
+    "labels": {
+      "username": "Nombre de usuario",
+      "role": "Rol",
+      "member": "Miembro",
+      "admin": "Administrador",
+      "musician": "Músico",
+      "manager": "Manager",
+      "bandRole": "Rol en banda"
+    },
+    "placeholders": {
+      "username": "Ingrese el nombre de usuario",
+      "bandRole": "Ingrese el rol (hasta 3 roles)"
+    },
+    "validations": {
+      "username": "El nombre de usuario es obligatorio"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "adding": "Agregando...",
+      "add": "Agregar",
+      "addMember": "Agregar Miembro",
+      "addRole": "Agregar Rol"
+    },
+    "errors": {
+      "notFound": "Usuario no encontrado"
+    }
+  },
+
   "groupItem": {
     "groupName": "Nombre del Grupo",
     "groupDescription": "Descripción del Grupo",
     "viewGroup": "Ver Grupo"
   },
+
   "createProfileGroup": {
-    "editGroup": "Editar Grupo",
-    "leaveGroup": "Salir del Grupo",
-    "deleteGroup": "Eliminar Grupo",
-    "confirmDelete": "¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.",
-    "confirmLeave": "¿Estás seguro de que deseas salir de este grupo?",
-    "confirmRemove": "¿Estás seguro de que deseas eliminar a este miembro del grupo?",
-    "role": "Rol",
-    "admin": "Administrador",
-    "member": "Miembro",
-    "musician": "Músico",
-    "manager": "Manager",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "add": "Agregar",
-    "adding": "Agregando...",
-    "groupMembers": "Miembros del Grupo",
-    "profileIdLabel": "ID de Perfil",
-    "profileIdPlaceholder": "Ingresa el ID de perfil",
-    "usernameLabel": "Usuario",
-    "usernamePlaceholder": "Ingresa el nombre de usuario",
-    "errorLoadingGroupData": "Error al cargar los datos del grupo.",
-    "noGroupData": "No hay datos disponibles del grupo."
+    "title": "Crear un Grupo de Perfil",
+    "labels": {
+      "name": "Nombre del Grupo",
+      "bio": "Biografía",
+      "country": "País",
+      "city": "Cuidad",
+      "genre": "Género"
+    },
+    "placeholders": {
+      "name": "Ingrese el nombre del grupo",
+      "bio": "ingrese una breve biografía",
+      "country": "Ingrese el país",
+      "city": "Ingrese la cuidad",
+      "genre": "Ingrese el género"
+    },
+    "validations": {
+      "name": "El nombre del grupo es obligatorio"
+    },
+    "errors": {
+      "create": "No se pudo crear el grupo."
+    },
+    "buttons": {
+      "create": "Crear Grupo",
+      "creating": "Creando...",
+      "cancel": "Cancelar"
+    }
+  },
+
+  "editProfileGroup": {
+    "title": "Editar Groupo",
+    "labels": {
+      "bio": "Bio del Grupo",
+      "country": "País",
+      "city": "Cuidad",
+      "genre": "Género",
+      "name": "Nombre"
+    },
+    "placeholders": {
+      "bio": "Bio",
+      "country": "País",
+      "city": "Cuidad",
+      "genre": "Género",
+      "name": "Nombre"
+    },
+    "validations": {
+      "name": "El nombre es obligatorio"
+    },
+    "buttons": {
+      "saving": "Guardando...",
+      "save": "Guardar"
+    },
+    "errors": {
+      "loading": "Error al cargar los datos del grupo"
+    }
+  },
+
+  "errors": {
+    "loading": "Error al cargar los datos del grupo.",
+    "noData": "No hay datos disponibles del grupo."
   }
 }

@@ -1,12 +1,16 @@
 import ConnectionCard from './ConnectionCard';
 import { useUserConnections } from '../../context/social/UserConnectionsContext';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../context/AuthContext';
 
 function ConnectionsList({ checkStatus, profileId }) {
+    const { user } = useAuth();
     const { t } = useTranslation("ui");
     const { userConnections } = useUserConnections()
     const { data: connections } = userConnections(profileId);
 
+    const ownProfile = profileId ===  user.id;
+       
     // Return null if checkStatus isn't valid or there is no connections
     if (!['accepted', 'pending', 'blocked'].includes(checkStatus)) {
         return null;
@@ -57,6 +61,7 @@ function ConnectionsList({ checkStatus, profileId }) {
                     key={conn.id}
                     connection={conn}
                     profileId={getOtherProfileId(conn)}
+                    ownProfile={ownProfile}
                 />
             ))
             : <div className="text-gray-400">

@@ -13,6 +13,7 @@ import commentsEN from './locales/en/comments.json';
 import uiEN from './locales/en/ui.json';
 import searchProfilesEN from './locales/en/searchProfiles.json';
 import profileGroupEN from './locales/en/profileGroup.json'; 
+import adsEN from './locales/en/ads.json'; 
 
 import authES from './locales/es/auth.json';
 import commonES from './locales/es/common.json';
@@ -23,7 +24,8 @@ import postsES from './locales/es/posts.json';
 import commentsES from './locales/es/comments.json';
 import uiES from './locales/es/ui.json';
 import searchProfilesES from './locales/es/searchProfiles.json';
-import profileGroupES from './locales/es/profileGroup.json'; // Import Spanish translations for UserGroups
+import profileGroupES from './locales/es/profileGroup.json';
+import adsES from './locales/es/ads.json';
 
 const resources = {
   en: {
@@ -36,7 +38,8 @@ const resources = {
     comments: commentsEN,
     ui: uiEN,
     searchProfiles: searchProfilesEN,
-    profileGroup: profileGroupEN
+    profileGroup: profileGroupEN,
+    ads: adsEN
   },
   es: {
     auth: authES,
@@ -48,7 +51,8 @@ const resources = {
     comments: commentsES,
     ui: uiES,
     searchProfiles: searchProfilesES,
-    profileGroup: profileGroupES
+    profileGroup: profileGroupES,
+    ads: adsES
   }
 };
 
@@ -59,7 +63,7 @@ i18n
     resources,
     fallbackLng: 'es',
     defaultNS: 'common', 
-    ns: ['common', 'auth', 'chat', 'music', 'profile', 'posts', 'comments', 'ui', 'searchProfiles', 'profileGroup'],
+    ns: ['common', 'auth', 'chat', 'music', 'profile', 'posts', 'comments', 'ui', 'searchProfiles', 'profileGroup', 'ads'],
     interpolation: {
       escapeValue: false
     }

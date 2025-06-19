@@ -1,16 +1,19 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useProfileGroups } from "../../context/profile/ProfileGroupsContext";
-import { useAuth } from "../../context/AuthContext";
+import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
+import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Input from "../ui/Input";
-import Button from "../ui/Button";
-import ImageUploader from "../../utils/ImageUploader";
-import ProfileAvatar from "./ProfileAvatar";
+import Input from "../../ui/Input";
+import Button from "../../ui/Button";
+import ImageUploader from "../../../utils/ImageUploader";
+import ProfileAvatar from "../ProfileAvatar";
 import { IoIosCamera } from "react-icons/io";
-import { uploadFileToBucket } from "../../utils/avatarUtils";
+import { uploadFileToBucket } from "../../../utils/avatarUtils";
+import { useTranslation } from "react-i18next";
+import Textarea from "../../ui/Textarea";
 
 const CreateProfileGroup = () => {
+  const { t } = useTranslation("profileGroup")
   const { createProfileGroup } = useProfileGroups();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -68,7 +71,7 @@ const CreateProfileGroup = () => {
       setPreview(null);
       navigate(`/profile/${user.id}`);
     } catch (err) {
-      setError(err.message || "Failed to create the group.");
+      setError(err.message || t("createProfileGroup.errors.create"));
     } finally {
       setLoading(false);
     }
@@ -80,13 +83,19 @@ const CreateProfileGroup = () => {
 
   return (
     <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-lg mx-auto">
-      <h2 className="text-2xl font-semibold text-center mb-4">Create a Profile Group</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        {t("createProfileGroup.title")}
+      </h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <div ref={avatarClickRef} className="relative w-fit cursor-pointer group">
-            <ProfileAvatar avatar_url={preview || avatar_url} />
+            <ProfileAvatar 
+              group={true} 
+              avatar_url={preview || avatar_url}
+              className={"!bg-amber-700"} 
+            />
             <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md group-hover:opacity-100 opacity-80 transition-opacity">
               <IoIosCamera size={20} className="text-gray-700" />
             </div>
@@ -102,57 +111,64 @@ const CreateProfileGroup = () => {
 
         <Input
           id="name"
-          label="Group Name"
-          placeholder="Enter group name"
+          label={t("createProfileGroup.labels.name")}
+          placeholder={t("createProfileGroup.placeholders.name")}
           register={register}
-          validation={{ required: "Group name is required" }}
+          validation={{ required: t("createProfileGroup.validations.name") }}
           error={errors.name?.message}
         />
 
-        <label htmlFor="bio" className="block text-sm font-medium text-gray-400">
-          Bio
-        </label>
-        <textarea
+        <Textarea
           id="bio"
-          {...register("bio")}
-          placeholder="Enter a short bio"
-          className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
+          label={t("createProfileGroup.labels.bio")}
+          placeholder={t("createProfileGroup.placeholders.bio")}
+          register={register}
+          validation={{
+            maxLength: {
+              value: 100,
+              message: t("edit.validation.bioMaxLength"),
+            }
+          }}
+          error={errors.bio}
+          maxLength={100}
+          watchValue={watch("bio")}
+          classForLabel="text-gray-400" 
         />
 
         <Input
           id="country"
-          label="Country"
-          placeholder="Enter country"
+          label={t("createProfileGroup.labels.country")}
+          placeholder={t("createProfileGroup.placeholders.country")}
           register={register}
           error={errors.country?.message}
         />
 
         <Input
           id="city"
-          label="City"
-          placeholder="Enter city"
+          label={t("createProfileGroup.labels.city")}
+          placeholder={t("createProfileGroup.placeholders.city")}
           register={register}
           error={errors.city?.message}
         />
 
         <Input
           id="genre"
-          label="Genre"
-          placeholder="Enter genre"
+          label={t("createProfileGroup.labels.genre")}
+          placeholder={t("createProfileGroup.placeholders.genre")}
           register={register}
           error={errors.genre?.message}
         />
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-center mt-8 space-x-4 ">
           <Button
             className="!bg-gray-500 hover:!bg-gray-600"
             type="button"
             onClick={handleCancel}
           >
-            Cancel
+            {t("createProfileGroup.buttons.cancel")}
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Group"}
+            {loading ? t("createProfileGroup.buttons.creating") : t("createProfileGroup.buttons.create")}
           </Button>
         </div>
       </form>

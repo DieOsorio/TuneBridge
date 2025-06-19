@@ -1,0 +1,89 @@
+{
+  "profileAds": {
+    "title": "Musician Ads",
+    "empty": "There is no ads",
+    "buttons": {
+      "loading": "Loading...",
+      "loadMore": "Load more"
+    }
+  },
+  "adsPage": {
+    "title": "Musician Ads",
+    "buttons": {
+      "createAd": "Create Ad"
+    }
+  },
+  "adsList": {
+    "noAds": "No ads found."
+  },
+  "adsDetailsPage": {
+    "badges": {
+      "looking": "Looking for",
+      "offering": "Offering"
+    },
+    "info": {
+      "postedBy": "Posted by",
+      "createdAt": "Created at",
+      "genres": "Genres",
+      "location": "Location",
+      "description": "Description"
+    },
+    "buttons": {
+      "back": "Back to Ads",
+      "contact": "Contact"
+    }
+  },
+  "adCard": {
+    "badges": {
+      "looking": "Looking for",
+      "offering": "Offering"
+    },
+    "info": {
+      "genres": "Genres:",
+      "location": "Location:"
+    },
+    "buttons": {
+      "details": "See details →",
+      "edit": "Edit Ad",
+      "delete": "Delete Ad"
+    }
+  },
+  "adForm": {
+    "labels": {
+      "typeOfAd": "Type of ad",
+      "looking": "Looking for",
+      "offering": "Offering",
+      "default": "Select type",
+      "genres": "Genres",
+      "description": "Description",
+      "location": "Location"
+    },
+    "placeholders": {
+      "looking": "Enter role/instrument", 
+      "genres": "Enter genres (comma separated)",
+      "description": "Write a short description (up to 100 charachters)",
+      "location": "Enter location"
+    },
+    "validations": {
+      "description": "Description cannot exceed 100 characters"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "save": "Save Ad"
+    }
+  },
+  "adCreateEditPage": {
+    "title": {
+      "edit": "Edit Ad",
+      "create": "Create New Ad"
+    }
+  },
+  "confirmDialog": {
+    "title": "Delete Ad",
+    "message": "Are you sure you want to delete this ad?",
+    "labels": {
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
+  }
+}

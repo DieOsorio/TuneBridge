@@ -12,6 +12,7 @@ import { useSingerDetails } from "../../context/music/SingerDetailsContext";
 import RoleItem from "./RoleItem";
 import { useTranslation } from "react-i18next";
 import ShinyText from "../ui/ShinyText";
+import MediaSummary from "./MediaSummary";
 
 const DisplayMusicInfo = ({ profileId }) => {
   const { t } = useTranslation("music");
@@ -55,12 +56,12 @@ const DisplayMusicInfo = ({ profileId }) => {
   if (error) return <ErrorMessage error={error.message || t("errors.fetch")}  />
 
   return (
-    <div className="bg-gray-900 p-6 rounded-lg shadow-md">
-      <div className="flex items-center justify-center gap-3 mb-6">          
-        <h3 className="text-3xl font-bold text-sky-500 tracking-wide">
-          <ShinyText text={t("roles.title")} speed={3} />
-        </h3>        
+    <div className="bg-gray-900 p-6 rounded-lg shadow-md w-full">
+      <div className="flex items-center justify-center font-semibold gap-3 mb-6">          
+        <ShinyText text={t("roles.title")} speed={3} className="text-3xl tracking-wide"/>    
       </div>
+
+      <MediaSummary profileId={profileId} />
 
       {roles.length === 0 ? (
         <p className="text-gray-500">

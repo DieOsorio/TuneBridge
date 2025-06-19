@@ -1,0 +1,89 @@
+{
+  "profileAds": {
+    "title": "Anuncios",
+    "empty": "No hay anuncios",
+    "buttons": {
+      "loading": "Cargando...",
+      "loadMore": "Cargar más"
+    }
+  },
+  "adsPage": {
+    "title": "Anuncios",
+    "buttons": {
+      "createAd": "Crear Ad"
+    }
+  },
+  "adsList": {
+    "noAds": "No se encontraron anuncios"
+  },
+  "adsDetailsPage": {
+    "badges": {
+      "looking": "Se busca",
+      "offering": "Se ofrece"
+    },
+    "info": {
+      "postedBy": "Publicado por",
+      "createdAt": "Creado",
+      "genres": "Géneros",
+      "location": "Ubicación",
+      "description": "Descripción"
+    },
+    "buttons": {
+      "back": "Regresar",
+      "contact": "Contactar"
+    }
+  },
+  "adCard": {
+    "badges": {
+      "looking": "Se busca",
+      "offering": "Se ofrece"
+    },
+    "info": {
+      "genres": "Géneros:",
+      "location": "Ubicación:"
+    },
+    "buttons": {
+      "details": "Ver detalles →",
+      "edit": "Editar Anuncio",
+      "delete": "Borrar Anuncio"
+    }
+  },
+  "adForm": {
+    "labels": {
+      "typeOfAd": "Tipo de anuncio",
+      "looking": "Se busca",
+      "offering": "Se ofrece",
+      "default": "Selecciona tipo",
+      "genres": "Géneros",
+      "description": "Descripción",
+      "location": "Ubicación"
+    },
+    "placeholders": {
+      "looking": "Ingresa rol/instrumento", 
+      "genres": "Ingresa géneros (separados por coma)",
+      "description": "Escribe una descripción corta (hasta 100 caracteres)",
+      "location": "ingresa la ubicación"
+    },
+    "validations": {
+      "description": "La descripción no puede exeder los 100 caracteres"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "save": "Guardar Ad"
+    }
+  },
+  "adCreateEditPage": {
+    "title": {
+      "edit": "Editar Anuncio",
+      "create": "Crear Nuevo Anuncio"
+    }
+  },
+  "confirmDialog": {
+    "title": "Borrar Anuncio",
+    "message": "¿Estás seguro que deseas borrar este anuncio?",
+    "labels": {
+      "confirm": "Borrar",
+      "cancel": "Cancelar"
+    }
+  }
+}

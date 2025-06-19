@@ -27,7 +27,8 @@
     },
     "buttons": {
       "post": "Publicar",
-      "posting": "Publicando..."
+      "posting": "Publicando...",
+      "cancel": "Cancelar"
     },
     "errors": {
       "title": "El título es obligatorio.",

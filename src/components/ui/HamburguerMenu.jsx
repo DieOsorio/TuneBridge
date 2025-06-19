@@ -5,6 +5,7 @@ import { useView } from "../../context/ViewContext";
 import { useTranslation } from "react-i18next";
 import { FaRegCompass, FaRegUser } from "react-icons/fa";
 import { FiLogIn, FiUserPlus } from "react-icons/fi";
+import { GrAnnounce } from "react-icons/gr";
 import { MdLogout  } from "react-icons/md";
 
 const HamburgerMenu = ({ id }) => {
@@ -59,33 +60,47 @@ const HamburgerMenu = ({ id }) => {
                   }}
                 >
                   {t("nav.links.explore")}
-              </Link>
-            </li>
-            <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
-              <FaRegUser size={24} className="text-sky-600" />
+                </Link>
+              </li>
+              <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+                <GrAnnounce size={24} className="text-sky-600" />
 
-              <Link
-                to={`/profile/${id}`}
-                className="block text-lg"
-                onClick={() => {
-                  manageView("about", "profile");
-                  toggleMenu();
-                }}
-              >
-                {t("nav.links.profile")}
-              </Link>
-            </li>
-            <li className="px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
-              <MdLogout size={26} className="text-sky-600" />
-              <button
-                onClick={signOut}
-                className="block text-lg"
-              >
-                {t("nav.auth.signOut")}
-              </button>
-            </li>
-          </ul>
-          ) : (
+                <Link
+                  to="/ads"
+                  className="block text-lg"
+                  onClick={() => {
+                    manageView(null, "ads");
+                    toggleMenu();
+                  }}
+                >
+                  {t("nav.links.ads")}
+                </Link>
+              </li>
+              <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+                <FaRegUser size={24} className="text-sky-600" />
+
+                <Link
+                  to={`/profile/${id}`}
+                  className="block text-lg"
+                  onClick={() => {
+                    manageView("about", "profile");
+                    toggleMenu();
+                  }}
+                >
+                  {t("nav.links.profile")}
+                </Link>
+              </li>
+              <li className="px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+                <MdLogout size={26} className="text-sky-600" />
+                <button
+                  onClick={signOut}
+                  className="block text-lg"
+                >
+                  {t("nav.auth.signOut")}
+                </button>
+              </li>
+            </ul>
+            ) : (
             <ul className="space-y-2">
               <li className="px-4 py-2 flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
                 <FiLogIn size={26} className="text-sky-600" />

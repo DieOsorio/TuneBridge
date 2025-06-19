@@ -6,7 +6,7 @@
     "musicComing": "Music section is in development. Coming soon!",
     "navigation": {
       "about": "About",
-      "music": "Music",
+      "ads": "Music Ads",
       "posts": "Posts",
       "groups": "Groups"      
     },
@@ -24,17 +24,23 @@
       "gender": "Gender",
       "age": "Age",
       "years": "years"
-    },
-    "connection": {
-      "loading": "Checking connection...",
-      "connect": "Connect",
+    }
+  },
+  "connection": {
+    "loading": "Checking connection...",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "accepted": "Connected",
+    "pending": "Pending",
+    "block": "Block",
+    "blocked": "Blocked",
+    "unblock": "Unblock",
+    "blockedByOther": "You are blocked by this user.",
+    "cancelRequest": "Cancel requests",
+    "connectionCard": {
+      "options": "Options",
       "disconnect": "Disconnect",
-      "accepted": "Connected",
-      "pending": "Pending",
-      "block": "Block",
-      "unblock": "Unblock",
-      "blockedByOther": "You are blocked by this user.",
-      "cancelRequest": "Cancel requests"
+      "delete": "Delete Connection"
     }
   },
   "hashtags": {
