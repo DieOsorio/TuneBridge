@@ -28,35 +28,35 @@ const DisplayRoleInfo = ({ role, data }) => {
               <>
                 <Detail label={t("fields.instrument")} value={item.instrument} />
                 <Detail label={t("fields.yearsOfExperience")} value={item.years_of_experience} />
-                <Detail label={t("fields.level")}  value={item.level} />
+                <Detail label={t("fields.level")}  value={t(`levels.${(item.level).toLowerCase()}`)} />
               </>
             )}
             {role.role === "Singer" && (
               <>
                 <Detail label={t("fields.voiceType")} value={item.voice_type} />
                 <Detail label={t("fields.musicGenre")} value={item.music_genre} />
-                <Detail label={t("fields.level")}  value={item.level} />
+                <Detail label={t("fields.level")}  value={t(`levels.${(item.level).toLowerCase()}`)} />
               </>
             )}
             {role.role === "DJ" && (
               <>
                 <Detail label={t("fields.eventsPlayed")}  value={item.events_played} />
                 <Detail label={t("fields.preferredGenres")} value={item.preferred_genres} />
-                <Detail label={t("fields.level")}  value={item.level} />
+                <Detail label={t("fields.level")}  value={t(`levels.${(item.level).toLowerCase()}`)} />
               </>
             )}
             {role.role === "Producer" && (
               <>
                 <Detail label={t("fields.productionType")}  value={item.production_type} />
                 <Detail label={t("fields.yearsOfExperience")}  value={item.years_of_experience} />
-                <Detail label={t("fields.level")}  value={item.level} />
+                <Detail label={t("fields.level")}  value={t(`levels.${(item.level).toLowerCase()}`)} />
               </>
             )}
             {role.role === "Composer" && (
               <>
                 <Detail label={t("fields.compositionStyle")}  value={item.composition_style} />
                 <Detail label={t("fields.yearsOfExperience")}  value={item.years_of_experience} />
-                <Detail label={t("fields.level")}  value={item.level} />
+                <Detail label={t("fields.level")}  value={t(`levels.${(item.level).toLowerCase()}`)} />
               </>
             )}
           </li>
