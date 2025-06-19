@@ -30,8 +30,11 @@ const UserGroups = ({ profileId, isOwnProfile }) => {
 
   return (
     <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold text-center mb-4 text-amber-700">
-        <ShinyText text={t("userGroups.groups")} style={{ "--shiny-primary": "#d97706cc" }} speed={3}/>
+      <h2 className="text-3xl font-semibold text-center mb-4 tracking-wide">
+        <ShinyText 
+          text={t("userGroups.groups")} 
+          style={{ "--shiny-primary": "#d97706cc" }} 
+          speed={3}/>
       </h2>
       {!groupsIds || groupsIds?.length === 0 ? (
         <p className="text-gray-400 text-center">

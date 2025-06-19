@@ -170,7 +170,8 @@
     "logo": "TuneBridge",
     "links": {
       "explore": "Explore",
-      "profile": "Profile"
+      "profile": "Profile",
+      "ads": "Musician Ads"
     },
     "auth": {
       "signIn": "Log In",
@@ -199,5 +200,10 @@
   "imageUploader": {
     "upload": "Upload Images",
     "drag": "Drag the images or click to select"
+  },
+  "form": {
+    "textarea": {
+      "limit": "characters used"
+    }
   }
 }

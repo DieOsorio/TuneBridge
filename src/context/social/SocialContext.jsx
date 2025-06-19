@@ -8,6 +8,7 @@ import { ChatProvider } from "./chat/ChatContext";
 import { HashtagsProvider } from "./HashtagsContext";
 import { PostHashtagsProvider } from "./PostHashtagsContext";
 import { ProfileHashtagsProvider } from "./ProfileHashtagsContext";
+import { AdsProvider } from "./adsContext";
 
 export const SocialProvider = ({ children }) => {
   return (
@@ -20,7 +21,9 @@ export const SocialProvider = ({ children }) => {
                 <ChatProvider>
                   <LikesProvider>
                     <NotificationsProvider>
-                      {children}
+                      <AdsProvider>
+                        {children}
+                      </AdsProvider>
                     </NotificationsProvider>
                   </LikesProvider>
                 </ChatProvider>  

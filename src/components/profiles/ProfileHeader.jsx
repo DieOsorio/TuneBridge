@@ -15,9 +15,9 @@ import { useMessages } from '../../context/social/chat/MessagesContext';
 import { useTranslation } from 'react-i18next';
 import { useUserConnections } from '../../context/social/UserConnectionsContext';
 import { FiMoreVertical } from "react-icons/fi";
-import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
-import { ImBlocked } from "react-icons/im"
-import StarBorder from '../ui/StarBorder';
+import { IoPersonAdd, IoPersonRemove, IoPersonOutline } from "react-icons/io5";
+import { ImBlocked } from "react-icons/im";
+import { handleStartChat } from '../social/chat/utilis/handleStartChat';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
@@ -39,48 +39,18 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const [hoverText, setHoverText] = useState(null);
     const unreadCount = notifications?.filter(n => !n.is_read).length || 0;
 
-    const handleStartChat = async () => {
-        if (isStartingChat) return;
-        setIsStartingChat(true);
-        try {
-            // Always fetch all conversations between these two users
-            const allConversations = await findConversation({ myProfileId: user.id, otherProfileId: profileData.id, all: true });
-            let oneOnOne = null;
-            let group = null;
-            if (Array.isArray(allConversations)) {
-                oneOnOne = allConversations.find(c => !c.is_group);
-                group = allConversations.find(c => c.is_group);
-            } else if (allConversations && typeof allConversations === 'object') {
-                if (allConversations.is_group) group = allConversations;
-                else oneOnOne = allConversations;
-            }
-
-            if (oneOnOne) {
-                // Always prefer the one-on-one if it exists
-                navigate(`/chat/${oneOnOne.id}`);
-            } else if (group) {
-                // If only a group exists, navigate to the group (or show a message)
-                navigate(`/chat/${group.id}`);
-                // Optionally, show a toast: "You already have a group chat with this user."
-            } else {
-                // No conversation exists, create a new one-on-one
-                const newConv = await createConversation({
-                    created_by: user.id,
-                    avatar_url: profileData.avatar_url,
-                    title: profileData.username
-                });
-                const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
-                const otherUser = { conversation_id: newConv.id, profile_id: profileData.id };
-                await addParticipant(loggedUser);
-                await addParticipant(otherUser);
-                navigate(`/chat/${newConv.id}`);
-            }
-        } catch (err) {
-            console.error("Error iniciando conversación:", err);
-        } finally {
-            setIsStartingChat(false);
-        }
-    };
+    const startChat = () => {
+      if(isStartingChat) return;
+      handleStartChat({
+        myProfileId: user.id,
+        otherProfile: profileData,
+        findConversation,
+        createConversation,
+        addParticipant,
+        navigate,
+        setLoading: setIsStartingChat,
+      })
+    }
 
     // Connection action handlers
     const handleConnect = async () => {
@@ -159,7 +129,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             <>
               <IoChatboxSharp
                 className="w-8 h-8 text-white cursor-pointer"
-                onClick={handleStartChat}
+                onClick={startChat}
                 disabled={isStartingChat}
                 title={t("profile.titles.startChat")}
               />
@@ -177,24 +147,24 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                     {loadingConnection ? (
                       <span 
                         className="px-4 py-2 text-gray-400 text-xs flex items-center gap-2">
-                          {t("profile.connection.loading")}
+                          {t("connection.loading")}
                       </span>
                     ) : isBlocked ? (
                       <button 
                         onClick={() => { handleUnblock(); setMenuOpen((open) => !open); }}              
                         className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-yellow-600 flex items-center gap-2">
-                          <IoPersonRemove />{t("profile.connection.unblock")}
+                          <IoPersonRemove />{t("connection.unblock")}
                       </button>
                     ) : isOtherBlocked ? (
                       <span 
                         className="px-4 py-2 text-red-400 text-xs flex items-center gap-2">
-                          <ImBlocked />{t("profile.connection.blockedByOther")}
+                          <ImBlocked />{t("connection.blockedByOther")}
                       </span>
                     ) : isConnected ? (
                       <button 
                         onClick={() => { handleDisconnect(); setMenuOpen((open) => !open); }}
                         className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-gray-300 flex items-center gap-2">
-                          <IoPersonRemove />{t("profile.connection.disconnect")}
+                          <IoPersonRemove />{t("connection.disconnect")}
                       </button>
                     ) : isPending ? (
                       <button
@@ -205,14 +175,14 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                       >
                         {hoverText === 'disconnect' ? <IoPersonRemove /> : <IoPersonOutline />}
                         {hoverText === 'disconnect'
-                          ? t("profile.connection.disconnect")
-                          : t("profile.connection.pending")}
+                          ? t("connection.disconnect")
+                          : t("connection.pending")}
                       </button>
                     ) : (
                       <button 
                         onClick={() => { handleConnect(); setMenuOpen((open) => !open); }} 
                         className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-green-600 flex items-center gap-2">
-                          <IoPersonAdd />{t("profile.connection.connect")}
+                          <IoPersonAdd />{t("connection.connect")}
                       </button>
                     )}
                     {/* Block option always available unless blocked by other or already blocked */}
@@ -220,7 +190,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                       <button 
                         onClick={() => { handleBlock(); setMenuOpen((open) => !open); }} 
                         className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-red-400 border-t border-sky-800 flex items-center gap-2">
-                          <ImBlocked />{t("profile.connection.block")}
+                          <ImBlocked />{t("connection.block")}
                       </button>
                     )}
                   </div>
@@ -273,8 +243,8 @@ function ProfileHeader({ isOwnProfile, profileData }) {
             </Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("music", "profile")}>
-              {t("profile.navigation.music")}
+            <Button onClick={() => manageView("ads", "profile")}>
+              {t("profile.navigation.ads")}
             </Button>
           </div>
         </div>

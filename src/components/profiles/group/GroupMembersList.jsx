@@ -7,18 +7,20 @@ import { useState } from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 import ManageMembersModal from "./ManageMembersModal";
 
-const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember }) => {
+const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember, refetch }) => {
   const { user } = useAuth(); // Get the logged-in user's info
   const { t } = useTranslation("profileGroup");
   const currentUserId = user?.id; // Get the current user's ID
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
-
+  const [customRoles, setCustomRoles] = useState([]);
+  
   const { 
     register, 
     handleSubmit, 
     setValue,
-    reset, 
+    reset,
+    watch, 
     formState: { errors } 
   } = useForm();
 
@@ -29,9 +31,9 @@ const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember }) 
   if (!members || members.length === 0) {
     return (
       <p className="text-gray-400">
-        {t("groupMembersList.members") +
+        {t("groupMembersList.messages.members") +
           ": " +
-          t("groupMembersList.noMembers", "No members in this group yet.")}
+          t("groupMembersList.messages.noMembers")}
       </p>
     );
   }
@@ -40,12 +42,20 @@ const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember }) 
     setManageMember(member);
     setManageOpen(true);
     setValue("editMemberRole", member.role); // set default value
+    setCustomRoles(member.roles_in_group || [])
   };
 
-  const onSubmit = async (data) => {
-    await onUpdateMember(manageMember.profile_id, data.editMemberRole);
+  const onSubmit = async (data) => {    
+    await onUpdateMember(
+      manageMember,
+      {
+        role: data.editMemberRole,
+        roles_in_group: customRoles
+      }
+    );
     setManageOpen(false);
     setManageMember(null);
+    refetch();
     reset();
   };
 
@@ -80,24 +90,34 @@ const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember }) 
           <li key={member.id} className="flex items-center gap-4">
             <Link to={`/profile/${member.profile_id}`}>
               <ProfileAvatar
-                avatar_url={member.profiles.avatar_url}
+                avatar_url={member?.profiles?.avatar_url || ""}
                 className="!w-16 !h-16"
               />
             </Link>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-100">
-                {member.profiles.username}
-              </h3>
-              <p className="text-sm text-gray-400">
+            <div className="text-sm text-gray-400 flex flex-col gap-1">
+              <p>
                 {t(`groupMembersList.role.${member.role.toLowerCase()}`, member.role)}
               </p>
+
+              {member.roles_in_group && member.roles_in_group.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {member.roles_in_group.map((r, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-emerald-800 text-white text-xs px-2 py-0.5 rounded-full"
+                    >
+                      {r}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             {isAdmin && (
               <button
-                className="ml-auto px-3 py-1 cursor-pointer bg-emerald-700 hover:bg-emerald-800 rounded text-white text-xs"
+                className="ml-auto px-3 py-1 cursor-pointer bg-yellow-700 hover:bg-yellow-800 rounded text-white text-xs"
                 onClick={() => handleManageClick(member)}
               >
-                {t("groupMembersList.manage", "Manage")}
+                {t("groupMembersList.buttons.manage")}
               </button>
             )}
             
@@ -106,7 +126,7 @@ const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember }) 
                 className="ml-auto px-3 py-1 cursor-pointer bg-red-700 hover:bg-red-800 rounded text-white text-xs"
                 onClick={() => handleRemoveClick(member.profile_id)}
               >
-                {t("createProfileGroup.leaveGroup", "Leave Group")}
+                {t("groupMembersList.buttons.leave")}
               </button>
             )}
           </li>
@@ -123,23 +143,26 @@ const GroupMembersList = ({ members, isAdmin, onRemoveMember, onUpdateMember }) 
         onSubmit={onSubmit}
         handleCloseManage={handleCloseManage}
         handleRemoveClick={handleRemoveClick}
-        t={t}
+        watch={watch}
+        setValue={setValue}
+        customRoles={customRoles}
+        setCustomRoles={setCustomRoles}
       />
       }
       <ConfirmDialog
         isOpen={confirmOpen}
         title={pendingRemoveId === currentUserId
-          ? t("createProfileGroup.leaveGroup", "Leave Group")
-          : t("groupMembersList.removeMember", "Remove")}
+          ? t("groupMembersList.confirmDialog.titles.leaveGroup",)
+          : t("groupMembersList.confirmDialog.titles.removeMember")}
         message={pendingRemoveId === currentUserId
-          ? t("createProfileGroup.confirmLeave", "Are you sure you want to leave this group?")
-          : t("createProfileGroup.confirmRemove", "Are you sure you want to remove this member?")}
+          ? t("groupMembersList.confirmDialog.messages.confirmLeave")
+          : t("groupMembersList.confirmDialog.messages.confirmRemove")}
         onConfirm={handleConfirmRemove}
         onCancel={handleCancelRemove}
         confirmLabel={pendingRemoveId === currentUserId
-          ? t("createProfileGroup.leaveGroup", "Leave Group")
-          : t("groupMembersList.removeMember", "Remove")}
-        cancelLabel={t("createProfileGroup.cancel", "Cancel")}
+          ? t("groupMembersList.confirmDialog.labels.leaveGroup")
+          : t("groupMembersList.confirmDialog.labels.removeMember")}
+        cancelLabel={t("groupMembersList.confirmDialog.labels.cancel")}
         color={"error"}
       />
     </>

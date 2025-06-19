@@ -1,0 +1,45 @@
+import { useState } from "react";
+import { AdsFiltersPanel } from "./AdsFiltersPanel";
+import AdsList from "./AdsList";
+import { useAds } from "../../../context/social/adsContext"
+import ShinyText from "../../ui/ShinyText";
+import { useTranslation } from "react-i18next";
+import Loading from "../../../utils/Loading";
+import ErrorMessage from "../../../utils/ErrorMessage";
+import PlusButton from "./PlusButton";
+
+const AdsPage = () => {
+  const { t } = useTranslation("ads");
+  const [filters, setFilters] = useState({
+    adType: null,
+    lookingFor: null,
+    genres: [],
+    locations: [],
+    search: "",
+  });
+
+  const { fetchAllAds } = useAds();
+  const { data: ads = [], isLoading, error } = fetchAllAds();
+
+
+  return (
+    <div className="flex flex-col md:flex-row gap-4 p-4">
+      {/* <div className="md:w-1/4"> */}
+        {/* <AdsFiltersPanel filters={filters} setFilters={setFilters} /> */}
+      {/* </div> */}
+      <div className="flex-1">
+        <div className="text-center">
+          <ShinyText text={t("adsPage.title")} speed={3} className="text-3xl font-semibold tracking-wide"/>
+        </div>
+        
+        <PlusButton t={t} />
+
+        {isLoading && <Loading />}
+        {error && <ErrorMessage error={error.message} />}
+        {!isLoading && !error && <AdsList ads={ads} />}
+      </div>
+    </div>
+  );
+};
+
+export default AdsPage;

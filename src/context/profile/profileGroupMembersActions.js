@@ -60,19 +60,20 @@ export const useAddGroupMemberMutation = () => {
       return data[0];
     },
 
-    // Optimistic update
     onMutate: async (member) => {
       const optimisticMember = {
         id: member.id || `temp-${Date.now()}`,
         ...member,
         joined_at: new Date().toISOString(),
       };
+
       const previousData = optimisticUpdate({
         queryClient,
         keyFactory: profileGroupMembersKeyFactory,
         entity: optimisticMember,
         type: "add",
       });
+
       return { previousData, optimisticMember };
     },
 
@@ -89,46 +90,56 @@ export const useAddGroupMemberMutation = () => {
       });
     },
 
-    onSettled: (data, _error, variables) => {
+    onSettled: (_data, _error, variables) => {
       invalidateKeys({
         queryClient,
-        keyFactory: () =>
-          profileGroupMembersKeyFactory({ profileGroupId: variables.profile_group_id }),
+        keyFactory: () => profileGroupMembersKeyFactory({ profileGroupId: variables.profile_group_id }),
       });
     },
   });
 };
+
 
 // UPDATE A MEMBER IN A GROUP
 export const useUpdateGroupMemberMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ profileGroupId, profileId, updates }) => {
-      
+    mutationFn: async ({ member, updates }) => {
       const { data, error } = await supabase
         .schema("users")
         .from("profile_group_members")
         .update(updates)
-        .eq("profile_group_id", profileGroupId)
-        .eq("profile_id", profileId)
+        .eq("profile_group_id", member.profile_group_id)
+        .eq("profile_id", member.profile_id)
         .select();
 
       if (error) throw new Error(error.message);
       return data[0];
     },
 
-    // Optimistic update
-    onMutate: async ({ profileGroupId, profileId, updates }) => {
-      const optimisticMember = { ...updates, profile_group_id: profileGroupId, profile_id: profileId };
+    onMutate: async ({ member, updates }) => {
+      const optimisticMember = {
+        ...updates,
+        profile_group_id: member.profile_group_id,
+        profile_id: member.profile_id,
+      };
+
       const previousData = optimisticUpdate({
         queryClient,
         keyFactory: profileGroupMembersKeyFactory,
         entity: optimisticMember,
         type: "update",
-        idKey: "profile_id",
+        idKey: (a, b) =>
+          a?.profile_id === b?.profile_id &&
+          a?.profile_group_id === b?.profile_group_id,
       });
-      return { previousData, optimisticMember, profileGroupId };
+
+      return {
+        previousData,
+        optimisticMember,
+        profileGroupId: member.profile_group_id,
+      };
     },
 
     onError: (err, _variables, context) => {
@@ -141,18 +152,21 @@ export const useUpdateGroupMemberMutation = () => {
         keyFactory: profileGroupMembersKeyFactory,
         entity: context.optimisticMember,
         newEntity: data,
-        idKey: "profile_id",
+        idKey: (a, b) =>
+          a?.profile_id === b?.profile_id &&
+          a?.profile_group_id === b?.profile_group_id,
       });
     },
 
-    onSettled: (_data, _error, variables) => {
+    onSettled: (_data, _error, context) => {
       invalidateKeys({
         queryClient,
-        keyFactory: () => profileGroupMembersKeyFactory({ profileGroupId: variables.profileGroupId }),
+        keyFactory: () => profileGroupMembersKeyFactory({ profileGroupId: context.profileGroupId }),
       });
     },
   });
 };
+
 
 // REMOVE A MEMBER FROM A GROUP
 export const useRemoveGroupMemberMutation = () => {
@@ -160,7 +174,6 @@ export const useRemoveGroupMemberMutation = () => {
 
   return useMutation({
     mutationFn: async ({ profileGroupId, profileId }) => {
-      
       const { error } = await supabase
         .schema("users")
         .from("profile_group_members")
@@ -171,23 +184,30 @@ export const useRemoveGroupMemberMutation = () => {
       if (error) throw new Error(error.message);
     },
 
-    // Optimistic update
     onMutate: async ({ profileGroupId, profileId }) => {
+      const entity = {
+        profile_group_id: profileGroupId,
+        profile_id: profileId,
+      };
+
       const previousData = optimisticUpdate({
         queryClient,
         keyFactory: profileGroupMembersKeyFactory,
-        entity: { profile_group_id: profileGroupId, profile_id: profileId },
+        entity,
         type: "remove",
-        idKey: "profile_id",
+        idKey: (a, b) =>
+          a?.profile_id === b?.profile_id &&
+          a?.profile_group_id === b?.profile_group_id,
       });
-      return { previousData, profileGroupId, profileId };
+
+      return { previousData, profileGroupId };
     },
 
     onError: (err, _variables, context) => {
       rollbackCache({ queryClient, previousData: context?.previousData });
     },
 
-    onSettled: (data, _error, context) => {
+    onSettled: (_data, _error, context) => {
       invalidateKeys({
         queryClient,
         keyFactory: () => profileGroupMembersKeyFactory({ profileGroupId: context?.profileGroupId }),

@@ -6,7 +6,7 @@
       "musicComing": "La sección de Música está en desarrollo. ¡Próximamente!",
       "navigation": {
         "about": "Acerca de",
-        "music": "Música",
+        "ads": "Anuncios",
         "posts": "Publicaciones",
         "groups": "Grupos"
       },
@@ -24,19 +24,25 @@
         "gender": "Género",
         "age": "Edad",
         "years": "años"
-      },
-      "connection": {
-        "loading": "Comprobando conexión...",
-        "connect": "Conectar",
+      }
+    },  
+    "connection": {
+      "loading": "Comprobando conexión...",
+      "connect": "Conectar",
+      "disconnect": "Desconectar",
+      "accepted": "Conectado",
+      "pending": "Pendiente",
+      "block": "Bloquear",
+      "blocked": "Bloqueado",
+      "unblock": "Desbloquear",
+      "blockedByOther": "Estás bloqueado por este usuario.",
+      "cancelRequest": "Cancelar solicitud",
+      "connectionCard": {
+        "options": "Opciones",
         "disconnect": "Desconectar",
-        "accepted": "Conectado",
-        "pending": "Pendiente",
-        "block": "Bloquear",
-        "unblock": "Desbloquear",
-        "blockedByOther": "Estás bloqueado por este usuario.",
-        "cancelRequest": "Cancelar solicitud"
-      }    
-  },  
+        "delete": "Borrar conexión"
+      }
+    },    
   "hashtags": {
       "empty": "No se encontraron perfiles que coincidan con tu búsqueda."
     },

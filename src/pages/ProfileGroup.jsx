@@ -8,9 +8,10 @@ import GroupHeader from "../components/profiles/group/GroupHeader"; // Header fo
 import { useTranslation } from "react-i18next";
 import GroupMembers from "../components/profiles/group/GroupMembers";
 import { useView } from "../context/ViewContext";
+import EditProfileGroup from "../components/profiles/group/EditProfileGroup";
 
 const ProfileGroup = () => {
-  const { externalView, internalView } = useView(); // Manage internal/external views
+  const { externalView, internalView, manageView } = useView(); // Manage internal/external views
   const { groupId } = useParams(); // Get the group ID from the URL
   const { user } = useAuth(); // Get the logged-in user's info
   const { fetchProfileGroup } = useProfileGroups(); // Fetch group details
@@ -34,7 +35,8 @@ const ProfileGroup = () => {
   const { 
     data: groupMembers, 
     isLoading: membersLoading, 
-    error: membersError 
+    error: membersError,
+    refetch 
   } = fetchGroupMembers(groupId);
     
   if (groupLoading || membersLoading) {
@@ -42,11 +44,11 @@ const ProfileGroup = () => {
   }
 
   if (groupError || membersError) {
-    return <ErrorMessage error={groupError?.message || membersError?.message || t("createProfileGroup.errorLoadingGroupData", "Error loading group data.")} />;
+    return <ErrorMessage error={groupError?.message || membersError?.message || t("errors.loading")} />;
   }
 
   if (!groupData) {
-    return <div>{t("createProfileGroup.noGroupData", "No group data available.")}</div>;
+    return <div>{t("errors.noData")}</div>;
   }
 
   // Determine if the logged-in user is an admin
@@ -70,7 +72,15 @@ const ProfileGroup = () => {
           addGroupMember={addGroupMember}
           removeGroupMember={removeGroupMember}
           updateGroupMember={updateGroupMember}
-        />  )  }    
+          refetch={refetch}
+        />  )  }
+        {externalView === "group" && internalView === "edit" &&
+        <EditProfileGroup
+          group={groupData}
+          onSave={() => manageView("members", "group")}
+          onCancel={() => manageView("members", "group")}
+        />
+        }     
       </div>
     </div>
   );

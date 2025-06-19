@@ -55,7 +55,7 @@ function ProfileData({ profileData }) {
           <span className="font-semibold w-32 text-gray-500">
             {t("profile.data.gender")}:
           </span>
-          <span>{t(`edit.placeholders.genderOptions.${profileData.gender}`)}</span>
+          <span>{t(`edit.placeholders.genderOptions.${(profileData.gender).toLowerCase()}`)}</span>
         </li>}
 
         {profileData.birthdate &&

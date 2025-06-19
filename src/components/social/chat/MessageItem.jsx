@@ -153,7 +153,7 @@ const MessageItem = ({ message, isMine }) => {
                   <FiMoreVertical size={18} />
                 </button>
                 {menuOpen && (
-                  <div ref={menuRef} className="absolute z-10 right-5 top-6 bg-gray-900 border border-sky-700 rounded shadow-lg py-1 w-35 flex flex-col">
+                  <div ref={menuRef} className="absolute z-10 right-5 top-6 bg-gray-900 border border-sky-700 rounded shadow-lg py-1 w-37 flex flex-col">
                     <button
                       className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-red-400"
                       onClick={handleDelete}

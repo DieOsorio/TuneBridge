@@ -1,3 +1,5 @@
+import { FiPlus } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import Button from "../../ui/Button";
 import Select from "../../ui/Select";
 
@@ -10,57 +12,128 @@ function ManageMembersModal({
   onSubmit, 
   handleCloseManage, 
   handleRemoveClick,
-  t
+  watch,
+  setValue,
+  customRoles,
+  setCustomRoles
 }) {
+  const { t } = useTranslation("profileGroup");
+  const newRole = watch("newBandRole")?.trim();
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-      <div className="bg-gray-900 rounded-lg shadow-lg p-6 w-full max-w-md">                  
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
+      <div className="bg-gray-900 gap-8 rounded-lg shadow-lg p-6 w-full max-w-md">                  
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          {/* Main Role */}
+          <div>
             <Select
               id="editMemberRole"
-              label={t("createProfileGroup.role", "Role")}
+              label={t("manageMembers.labels.role")}
               options={[
-                { value: "member", label: t("createProfileGroup.member", "Member") },
-                { value: "admin", label: t("createProfileGroup.admin", "Admin") },
-                { value: "musician", label: t("createProfileGroup.musician", "Musician") },
-                { value: "manager", label: t("createProfileGroup.manager", "Manager") },
+                { value: "member", label: t("manageMembers.labels.member") },
+                { value: "admin", label: t("manageMembers.labels.admin") },
+                { value: "musician", label: t("manageMembers.labels.musician") },
+                { value: "manager", label: t("manageMembers.labels.manager") },
               ]}
               register={register}
-              validation={{ required: t("createProfileGroup.roleRequired", "Role is required") }}
+              validation={{ required: t("manageMembers.validations.role") }}
               error={errors.editMemberRole}
               classForLabel="text-gray-200"
             />
           </div>
-          <div className="flex gap-2 mb-4">
+
+          {/* Custom Roles*/}
+          <div className="flex flex-col gap-2 mb-4">
+            <label htmlFor="newBandRole" className="text-sm font-medium text-gray-200">
+              {t("groupMembers.labels.bandRole")}
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                id="newBandRole"
+                {...register("newBandRole")}
+                placeholder={t("groupMembers.placeholders.bandRole")}
+                className="w-full rounded border border-gray-600 bg-gray-800 p-2 text-white placeholder-gray-400"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (
+                    newRole &&
+                    !customRoles.includes(newRole) &&
+                    customRoles.length < 3
+                  ) {
+                    setCustomRoles([...customRoles, newRole]);
+                    setValue("newBandRole", "");
+                  }
+                }}
+                disabled={!newRole || customRoles.length >= 3}
+                className="text-emerald-500 hover:text-emerald-700 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <FiPlus size={22} />
+              </button>
+            </div>
+            {errors.newBandRole && (
+              <span className="text-red-500 text-sm">{errors.newBandRole.message}</span>
+            )}
+
+            {customRoles.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {customRoles.map((role, i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 text-sm rounded bg-emerald-800 text-white flex items-center gap-2"
+                  >
+                    {role}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCustomRoles(customRoles.filter((r) => r !== role))
+                      }
+                      className="text-red-400 hover:text-red-600 font-bold"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-2 mb-4 mt-6">
             <Button
               className="!bg-emerald-700 hover:!bg-emerald-800"
               type="submit"
             >
-              {t("createProfileGroup.save", "Save")}
+              {t("manageMembers.buttons.save")}
             </Button>
             <Button
               className="!bg-gray-500 hover:!bg-gray-600"
               onClick={handleCloseManage}
               type="button"
             >
-              {t("createProfileGroup.cancel", "Cancel")}
+              {t("manageMembers.buttons.cancel")}
             </Button>
           </div>
         </form>
+
+        {/* remove/leave button */}
         <div className="border-t border-gray-700 pt-4 mt-4">
           <button
             className="w-full px-3 py-2 bg-red-700 hover:bg-red-800 rounded text-white text-xs"
-            onClick={() => { handleRemoveClick(manageMember.profile_id); handleCloseManage(); }}
+            onClick={() => {
+              handleRemoveClick(manageMember.profile_id);
+              handleCloseManage();
+            }}
           >
             {manageMember.profile_id === currentUserId
-              ? t("createProfileGroup.leaveGroup", "Leave Group")
-              : t("groupMembersList.removeMember", "Remove")}
+              ? t("manageMembers.buttons.leaveGroup")
+              : t("manageMembers.buttons.removeMember")}
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ManageMembersModal
+export default ManageMembersModal;

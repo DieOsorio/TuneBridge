@@ -8,8 +8,10 @@ import { useState } from "react";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
 import { useProfile } from "../../context/profile/ProfileContext";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
-const ConnectionCard = ({ profileId, connection }) => {
+const ConnectionCard = ({ profileId, connection, ownProfile }) => {
+    const { t } = useTranslation("profile");
     const { user } = useAuth();
     const currentProfileId = user?.id; // Get the logged-in user's ID
 
@@ -63,22 +65,22 @@ const ConnectionCard = ({ profileId, connection }) => {
                             </button>
                         </>
                     )}
-                    {showMenuTrigger && !showAcceptReject && (
+                    {showMenuTrigger && !showAcceptReject && ownProfile && (
                         <div className="relative">
                             <button
                                 onClick={() => setMenuOpen((open) => !open)}
-                                className="text-gray-600 hover:text-gray-900 cursor-pointer"
-                                aria-label="Options"                                
+                                className="text-gray-950 hover:text-orange-700 cursor-pointer"
+                                aria-label={t("connection.connectionCard.options")}                                
                             >
-                                <BsThreeDotsVertical title="Options"/>
+                                <BsThreeDotsVertical title={t("connection.connectionCard.options")} />
                             </button>
                             {menuOpen && (
-                                <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-50">
+                                <div className="absolute right-0 mt-2 w-32 bg-gray-900 border rounded shadow-lg z-50">
                                     <button
                                         onClick={handleReject}
-                                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                                        className="block w-full cursor-pointer text-center px-4 py-2 text-red-500 hover:text-red-600"
                                     >
-                                        {connection.status === "accepted" ? "Unconnect" : "Delete Connection"}
+                                        {connection.status === "accepted" ? t("connection.connectionCard.disconnect") : t("connection.connectionCard.delete")}
                                     </button>
                                 </div>
                             )}

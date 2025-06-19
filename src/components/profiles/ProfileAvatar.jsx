@@ -1,10 +1,12 @@
-function ProfileAvatar({ avatar_url, className, alt, list, gender }) {
-  const avatar = avatar_url 
-  ? avatar_url 
-  : gender === 'Female' 
-  ? 'https://www.w3schools.com/w3images/avatar4.png'
-  : 'https://www.w3schools.com/w3images/avatar2.png';
-
+function ProfileAvatar({ avatar_url, className, alt, list, gender, group }) {
+  const avatar = avatar_url
+    ? avatar_url
+    : group
+    ? "https://cdn4.iconfinder.com/data/icons/avatar-1-2/100/Avatar-16-512.png"
+    : gender === "Female"
+    ? "https://www.w3schools.com/w3images/avatar4.png"
+    : "https://www.w3schools.com/w3images/avatar2.png";
+    
   return (
     <>
     {list ? (

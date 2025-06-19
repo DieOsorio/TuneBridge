@@ -12,6 +12,7 @@ import { IoIosCamera } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useTranslation } from "react-i18next";
+import Textarea from "../ui/Textarea";
 
 const EditProfile = ({ profile, onSave, onCancel }) => {
   const { t } = useTranslation("profile");
@@ -136,31 +137,23 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="bio"
-            className="block text-sm font-medium text-gray-400"
-          >
-            {t("edit.labels.bio")}
-          </label>
-          <textarea
-            id="bio"
-            {...register("bio", {
-              maxLength: {
-                value: 100,
-                message: t("edit.validation.bioMaxLength"),
-              },
-            })}
-            placeholder={t("edit.placeholders.bio")}           
-            className="mt-1 block w-full rounded-md border shadow-sm border-gray-400 sm:text-sm h-24 resize-none p-2"
-          />
-          {errors.bio && (
-            <p className="text-sm text-red-500 mt-1">{errors.bio.message}</p>
-          )}
-          <p className="text-sm text-gray-500 mt-1">
-            {watch("bio")?.length || 0}/100 {t("edit.labels.bioCount")}
-          </p>
-        </div>        
+        <Textarea
+          id="bio"
+          label={t("edit.labels.bio")}
+          placeholder={t("edit.placeholders.bio")} 
+          register={register}
+          validation={{
+            maxLength: {
+              value: 100,
+              message: t("edit.validation.bioMaxLength"),
+            }
+          }}
+          error={errors.bio}
+          maxLength={100}
+          watchValue={watch("bio")}
+          classForLabel="text-gray-400" 
+        />
+            
         <Input
           id="firstname"
           label={t("edit.labels.firstname")}

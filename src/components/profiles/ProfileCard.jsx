@@ -52,9 +52,9 @@ const ProfileCard = ({ profile }) => {
 
     // Function to determine the hover text based on the connection status
     const getHoverText = () => {
-        if (status === "pending") return t("profile.connection.cancelRequest");
-        else if (status === "accepted") return t("profile.connection.disconnect");
-        else if (status === "blocked") return t("profile.connection.unblock"); 
+        if (status === "pending") return t("connection.cancelRequest");
+        else if (status === "accepted") return t("connection.disconnect");
+        else if (status === "blocked") return t("connection.unblock"); 
         return null
     }
 
@@ -113,7 +113,7 @@ const ProfileCard = ({ profile }) => {
                             hoverText ? "opacity-0" : "opacity-100"
                         }`}
                     >
-                        {t(`profile.connection.${status}`)}
+                        {t(`connection.${status}`)}
                     </span>
                     <span
                         className={`absolute inset-0 text-[13px] flex items-center justify-center transition-opacity duration-400 ${

@@ -16,7 +16,7 @@ import Notifications from "../components/social/Notifications";
 import { useProfile } from "../context/profile/ProfileContext";
 import UserGroups from "../components/profiles/group/UserGroups";
 import { useTranslation } from "react-i18next";
-import MusicSection from "../components/music/MusicSection";
+import ProfileAds from "../components/social/ads/ProfileAds";
 
 const Profile = () => {
   const { t } = useTranslation("profile"); // Initialize translation function
@@ -110,11 +110,10 @@ const Profile = () => {
               </div>
             )}
 
-            {/* Music View */}
-            {internalView === "music" && externalView === "profile" && (
-              <MusicSection 
+            {/* Music Ads View */}
+            {internalView === "ads" && externalView === "profile" && (
+              <ProfileAds 
                 profileId={profileData.id}
-                isOwnProfile={isOwnProfile}
               />
             )}
 

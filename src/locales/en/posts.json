@@ -25,9 +25,10 @@
       "content": "Write your content here...",
       "hashtags": "Add hashtags separated by space, e.g. #rock #jazz"
     },
-    "button": {
+    "buttons": {
       "post": "Post",
-      "posting": "Posting..."
+      "posting": "Posting...",
+      "cancel": "Cancel"
     },      
     "errors": {
       "title": "Title is required.",

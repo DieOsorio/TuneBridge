@@ -6,6 +6,11 @@ import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import Button from "../ui/Button";
 import { useTranslation } from "react-i18next";
+import ShinyText from "../ui/ShinyText";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import Loading from "../../utils/Loading";
+import ErrorMessage from "../../utils/ErrorMessage";
 
 const mediaTypeOptions = [
   { value: "youtube", label: "YouTube" },
@@ -15,13 +20,21 @@ const mediaTypeOptions = [
   { value: "file", label: "Direct Audio/Video URL" },
 ];
 
-const MusicSection = ({ profileId, isOwnProfile }) => {
+const MediaSection = () => {
+  const { user } = useAuth();
+  const { id } = useParams();
   const { t } = useTranslation("music");
-  const { userMediaLinks, insertMediaLink, updateMediaLink, deleteMediaLink } = useMediaLinks();
-  const { data: mediaLinks = [] } = userMediaLinks(profileId);
+  const { 
+    userMediaLinks, 
+    insertMediaLink, 
+    updateMediaLink, 
+    deleteMediaLink } = useMediaLinks();
+  const { data: mediaLinks = [], isLoading, error } = userMediaLinks(id);
 
   const [editingId, setEditingId] = useState(null);
 
+  const isOwnProfile = user.id == id;
+  
   const {
     register,
     handleSubmit,
@@ -30,18 +43,26 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
     setValue,
   } = useForm();
 
+  if (isLoading || !id) return <Loading />;
+  if (error) return <ErrorMessage error={error.message} />;
+  if (!Array.isArray(mediaLinks)) {
+    return <ErrorMessage error="Invalid media data received" />
+  }
+
   useEffect(() => {
-    if (editingId) {
-      const mediaToEdit = mediaLinks.find((m) => m.id === editingId);
-      if (mediaToEdit) {
-        setValue("url", mediaToEdit.url);
-        setValue("title", mediaToEdit.title);
-        setValue("media_type", mediaToEdit.media_type);
-      }
-    } else {
-      reset();
+    if (!editingId) {
+      reset(); // solo se resetea si no estamos editando
+      return;
     }
-  }, [editingId, mediaLinks, setValue, reset]);
+
+    const mediaToEdit = mediaLinks.find((m) => m.id === editingId);
+    if (mediaToEdit) {
+      setValue("url", mediaToEdit.url);
+      setValue("title", mediaToEdit.title);
+      setValue("media_type", mediaToEdit.media_type);
+    }
+  }, [editingId]);
+
 
   const onSubmit = async (data) => {
     try {
@@ -50,13 +71,13 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
           id: editingId, 
           updatedLink: {
             ...data,
-            profile_id: profileId,
+            profile_id: id,
           },
         });
       } else {
         await insertMediaLink({ 
           ...data, 
-          profile_id: profileId 
+          profile_id: id 
         });
       }
       reset();
@@ -87,11 +108,10 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
   ];
 
   return (
-    <section>
-      <h2 className="text-3xl font-bold text-center text-sky-500 mb-4"> 
-        {t("media.title")}
-      </h2>
-
+    <section className="max-w-260 mx-auto">
+      <div className="text-center font-semibold">
+        <ShinyText text={t("media.title")} className="text-3xl tracking-wide mb-4"/>
+      </div>
       {/* Form */}
       {isOwnProfile && (
         <form onSubmit={handleSubmit(onSubmit)} className="mb-6">
@@ -119,25 +139,25 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
             validation={{ required: t("media.form.typeRequired") }}
             error={errors.media_type}
           />
-        <div className="flex justify-center gap-4 mt-4">
-          <Button
-          type="submit"
-          className="!bg-green-700 hover:!bg-green-800"
-        >
-          {editingId ? t("media.form.update") : t("media.form.add")}
-        </Button>
-        {editingId && (
-          <Button
-            type="button"
-            onClick={() => {
-              setEditingId(null);
-              reset();
-            }}
-            className="!bg-gray-500 hover:!bg-gray-600"
-          >
-            {t("media.form.cancel")}
-          </Button>
-        )}
+          <div className="flex justify-center gap-4 mt-4">
+            <Button
+            type="submit"
+            className="!bg-green-700 hover:!bg-green-800"
+            >
+              {editingId ? t("media.form.update") : t("media.form.add")}
+            </Button>
+          {editingId && (
+            <Button
+              type="button"
+              onClick={() => {
+                setEditingId(null);
+                reset();
+              }}
+              className="!bg-gray-500 hover:!bg-gray-600"
+            >
+              {t("media.form.cancel")}
+            </Button>
+          )}
         </div>
       </form>)}
 
@@ -202,4 +222,4 @@ const MusicSection = ({ profileId, isOwnProfile }) => {
   );
 };
 
-export default MusicSection;
+export default MediaSection;

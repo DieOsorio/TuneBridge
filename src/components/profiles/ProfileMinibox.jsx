@@ -9,6 +9,7 @@ import { useConversations } from "../../context/social/chat/ConversationsContext
 import { useParticipants } from "../../context/social/chat/ParticipantsContext";
 import { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
+import { handleStartChat } from "../social/chat/utilis/handleStartChat";
 
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { manageView } = useView();
@@ -20,52 +21,17 @@ const ProfileMinibox = ({ profile, isLoading }) => {
   const navigate = useNavigate();
   const isOwnProfile = user.id === profile.id; // Check if the logged-in user is the same as the profile being viewed
 
-  const handleStartChat = async () => {
+  const startChat = () => {
     if (isStartingChat) return;
-    setIsStartingChat(true);
-
-    if(isOwnProfile) { 
-      navigate("/chat")
-      setIsStartingChat(false);
-      return;
-    } 
-
-    try {       
-      // Always fetch all conversations between these two users
-      const allConversations = await findConversation({ myProfileId: user.id, otherProfileId: profile.id, all: true });
-      let oneOnOne = null;
-      let group = null;
-      if (Array.isArray(allConversations)) {
-        oneOnOne = allConversations.find(c => !c.is_group);
-        group = allConversations.find(c => c.is_group);
-      } else if (allConversations && typeof allConversations === 'object') {
-        if (allConversations.is_group) group = allConversations;
-        else oneOnOne = allConversations;
-      }
-
-      if (oneOnOne) {
-        navigate(`/chat/${oneOnOne.id}`);
-      } else if (group) {
-        navigate(`/chat/${group.id}`);
-      } else {
-        // No conversation exists, create a new one-on-one
-        const newConv = await createConversation({
-          created_by: user.id,
-          avatar_url: profile.avatar_url,
-          title: profile.username
-        });        
-        // Add both users as participants
-        const loggedUser = { conversation_id: newConv.id, profile_id: user.id };
-        const otherUser = { conversation_id: newConv.id, profile_id: profile.id };
-        await addParticipant(loggedUser);
-        await addParticipant(otherUser);
-        navigate(`/chat/${newConv.id}`);
-      }
-    } catch (err) {
-      console.error("Error iniciando conversación:", err);
-    } finally {
-      setIsStartingChat(false);
-    }
+    handleStartChat({
+      myProfileId: user.id,
+      otherProfile: profile,
+      findConversation,
+      createConversation,
+      addParticipant,
+      navigate,
+      setLoading: setIsStartingChat,
+    })
   };
 
   if (isLoading) {
@@ -144,7 +110,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
         <button
           title="Send Message"
           className="text-zinc-500 cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition"
-          onClick={handleStartChat}
+          onClick={startChat}
         >
           <IoChatboxOutline size={30} />
         </button>

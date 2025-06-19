@@ -13,6 +13,7 @@ import { useHashtags } from "../../context/social/HashtagsContext";
 import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import Textarea from "../ui/Textarea";
 
 const UpdatePost = () => {
   const { t } = useTranslation("posts")
@@ -36,6 +37,7 @@ const UpdatePost = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm();
   const uploadImageMutations = useUploadPostImages();
@@ -184,18 +186,22 @@ const UpdatePost = () => {
           classForLabel="text-gray-400 text-center md:text-left"
         />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            {t("update.labels.content")}
-          </label>
-          <textarea
-            {...register("content", { required: t("update.errors.content") })}
-            className="w-full border border-gray-400 rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
-          />
-          {errors.content && (
-            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
-          )}
-        </div>
+        <Textarea
+          id="content"
+          label={t("update.labels.content")}
+          placeholder={t("update.placeholders.content")}
+          register={register}
+          validation={{
+            maxLength: {
+              value: 100,
+              message: t("update.errors.content"),
+            }
+          }}
+          error={errors.content}
+          maxLength={100}
+          watchValue={watch("content")}
+          classForLabel="text-gray-400" 
+        />
 
         <Input
           id="hashtags"

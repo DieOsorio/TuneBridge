@@ -11,6 +11,7 @@ import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Textarea from "../ui/Textarea";
 
 const CreatePost = () => {
   const { user } = useAuth(); // logged user
@@ -25,6 +26,7 @@ const CreatePost = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -114,23 +116,23 @@ const CreatePost = () => {
           error={errors.title?.message}
           classForLabel="text-gray-400 text-center md:text-left"
         />
-
-        <div>
-          <label htmlFor="content" className="block text-center md:text-left text-sm font-medium text-gray-400 mb-2">
-            {t("create.labels.content")}
-          </label>
-          <textarea
-            id="content"
-            placeholder={t("create.placeholders.content")}
-            {...register("content", {
-              required: t("create.errors.content"),
-            })}
-            className="w-full border border-gray-400 rounded-lg p-2 h-32 resize-none focus:outline-none focus:ring focus:ring-brown-300"
-          />
-          {errors.content && (
-            <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
-          )}
-        </div>
+        
+        <Textarea
+          id="content"
+          label={t("create.labels.content")}
+          placeholder={t("create.placeholders.content")}
+          register={register}
+          validation={{
+            maxLength: {
+              value: 100,
+              message: t("create.errors.content"),
+            }
+          }}
+          error={errors.content}
+          maxLength={100}
+          watchValue={watch("content")}
+          classForLabel="text-gray-400" 
+        />
 
         <Input
           id="hashtags"
@@ -148,13 +150,21 @@ const CreatePost = () => {
           classForLabel="text-gray-400 text-center md:text-left"
         />
 
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="mx-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700"
-        >
-          {isSubmitting ? t("create.buttons.posting") : t("create.buttons.post")}
-        </Button>
+        <div className="flex">
+          <Button
+          onClick={() => {navigate("/explore")}}
+          className="mx-auto block !text-gray-100 !bg-gray-600 hover:!bg-gray-700"
+          >
+            {t("create.buttons.cancel")}
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="mx-auto block !text-gray-100 bg-sky-600 hover:bg-sky-700"
+          >
+            {isSubmitting ? t("create.buttons.posting") : t("create.buttons.post")}
+          </Button>
+        </div>
       </form>
     </>
   );

@@ -22,9 +22,13 @@ export const profileGroupsKeyFactory = ({ id } = {}) => ({
 
 // --- PROFILE GROUP MEMBERS KEY FACTORY ---
 export const PROFILE_GROUP_MEMBERS_KEY = (profileGroupId) => ["profileGroupMembers", profileGroupId];
-export const profileGroupMembersKeyFactory = ({ profileGroupId } = {}) => ({
-  all: profileGroupId ? PROFILE_GROUP_MEMBERS_KEY(profileGroupId) : undefined,
-});
+export const profileGroupMembersKeyFactory = ({ profileGroupId, profile_group_id } = {}) => {
+  const id = profileGroupId || profile_group_id;
+  return {
+    all: id ? PROFILE_GROUP_MEMBERS_KEY(id) : undefined,
+  };
+};
+
 
 // --- USER GROUPS KEY FACTORY ---
 export const USER_GROUPS_KEY = (userId) => ["userGroups", userId];
