@@ -18,7 +18,7 @@ const Textarea = ({
       {label && (
         <label
           htmlFor={id}
-          className={`text-sm font-medium text-gray-400 ${classForLabel}`}
+          className={`block text-sm font-medium mb-2 text-gray-400 ${classForLabel}`}
         >
           {label}
         </label>
@@ -29,7 +29,7 @@ const Textarea = ({
         {...register(id, validation)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`mt-1 block w-full rounded-md border shadow-sm !border-gray-400 sm:text-sm h-24 resize-none p-2 ${className}`}
+        className={`mt-1 block w-full rounded-md border shadow-sm !border-gray-400 h-24 resize-none p-2 ${className}`}
       />
 
       {error && (

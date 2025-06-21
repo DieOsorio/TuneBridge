@@ -176,6 +176,7 @@ Schema: social
         id (UUID) PK
         profile_id (UUID) references users.profiles.id
         group_id (UUID) references users.profile_groups.id
+        title (text)
         ad_type (text) check (ad_type IN ('looking', 'offering')) NN
         looking_for (text[]) eg. "bassist" "singer"
         genres (text[])

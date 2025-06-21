@@ -1,5 +1,8 @@
+import { useController } from "react-hook-form";
+
 const Select = ({
   id,
+  name,
   label,
   className = "",
   defaultOption,
@@ -8,9 +11,20 @@ const Select = ({
   validation = {},
   error,
   classForLabel = "",
-  value, // allow controlled value
-  onChange, // allow controlled onChange
+  value,
+  onChange,
+  control, // 🔹 NUEVO: soporte opcional para useController
 }) => {
+  // 🔹 Solo usamos useController si se pasó control y name
+  const controller = control && name
+    ? useController({ name, control, rules: validation })
+    : null;
+
+  const selectValue = controller ? controller.field.value : value;
+  const selectOnChange = controller ? controller.field.onChange : onChange;
+  const selectRegister = controller ? {} : (register ? register(id || name, validation) : {});
+  const selectError = controller ? controller.fieldState?.error : error;
+
   return (
     <div className="mb-4">
       {label && (
@@ -20,12 +34,13 @@ const Select = ({
       )}
       <select
         id={id}
-        {...(register && !value && !onChange ? register(id, validation) : {})}
+        name={name || id}
+        {...selectRegister}
         className={`w-full px-4 py-2 rounded-md border ${
-          error ? "border-red-500" : "border-gray-400"
+          selectError ? "border-red-500" : "border-gray-400"
         } focus:bg-gray-900 ${className}`}
-        value={value !== undefined ? value : undefined}
-        onChange={onChange}
+        value={selectValue !== undefined ? selectValue : ""}
+        onChange={selectOnChange}
       >
         {defaultOption && <option value="">{defaultOption}</option>}
         {options.map((option, index) => (
@@ -34,9 +49,9 @@ const Select = ({
           </option>
         ))}
       </select>
-      {error && (
+      {selectError && (
         <p className="text-red-500 text-sm mt-1">
-          {error.message || error}
+          {selectError.message || selectError}
         </p>
       )}
     </div>

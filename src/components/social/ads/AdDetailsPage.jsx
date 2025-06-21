@@ -74,54 +74,69 @@ const AdDetailsPage = () => {
 
   return (
     <div className={`max-w-3xl rounded-md bg-gradient-to-r mx-auto px-4 py-4 space-y-8 ${isSearching ? "from-cyan-950" :"from-emerald-950"}`}>
-      {/* Title */}
-      <div className="flex items-center bg-gradient-to-r bg-black/20 border-b p-2 border-gray-400 justify-between">
-        <Link to={`/profile/${profile.id}`}>          
-          <ProfileAvatar
-            avatar_url={profile.avatar_url}
-            className="!w-10 !h-10"
-            gender={profile.gender}
-          />
-        </Link>
-        
-        <div className="flex gap-8 items-center mx-auto">
-          <h2 className="text-2xl tracking-wide mt-1 rounded-lg px-10 py-1 text-gray-100">{ad.looking_for}</h2>
-        </div>
-        
-        {ownAd &&
-          <div className="flex">
-            <Link to={`/ads/edit/${ad.id}`}>
-            <CiEdit
-              size={20}
-              title={t("adCard.buttons.edit")}
-              className="text-yellow-500 mr-6" 
+      {/* Title/Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gradient-to-r bg-black/20 border-b p-2 border-gray-400">
+        {/* Top: avatar + edit/delete + badge (mobile layout) */}
+        <div className="flex justify-between items-center gap-13">
+          {/* Avatar */}
+          <Link to={`/profile/${profile.id}`}>          
+            <ProfileAvatar
+              avatar_url={profile.avatar_url}
+              className="!w-12 !h-12"
+              gender={profile.gender}
             />
           </Link>
-          <button onClick={() => setConfirmOpen(true)}>
-            <MdDeleteOutline
-              size={20}
-              title={t("adCard.buttons.delete")}
-              className="text-red-500 mr-6 cursor-pointer" 
-            />
-          </button>
-          </div>
-        }
 
-        <span
-          className={`text-sm hidden sm:block px-2 py-1 rounded-lg font-medium ${
-            isSearching
-              ? "bg-blue-100 text-cyan-700"
-              : "bg-green-100 text-emerald-700"
-          }`}
-        >
-          {isSearching ? t("adsDetailsPage.badges.looking") : t("adsDetailsPage.badges.offering")}
-        </span>
+          {/* Title desktop */}
+          <h2 className="hidden min-w-100 sm:inline text-2xl tracking-wide mt-3 text-center rounded-lg px-4 py-1 text-gray-100">
+            {ad.title}
+          </h2>
+
+          {/* Edit/Delete + Badge */}
+          <div className="flex flex-col items-end gap-6 sm:flex-row sm:items-center">
+            {ownAd && (
+              <div className="flex gap-3">
+                <Link to={`/ads/edit/${ad.id}`}>
+                  <CiEdit
+                    size={20}
+                    title={t("adCard.buttons.edit")}
+                    className="text-yellow-500"
+                  />
+                </Link>
+                <button onClick={() => setConfirmOpen(true)}>
+                  <MdDeleteOutline
+                    size={20}
+                    title={t("adCard.buttons.delete")}
+                    className="text-red-500 cursor-pointer"
+                  />
+                </button>
+              </div>
+            )}
+            
+            {/* Badge: visible on all sizes now */}
+            <span
+              className={`text-sm px-2 min-w-20 py-1 rounded-lg font-medium ${
+                isSearching
+                  ? "bg-blue-100 text-cyan-700"
+                  : "bg-green-100 text-emerald-700"
+              }`}
+            >
+              {isSearching
+                ? t("adsDetailsPage.badges.looking")
+                : t("adsDetailsPage.badges.offering")}
+            </span>
+          </div>
+        </div>
+        {/* Title mobile */}
+        <h2 className="text-md max-w-50 tracking-wide text-left sm:hidden sm:text-left p-1 text-gray-100">
+          {ad.title}
+        </h2>                
       </div>
       {/* General info + author and created at (grid in desktop) */}
       <div className="md:grid md:grid-cols-2 md:gap-8 space-y-6 md:space-y-0">
         {/* Left Column: Posted by + Created at */}
         <div className="space-y-6 mx-auto">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 justify-between sm:justify-start items-center">
             <h2 className="text-lg font-semibold text-gray-400">
               {t("adsDetailsPage.info.postedBy")} :
             </h2>
@@ -129,7 +144,13 @@ const AdDetailsPage = () => {
               <p className="text-gray-100 rounded-lg bg-black/20 px-6 py-1">{profile.username}</p>              
             </Link>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 justify-between sm:justify-start items-center">
+            <h2 className="text-lg font-semibold text-gray-400">
+              {t("adsDetailsPage.info.from")} :
+            </h2>
+              <p className="text-gray-100 rounded-lg bg-black/20 px-6 py-1">{profile.country}</p>              
+          </div>
+          <div className="flex gap-4 justify-between sm:justify-start items-center">
             <h2 className="text-lg font-semibold text-gray-400">
               {t("adsDetailsPage.info.createdAt")} :
             </h2>
@@ -141,15 +162,23 @@ const AdDetailsPage = () => {
 
         {/* Columna derecha: Genres + Location */}
         <div className="space-y-6 mx-auto">
-          <div className="flex gap-4 items-center">
+          <div className="flex flex-wrap justify-between sm:flex-nowrap sm:justify-start gap-2 sm:gap-4 items-start">
             <h2 className="text-lg font-semibold text-gray-400">
               {t("adsDetailsPage.info.genres")} :
             </h2>
-            <p className="text-gray-100 rounded-lg bg-black/20 px-6 py-1">
+            <p className="text-gray-100 bg-black/20 rounded-lg px-4 py-1 break-words w-fit max-w-full">
               {ad.genres.join(", ") || "—"}
             </p>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 justify-between sm:justify-start items-center">
+            <h2 className="text-lg font-semibold text-gray-400">
+              {isSearching ? t("adsDetailsPage.badges.looking") : t("adsDetailsPage.badges.offering")} :
+            </h2>
+            <p className="text-gray-100 rounded-lg bg-black/20 px-6 py-1">
+              {ad.looking_for.join(", ") || "—"}
+            </p>
+          </div>
+          <div className="flex gap-4 justify-between sm:justify-start items-center">
             <h2 className="text-lg font-semibold text-gray-400">
               {t("adsDetailsPage.info.location")} :
             </h2>

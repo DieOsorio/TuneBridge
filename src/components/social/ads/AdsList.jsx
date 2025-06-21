@@ -7,7 +7,7 @@ const AdsList = ({ ads }) => {
   if (!ads.length) return <p>{t("adsList.noAds")}</p>;
   
   return (
-    <div className="flex flex-col sm:flex-row gap-6">
+    <div className="flex flex-col justify-center sm:flex-row flex-wrap gap-6">
       {ads.map((ad) => (
         <AdCard key={ad.id} ad={ad} />
       ))}

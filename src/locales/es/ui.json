@@ -27,44 +27,66 @@
   },
   "landingpage": {
     "hero": {
-      "title": "Conéctate con otros músicos",
-      "subtitle": "Un lugar donde tu música y conexiones crecen."
+      "title": "Descubrí. Conectá. Creá",
+      "subtitle": "Encontrá compañeros de banda, mostrales tu música y hacé crecer tu red musical en un solo lugar."
     },
     "features": {
       "sectionTitle": "¿Qué puedes hacer en TuneBridge?",
       "cards": [
         {
-          "title": "Encuentra Músicos y Bandas",
-          "description": "Busca y filtra perfiles por país, ciudad, rol e instrumento. Descubre nuevos talentos y conéctate al instante."
+          "title": "Encuentra músicos y bandas",
+          "description": "Busca y filtra por ubicación, roles musicales o instrumentos. Descubre artistas solistas y grupos completos.",
+          "svgSrc": "/for-landing-page/features/search.gif"
         },
         {
-          "title": "Comparte Publicaciones y Hashtags",
-          "description": "Crea publicaciones con imágenes y hashtags. Explora temas en tendencia y únete a la conversación."
+          "title": "Publica y comparte tus ideas",
+          "description": "Crea publicaciones con imágenes, hashtags y novedades. Únete a la conversación y muestra tu recorrido musical.",
+          "svgSrc": "/for-landing-page/features/posts.gif"
         },
         {
-          "title": "Chat en Tiempo Real y Grupos",
-          "description": "Chatea uno a uno o en grupos, gestiona participantes y colabora en tiempo real."
+          "title": "Chats individuales y grupales",
+          "description": "Inicia conversaciones privadas o grupales con compañeros de banda y colaboradores en tiempo real.",
+          "svgSrc": "/for-landing-page/features/chat.gif"
+        },
+        {
+          "title": "Muestra tu música",
+          "description": "Sube tus enlaces de YouTube, Spotify o SoundCloud. Destaca dos en tu perfil y organiza el resto en una sección de medios.",
+          "svgSrc": "/for-landing-page/features/media.gif"
+        },
+        {
+          "title": "Publica anuncios musicales",
+          "description": "¿Buscas un bajista? ¿Te ofreces como productor? Publica anuncios para encontrar u ofrecer talento musical.",
+          "svgSrc": "/for-landing-page/features/ads.gif"
+        },
+        {
+          "title": "Crea o únete a un grupo musical",
+          "description": "Forma una banda o proyecto, invita a otros miembros, asigna roles musicales personalizados y gestiona el grupo en equipo.",
+          "svgSrc": "/for-landing-page/features/group.gif"
         }
       ]
     },
     "howItWorks": {
-      "sectionTitle": "Cómo Funciona TuneBridge",
+      "sectionTitle": "¿Cómo funciona TuneBridge?",
       "steps": [
         {
-          "title": "Crea tu Perfil",
-          "description": "Regístrate, agrega tu información musical y sube una foto de perfil para comenzar."
+          "title": "Crea tu perfil",
+          "description": "Regístrate, elige tus roles musicales y sube una foto para comenzar."
         },
         {
-          "title": "Encuentra y Conéctate",
-          "description": "Busca músicos, bandas o colaboradores por rol, instrumento o ubicación. Envía solicitudes de conexión y amplía tu red."
+          "title": "Comparte y explora",
+          "description": "Publica tu música, ideas y actualizaciones. Descubre temas en tendencia y conéctate mediante hashtags."
         },
         {
-          "title": "Comparte y Explora",
-          "description": "Publica tu música, ideas y actualizaciones con imágenes y hashtags. Descubre temas en tendencia y únete a la conversación."
+          "title": "Encuentra músicos y bandas",
+          "description": "Busca por ubicación, rol o instrumento. Sigue perfiles y expande tu red musical."
         },
         {
-          "title": "Chat & Colabora",
-          "description": "Inicia chats en tiempo real, crea conversaciones grupales y gestiona tus proyectos musicales juntos."
+          "title": "Chatea y colabora",
+          "description": "Inicia chats privados o grupales para ensayos, ideas y coordinación musical."
+        },
+        {
+          "title": "Crea o únete a un grupo musical",
+          "description": "Forma una banda o proyecto, invita miembros, asigna roles y gestionen juntos su grupo."
         }
       ]
     },
@@ -78,89 +100,106 @@
       }
     },
     "screenshots": {
-      "sectionTitle": "Aspecto y Sensación de la App",
-      "description": "Una visión general de la interfaz y características de la app TuneBridge.",
+      "sectionTitle": "Aspecto de la App",
+      "description": "Una mirada a la interfaz y funciones colaborativas de TuneBridge.",
       "profile": {
         "title": "Perfil y Configuración",
-        "description": "Crea, edita y personaliza tu perfil de músico.",
+        "description": "Crea y personaliza tu perfil musical con roles, géneros y medios.",
         "images": [
           {
-            "src": "/for-landing-page/profile-setup-1-ES.png",
-            "alt": "Formulario de creación de perfil",
-            "caption": "Edita los detalles de tu perfil y sube una foto de perfil."
+            "src": "/for-landing-page/profile/profile-setup-1-ES.png",
+            "alt": "Profile creation form",
+            "caption": "Regístrate y empezá a construir tu presencia musical."
           },
           {
-            "src": "/for-landing-page/profile-setup-2-ES.png",
-            "alt": "Roles y detalles del perfil",
-            "caption": "Completa tu perfil con roles musicales y detalles."
+            "src": "/for-landing-page/profile/profile-setup-2-ES.png",
+            "alt": "Profile roles and genres",
+            "caption": "Agregá tus roles musicales, géneros e instrumentos."
           },
           {
-            "src": "/for-landing-page/profile-setup-3-ES.png",
-            "alt": "Vista del perfil",
-            "caption": "Muestra tu perfil a la comunidad de TuneBridge."
+            "src": "/for-landing-page/profile/profile-setup-3-ES.png",
+            "alt": "Public profile view",
+            "caption": "Tu perfil será visible para toda la comunidad."
+          }
+        ]
+      },
+      "media": {
+        "title": "Enlaces de Medios",
+        "description": "Mostrá tu música con enlaces embebidos.",
+        "images": [
+          {
+            "src": "/for-landing-page/media/media-1-ES.png",
+            "alt": "Media section",
+            "caption": "Agregá enlaces de YouTube, Spotify o SoundCloud a tu perfil."
+          },
+          {
+            "src": "/for-landing-page/media/media-2-ES.png",
+            "alt": "Featured media preview",
+            "caption": "Destacá hasta dos enlaces directamente en tu perfil."
+          }
+        ]
+      },
+      "ads": {
+        "title": "Anuncios de Músicos",
+        "description": "Encontrá o publicá colaboraciones musicales.",
+        "images": [
+          {
+            "src": "/for-landing-page/ads/ads-1-ES.png",
+            "alt": "Ad creation",
+            "caption": "Publicá y explorá anuncios"
+          },
+          {
+            "src": "/for-landing-page/ads/ads-2-ES.png",
+            "alt": "Ad listings",
+            "caption": "Vista detallada de anuncios"
+          }
+        ]
+      },
+      "groups": {
+        "title": "Grupos Musicales",
+        "description": "Creá y gestioná bandas o proyectos musicales.",
+        "images": [
+          {
+            "src": "/for-landing-page/groups/groups-1-ES.png",
+            "alt": "Group creation",
+            "caption": "Iniciá un nuevo grupo e invitá a otros músicos."
+          },
+          {
+            "src": "/for-landing-page/groups/groups-2-ES.png",
+            "alt": "Group profile",
+            "caption": "Administrá miembros, roles y detalles del grupo."
+          }
+        ]
+      },
+      "events": {
+        "title": "Calendario y Eventos",
+        "description": "Organizá ensayos, toques o reuniones con tu grupo.",
+        "images": [
+          {
+            "src": "/for-landing-page/calendar/calendar-1-ES.png",
+            "alt": "Group calendar",
+            "caption": "Programá eventos visibles solo para los miembros del grupo."
+          },
+          {
+            "src": "/for-landing-page/calendar/calendar-2-ES.png",
+            "alt": "RSVP functionality",
+            "caption": "Los miembros pueden confirmar o rechazar su asistencia."
           }
         ]
       },
       "chat": {
         "title": "Chat en Tiempo Real",
-        "description": "Chat uno a uno y en grupo con músicos.",
+        "description": "Mensajería privada y grupal para colaborar fácilmente.",
         "images": [
           {
-            "src": "/for-landing-page/chat-1-ES.png",
-            "alt": "Chat directo",
-            "caption": "Inicia una conversación privada con cualquier músico."
+            "src": "/for-landing-page/chat/chat-1-ES.png",
+            "alt": "Direct chat",
+            "caption": "Chateá directamente con cualquier músico."
           },
           {
-            "src": "/for-landing-page/chat-2-ES.png",
-            "alt": "Chat grupal",
-            "caption": "Crea y gestiona chats grupales para tu banda o proyecto."
-          },
-          {
-            "src": "/for-landing-page/chat-3-ES.png",
-            "alt": "Gestión de grupos",
-            "caption": "Agrega, promociona o elimina participantes en tiempo real."
-          }
-        ]
-      },
-      "explore": {
-        "title": "Explorar y Descubrir",
-        "description": "Encuentra músicos, publicaciones y hashtags en tendencia.",
-        "images": [
-          {
-            "src": "/for-landing-page/explore-1-ES.png",
-            "alt": "Página de exploración",
-            "caption": "Explora publicaciones y perfiles de la comunidad musical global."
-          },
-          {
-            "src": "/for-landing-page/explore-2-ES.png",
-            "alt": "Búsqueda avanzada",
-            "caption": "Filtra músicos por país, ciudad, rol e instrumento."
-          },
-          {
-            "src": "/for-landing-page/explore-3-ES.png",
-            "alt": "Hashtags en tendencia",
-            "caption": "Descubre temas en tendencia y únete a la conversación."
-          }
-        ]
-      },
-      "posts": {
-        "title": "Publicaciones y Hashtags",
-        "description": "Comparte tu música, ideas y conéctate con hashtags.",
-        "images": [
-          {
-            "src": "/for-landing-page/posts-1-ES.png",
-            "alt": "Crear publicación",
-            "caption": "Crea publicaciones con imágenes, texto y hasta 3 hashtags."
-          },
-          {
-            "src": "/for-landing-page/posts-2-ES.png",
-            "alt": "Feed de publicaciones",
-            "caption": "Dale me gusta, comenta y explora publicaciones de otros músicos."
-          },
-          {
-            "src": "/for-landing-page/posts-3-ES.png",
-            "alt": "Página de Hashtags",
-            "caption": "Haz clic en un hashtag para ver todas las publicaciones y perfiles relacionados."
+            "src": "/for-landing-page/chat/chat-2-ES.png",
+            "alt": "Group chat",
+            "caption": "Colaborá en salas de chat exclusivas para tu grupo."
           }
         ]
       }
