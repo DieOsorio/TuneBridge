@@ -11,18 +11,24 @@ const Select = ({
   validation = {},
   error,
   classForLabel = "",
-  value,
-  onChange,
-  control, // 🔹 NUEVO: soporte opcional para useController
+  control, // si se quiere usar controlado
 }) => {
-  // 🔹 Solo usamos useController si se pasó control y name
-  const controller = control && name
-    ? useController({ name, control, rules: validation })
+  const fieldName = name || id;
+
+  const controller = control && fieldName
+    ? useController({ name: fieldName, control, rules: validation })
     : null;
 
-  const selectValue = controller ? controller.field.value : value;
-  const selectOnChange = controller ? controller.field.onChange : onChange;
-  const selectRegister = controller ? {} : (register ? register(id || name, validation) : {});
+  const selectProps = controller
+    ? {
+        name: controller.field.name,
+        value: controller.field.value || "",
+        onChange: controller.field.onChange,
+      }
+    : {
+        ...register(fieldName, validation),
+      };
+
   const selectError = controller ? controller.fieldState?.error : error;
 
   return (
@@ -34,13 +40,10 @@ const Select = ({
       )}
       <select
         id={id}
-        name={name || id}
-        {...selectRegister}
+        {...selectProps}
         className={`w-full px-4 py-2 rounded-md border ${
           selectError ? "border-red-500" : "border-gray-400"
         } focus:bg-gray-900 ${className}`}
-        value={selectValue !== undefined ? selectValue : ""}
-        onChange={selectOnChange}
       >
         {defaultOption && <option value="">{defaultOption}</option>}
         {options.map((option, index) => (
