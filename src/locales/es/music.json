@@ -41,8 +41,8 @@
     "choose": "Elige uno"
   },
   "edit": {
-    "title": "Editar Perfil Musical",
-    "addRoleTitle": "Agregar un nuevo rol",
+    "title": "Editar Roles",
+    "addRoleTitle": "Editar Roles",
     "selectLabel": "Selecciona un rol",
     "defaultOption": "Elige un rol",
     "customLabel": "Rol personalizado",
@@ -62,6 +62,8 @@
   },
   "media": {
     "title": "Contenido Musical",
+    "titleEdit": "Editar Contenido",
+    "titleAdd": "Agregar Contenido Musical",
     "form": {
       "url": "URL",
       "urlPlaceholder": "https://...",

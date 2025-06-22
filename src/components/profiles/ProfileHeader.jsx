@@ -18,11 +18,13 @@ import { FiMoreVertical } from "react-icons/fi";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
 import { handleStartChat } from '../social/chat/utilis/handleStartChat';
+import { useSidebar } from '../../context/SidebarContext';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
     const { manageView } = useView();
     const { user } = useAuth();
+    const { toggleSidebar } = useSidebar();
     const navigate = useNavigate();
     const { totalUnreadMessages } = useMessages();
     const { data: unreadMessagesCount, isLoading: loadingUnreadMessages } = totalUnreadMessages(user?.id);
@@ -214,7 +216,10 @@ function ProfileHeader({ isOwnProfile, profileData }) {
               </div>
               <IoIosSettings
                 className="w-8 h-8 text-white cursor-pointer"
-                onClick={() => manageView("editProfile", "edit")}
+                onClick={() => {
+                  toggleSidebar();
+                  manageView("editProfile", "edit");
+                }}
                 title={t("profile.titles.settings")}
               />
               <div className="relative">

@@ -40,8 +40,8 @@
     "expert": "Expert"
   },
   "edit": {
-    "title": "Edit Music Profile",
-    "addRoleTitle": "Add a new role",
+    "title": "Edit Roles",
+    "addRoleTitle": "Edit Roles",
     "selectLabel": "Select a Role",
     "defaultOption": "Choose a role",
     "customLabel": "Custom Role",
@@ -61,6 +61,8 @@
   },
   "media": {
     "title": "Musical Content",
+    "titleEdit": "Edit Media Content",
+    "titleAdd": "Add Media Content",
     "form": {
       "url": "URL",
       "urlPlaceholder": "https://...",

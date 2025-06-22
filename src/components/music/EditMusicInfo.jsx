@@ -76,9 +76,9 @@ const EditMusicInfo = ({ profileId }) => {
     <div className="p-6 bg-gradient-to-r  from-gray-900 text-white rounded-b-2xl shadow-lg max-w-4xl mx-auto">      
       {/* Add New Role */}
       <form onSubmit={handleSubmit(onSubmit)} className="mb-6 space-y-4">
-        <h3 className="text-xl font-semibold text-white">
+        <h2 className="text-2xl font-semibold text-center mb-4">
           {t("edit.addRoleTitle")}
-        </h3>
+        </h2>
 
         <div className="grid md:grid-cols-2 gap-4 items-center">
           <Select

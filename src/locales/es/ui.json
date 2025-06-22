@@ -27,8 +27,8 @@
   },
   "landingpage": {
     "hero": {
-      "title": "Descubrí. Conectá. Creá",
-      "subtitle": "Encontrá compañeros de banda, mostrales tu música y hacé crecer tu red musical en un solo lugar."
+      "title": "Descubre. Conecta. Crea",
+      "subtitle": "Comparte, colabora y organiza tu camino en la música desde un solo lugar."
     },
     "features": {
       "sectionTitle": "¿Qué puedes hacer en TuneBridge?",
@@ -210,7 +210,8 @@
     "links": {
       "explore": "Explorar",
       "profile": "Perfil",
-      "ads": "Anuncios"
+      "ads": "Anuncios",
+      "media": "Contenido"
     },
     "auth": {
       "signIn": "Iniciar sesión",
@@ -234,7 +235,8 @@
    "sidebar": {
     "viewProfile": "Ver Perfil",
     "editProfile": "Editar Perfil",
-    "editMusicInfo": "Editar Perfil Musical"
+    "editMusicInfo": "Editar Roles",
+    "insertMedia": "Agregar Contenido"
   },
   "imageUploader": {
     "upload": "Subir imágenes",

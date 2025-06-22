@@ -19,6 +19,7 @@ import AdsPage from "../components/social/ads/AdsPage";
 import AdDetailsPage from "../components/social/ads/AdDetailsPage";
 import AdCreateEditPage from "../components/social/ads/AdCreateEditPage";
 import MediaSection from "../components/music/MediaSection"
+import MediaEditPage from "../components/music/MediaEditPage";
 
 const AppRouter = () => {
     
@@ -37,7 +38,8 @@ const AppRouter = () => {
           <Route path="/ads/:id" element={<AdDetailsPage />} />
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
-          {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
+          {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}          
+          <Route path="/media/edit/:id" element={<ProtectedRoute><MediaEditPage  /></ProtectedRoute>} />
           <Route path="/media/:id" element={<ProtectedRoute><MediaSection  /></ProtectedRoute>} />
           <Route path="/ads/edit/:id" element={<ProtectedRoute><AdCreateEditPage  /></ProtectedRoute>} />
           <Route path="/ads/new" element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />

@@ -7,6 +7,7 @@ import { FaRegCompass, FaRegUser } from "react-icons/fa";
 import { FiLogIn, FiUserPlus } from "react-icons/fi";
 import { GrAnnounce } from "react-icons/gr";
 import { MdLogout  } from "react-icons/md";
+import { TiMediaFastForwardOutline } from "react-icons/ti";
 
 const HamburgerMenu = ({ id }) => {
   const { t } = useTranslation("ui");
@@ -98,6 +99,19 @@ const HamburgerMenu = ({ id }) => {
                 >
                   {t("nav.auth.signOut")}
                 </button>
+              </li>
+              <li className="px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+                <TiMediaFastForwardOutline size={24} className="text-sky-600" />
+
+                <Link
+                  to={`/media/${id}`}
+                  className="block text-lg"
+                  onClick={() => {
+                    toggleMenu();
+                  }}
+                >
+                  {t("nav.links.media")}
+                </Link>
               </li>
             </ul>
             ) : (
