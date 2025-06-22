@@ -66,27 +66,27 @@
       ]
     },
     "howItWorks": {
-      "sectionTitle": "¿Cómo funciona TuneBridge?",
+      "sectionTitle": "Cómo funciona TuneBridge",
       "steps": [
         {
-          "title": "Crea tu perfil",
-          "description": "Regístrate, elige tus roles musicales y sube una foto para comenzar."
+          "title": "Regístrate y configura tu perfil",
+          "description": "Crea una cuenta, completa tu información personal, sube una foto de perfil y elige tus roles musicales."
         },
         {
-          "title": "Comparte y explora",
-          "description": "Publica tu música, ideas y actualizaciones. Descubre temas en tendencia y conéctate mediante hashtags."
+          "title": "Sube y comparte contenido",
+          "description": "Agrega enlaces desde plataformas como YouTube, Spotify o SoundCloud para mostrar tu trabajo musical."
         },
         {
-          "title": "Encuentra músicos y bandas",
-          "description": "Busca por ubicación, rol o instrumento. Sigue perfiles y expande tu red musical."
+          "title": "Publica anuncios para músicos",
+          "description": "¿Buscás colaboradores o querés ofrecer tus habilidades? Publicá anuncios para conectar con músicos o bandas."
         },
         {
-          "title": "Chatea y colabora",
-          "description": "Inicia chats privados o grupales para ensayos, ideas y coordinación musical."
+          "title": "Chatea y conectate",
+          "description": "Inicia chats uno a uno o grupales para coordinar proyectos, compartir ideas o mantenerte en contacto."
         },
         {
-          "title": "Crea o únete a un grupo musical",
-          "description": "Forma una banda o proyecto, invita miembros, asigna roles y gestionen juntos su grupo."
+          "title": "Crea o unite a grupos musicales",
+          "description": "Formá una banda o proyecto musical, invitá miembros, asigná roles y gestioná el grupo en conjunto."
         }
       ]
     },
@@ -98,6 +98,27 @@
         "logIn": "Iniciar sesión",
         "joinUs": "Únete"
       }
+    },
+    "audience": {
+      "sectionTitle": "¿Para quién es TuneBridge?",
+      "cards": [
+        {
+          "title": "Solistas",
+          "description": "Mostrá tu música, conectá con productores y encontrá músicos para formar un proyecto."
+        },
+        {
+          "title": "Bandas",
+          "description": "Gestioná tu grupo, organizá eventos, chateá con tus miembros y compartí contenido como banda."
+        },
+        {
+          "title": "Productores",
+          "description": "Buscá nuevos talentos, ofrecé tus servicios y colaborá en nuevos proyectos musicales."
+        },
+        {
+          "title": "Músicos freelance",
+          "description": "Publicá tus servicios, respondé a anuncios y encontrá oportunidades en todo el país."
+        }
+      ]
     },
     "screenshots": {
       "sectionTitle": "Aspecto de la App",
