@@ -69,24 +69,24 @@
       "sectionTitle": "How TuneBridge Works",
       "steps": [
         {
-          "title": "Create Your Profile",
-          "description": "Sign up, set your musical roles, and upload a profile picture to get started."
+          "title": "Sign Up and Set Up Your Profile",
+          "description": "Create an account, complete your personal info, upload a profile picture, and choose your musical roles."
         },
         {
-          "title": "Share & Explore",
-          "description": "Post your music, ideas, and updates. Discover trending topics and connect through hashtags."
+          "title": "Upload and Share Media",
+          "description": "Add links from platforms like YouTube, Spotify, or SoundCloud to showcase your musical content."
         },
         {
-          "title": "Find Musicians & Bands",
-          "description": "Search by location, role, or instrument. Follow profiles and grow your musical network."
+          "title": "Post Musician Ads",
+          "description": "Looking for collaborators or offering your skills? Create public ads to connect with musicians or bands."
         },
         {
-          "title": "Chat & Collaborate",
-          "description": "Start 1-on-1 or group chats to coordinate rehearsals, share ideas, and stay in sync."
+          "title": "Chat and Connect",
+          "description": "Start 1-on-1 or group chats to plan projects, share ideas, or stay in touch with other musicians."
         },
         {
-          "title": "Create or Join a Music Group",
-          "description": "Form a band or project, invite members, assign roles, and manage your group together."
+          "title": "Create or Join Music Groups",
+          "description": "Form a band or music project, invite members, assign roles, and manage your group together."
         }
       ]
     },
@@ -99,6 +99,27 @@
         "joinUs": "Join Us"
       }
     },
+    "audience": {
+      "sectionTitle": "Who is TuneBridge for?",
+      "cards": [
+        {
+          "title": "Solo Artists",
+          "description": "Showcase your music, connect with producers, and find musicians to start a new project."
+        },
+        {
+          "title": "Bands",
+          "description": "Manage your group, organize events, chat with members, and share content as a band."
+        },
+        {
+          "title": "Producers",
+          "description": "Discover new talent, offer your services, and collaborate on new musical projects."
+        },
+        {
+          "title": "Freelance Musicians",
+          "description": "Promote your services, respond to musician ads, and find opportunities across the country."
+        }
+      ]
+    },    
     "screenshots": {
       "sectionTitle": "App Look & Feel",
       "description": "A glimpse into the TuneBridge app and its collaborative features.",

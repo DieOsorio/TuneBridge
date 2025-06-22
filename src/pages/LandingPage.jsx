@@ -30,6 +30,10 @@ const LandingPage = () => {
   const howItWorks = t("landingpage.howItWorks.steps", { returnObjects: true });
   const features = t("landingpage.features.cards", { returnObjects: true });
 
+  // Audience section
+  const audience = t("landingpage.audience.cards", { returnObjects: true });
+  const audienceTitle = t("landingpage.audience.sectionTitle");
+
   // Get screenshots sections from i18n
   const screenshotSections = ["profile", "media", "ads", "groups", "events", "chat"];
   const screenshotsData = screenshotSections.map(section => {
@@ -107,9 +111,38 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Audience Section */}
+      <section className="py-16 px-6 md:px-16 bg-gradient-to-r from-sky-950 to-gray-900">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-white"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.7 }}
+        >
+          {audienceTitle}
+        </motion.h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {audience.map((card, idx) => (
+            <motion.div
+              key={idx}
+              className="bg-gray-900 rounded-xl border border-sky-600 p-6 shadow-lg"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+            >
+              <h3 className="text-xl font-semibold text-sky-500 mb-2">{card.title}</h3>
+              <p className="text-gray-300">{card.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* How It Works Section (Responsive Table Style) */}
       <motion.section
-        className="py-16 px-6 md:px-16 bg-gradient-to-r from-sky-950"
+        className="hidden py-16 px-6 md:px-16 bg-gradient-to-r from-sky-950"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
