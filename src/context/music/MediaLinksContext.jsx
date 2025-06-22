@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   useUserMediaLinksQuery,
+  useMediaLink,
   useInsertMediaLinkMutation,
   useUpdateMediaLinkMutation,
   useDeleteMediaLinkMutation,
@@ -17,6 +18,7 @@ export const MediaLinksProvider = ({ children }) => {
 
   const value ={
       userMediaLinks: useUserMediaLinksQuery,
+      getMediaLink: useMediaLink,
       insertMediaLink,
       updateMediaLink,
       deleteMediaLink,

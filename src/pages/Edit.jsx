@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useView } from '../context/ViewContext';
 import EditProfile from '../components/profiles/EditProfile';
 import EditMusicInfo from '../components/music/EditMusicInfo';
+import MediaEditPage from "../components/music/MediaEditPage"
 import { useTranslation } from 'react-i18next';
 
 function Edit({ profileData }) {
@@ -23,6 +24,7 @@ function Edit({ profileData }) {
                     {[
                     { label: t("edit.navigation.editProfile"), view: "editProfile" },
                     { label: t("edit.navigation.editMusicInfo"), view: "editMusicInfo" },
+                    { label: t("edit.navigation.insertMedia"), view: "insertMedia" },
                     ].map(({ label, view }) => {
                     const isActive = internalView === view;
                     return (
@@ -48,6 +50,7 @@ function Edit({ profileData }) {
             <div>
                 {internalView === "editProfile" && <EditProfile profile={profileData} />}
                 {internalView === "editMusicInfo" && <EditMusicInfo profileId={profileData.id} />}
+                {internalView === "insertMedia" && <MediaEditPage />}
             </div>
         </>
     );

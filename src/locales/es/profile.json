@@ -55,7 +55,8 @@
       "title": "Editar Perfil",
       "navigation": {
         "editProfile": "Editar Perfil",
-        "editMusicInfo": "Editar Perfil Musical"
+        "editMusicInfo": "Editar Roles",
+        "insertMedia": "Agregar Contenido"
       },
       "labels": {
         "bio": "Bio",

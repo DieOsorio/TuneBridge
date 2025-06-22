@@ -8,6 +8,24 @@ import {
   replaceOptimisticItem,
 } from "../helpers/cacheHandler";
 
+// FETCH MEDIA BY ID
+export const useMediaLink = (id) => {
+  return useQuery({
+    queryKey: mediaLinksKeyFactory({ id }).single,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("music")
+        .from("user_media_links")
+        .select()
+        .eq("id", id)
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!id,
+  });
+};
+
 // FETCH MEDIA LINKS BY PROFILE
 export const useUserMediaLinksQuery = (profile_id) => {
   return useQuery({
@@ -129,7 +147,7 @@ export const useUpdateMediaLinkMutation = () => {
 export const useDeleteMediaLinkMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id }) => {
+    mutationFn: async ({ profile_id, id }) => {
       const { error } = await supabase
         .schema("music")
         .from("user_media_links")

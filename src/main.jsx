@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
+import { SidebarProvider } from './context/SidebarContext';
 // import { GroupsProvider } from './context/groups/GroupsContext';
 
 const queryClient = new QueryClient();
@@ -27,22 +28,24 @@ createRoot(document.getElementById('root')).render(
         <I18nextProvider i18n={i18n}>
           <AuthProvider>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <ProfileProvider>
-                <ProfileGroupsProvider>
-                  <ProfileGroupMembersProvider>
-                    <SocialProvider>
-                      <MusicProvider>
-                        <ViewProvider>
-                          {/* <GroupsProvider> */}
-                            <App />
-                            <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-                          {/* </GroupsProvider> */}
-                        </ViewProvider>
-                      </MusicProvider>
-                    </SocialProvider>
-                  </ProfileGroupMembersProvider> 
-                </ProfileGroupsProvider>
-              </ProfileProvider>
+              <SidebarProvider>
+                <ProfileProvider>
+                  <ProfileGroupsProvider>
+                    <ProfileGroupMembersProvider>
+                      <SocialProvider>
+                        <MusicProvider>
+                          <ViewProvider>
+                            {/* <GroupsProvider> */}
+                              <App />
+                              <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+                            {/* </GroupsProvider> */}
+                          </ViewProvider>
+                        </MusicProvider>
+                      </SocialProvider>
+                    </ProfileGroupMembersProvider> 
+                  </ProfileGroupsProvider>
+                </ProfileProvider>
+              </SidebarProvider>
             </LocalizationProvider>    
           </AuthProvider>
         </I18nextProvider>

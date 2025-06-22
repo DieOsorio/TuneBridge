@@ -28,7 +28,7 @@
   "landingpage": {
     "hero": {
       "title": "Discover. Connect. Create",
-      "subtitle": "Find bandmates, showcase your work, and grow your music network in one place."
+      "subtitle": "Share, collaborate, and organize your musical journey in one place."
     },
     "features": {
       "sectionTitle": "What can you do on TuneBridge?",
@@ -210,7 +210,8 @@
     "links": {
       "explore": "Explore",
       "profile": "Profile",
-      "ads": "Musician Ads"
+      "ads": "Musician Ads",
+      "media": "Media"
     },
     "auth": {
       "signIn": "Log In",
@@ -234,7 +235,8 @@
    "sidebar": {
     "viewProfile": "View Profile",
     "editProfile": "Edit Profile",
-    "editMusicInfo": "Edit Music Profile"
+    "editMusicInfo": "Edit Roles",
+    "insertMedia": "Add Media"
   },
   "imageUploader": {
     "upload": "Upload Images",
