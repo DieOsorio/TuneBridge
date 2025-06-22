@@ -20,6 +20,7 @@ import AdDetailsPage from "../components/social/ads/AdDetailsPage";
 import AdCreateEditPage from "../components/social/ads/AdCreateEditPage";
 import MediaSection from "../components/music/MediaSection"
 import MediaEditPage from "../components/music/MediaEditPage";
+import TermsPage from "../components/ui/TermsPage"
 
 const AppRouter = () => {
     
@@ -36,6 +37,7 @@ const AppRouter = () => {
           <Route path="/signup-success" element={<SignUpSuccess />} />
           <Route path="/ads" element={<AdsPage />} />
           <Route path="/ads/:id" element={<AdDetailsPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}          

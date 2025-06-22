@@ -122,6 +122,17 @@ const SignUp = () => {
             {t("auth:signup.loginHere")}
           </Link>
         </p>
+        <p className="text-xs text-center mt-2 text-gray-600">
+          {t("auth:signup.agreeTo")}{" "}
+          <Link
+            to="/terms"
+            target="_blank"
+            className="text-sky-600 hover:underline"
+            rel="noopener noreferrer"
+          >
+            {t("auth:signup.termsAndConditions")}
+          </Link>
+        </p>
       </div>
     </div>
   );
