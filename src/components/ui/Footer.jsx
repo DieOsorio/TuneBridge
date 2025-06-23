@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 
 function Footer() {
@@ -31,9 +31,23 @@ function Footer() {
             {t("footer.terms")}
           </Link>
         </div>
+        <div className="mt-1 text-sm">
+          <Trans
+            i18nKey="ui:footer.illustrationCredit"
+            components={[
+              <a
+                href="https://storyset.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-400 hover:text-white underline"
+              />
+            ]}
+          />
+        </div>
       </div>
     </footer>
   );
 }
+
 
 export default Footer;
