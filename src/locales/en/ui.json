@@ -104,19 +104,23 @@
       "cards": [
         {
           "title": "Solo Artists",
-          "description": "Showcase your music, connect with producers, and find musicians to start a new project."
+          "description": "Showcase your music, connect with producers, and find musicians to start a new project.",
+          "gifSrc": "/for-landing-page/audience/solo.gif"
         },
         {
           "title": "Bands",
-          "description": "Manage your group, organize events, chat with members, and share content as a band."
+          "description": "Manage your group, organize events, chat with members, and share content as a band.",
+          "gifSrc": "/for-landing-page/audience/band.gif"
         },
         {
           "title": "Producers",
-          "description": "Discover new talent, offer your services, and collaborate on new musical projects."
+          "description": "Discover new talent, offer your services, and collaborate on new musical projects.",
+          "gifSrc": "/for-landing-page/audience/producer.gif"
         },
         {
           "title": "Freelance Musicians",
-          "description": "Promote your services, respond to musician ads, and find opportunities across the country."
+          "description": "Promote your services, respond to musician ads, and find opportunities across the country.",
+          "gifSrc": "/for-landing-page/audience/freelance.gif"
         }
       ]
     },    
@@ -248,6 +252,7 @@
     "copyright": "© {{year}} TuneBridge. All rights reserved.",
     "followUs": "Follow us on social media!",
     "terms": "Terms and Conditions",
+    "illustrationCredit": "Illustrations by <0>Storyset</0>",
     "social": {
       "facebook": "Facebook",
       "twitter": "Twitter",

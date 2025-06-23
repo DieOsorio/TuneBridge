@@ -133,8 +133,18 @@ const LandingPage = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
             >
-              <h3 className="text-xl font-semibold text-sky-500 mb-2">{card.title}</h3>
-              <p className="text-gray-300">{card.description}</p>
+              <div className="flex justify-between">
+                <h3 className="text-xl font-semibold text-sky-500 mb-2">{card.title}</h3>
+                <div className="w-45 h-45 mb-4">
+                  <img
+                    src={card.gifSrc}
+                    alt={card.title}
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <p className="text-gray-300 text-center">{card.description}</p>
             </motion.div>
           ))}
         </div>

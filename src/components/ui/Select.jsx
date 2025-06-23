@@ -11,7 +11,7 @@ const Select = ({
   validation = {},
   error,
   classForLabel = "",
-  control, // si se quiere usar controlado
+  control, 
 }) => {
   const fieldName = name || id;
 
