@@ -21,6 +21,7 @@ import AdCreateEditPage from "../components/social/ads/AdCreateEditPage";
 import MediaSection from "../components/music/MediaSection"
 import MediaEditPage from "../components/music/MediaEditPage";
 import TermsPage from "../components/ui/TermsPage"
+import DiscoverMatches from "../pages/DiscoverMatches";
 
 const AppRouter = () => {
     
@@ -41,6 +42,7 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}          
+          <Route path="/matches" element={<ProtectedRoute><DiscoverMatches  /></ProtectedRoute>} />
           <Route path="/media/edit/:id" element={<ProtectedRoute><MediaEditPage  /></ProtectedRoute>} />
           <Route path="/media/:id" element={<ProtectedRoute><MediaSection  /></ProtectedRoute>} />
           <Route path="/ads/edit/:id" element={<ProtectedRoute><AdCreateEditPage  /></ProtectedRoute>} />

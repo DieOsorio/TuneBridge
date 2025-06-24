@@ -19,6 +19,7 @@ import { IoPersonAdd, IoPersonRemove, IoPersonOutline } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
 import { handleStartChat } from '../social/chat/utilis/handleStartChat';
 import { useSidebar } from '../../context/SidebarContext';
+import MatchScoreIndicator from './MatchScoreIndicator';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
@@ -128,7 +129,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
         {/* Action Buttons */}
         <div className="flex gap-4 ml-auto sm:mb-auto items-center relative">
           {!isOwnProfile && (
-            <>
+            <>              
               <IoChatboxSharp
                 className="w-8 h-8 text-white cursor-pointer"
                 onClick={startChat}
@@ -241,6 +242,13 @@ function ProfileHeader({ isOwnProfile, profileData }) {
 
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end mt-6">
+        {!isOwnProfile && 
+        <div className='mr-auto'>
+          <div className="mb-4">
+            <MatchScoreIndicator otherProfile={profileData} />
+          </div>
+        </div>
+        }
         <div>
           <div className="mb-4">
             <Button onClick={() => manageView("about", "profile")}>

@@ -1,9 +1,10 @@
-import React, { createContext, useContext} from 'react';
+import { createContext, useContext} from 'react';
 import PropTypes from 'prop-types';
-import { useAuth } from '../AuthContext';
 import {
+    useGetProfileMatchScore,
     useProfileQuery,
     useAllProfilesQuery,
+    useGetProfilesMatch,
     useCreateProfile,
     useUpdateProfile,
     useDeleteProfile,
@@ -20,6 +21,8 @@ export const ProfileProvider = ({ children }) => {
     const createProfile = useCreateProfile().mutateAsync;
     const updateProfile = useUpdateProfile().mutateAsync;
     const deleteProfile = useDeleteProfile().mutateAsync;
+    const matchScore = useGetProfileMatchScore().mutateAsync;
+    const matchAll = useGetProfilesMatch().mutateAsync;
 
     const value = {
         allProfiles,
@@ -29,6 +32,8 @@ export const ProfileProvider = ({ children }) => {
         fetchProfile: useProfileQuery,
         profilesMap: useProfilesMap,
         createProfile,
+        matchScore,
+        matchAll,
         updateProfile,
         deleteProfile,
         searchProfiles: useSearchProfilesQuery,

@@ -98,5 +98,15 @@
       "errors": {
         "updateFailed": "Error updating profile."
       }
+    },
+    "matchScore": {
+      "labels": {
+        "high": "High compatibility",
+        "medium": "Medium compatibility",
+        "low": "Low compatibility",
+        "veryLow": "Very low compatibility"
+      },
+      "title": "This score estimates the musical compatibility between profiles, based on interests, genres, location, and descriptions.",
+      "cardTitle": "This score estimates the musical compatibility between profiles."
     }
 }

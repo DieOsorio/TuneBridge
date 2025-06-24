@@ -4,6 +4,43 @@ import { useMemo } from "react";
 import { optimisticUpdate, rollbackCache, replaceOptimisticItem, invalidateKeys } from '../helpers/cacheHandler';
 import { profileKeyFactory } from '../helpers/profile/profileKeys';
 
+
+// Match score between one profiles and the rest
+export const useGetProfilesMatch = () => {
+  return useMutation({
+    mutationFn: async ({ profileId, limit }) => {   
+      const { data, error } = await supabase
+        .schema("users")
+        .rpc("profile_match_all", {
+          profile_a: profileId,
+          limit_results: limit
+        });
+           
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+};
+
+
+// Match score between two profiles
+export const useGetProfileMatchScore = () => {
+  return useMutation({
+    mutationFn: async ({ profileAId, profileBId }) => {   
+      const { data, error } = await supabase
+        .schema("users")
+        .rpc("profile_match_score", {
+          profile_a: profileAId,
+          profile_b: profileBId,
+        });
+           
+      if (error) throw new Error(error.message);
+      return data?.[0]?.match_score ?? 0;
+    },
+  });
+};
+
+
 // INFINITE SCROLL FOR ALL PROFILES
 const PAGE_SIZE = 8; // Number of profiles to fetch per page
 

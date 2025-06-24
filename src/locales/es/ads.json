@@ -9,6 +9,11 @@
   },
   "adsPage": {
     "title": "Anuncios",
+    "nav": {
+      "all": "Todos",
+      "looking": "Se busca",
+      "offering": "Se ofrece"
+    },
     "buttons": {
       "createAd": "Crear Anuncio"
     }

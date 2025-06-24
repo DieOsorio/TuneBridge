@@ -55,6 +55,18 @@ const Navbar = () => {
         )}
         {user && (
           <Link
+            to={`/matches`}
+            className={`font-medium ${
+              isActive(`/matches`)
+                ? "text-sky-400"
+                : "hover:text-sky-300"
+            }`}
+          >
+            {t("nav.links.matches")}
+          </Link>
+        )}
+        {user && (
+          <Link
             to={`/profile/${user.id}`}
             onClick={() => manageView("about", "profile")}
             className={`font-medium ${

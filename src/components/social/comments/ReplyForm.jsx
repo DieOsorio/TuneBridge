@@ -24,7 +24,7 @@ function ReplyForm({onChange, onSubmit, onCancel, value}) {
         {/* cancel the reply */}
         <button
           onClick={() => onCancel()}
-          className="px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white rounded text-sm"
+          className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm"
         >
           {t("card.buttons.cancel")}
         </button>

@@ -203,11 +203,11 @@ const AdForm = ({ defaultValues = {}, onSubmit, publisherId }) => {
 
       <div className="flex justify-center gap-4">
         <Link to={`/ads`}>
-          <Button className="!bg-gray-500 hover:!bg-gray-600" >
+          <Button className="!bg-gray-600 hover:!bg-gray-700" >
             {t("adForm.buttons.cancel")}
           </Button>
         </Link>
-        <Button className="!bg-emerald-700 hover:!bg-emerald-800" type="submit">
+        <Button className="!bg-emerald-600 hover:!bg-emerald-700" type="submit">
           {t("adForm.buttons.save")}
         </Button>
       </div>

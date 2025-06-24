@@ -250,7 +250,7 @@ const UpdatePost = () => {
           <Button
             type="button"
             onClick={() => navigate("/explore")}
-            className="!bg-gray-500 hover:!bg-gray-600"
+            className="!bg-gray-600 hover:!bg-gray-700"
           >
             {t("update.buttons.cancel")}
           </Button>

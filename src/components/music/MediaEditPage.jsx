@@ -114,14 +114,14 @@ const MediaEditPage = () => {
           <div className="flex justify-center mt-16 gap-4">
             <Button
               type="submit"
-              className="!bg-green-700 hover:!bg-green-800"
+              className="!bg-emerald-600 hover:!bg-emerald-700"
             >
               {isEditing ? t("media.form.update") : t("media.form.add")}
             </Button>
             <Button
               type="button"
               onClick={() => navigate(-1)}
-              className="!bg-gray-500 hover:!bg-gray-600"
+              className="!bg-gray-600 hover:!bg-gray-700"
             >
               {t("media.form.cancel")}
             </Button>

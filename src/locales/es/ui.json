@@ -236,7 +236,8 @@
       "explore": "Explorar",
       "profile": "Perfil",
       "ads": "Anuncios",
-      "media": "Contenido"
+      "media": "Contenido",
+      "matches": "Matches"
     },
     "auth": {
       "signIn": "Iniciar sesión",

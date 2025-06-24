@@ -643,3 +643,89 @@ BEGIN
   HAVING COUNT(*) = 2; -- asegura que sólo estén ellos dos
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION users.profile_match_score(
+  profile_a UUID,
+  profile_b UUID
+)
+RETURNS TABLE (
+  match_score FLOAT
+) AS $$
+DECLARE
+  vec_a_text TEXT;
+  vec_b_text TEXT;
+  tokens_a TEXT[];
+  tokens_b TEXT[];
+  intersection TEXT[];
+BEGIN
+  -- Obtenemos el tsvector como texto plano
+  SELECT content_search_all::text INTO vec_a_text FROM users.profiles WHERE id = profile_a;
+  SELECT content_search_all::text INTO vec_b_text FROM users.profiles WHERE id = profile_b;
+
+  IF vec_a_text IS NULL OR vec_b_text IS NULL THEN
+    match_score := 0;
+    RETURN NEXT;
+  END IF;
+
+  -- Convertimos a arrays de tokens
+  tokens_a := ARRAY(
+    SELECT regexp_replace(token, E':.*$', '')  -- Nos quedamos solo con la palabra, sin posición
+    FROM unnest(string_to_array(vec_a_text, ' ')) AS token
+  );
+
+  tokens_b := ARRAY(
+    SELECT regexp_replace(token, E':.*$', '')
+    FROM unnest(string_to_array(vec_b_text, ' ')) AS token
+  );
+
+  -- Intersección
+  intersection := ARRAY(SELECT UNNEST(tokens_a) INTERSECT SELECT UNNEST(tokens_b));
+
+  -- Score: proporción de tokens compartidos
+  IF array_length(tokens_a, 1) IS NULL OR array_length(tokens_b, 1) IS NULL THEN
+    match_score := 0;
+  ELSE
+    match_score := (
+      cardinality(intersection)::float / 
+      greatest(array_length(tokens_a, 1), array_length(tokens_b, 1))
+    );
+  END IF;
+
+  RETURN NEXT;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
+
+
+CREATE OR REPLACE FUNCTION users.profile_match_all(
+  profile_a UUID,
+  limit_results INT DEFAULT 10
+)
+RETURNS TABLE (
+  profile_id UUID,
+  username TEXT,
+  name TEXT,
+  avatar_url TEXT,
+  match_score FLOAT
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    p.id,
+    p.username,
+    p.firstname,
+    p.avatar_url,
+    m.match_score
+  FROM users.profiles p
+  JOIN LATERAL users.profile_match_score(profile_a, p.id) AS m(match_score) ON true
+  WHERE p.id != profile_a
+  ORDER BY m.match_score DESC
+  LIMIT limit_results;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+
