@@ -107,6 +107,26 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 
 ---
 
+### 💡 Match Score System
+
+- Automatically suggests musicians who may be a **good match** for collaboration based on:
+  - Shared roles (e.g. both are guitarists or singers)  
+  - Genre preferences  
+  - Location proximity  
+- Each match displays a **score percentage** indicating estimated compatibility  
+- Scores are visualized with a **color-coded badge** and label:
+  - High compatibility (70%+)
+  - Medium (40–69%)
+  - Low (10-39%)  
+  - Very Low (<10%)  
+- A dedicated **Discover Matches** page showcases the top matches for each user  
+- Includes quick access to:
+  - Profile overview  
+  - Chat initiation  
+  - Connection request
+
+---
+
 ### 🔔 Notifications
 
 - Notifications are generated via **Supabase triggers** (SQL)  

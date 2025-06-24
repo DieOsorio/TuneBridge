@@ -162,7 +162,7 @@ const ChatHeader = ({ conversationId }) => {
   // Convert direct chat to group
   const handleConvertToGroup = async () => {
     try {
-      await updateConversation({ conversation, updates: { avatar_url: "https://cdn4.iconfinder.com/data/icons/avatar-1-2/100/Avatar-16-512.png", is_group: true, title: t("header.group.untitled") } });
+      await updateConversation({ conversation, updates: { avatar_url: "/public/group.png", is_group: true, title: t("header.group.untitled") } });
     } catch (err) {
       console.error("Failed to convert to group chat:", err.message);
     } finally {
