@@ -214,14 +214,14 @@ const GroupMembers = ({
                 <div className="flex gap-2 justify-center mb-5">
                 <Button
                   onClick={() => setShowAddMember(false)}
-                  className="!bg-gray-500 hover:!bg-gray-600"
+                  className="!bg-gray-600 hover:!bg-gray-700"
                 >
                   {t("groupMembers.buttons.cancel")}
                 </Button>
                 <Button
                   form="add-member-form"
                   type="submit"
-                  className="!bg-emerald-700 hover:!bg-emerald-800"
+                  className="!bg-emerald-600 hover:!bg-emerald-700"
                   disabled={isSubmitting}
                 >
                   {isSubmitting
@@ -236,7 +236,7 @@ const GroupMembers = ({
                 <button
                   type="button"
                   onClick={() => setShowAddMember(true)}
-                  className="text-emerald-500 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 transition-colors"
+                  className="text-emerald-600 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 transition-colors"
                 >
                   <FiPlus size={28} />
                 </button>

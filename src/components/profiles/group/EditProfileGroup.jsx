@@ -176,7 +176,7 @@ const EditProfileGroup = ({ group, onSave, onCancel }) => {
 
         <div className="sm:col-span-2 flex justify-center mt-4 space-x-4">
           <Button
-            className="!bg-gray-500 hover:!bg-gray-600"
+            className="!bg-gray-600 hover:!bg-gray-700"
             type="button"
             onClick={onCancel}
           >

@@ -280,7 +280,7 @@ const ChatHeader = ({ conversationId }) => {
           cancelLabel={t("header.convert.cancel")}
           onConfirm={handleConvertToGroup}
           onCancel={() => setIsConvertConfirmOpen(false)}
-          className="!bg-emerald-700 hover:!bg-emerald-800"
+          className="!bg-emerald-600 hover:!bg-emerald-700"
         />
         {/* Menu to show conversations*/}
         <button

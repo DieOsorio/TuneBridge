@@ -97,5 +97,15 @@
       "errors": {
         "updateFailed": "Error al actualizar el perfil."
       }
+    },
+    "matchScore": {
+      "labels": {
+        "high": "Alta compatibilidad",
+        "medium": "Compatibilidad media",
+        "low": "Baja compatibilidad",
+        "veryLow": "Muy baja compatibilidad"
+      },
+      "title": "Este puntaje estima la compatibilidad musical entre los perfiles, basado en intereses, géneros, ubicación y descripciones.",
+      "cardTitle": "Este puntaje estima la compatibilidad musical entre los perfiles."
     }
 }

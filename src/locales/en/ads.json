@@ -1,7 +1,7 @@
 {
   "profileAds": {
     "title": "Musician Ads",
-    "empty": "There is no ads",
+    "empty": "There is no ads",    
     "buttons": {
       "loading": "Loading...",
       "loadMore": "Load more"
@@ -9,6 +9,11 @@
   },
   "adsPage": {
     "title": "Musician Ads",
+    "nav": {
+      "all": "All",
+      "looking": "Looking",
+      "offering": "Offering"
+    },
     "buttons": {
       "createAd": "Create Ad"
     }

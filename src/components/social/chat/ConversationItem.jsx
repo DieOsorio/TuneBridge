@@ -3,16 +3,34 @@ import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
 import { useProfile } from "../../../context/profile/ProfileContext";
+import { useMessages } from "../../../context/social/chat/MessagesContext";
 
 const ConversationItem = ({ conversation, isSelected, onClick }) => {
   const { user } = useAuth();
   const { fetchParticipants } = useParticipants();
-  const {data: participants = [], isLoading: isParticipantsLoading, error: errorParticipants} = fetchParticipants(conversation.id)
-
+  const {
+    data: participants = [], 
+    isLoading: isParticipantsLoading, 
+    error: errorParticipants
+  } = fetchParticipants(conversation.id);
+  
   const { fetchProfile } = useProfile();
   const otherParticipant = participants?.find((p) => p.profile_id !== user.id);
-  const {data: otherProfile, isLoading: loadingProfile, error: errorProfile } = fetchProfile(otherParticipant?.profile_id)
-
+  const {
+    data: otherProfile, 
+    isLoading: loadingProfile, 
+    error: errorProfile 
+  } = fetchProfile(otherParticipant?.profile_id)
+  
+  const { unreadMessages } = useMessages();
+  const { 
+    data: unreadData, 
+    isLoading: loadingUnread 
+  } = unreadMessages({ 
+    conversationId: conversation.id, 
+    profileId: user.id
+  });
+  
 
   if (isParticipantsLoading || loadingProfile) return <Loading />;
   if (errorParticipants || errorProfile) return <ErrorMessage error={errorParticipants?.message || errorProfile?.message} />;
@@ -31,18 +49,26 @@ const ConversationItem = ({ conversation, isSelected, onClick }) => {
       onClick={() => onClick(conversation.id)}
       className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors ${isSelected ? "bg-sky-700" : "hover:bg-sky-950 hover:text-white"}`}
     >
-      {avatarUrl ? (
-        <img
-          src={avatarUrl}
-          alt="Avatar"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-      ) : (
-        <div className="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-white text-sm">
-          {title?.charAt(0).toUpperCase() || "?"}
-        </div>
-      )}
+      <div className="relative">
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-white text-sm">
+            {title?.charAt(0).toUpperCase() || "?"}
+          </div>
+        )}
 
+        {/* Unread Messages Badge */}
+        {!loadingUnread && unreadData?.length > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+            {unreadData.length}
+          </span>
+        )}
+      </div>
       <div className="flex flex-col">
         <span className={`font-medium truncate ${isSelected && "text-white"}`}>{title || "Untitled"}</span>
         {conversation.last_message && (

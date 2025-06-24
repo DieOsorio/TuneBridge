@@ -236,7 +236,8 @@
       "explore": "Explore",
       "profile": "Profile",
       "ads": "Musician Ads",
-      "media": "Media"
+      "media": "Media",
+      "matches": "Matches"
     },
     "auth": {
       "signIn": "Log In",

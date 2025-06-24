@@ -162,7 +162,7 @@ const CreateProfileGroup = () => {
 
         <div className="flex justify-center mt-8 space-x-4 ">
           <Button
-            className="!bg-gray-500 hover:!bg-gray-600"
+            className="!bg-gray-600 hover:!bg-gray-700"
             type="button"
             onClick={handleCancel}
           >

@@ -102,13 +102,13 @@ function ManageMembersModal({
           {/* Actions */}
           <div className="flex gap-2 mb-4 mt-6">
             <Button
-              className="!bg-emerald-700 hover:!bg-emerald-800"
+              className="!bg-emerald-600 hover:!bg-emerald-700"
               type="submit"
             >
               {t("manageMembers.buttons.save")}
             </Button>
             <Button
-              className="!bg-gray-500 hover:!bg-gray-600"
+              className="!bg-gray-600 hover:!bg-gray-700"
               onClick={handleCloseManage}
               type="button"
             >

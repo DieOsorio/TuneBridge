@@ -17,6 +17,7 @@
   },
   "loading": "Loading...",
   "loadMore": "Load More",
+  "calculating": "Calculating...",
   "generic": {
     "add": "Add",
     "added": "Added",

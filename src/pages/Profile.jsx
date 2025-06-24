@@ -17,6 +17,7 @@ import { useProfile } from "../context/profile/ProfileContext";
 import UserGroups from "../components/profiles/group/UserGroups";
 import { useTranslation } from "react-i18next";
 import ProfileAds from "../components/social/ads/ProfileAds";
+import MatchScoreIndicator from "../components/profiles/MatchScoreIndicator";
 
 const Profile = () => {
   const { t } = useTranslation("profile"); // Initialize translation function
@@ -87,6 +88,12 @@ const Profile = () => {
                 <ProfileData profileData={profileData} />
                 <DisplayMusicInfo profileId={profileData.id} />
               </>
+            )}
+
+            {/* Match View */}
+            {!isOwnProfile && externalView === "profile" && internalView === "matchScore" && (
+              <MatchScoreIndicator 
+              otherProfile={profileData} />
             )}
 
             {/* Posts View */}

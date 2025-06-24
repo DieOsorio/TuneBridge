@@ -92,13 +92,13 @@ const MediaSection = () => {
               <div className="flex gap-4 justify-center"> 
                 <Link
                   to={`/media/edit/${media.id}`}
-                  className="px-2 py-1 min-w-20 bg-yellow-600 hover:bg-yellow-700"
+                  className="px-2 py-1 min-w-20 rounded-lg bg-yellow-600 hover:bg-yellow-700"
                 >
                   {t("media.actions.edit")}
                 </Link>
                 <button
                   onClick={() => deleteMediaLink({profile_id: user.id ,id: media.id})}
-                  className="px-2 py-1 min-w-20 cursor-pointer !bg-red-600 hover:!bg-red-700"
+                  className="px-2 py-1 min-w-20 rounded-lg cursor-pointer !bg-red-600 hover:!bg-red-700"
                 >
                   {t("media.actions.delete")}
                 </button>

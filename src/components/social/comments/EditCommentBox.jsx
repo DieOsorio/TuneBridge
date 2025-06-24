@@ -15,13 +15,13 @@ function EditCommentBox({ value, onChange, onSave, onCancel }) {
       <div className="flex gap-2 mt-2 justify-center">
         <button
           onClick={() => onSave()}
-          className="px-3 py-1 w-18 bg-green-600 hover:bg-green-700 text-white rounded text-sm"
+          className="px-3 py-1 w-18 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-sm"
         >
           {t("generic.save")}
         </button>
         <button
           onClick={() => onCancel()}
-          className="px-3 py-1 w-18 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm"
+          className="px-3 py-1 w-18 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm"
         >
           {t("generic.cancel")}
         </button>

@@ -247,14 +247,14 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
         </div>
         <div className="sm:col-span-2 flex justify-center mt-10 gap-4">
           <Button 
-            className="!bg-green-700 hover:!bg-green-800 text-white" 
+            className="!bg-emerald-600 hover:!bg-emerald-700 text-white" 
             type="submit" 
             disabled={isSubmitting}            
             >
             {isSubmitting ? t("edit.buttons.saving") : t("edit.buttons.save")}
           </Button>
           <Button
-            className="!bg-gray-500 hover:!bg-gray-600 text-white"
+            className="!bg-gray-600 hover:!bg-gray-700 text-white"
             type="button"
             onClick={() => {
               manageView("about", "profile");

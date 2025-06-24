@@ -216,7 +216,7 @@ const RoleEditor = ({
               <Button
                 onClick={() => handleSaveDetail(detail)}                
                 variant="contained"
-                className="!text-white !bg-emerald-700 hover:!bg-emerald-800 !px-3 !rounded-xl flex gap-1 !text-sm"                
+                className="!text-white !bg-emerald-600 hover:!bg-emerald-700 !px-3 !rounded-xl flex gap-1 !text-sm"                
               >
                 <FiEdit2 size={15} />
                 {t("generic.save")}
@@ -274,7 +274,7 @@ const RoleEditor = ({
           <Button 
           type="submit"
           variant="contained"
-          className="!text-white !bg-emerald-700 hover:!bg-emerald-800 !w-1/2 !px-3 !rounded-xl flex gap-1 !text-sm"  
+          className="!text-white !bg-emerald-600 hover:!bg-emerald-700 !w-1/2 !px-3 !rounded-xl flex gap-1 !text-sm"  
           >
           {t("generic.add")}
         </Button>

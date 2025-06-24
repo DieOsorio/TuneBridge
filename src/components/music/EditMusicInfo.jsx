@@ -99,7 +99,7 @@ const EditMusicInfo = ({ profileId }) => {
           />
 
           <div className={`${selectedRole === "Other" ? "md:col-span-2" : ""}`}>
-            <Button type="submit" className="w-full md:w-auto md:mt-3">
+            <Button type="submit" className="w-full md:w-auto md:mt-3 !bg-emerald-600 hover:!bg-emerald-700">
               {t("edit.addButton")}
             </Button>
           </div>

@@ -28,7 +28,7 @@ const ConfirmDialog = ({
         {onCancel && 
         (<Button 
           onClick={onCancel} 
-          className="!min-w-30 !bg-gray-500 hover:!bg-gray-600" 
+          className="!min-w-30 !bg-gray-600 hover:!bg-gray-700" 
           variant="contained"
         >
           {cancelLabel}
