@@ -37,7 +37,9 @@ const Textarea = ({
       )}
 
       {maxLength && (
-        <p className="text-sm text-gray-500 mt-1">
+        <p className={`text-sm  mt-1 ${
+          watchValue?.length >= maxLength ? "text-red-400" : "text-gray-400"
+        }`}>
           {watchValue?.length || 0}/{maxLength} {t("form.textarea.limit")}
         </p>
       )}

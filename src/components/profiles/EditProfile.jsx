@@ -196,6 +196,7 @@ const EditProfile = ({ profile, onSave, onCancel }) => {
           label={t("edit.labels.username")}
           placeholder={t("edit.placeholders.username")}
           register={register}
+          maxLength={12}
           validation={{
             required: t("edit.validation.usernameRequired"),
             maxLength: {

@@ -9,9 +9,9 @@ import { ImBlocked } from "react-icons/im";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { handleStartChat } from "../social/chat/utilis/handleStartChat";
-import { useProfile } from "../../context/profile/ProfileContext";
 import { useConversations } from "../../context/social/chat/ConversationsContext";
 import { useParticipants } from "../../context/social/chat/ParticipantsContext";
+import ProfileAvatar from "./ProfileAvatar";
 
 function MatchCard({ profile, loading }) {
   const { t } = useTranslation("profile");
@@ -28,9 +28,6 @@ function MatchCard({ profile, loading }) {
 
   const [hoverText, setHoverText] = useState(null);
   const [isStartingChat, setIsStartingChat] = useState(false);
-
-  const { fetchProfile } = useProfile();
-  const { data: profileData } = fetchProfile(profile.profile_id);
 
   const navigate = useNavigate();
 
@@ -64,7 +61,11 @@ function MatchCard({ profile, loading }) {
         if(isStartingChat) return;
         handleStartChat({
           myProfileId: user.id,
-          otherProfile: profileData,
+          otherProfile: {
+            id: profile.profile_id,
+            username: profile.username,
+            avatar_url: profile.avatar_url
+          },
           findConversation,
           createConversation,
           addParticipant,
@@ -93,16 +94,29 @@ function MatchCard({ profile, loading }) {
     return null;
   };
 
+  const icon = {
+    connect: <IoPersonAdd />,
+    pending: <IoPersonOutline />,
+    accepted: <IoPerson />,
+    blocked: <ImBlocked />,
+  }[status];
+
   return (
-    <div className="max-w-100 w-full mx-auto border border-gray-400 rounded-xl p-4 shadow-sm bg-gray-950 hover:shadow-md transition relative">
+    <div className="
+      max-w-100 w-full mx-auto border border-gray-400 rounded-xl p-4 
+      shadow-sm bg-gray-950 
+      hover:shadow-md 
+      transition-all duration-150 ease-in-out 
+      will-change-transform
+    ">
       <div className="flex items-center gap-3 mb-6">
         <Link to={`/profile/${profile.profile_id}`}>
-          <img
-          loading="lazy"
-          src={profile.avatar_url || "/default-avatar.png"}
-          alt={profile.username}
-          className="w-12 h-12 rounded-full object-cover"
-        />
+          <ProfileAvatar 
+            avatar_url={profile.avatar_url}
+            alt={profile.username}
+            className="!w-13 !h-13"
+            loading="lazy"
+          />
         </Link>
         <div>
           <div className="font-semibold text-gray-100">
@@ -132,19 +146,15 @@ function MatchCard({ profile, loading }) {
         {/* Connect button */}
         <button
           onClick={handleConnect}
-          onMouseEnter={() => setHoverText(getHoverText())}
-          onMouseLeave={() => setHoverText(null)}
+          title={getHoverText() || ""}
           className="flex cursor-pointer items-center min-w-35 justify-center gap-1 px-3 py-1 rounded bg-gray-700 text-white hover:bg-gray-800 transition text-sm"
         >
-          {status === "connect" && <IoPersonAdd />}
-          {status === "accepted" && !hoverText && <IoPerson />}
-          {status === "pending" && !hoverText && <IoPersonOutline />}
-          {(status === "pending" || status === "accepted") && hoverText && <IoPersonRemove />}
-          {status === "blocked" && !hoverText && <ImBlocked />}
-          {status === "blocked" && hoverText && <IoPerson />}
-
-          <span className="truncate">
-            {hoverText ? hoverText : t(`connection.${status}`)}
+          <span className="truncate flex items-center gap-1">
+            {hoverText && status === "accepted" && <IoPersonRemove />}
+            {hoverText && status === "pending" && <IoPersonRemove />}
+            {hoverText && status === "blocked" && <IoPerson />}
+            {!hoverText && icon}
+            <span>{hoverText ? hoverText : t(`connection.${status}`)}</span>
           </span>
         </button>
       </div>

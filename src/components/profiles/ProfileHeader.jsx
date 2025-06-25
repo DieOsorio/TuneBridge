@@ -20,6 +20,7 @@ import { ImBlocked } from "react-icons/im";
 import { handleStartChat } from '../social/chat/utilis/handleStartChat';
 import { useSidebar } from '../../context/SidebarContext';
 import MatchScoreIndicator from './MatchScoreIndicator';
+import { FaUserCheck, FaUserClock, FaUserMinus, FaUserPlus, FaUserSlash } from 'react-icons/fa';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
@@ -101,6 +102,17 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       return () => document.removeEventListener("mousedown", handleClick);
     }, [menuOpen]);
 
+    const getConnectionIcon = (status) => {
+      const baseClass = "text-white text-lg mr-1 drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]";
+      const blockedOtherClass = "text-gray-300 text-lg mr-1 drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]";
+
+      if (status === "accepted") return <FaUserCheck className={baseClass} />;
+      if (status === "pending") return <FaUserClock className={baseClass} />;
+      if (status === "blocked" && connection.follower_profile_id === user.id) return <FaUserSlash className={baseClass} />;
+      if (status === "blocked" && connection.follower_profile_id === profileData.id) return <FaUserSlash  className={blockedOtherClass} />;
+      return <FaUserPlus className={baseClass} />;
+    };
+
     // Connection status logic
     const isConnected = connection?.status === 'accepted';
     const isPending = connection?.status === 'pending';
@@ -115,7 +127,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
           <ProfileAvatar
             onClick={() => manageView("about", "profile")}
             avatar_url={profileData.avatar_url}
-            className="flex-shrink-0"
+            className="flex-shrink-0 !w-24 !h-24"
             gender={profileData.gender}
           />
           <div className="flex flex-col gap-2 flex-grow">
@@ -243,12 +255,72 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end mt-6">
         {!isOwnProfile && 
-        <div className='mr-auto'>
-          <div className="mb-4">
+        <div className='mx-auto mb-3 flex items-center gap-6'>          
+          {/* Styled Connection Status Badge */}
+          {!loadingConnection && (
+            <button
+              title={
+                connection
+                  ? connection.status === "accepted"
+                    ? t("connection.disconnect")
+                    : connection.status === "pending"
+                    ? t("connection.cancelRequest")
+                    : connection.status === "blocked"
+                      ? connection.follower_profile_id === user.id
+                        ? t("connection.unblock")
+                        : t("connection.blockedByOther")
+                      : "" // fallback
+                  : t("connection.connect")
+              }
+              onClick={() => {
+                if (!connection) return handleConnect();
+                if (connection.status === "pending") return handleDisconnect();
+                if (connection.status === "accepted") return handleDisconnect();
+                if (connection.status === "blocked" && connection.follower_profile_id === user.id) return handleUnblock();
+              }}
+              className={`inline-flex items-center min-w-35 justify-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition
+                ${
+                  connection
+                    ? connection.status === "accepted"
+                      ? "bg-emerald-700 text-white hover:bg-emerald-800"
+                      : connection.status === "pending"
+                      ? "bg-yellow-600 text-white hover:bg-yellow-700"
+                      : connection.status === "blocked" && connection.follower_profile_id === user.id
+                      ? "bg-red-700 text-white hover:bg-red-800"
+                      : connection.status === "blocked" && connection.follower_profile_id === profileData.id
+                      ? "bg-gray-600 text-gray-200 cursor-not-allowed"
+                      : "bg-gray-700 text-white"
+                    : "bg-sky-700 text-white hover:bg-sky-800"
+                }
+                ${
+                  connection?.status === "blocked" && connection.follower_profile_id === profileData.id
+                    ? "pointer-events-none"
+                    : "cursor-pointer"
+                }
+              `}
+              disabled={connection?.status === "blocked" && connection.follower_profile_id === profileData.id}
+            >
+              {getConnectionIcon(connection?.status)}
+              {connection
+                ? connection.status === "accepted"
+                  ? t("connection.accepted")
+                  : connection.status === "pending"
+                  ? t("connection.pending")
+                  : connection.status === "blocked" && connection.follower_profile_id === user.id
+                  ? t("connection.blocked")
+                  : connection.status === "blocked" && connection.follower_profile_id === profileData.id
+                  ? t("connection.blockedByOther")
+                  : ""
+                : t("connection.connect")}
+            </button>
+
+          )}
+          <div >
             <MatchScoreIndicator otherProfile={profileData} />
           </div>
         </div>
         }
+        
         <div>
           <div className="mb-4">
             <Button onClick={() => manageView("about", "profile")}>
