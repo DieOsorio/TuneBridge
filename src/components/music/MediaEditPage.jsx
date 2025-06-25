@@ -99,6 +99,12 @@ const MediaEditPage = () => {
             id="title"
             label={t("media.form.title")}
             placeholder={t("media.form.titlePlaceholder")}
+            maxLength={30}
+            validation={{
+            maxLength: {
+                value: 30,
+              }
+            }}
             register={register}
             error={errors.title}
           />

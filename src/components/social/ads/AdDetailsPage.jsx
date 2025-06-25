@@ -115,7 +115,7 @@ const AdDetailsPage = () => {
             
             {/* Badge: visible on all sizes now */}
             <span
-              className={`text-sm px-2 min-w-20 py-1 rounded-lg font-medium ${
+              className={`text-sm px-2 min-w-20 py-1 text-center rounded-lg font-medium ${
                 isSearching
                   ? "bg-blue-100 text-cyan-700"
                   : "bg-green-100 text-emerald-700"

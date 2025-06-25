@@ -32,7 +32,7 @@ export default function MatchScoreIndicator({ otherProfile }) {
 
   return (
     <div
-      className="inline-flex items-center gap-2 cursor-help select-none"
+      className="inline-flex items-center gap-1 cursor-help select-none"
       title={t("matchScore.title")}
     >
       <FaBolt className="text-amber-700 text-xl" />

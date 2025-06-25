@@ -6,7 +6,6 @@ import { useAuth } from "../context/AuthContext";
 import Loading from "../utils/Loading";
 import ErrorMessage from "../utils/ErrorMessage"
 import ConnectionsList from "../components/social/ConnectionsList";
-import CreatePost from "../components/social/CreatePost";
 import PostsList from "../components/social/PostsList";
 import { useView } from "../context/ViewContext";
 import ProfileData from "../components/profiles/ProfileData";
@@ -18,6 +17,7 @@ import UserGroups from "../components/profiles/group/UserGroups";
 import { useTranslation } from "react-i18next";
 import ProfileAds from "../components/social/ads/ProfileAds";
 import MatchScoreIndicator from "../components/profiles/MatchScoreIndicator";
+import PostForm from "../components/social/PostForm";
 
 const Profile = () => {
   const { t } = useTranslation("profile"); // Initialize translation function
@@ -65,7 +65,7 @@ const Profile = () => {
         
         {/* Create Post View */}
         {isOwnProfile && externalView === "profile" && internalView === "createPost" && (
-          <CreatePost id={user.id} />
+          <PostForm />
         )}
 
         {/* Edit View */}

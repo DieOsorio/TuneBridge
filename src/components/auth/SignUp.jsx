@@ -51,6 +51,7 @@ const SignUp = () => {
             label={t("common:form.username")}
             placeholder={t("common:form.placeholders.username")}
             register={register}
+            maxLength={12}
             validation={{
               required: t("signup.errors.usernameRequired"),
               maxLength: {

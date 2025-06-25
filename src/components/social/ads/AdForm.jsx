@@ -75,6 +75,7 @@ const AdForm = ({ defaultValues = {}, onSubmit, publisherId }) => {
         control={control}
         register={register}
         classForLabel="text-gray-400"
+        error={errors.ad_type}
       />
 
       <Input
@@ -83,6 +84,7 @@ const AdForm = ({ defaultValues = {}, onSubmit, publisherId }) => {
         placeholder={t("adForm.placeholders.title")}        
         type="text"
         register={register}
+        maxLength={30}
         validation={{
             maxLength: {
               value: 30,
@@ -105,9 +107,17 @@ const AdForm = ({ defaultValues = {}, onSubmit, publisherId }) => {
             ? t("adForm.placeholders.offering")
             : t("adForm.placeholders.looking")}
             type="text"
+            maxLength={12}
             register={register}
+              validation={{
+              maxLength: {
+                value: 12,
+                message: t("adForm.validations.looking"),
+              }
+            }}
             classForLabel="!text-gray-400"
             className="!flex-1"
+            error={errors.looking_for}
           />
           <button
             type="button"
@@ -145,8 +155,16 @@ const AdForm = ({ defaultValues = {}, onSubmit, publisherId }) => {
             placeholder={t("adForm.placeholders.genres")}
             type="text"
             register={register}
+            maxLength={12}
+            validation={{
+            maxLength: {
+              value: 12,
+              message: t("adForm.validations.genre"),
+            }
+          }}
             classForLabel="!text-gray-400"
             className="!flex-1"
+            error={errors.genres}
           />
           <button
             type="button"
@@ -182,6 +200,7 @@ const AdForm = ({ defaultValues = {}, onSubmit, publisherId }) => {
         type="text"
         register={register}
         classForLabel="!text-gray-400"
+        error={errors.location}
       />
 
       <Textarea 

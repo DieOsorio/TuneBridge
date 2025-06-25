@@ -105,7 +105,7 @@ const ChatHeader = ({ conversationId }) => {
     setIsUploading(true);
 
     try {
-      const newUrl = uploadFileToBucket(
+      const newUrl = await uploadFileToBucket(
         files[0],
         "chat-group-avatars",
         conversationId,

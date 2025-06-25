@@ -22,7 +22,7 @@ import { SidebarProvider } from './context/SidebarContext';
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <I18nextProvider i18n={i18n}>
@@ -51,5 +51,5 @@ createRoot(document.getElementById('root')).render(
         </I18nextProvider>
       </ThemeProvider>
     </QueryClientProvider>
-  </StrictMode>
+  // </StrictMode>
 );
