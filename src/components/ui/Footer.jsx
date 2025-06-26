@@ -1,3 +1,4 @@
+/* Footer.jsx */
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import i18n from "../../i18n";
@@ -7,18 +8,21 @@ const Footer = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
   const year = new Date().getFullYear();
+
   const currentLang = i18n.language?.startsWith("es") ? "es" : "en";
   const changeLang = (lng) => lng !== currentLang && i18n.changeLanguage(lng);
 
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const timeZone =
+    Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 
+  /* ---------- helpers ---------- */
   const LangBtn = ({ lng, label }) => (
     <button
       onClick={() => changeLang(lng)}
-      className={`mx-1 cursor-pointer text-sm transition ${
+      className={`mx-1 text-sm transition cursor-pointer ${
         currentLang === lng
-          ? "text-white font-semibold underline"
-          : "text-gray-400 hover:text-white"
+          ? "text-gray-300 font-semibold underline"
+          : "text-gray-500 hover:text-gray-300"
       }`}
     >
       {label}
@@ -64,13 +68,15 @@ const Footer = () => {
           ],
     },
   ].filter((col) => col.links.length);
-  /* ------------------------------------- */
+  /* -------------------------------------- */
 
   return (
-    <footer className="bg-gradient-to-b from-gray-950 to-gray-900 text-gray-300 pt-8 pb-6 mt-12">
+    <footer className="bg-gradient-to-b from-gray-950 to-gray-900 text-gray-300 pt-8 pb-6 mt-4">
       <div className="container mx-auto px-4">
+
         {/* ---------- Site map ---------- */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+        <div className="mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-8 justify-items-center
+                        text-center sm:text-left">
           {siteMap.map(({ header, links }) => (
             <div key={header}>
               <h4 className="font-semibold text-white mb-2">{header}</h4>
@@ -92,35 +98,24 @@ const Footer = () => {
 
         {/* ---------- Lower bar ---------- */}
         <div className="border-t border-gray-700 pt-4">
-          {/* Three equal columns on ≥ md – stack vertically on mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
 
             {/* Col 1 – copyright + terms */}
             <div className="flex flex-col items-center justify-center gap-2">
-              <span className="text-gray-400">© {year} TuneBridge</span>
-              <Link
-                to="/terms"
-                className="text-gray-400 hover:text-white underline"
-              >
+              <span className="text-gray-300">© {year} TuneBridge</span>
+              <Link to="/terms" className="text-gray-500 hover:text-gray-300 underline">
                 {t("footer.terms")}
-              </Link>                                          
+              </Link>
             </div>
 
-            {/* Col 2 – socials */}
+            {/* Col 2 – socials + credit */}
             <div className="flex flex-col items-center justify-center gap-2">
-              <div className="flex items-center justify-center gap-4">
-                <a href="#" className="hover:text-white">
-                {t("footer.social.facebook")}
-                </a>
-                <a href="#" className="hover:text-white">
-                  {t("footer.social.twitter")}
-                </a>
-                <a href="#" className="hover:text-white">
-                  {t("footer.social.instagram")}
-                </a>
+              <div className="flex gap-4">
+                <a href="#" className="hover:text-white">{t("footer.social.facebook")}</a>
+                <a href="#" className="hover:text-white">{t("footer.social.twitter")}</a>
+                <a href="#" className="hover:text-white">{t("footer.social.instagram")}</a>
               </div>
-              {/* Illustrations credit (unchanged) */}
-              <div className="text-center text-xs text-gray-500">
+              <div className="text-sm text-gray-500 text-center">
                 <Trans
                   i18nKey="ui:footer.illustrationCredit"
                   components={[
@@ -129,27 +124,25 @@ const Footer = () => {
                       href="https://storyset.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-white underline"
+                      className="hover:text-gray-300 underline"
                     />,
                   ]}
                 />
               </div>
             </div>
 
-            {/* Col 3 – language selector */}
+            {/* Col 3 – language + timezone */}
             <div className="flex flex-col items-center justify-center gap-2">
               <div>
                 <LangBtn lng="en" label="English" />|
                 <LangBtn lng="es" label="Español" />
               </div>
-              <div>
-                <span className="text-gray-500">
-                  {t("footer.timeZone")}: {timeZone}
-                </span> 
-              </div>
-            </div>            
+              <span className="text-gray-500">
+                {t("footer.timeZone")}: <span className="text-gray-300">{timeZone}</span>
+              </span>
+            </div>
           </div>
-        </div>                                
+        </div>
       </div>
     </footer>
   );
