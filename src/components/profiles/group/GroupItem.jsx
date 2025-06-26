@@ -42,7 +42,7 @@ const GroupItem = ({ groupId }) => {
       <h3 className="text-lg font-semibold text-gray-100">{group.name}</h3>
       <p className="text-sm text-gray-400">{group.bio}</p>
       <Button
-        className="mt-4  !bg-amber-700 hover:!bg-amber-800"
+        className="mt-4  !bg-amber-800 hover:!bg-amber-900"
         onClick={handleViewGroup}
       >
         {t("groupItem.viewGroup", "View Group")}

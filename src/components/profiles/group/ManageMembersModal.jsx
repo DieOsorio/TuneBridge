@@ -2,6 +2,7 @@ import { FiPlus } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import Button from "../../ui/Button";
 import Select from "../../ui/Select";
+import Input from "../../ui/Input";
 
 function ManageMembersModal({ 
   manageMember, 
@@ -44,15 +45,15 @@ function ManageMembersModal({
 
           {/* Custom Roles*/}
           <div className="flex flex-col gap-2 mb-4">
-            <label htmlFor="newBandRole" className="text-sm font-medium text-gray-200">
-              {t("groupMembers.labels.bandRole")}
-            </label>
             <div className="flex items-center gap-2">
-              <input
+              <Input
                 id="newBandRole"
-                {...register("newBandRole")}
+                label={t("groupMembers.labels.bandRole")}
+                maxLength={12}
                 placeholder={t("groupMembers.placeholders.bandRole")}
-                className="w-full rounded border border-gray-600 bg-gray-800 p-2 text-white placeholder-gray-400"
+                register={register}
+                error={errors.newBandRole}
+                className="!flex-1"
               />
               <button
                 type="button"

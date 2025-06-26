@@ -99,63 +99,40 @@
     "viewGroup": "Ver Grupo"
   },
 
-  "createProfileGroup": {
-    "title": "Crear un Grupo de Perfil",
+  "form": {
+    "titles": {
+      "create": "Crear un Grupo de Perfil",
+      "edit": "Editar Grupo"
+    },
     "labels": {
       "name": "Nombre del Grupo",
       "bio": "Biografía",
       "country": "País",
       "city": "Cuidad",
-      "genre": "Género"
+      "genres": "Géneros"
     },
     "placeholders": {
       "name": "Ingrese el nombre del grupo",
       "bio": "ingrese una breve biografía",
       "country": "Ingrese el país",
       "city": "Ingrese la cuidad",
-      "genre": "Ingrese el género"
+      "genres": "Ingrese los géneros"
     },
     "validations": {
       "name": "El nombre del grupo es obligatorio"
     },
     "errors": {
-      "create": "No se pudo crear el grupo."
+      "create": "No se pudo crear el grupo.",
+      "loading": "Error al cargar los datos del grupo"
     },
     "buttons": {
       "create": "Crear Grupo",
       "creating": "Creando...",
-      "cancel": "Cancelar"
-    }
-  },
-
-  "editProfileGroup": {
-    "title": "Editar Groupo",
-    "labels": {
-      "bio": "Bio del Grupo",
-      "country": "País",
-      "city": "Cuidad",
-      "genre": "Género",
-      "name": "Nombre"
-    },
-    "placeholders": {
-      "bio": "Bio",
-      "country": "País",
-      "city": "Cuidad",
-      "genre": "Género",
-      "name": "Nombre"
-    },
-    "validations": {
-      "name": "El nombre es obligatorio"
-    },
-    "buttons": {
+      "cancel": "Cancelar",
       "saving": "Guardando...",
       "save": "Guardar"
-    },
-    "errors": {
-      "loading": "Error al cargar los datos del grupo"
     }
   },
-
   "errors": {
     "loading": "Error al cargar los datos del grupo.",
     "noData": "No hay datos disponibles del grupo."

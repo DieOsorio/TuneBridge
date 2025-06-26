@@ -99,63 +99,40 @@
     "viewGroup": "View Group"
   },
 
-  "createProfileGroup": {    
-    "title": "Create a Profile Group",
+  "form": {    
+    "titles": {
+      "create": "Create a Profile Group",
+      "edit": "Edit Group"
+    },
     "labels": {
       "name": "Group Name",
       "bio": "Bio",
       "country": "Country",
       "city": "City",
-      "genre": "Genre"
+      "genres": "Genres"
     },
     "placeholders": {
       "name": "Enter group name",
       "bio": "Enter a short bio",
       "country": "Enter country",
       "city": "Enter city",
-      "genre": "Enter genre"
+      "genres": "Enter genres"
     },
     "validations": {
       "name": "Group name is required"
     },
     "errors": {
-      "create": "Failed to create the group"
+      "create": "Failed to create the group",
+      "loading": "Error loading group data"
     },
     "buttons": {
       "create": "Create Group",
       "creating": "Creating...",
-      "cancel": "Cancel"
-    }
-  },
-
-  "editProfileGroup": {
-    "title": "Edit Group",
-    "labels": {
-      "bio": "Group Bio",
-      "country": "Country",
-      "city": "City",
-      "genre": "Genre",
-      "name": "Name"
-    },
-    "placeholders": {
-      "bio": "Bio",
-      "country": "Country",
-      "city": "City",
-      "genre": "Genre",
-      "name": "Name"
-    },
-    "validations": {
-      "name": "Name is required"
-    },
-    "buttons": {
+      "cancel": "Cancel",
       "saving": "Saving...",
       "save": "Save"
-    },
-    "errors": {
-      "loading": "Error loading group data"
     }
   },
-
   "errors": {
     "loading": "Error loading group data.",
     "noData": "No group data available."

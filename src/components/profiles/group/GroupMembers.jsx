@@ -124,6 +124,7 @@ const GroupMembers = ({
               <Input
                 id="newMemberUsername"
                 label={t("groupMembers.labels.username")}
+                maxLength={12}
                 placeholder={t("groupMembers.placeholders.username")}
                 register={register}
                 validation={{ required: t("groupMembers.validations.username") }}
@@ -157,15 +158,15 @@ const GroupMembers = ({
               />
               {/* Custom Roles*/}
               <div className="flex flex-col gap-2 mb-4">
-                <label htmlFor="newBandRole" className="text-sm font-medium text-gray-200">
-                  {t("groupMembers.labels.bandRole")}
-                </label>
                 <div className="flex items-center gap-2">
-                  <input
+                  <Input
                     id="newBandRole"
-                    {...register("newBandRole")}
+                    label={t("groupMembers.labels.bandRole")}
+                    maxLength={12}
                     placeholder={t("groupMembers.placeholders.bandRole")}
-                    className="w-full rounded border border-gray-600 bg-gray-800 p-2 text-white placeholder-gray-400"
+                    register={register}
+                    error={errors.newBandRole}
+                    className="!flex-1"
                   />
                   <button
                     type="button"

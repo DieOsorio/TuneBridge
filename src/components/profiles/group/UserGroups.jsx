@@ -52,7 +52,7 @@ const UserGroups = ({ profileId, isOwnProfile }) => {
       {isOwnProfile && (
         <div className="mt-6 flex justify-center">
           <Button
-            className="!bg-amber-700 hover:!bg-amber-800 text-white"
+            className="!bg-amber-800 hover:!bg-amber-900 text-white"
             onClick={handleCreateGroup}
           >
             {t("userGroups.createNewGroup")}
