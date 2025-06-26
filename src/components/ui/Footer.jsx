@@ -6,16 +6,14 @@ import { useAuth } from "../../context/AuthContext";
 
 const Footer = () => {
   const { t } = useTranslation("ui");
-  const { user } = useAuth();
-  const year = new Date().getFullYear();
+  const { user }   = useAuth();
+  const year       = new Date().getFullYear();
+  const timeZone   = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 
   const currentLang = i18n.language?.startsWith("es") ? "es" : "en";
-  const changeLang = (lng) => lng !== currentLang && i18n.changeLanguage(lng);
+  const changeLang  = (lng) => lng !== currentLang && i18n.changeLanguage(lng);
 
-  const timeZone =
-    Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-
-  /* ---------- helpers ---------- */
+  /* -------- helpers -------- */
   const LangBtn = ({ lng, label }) => (
     <button
       onClick={() => changeLang(lng)}
@@ -29,21 +27,21 @@ const Footer = () => {
     </button>
   );
 
-  /* ---------- dynamic site-map ---------- */
+  /* -------- dynamic site-map -------- */
   const siteMap = [
     {
       header: t("footer.map.general"),
       links: [
-        { to: "/", label: t("footer.map.home") },
+        { to: "/",        label: t("footer.map.home") },
         { to: "/explore", label: t("footer.map.explore") },
       ],
     },
     {
       header: t("footer.map.social"),
       links: [
-        { to: "/ads", label: t("footer.map.ads") },
+        { to: "/ads",          label: t("footer.map.ads") },
         ...(user ? [{ to: "/create-post", label: t("footer.map.createPost") }] : []),
-        ...(user ? [{ to: "/chat", label: t("footer.map.chat") }] : []),
+        ...(user ? [{ to: "/chat",        label: t("footer.map.chat")       }] : []),
       ],
     },
     {
@@ -51,7 +49,7 @@ const Footer = () => {
       links: user
         ? [
             { to: `/media/${user.id}`, label: t("footer.map.myMedia") },
-            { to: "/matches", label: t("footer.map.matches") },
+            { to: "/matches",          label: t("footer.map.matches") },
           ]
         : [],
     },
@@ -60,23 +58,36 @@ const Footer = () => {
       links: user
         ? [
             { to: `/profile/${user.id}`, label: t("footer.map.profile") },
-            { to: "/create-profile-group", label: t("footer.map.createGroup") },
+            // { to: "/create-profile-group", label: t("footer.map.createGroup") },
           ]
         : [
-            { to: "/login", label: t("footer.map.login") },
+            { to: "/login",  label: t("footer.map.login")  },
             { to: "/signup", label: t("footer.map.signup") },
           ],
     },
-  ].filter((col) => col.links.length);
-  /* -------------------------------------- */
+  ].filter((col) => col.links.length);   // remove empty columns
+  /* ---------------------------------- */
+
+  /* --- Build Tailwind class for column count (≥ md) --- */
+  const cols = siteMap.length;           // 3 or 4
+  const gridColsMd =
+    {
+      1: "md:grid-cols-1",
+      2: "md:grid-cols-2",
+      3: "md:grid-cols-3",
+      4: "md:grid-cols-4",
+    }[cols] || "md:grid-cols-4";
 
   return (
     <footer className="bg-gradient-to-b from-gray-950 to-gray-900 text-gray-300 pt-8 pb-6 mt-4">
       <div className="container mx-auto px-4">
 
         {/* ---------- Site map ---------- */}
-        <div className="mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-8 justify-items-center
-                        text-center sm:text-left">
+        <div
+          className={`mx-auto grid grid-cols-2 sm:grid-cols-2 ${gridColsMd}
+                      gap-6 mb-8 justify-items-center
+                      text-center sm:text-left`}
+        >
           {siteMap.map(({ header, links }) => (
             <div key={header}>
               <h4 className="font-semibold text-white mb-2">{header}</h4>
