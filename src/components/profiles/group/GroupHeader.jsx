@@ -10,8 +10,8 @@ const GroupHeader = ({ groupData, isAdmin }) => {
       <div className="flex items-center gap-4">
         <ProfileAvatar avatar_url={groupData.avatar_url} />
         <div>
-          <h1 className="text-3xl font-bold text-gray-100">{groupData.name}</h1>
-          <p className="text-gray-400">{groupData.bio}</p>
+          <h1 className="text-3xl font-bold text-white">{groupData.name}</h1>
+          <p className="text-gray-300">{groupData.bio}</p>
         </div>
       </div>
 

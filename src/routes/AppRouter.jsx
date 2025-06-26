@@ -10,7 +10,6 @@ import SignUpSuccess from "../pages/SignUpSuccess";
 import AccountConfirmed from "../components/auth/AccountConfirmed";
 import LandingPage from "../pages/LandingPage";
 import ChatPage from "../components/social/chat/ChatPage";
-import CreateProfileGroup from "../components/profiles/group/CreateProfileGroup";
 import ProfileGroup from "../pages/ProfileGroup";
 import Hashtag from "../pages/Hashtag";
 import AdsPage from "../components/social/ads/AdsPage";
@@ -21,6 +20,7 @@ import MediaEditPage from "../components/music/MediaEditPage";
 import TermsPage from "../components/ui/TermsPage"
 import DiscoverMatches from "../pages/DiscoverMatches";
 import PostForm from "../components/social/PostForm";
+import GroupForm from "../components/profiles/group/GroupForm";
 
 const AppRouter = () => {
     
@@ -48,7 +48,7 @@ const AppRouter = () => {
           <Route path="/ads/new" element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
           <Route path="/create-post" element={<ProtectedRoute><PostForm /></ProtectedRoute>} />
           <Route path="/group/:groupId" element={<ProtectedRoute><ProfileGroup /></ProtectedRoute>} />
-          <Route path="/create-profile-group" element={<ProtectedRoute><CreateProfileGroup /></ProtectedRoute>} />
+          <Route path="/create-profile-group" element={<ProtectedRoute><GroupForm /></ProtectedRoute>} />
           <Route path="/account-confirmed" element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />          
           <Route path="/chat/" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/edit-post/:postId" element={<ProtectedRoute><PostForm /></ProtectedRoute>} />

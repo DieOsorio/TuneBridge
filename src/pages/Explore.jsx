@@ -1,24 +1,23 @@
-import { useEffect } from "react";
 import PostsList from "../components/social/PostsList";
-import { useView } from "../context/ViewContext";
 import { FaCompass } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import ProfilesSearch from "../components/profiles/ProfilesSearch";
 import { Link } from "react-router-dom";
 import ShinyText from "../components/ui/ShinyText";
+import { useView } from "../context/ViewContext";
+import { useEffect } from "react";
 
 function Explore() {
   const { t } = useTranslation("ui");
-  const { externalView, setExternalView } = useView();
+  const {internalView, manageView } = useView();
 
   const tags = t("explore.tags", {returnObjects: true});
 
-  // Check if there is an external view, if there isn't set it to postList
   useEffect(() => {
-    if (!externalView) {
-      setExternalView("postsList");
-    }
-  }, [externalView, setExternalView]);
+  if (!internalView) {
+    manageView("postsList", "explore");
+  }
+}, [internalView, manageView]);
 
   return (
     <div className="min-h-screen text-white">
@@ -52,21 +51,19 @@ function Explore() {
       <div className="flex justify-center">
         <div className="flex gap-8">
           <button
-            onClick={() => setExternalView("postsList")}
-            className={`px-4 py-2 text-lg font-medium transition rounded-lg ${
-              externalView === "postsList"
-                ? "border-b-2 border-sky-600 text-sky-500"
-                : "text-gray-400 hover:text-gray-200"
+            onClick={() => manageView("postsList", "explore")}
+            className={`px-4 cursor-pointer border-b-2 py-2 text-lg text-gray-400 hover:text-gray-200 font-medium transition rounded-lg ${
+              internalView === "postsList"
+                && "border-sky-600 !text-gray-200"
             }`}
           >
             {t("explore.tabs.posts")}
           </button>
           <button
-            onClick={() => setExternalView("profilesList")}
-            className={`px-4 py-2 text-lg font-medium transition rounded-lg ${
-              externalView === "profilesList"
-                ? "border-b-2 border-sky-600 text-sky-500"
-                : "text-gray-400 hover:text-gray-200"
+            onClick={() => manageView("profilesList", "explore")}
+            className={`px-4 cursor-pointer border-b-2 text-gray-400 hover:text-gray-200 py-2 text-lg font-medium transition rounded-lg ${
+              internalView === "profilesList"
+                && "border-sky-600 !text-gray-200"
             }`}
           >
             {t("explore.tabs.profiles")}
@@ -76,8 +73,8 @@ function Explore() {
 
       {/* Content */}
       <div className="p-4">
-        {externalView === "postsList" && <PostsList />}
-        {externalView === "profilesList" && <ProfilesSearch />}
+        {internalView === "postsList" && <PostsList />}
+        {internalView === "profilesList" && <ProfilesSearch />}
       </div>
     </div>
   );

@@ -31,10 +31,10 @@ function Edit({ profileData }) {
                         <button
                         key={view}
                         onClick={() => manageView(view, "edit")}
-                        className={`px-4 py-2 text-sm sm:text-base text-center rounded-b-lg font-semibold transition-all duration-300 focus:outline-none
+                        className={`px-4 py-2 text-sm border-b-2 sm:text-base text-center rounded-md font-medium transition-colors
                             ${
                             isActive
-                                ? "border-b-2 border-yellow-600 text-white shadow-lg"
+                                ? "border-yellow-600 text-white"
                                 : "text-gray-300 hover:text-yellow-600"
                             }`}
                         >

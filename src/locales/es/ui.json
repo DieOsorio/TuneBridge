@@ -253,11 +253,33 @@
     "copyright": "© {{year}} TuneBridge. Todos los derechos reservados.",
     "followUs": "¡Síguenos en las redes sociales!",
     "terms": "Términos y Condiciones",
+    "timeZone": "Zona horaria",
     "illustrationCredit": "Ilustraciones por <0>Storyset</0>",
     "social": {
       "facebook": "Facebook",
       "twitter": "Twitter",
       "instagram": "Instagram"
+    },
+    "map": {
+      "general": "General",
+      "social": "Comunidad",
+      "music": "Música",
+      "account": "Cuenta",
+
+      "home": "Inicio",
+      "explore": "Explorar",
+
+      "ads": "Anuncios de Músicos",
+      "createPost": "Nueva Publicación",
+      "chat": "Chat",
+
+      "myMedia": "Mis Medios",
+      "matches": "Conexiones",
+
+      "profile": "Mi Perfil",
+      "createGroup": "Crear Grupo",
+      "login": "Iniciar Sesión",
+      "signup": "Registrarse"
     }
   },
    "sidebar": {

@@ -8,7 +8,7 @@ import GroupHeader from "../components/profiles/group/GroupHeader"; // Header fo
 import { useTranslation } from "react-i18next";
 import GroupMembers from "../components/profiles/group/GroupMembers";
 import { useView } from "../context/ViewContext";
-import EditProfileGroup from "../components/profiles/group/EditProfileGroup";
+import GroupForm from "../components/profiles/group/GroupForm";
 
 const ProfileGroup = () => {
   const { externalView, internalView, manageView } = useView(); // Manage internal/external views
@@ -75,7 +75,7 @@ const ProfileGroup = () => {
           refetch={refetch}
         />  )  }
         {externalView === "group" && internalView === "edit" &&
-        <EditProfileGroup
+        <GroupForm
           group={groupData}
           onSave={() => manageView("members", "group")}
           onCancel={() => manageView("members", "group")}
