@@ -14,6 +14,7 @@ const ProfilesSearch = () => {
     const { t } = useTranslation("searchProfiles");
     const { searchProfiles, infiniteProfiles } = useProfile();
     const { user } = useAuth();
+    const loggedIn = Boolean(user);
     const { register, watch, handleSubmit } = useForm();
     const [showFilters, setShowFilters] = useState(false);
     const searchTerm = watch("searchTerm");
@@ -57,13 +58,17 @@ const ProfilesSearch = () => {
     }
 
     // Filter out the current user from the profiles
-    const filteredProfiles = allProfilesData
-        ? allProfilesData.pages.flat().filter((profile) => profile.id !== user.id)
+    const flatAllProfiles = allProfilesData
+        ? allProfilesData.pages.flat()
         : [];
 
-    const filteredSearchResults = searchResults
+    const filteredProfiles = loggedIn
+        ? flatAllProfiles.filter((profile) => profile.id !== user.id)
+        : flatAllProfiles;
+
+    const filteredSearchResults = loggedIn
         ? searchResults.filter((profile) => profile.id !== user.id)
-        : [];
+        : searchResults;
 
     // Decide which profiles to show
     let profilesToShow = [];

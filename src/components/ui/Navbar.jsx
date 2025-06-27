@@ -27,32 +27,30 @@ const Navbar = () => {
 
       {/* Navigation Links (Hidden on Small Screens) */}
       <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-8 items-center">
-        {user && (
-          <Link
-            to="/explore"
-            onClick={() => manageView(null, "postsList")}
-            className={`font-medium ${
-              isActive("/explore")
-                ? "text-sky-400"
-                : "hover:text-sky-300"
-            }`}
-          >
-            {t("nav.links.explore")}
-          </Link>
-        )}
-        {user && (
-          <Link
-          to="/ads"
-          onClick={() => manageView(null, "ads")}
+        <Link
+          to="/explore"
+          onClick={() => manageView(null, "postsList")}
           className={`font-medium ${
-            isActive("/ads")
+            isActive("/explore")
               ? "text-sky-400"
               : "hover:text-sky-300"
           }`}
-          >
-            {t("nav.links.ads")}
-          </Link>
-        )}
+        >
+          {t("nav.links.explore")}
+        </Link>
+
+        <Link
+        to="/ads"
+        onClick={() => manageView(null, "ads")}
+        className={`font-medium ${
+          isActive("/ads")
+            ? "text-sky-400"
+            : "hover:text-sky-300"
+        }`}
+        >
+          {t("nav.links.ads")}
+        </Link>
+
         {user && (
           <Link
             to={`/matches`}

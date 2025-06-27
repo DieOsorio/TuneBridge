@@ -14,15 +14,20 @@ import { handleStartChat } from "../social/chat/utilis/handleStartChat";
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { manageView } = useView();
   const { user } = useAuth();
+  const loggedIn = Boolean(user);
   const {findConversation, createConversation} = useConversations();
   const { addParticipant } = useParticipants();
   const [isStartingChat, setIsStartingChat] = useState(false);
   
   const navigate = useNavigate();
-  const isOwnProfile = user.id === profile.id; // Check if the logged-in user is the same as the profile being viewed
+  const isOwnProfile = loggedIn && (user.id === profile.id);
 
   const startChat = () => {
     if (isStartingChat) return;
+    if (!loggedIn) {
+      navigate("/login");
+      return;
+    }
     handleStartChat({
       myProfileId: user.id,
       otherProfile: profile,
