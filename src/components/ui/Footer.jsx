@@ -1,4 +1,3 @@
-/* Footer.jsx */
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import i18n from "../../i18n";
@@ -6,12 +5,12 @@ import { useAuth } from "../../context/AuthContext";
 
 const Footer = () => {
   const { t } = useTranslation("ui");
-  const { user }   = useAuth();
-  const year       = new Date().getFullYear();
-  const timeZone   = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const { user } = useAuth();
+  const year = new Date().getFullYear();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 
   const currentLang = i18n.language?.startsWith("es") ? "es" : "en";
-  const changeLang  = (lng) => lng !== currentLang && i18n.changeLanguage(lng);
+  const changeLang = (lng) => lng !== currentLang && i18n.changeLanguage(lng);
 
   /* -------- helpers -------- */
   const LangBtn = ({ lng, label }) => (

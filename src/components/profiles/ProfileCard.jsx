@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
 import { useAuth } from "../../context/AuthContext";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
@@ -11,13 +11,16 @@ import { useTranslation } from "react-i18next";
 const ProfileCard = ({ profile }) => {
     const { t } = useTranslation("profile");
     const { user } = useAuth();
+    const loggedIn = Boolean(user);
     const { addConnection, deleteConnection, userConnections, updateConnection } = useUserConnections();
     const { data: connections } = userConnections(profile.id)
     const [hoverText, setHoverText] = useState("");
     const { manageView } = useView();
+
+    const navigate = useNavigate();
     
     // Find the connection status between the logged-in user and the profile
-    const userConnection = connections?.find(
+    const userConnection = loggedIn && connections?.find(
         (conn) => {
             const isLoggedUserInvolved = 
                 (conn.follower_profile_id === user.id && conn.following_profile_id === profile.id) ||
@@ -30,6 +33,11 @@ const ProfileCard = ({ profile }) => {
     
     // Function to handle connection status change
     const handleConnect = async () => {
+        if (!loggedIn) {
+            navigate("/login");
+            return;
+        }
+        
         if (status === "connect") {
             await addConnection({
                 follower_profile_id: user.id,

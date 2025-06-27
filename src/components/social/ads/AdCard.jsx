@@ -12,6 +12,7 @@ import Loading from "../../../utils/Loading";
 const AdCard = ({ ad, publisherId }) => {
   const { t } = useTranslation("ads");
   const { user } = useAuth();
+  const loggedIn = Boolean(user);
   const { deleteAd } = useAds();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -20,9 +21,10 @@ const AdCard = ({ ad, publisherId }) => {
 
   const isLooking = ad.ad_type === "looking";
 
-  const ownAd = ad?.profile_id === user.id || ad?.group_id === publisherId
+  const ownAd = loggedIn && (ad.profile_id === user.id || ad.group_id === publisherId);
 
   const handleDelete = () => {
+    if (!loggedIn) return;
     deleteAd(ad);
     setConfirmOpen(false);
   }
@@ -94,7 +96,9 @@ const AdCard = ({ ad, publisherId }) => {
           </div>
         }
         <Link
-          to={`/ads/${ad.id}`}
+          to={!loggedIn
+            ? "/login"
+            : `/ads/${ad.id}`}
           className={`text-sm hover:underline font-medium transition-colors ${
             isLooking
             ? "text-cyan-600 hover:text-cyan-600"

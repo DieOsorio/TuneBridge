@@ -36,13 +36,16 @@ import { usePostHashtags } from '../../context/social/PostHashtagsContext';
 function PostCard({ post }) {
   const { t } = useTranslation("posts")
   const { user } = useAuth(); // logged user
+  const loggedIn = Boolean(user);
   const navigate = useNavigate(); // For navigation
 
   const [isHovered, setIsHovered] = useState(false);
   const { fetchProfile } = useProfile();
   const { data: profile, error, isLoading } = fetchProfile(post.profile_id); // retrieve the profile associated with the post
+
   const { insertLike, deleteLike, userLikes } = useLikes(); // custom hooks to manage the likes
-  const { data: likes } = userLikes(user.id); // retrieve the likes associated with logged user
+  const { data: rawLikes } = userLikes(loggedIn ? user.id : undefined); // retrieve the likes associated with logged user
+
   const { manageView } = useView(); // manage the views
   const { getHashtagsByPostId } = usePostHashtags(); // fetch post hashtags
   const { data: hashtags } = getHashtagsByPostId(post.id); // retrieve hashtags associated with the post
@@ -51,6 +54,12 @@ function PostCard({ post }) {
   const [isModalOpen, setIsModalOpen] = useState(false); // manage modal visibility
   const [currentImage, setCurrentImage] = useState(null); // current image in modal
   
+  const likes = Array.isArray(rawLikes)
+    ? rawLikes
+    : Array.isArray(rawLikes?.pages)
+      ? rawLikes.pages.flat()
+      : [];
+
   // Prefetch profile info to view in the minibox
   const prefetchProfile = usePrefetchProfile();
 
@@ -60,10 +69,9 @@ function PostCard({ post }) {
   };
 
   // Like to insert when the user likes a post
-  const like = {
-    profile_id: user.id,
-    post_id: post.id,
-  };
+  const like = loggedIn
+  ? {profile_id: user.id, post_id: post.id}
+  : null;
 
   // Find if there is a like associated with this post
   const existingLike = likes?.find((like) => like.post_id === post.id);
@@ -73,6 +81,11 @@ function PostCard({ post }) {
 
   // Handle the like for every situation
   const handleLikeClick = () => {
+    if (!loggedIn) {
+      navigate("/login");
+      return;
+    }
+
     if (alreadyLiked) {
       deleteLike(existingLike);
     } else {
@@ -96,6 +109,15 @@ function PostCard({ post }) {
     setIsModalOpen(false);
     setCurrentImage(null);
   };
+
+  const handleShowComments = () => {
+    if (!loggedIn) {
+      navigate("/login");
+      return;
+    }
+    
+    setShowComments((prev) => !prev)
+  }
 
   if (error) return <ErrorMessage error={error.message} />;
 
@@ -139,7 +161,7 @@ function PostCard({ post }) {
           <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-3 sm:gap-8 mt-6">
             {/* Edit button for the logged-in user's posts */}
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-              {post.profile_id === user.id && (
+              {loggedIn && post.profile_id === user.id && (
                 <FaEdit
                   title="Edit Post"
                   className="text-yellow-600 hover:text-yellow-700 cursor-pointer" 
@@ -172,7 +194,7 @@ function PostCard({ post }) {
             <LiaCommentsSolid
               size={32}
               title="Post Comments"
-              onClick={() => setShowComments((prev) => !prev)}
+              onClick={handleShowComments}
               className={`text-gray-400 cursor-pointer hover:text-sky-600 ${
                 showComments && "text-sky-600"
               } sm:!w-10 sm:!h-10`}
