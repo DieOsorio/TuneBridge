@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/tb-favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <!-- Google tag (gtag.js) -->
@@ -21,9 +24,16 @@
         window.history.replaceState(null, "", savedPath);
       }
     </script>
+    <script>
+      (function () {
+        const theme  = localStorage.getItem("theme") || "dark";
+        const lang   = localStorage.getItem("lang")  || "en";
+        if (theme === "dark") document.documentElement.classList.add("dark");
+      })();
+    </script>
     <title>TuneBridge</title>
-    <script type="module" crossorigin src="/assets/index-D4HonU1t.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BGuJf0WS.css">
+    <script type="module" crossorigin src="/assets/index-fAZ9r8MY.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BcM1_arx.css">
   </head>
   <body>
     <div id="root"></div>
