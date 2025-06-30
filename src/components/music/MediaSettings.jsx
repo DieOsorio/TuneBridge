@@ -5,7 +5,6 @@ import Select from "../ui/Select";
 import { useEffect } from "react";
 import Button from "../ui/Button";
 import { useTranslation } from "react-i18next";
-import ShinyText from "../ui/ShinyText";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../../utils/Loading";
@@ -19,7 +18,7 @@ const mediaTypeOptions = [
   { value: "file", label: "Direct Audio/Video URL" },
 ];
 
-const MediaEditPage = () => {
+const MediaSettings = () => {
   const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -81,7 +80,7 @@ const MediaEditPage = () => {
   return (
     <section className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto">
       <div className="text-center font-semibold">
-        <h2 className="text-2xl font-semibold text-center mb-4">
+        <h2 className="text-2xl text-yellow-600 font-semibold text-center mb-4">
           {isEditing ? t("media.titleEdit") : t("media.titleAdd")}
         </h2>
       </div>
@@ -124,17 +123,19 @@ const MediaEditPage = () => {
             >
               {isEditing ? t("media.form.update") : t("media.form.add")}
             </Button>
-            <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="!bg-gray-600 hover:!bg-gray-700"
-            >
-              {t("media.form.cancel")}
-            </Button>
+            {isEditing &&
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="!bg-gray-600 hover:!bg-gray-700"
+              >
+                {t("media.form.cancel")}
+              </Button>
+            }
           </div>
         </form>
     </section>
   );
 };
 
-export default MediaEditPage;
+export default MediaSettings;

@@ -283,10 +283,14 @@
     }
   },
    "sidebar": {
-    "viewProfile": "View Profile",
-    "editProfile": "Edit Profile",
-    "editMusicInfo": "Edit Roles",
-    "insertMedia": "Add Media"
+    "profileSettings": "Profile",
+    "musicSettings": "Music Info",
+    "mediaSettings": "Media Links",
+    "accountSettings": "Account",
+    "privacySettings": "Privacy",
+    "notificationsSettings": "Notifications",
+    "appsSettings": "Connected Apps",
+    "dataSettings": "Data & Security"
   },
   "imageUploader": {
     "upload": "Upload Images",

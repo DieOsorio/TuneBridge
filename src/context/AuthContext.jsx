@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabase';
 
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  /* ────────── session listener ────────── */
   useEffect(() => {
     const fetchSession = async () => {
       setLoading(true);
@@ -42,6 +43,40 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  /* ────────── helpers ────────── */
+  const updatePassword = async (newPassword) => {
+    setLoading(true);
+    setError("");
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  const deleteMyAccount = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      await fetch("/api/delete-user", {
+        method: "POST",
+        headers: { authorization: `Bearer ${session.access_token}` }
+      });
+      setUser(null);
+      window.location.href = "/";
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signIn = async (email, password) => {
     setLoading(true);
     setError('');
@@ -49,7 +84,6 @@ export const AuthProvider = ({ children }) => {
       const { data: { user }, error } = await supabase
       .auth.signInWithPassword({ email, password });
       if (error) throw error;
-
       // Immediately set the user after login
       setUser(user);
     } catch (err) {
@@ -103,6 +137,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  /** Brings user from Supabase */
+  const refreshUser = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (!error) setUser(data.user);
+  };
+
+  /** initialize OAuth */
+  const linkProvider = async (provider /* "google" | "github" | … */) => {
+    await supabase.auth.signInWithOAuth({ provider });
+  };
+
+  /** identity already connected */
+  const unlinkProvider = async (identityId) => {
+    setLoading(true); setError("");
+    try {
+      const { error } = await supabase.auth.unlinkIdentity(identityId);
+      if (error) throw error;
+      await refreshUser();
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const value = useMemo(() => ({
     user,
     loading,
@@ -110,6 +171,10 @@ export const AuthProvider = ({ children }) => {
     signIn,
     signOut,
     signUp,
+    updatePassword,
+    deleteMyAccount,
+    linkProvider,
+    unlinkProvider,
   }), [user, loading, error]);
 
   return (

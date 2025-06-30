@@ -52,6 +52,30 @@ Schema: users
 
     -------- * --------
 
+    Table: ui_preferences => users ui configuration
+
+    Columns:
+
+        profile_id (UUID) PK FK(users.profiles.id)
+        lang (text) NN
+        theme (text) NN
+        time_format (text) NN
+        created_at (timestamptz)
+        updated (timestamptz)
+
+    -------- * --------
+
+    Table: privacy_settings => users privacy settings configuration
+
+    Columns:
+
+        profile_id (UUID) PK FK(users.profiles.id)
+        prefs (jsonb) NN
+        created_at (timestamptz)
+        updated (timestamptz)
+
+    -------- * --------
+
     Table: profile_group_members => Associates individual profiles with profile groups, including role and join date.
 
     Columns:
@@ -183,6 +207,19 @@ Schema: social
         locations (text)
         description(text) NN
         created_at (timestamp)
+
+    -------- * --------
+
+    Table: notification_prefs => users notifications configuration
+
+    Columns:
+
+        profile_id (UUID) PK FK(users.profiles.id)
+        likes (boolean)
+        comments (boolean)
+        connections (boolean)
+        groups (boolean)
+        matches (boolean)
 
     -------- * --------
 

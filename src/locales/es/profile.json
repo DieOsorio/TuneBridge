@@ -30,6 +30,15 @@
         "age": "Edad",
         "years": "años"
       }
+    },
+    "notifications": {
+      "like":            "A {{user}} le gustó tu publicación",
+      "comment":         "{{user}} comentó tu publicación",
+      "follow_request":  "{{user}} quiere seguirte",
+      "group_join":      "Te uniste al grupo",
+      "group_member_left":   "{{user}} salió del grupo",
+      "group_member_removed":"{{user}} te sacó del grupo",
+      "noNotifications": "Todavía no tienes notificaciones"
     },  
     "connection": {
       "loading": "Comprobando conexión...",

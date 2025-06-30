@@ -43,8 +43,8 @@ const Banner = ({
       className="relative w-full h-screen bg-cover bg-center text-white"
       style={{ backgroundImage: `url("${backgroundImage}")` }}
     >
-      <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-5xl md:text-6xl font-bold mb-4 flex flex-wrap justify-center gap-2">
+      <div className="absolute inset-0 bg-black/0 flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-sm md:text-4xl font-light mb-4 mt-70 flex flex-wrap justify-center gap-2">
           {words.map((word, i) => (
             <span
               key={i}
@@ -56,15 +56,15 @@ const Banner = ({
           ))}
         </h1>
 
-        <p ref={textRef} className="text-lg md:text-2xl max-w-xl mb-6">
+        {/* <p ref={textRef} className="text-lg max-w-xl my-6">
           {subtitle}
-        </p>
+        </p> */}
 
         {!user && (
           <Link to="/signup">
             <button
               ref={buttonRef}
-              className="px-6 py-3 bg-sky-600 text-white rounded-lg text-lg font-semibold hover:bg-sky-700 transition"
+              className="px-10 py-3 mt-4 bg-sky-600 text-white rounded-lg text-lg font-semibold hover:bg-sky-700 transition"
             >
               {button}
             </button>

@@ -14,6 +14,7 @@ import uiEN from './locales/en/ui.json';
 import searchProfilesEN from './locales/en/searchProfiles.json';
 import profileGroupEN from './locales/en/profileGroup.json'; 
 import adsEN from './locales/en/ads.json'; 
+import settingsEN from './locales/en/settings.json'; 
 
 import authES from './locales/es/auth.json';
 import commonES from './locales/es/common.json';
@@ -26,6 +27,7 @@ import uiES from './locales/es/ui.json';
 import searchProfilesES from './locales/es/searchProfiles.json';
 import profileGroupES from './locales/es/profileGroup.json';
 import adsES from './locales/es/ads.json';
+import settingsES from './locales/es/settings.json';
 
 const resources = {
   en: {
@@ -39,7 +41,8 @@ const resources = {
     ui: uiEN,
     searchProfiles: searchProfilesEN,
     profileGroup: profileGroupEN,
-    ads: adsEN
+    ads: adsEN,
+    settings: settingsEN
   },
   es: {
     auth: authES,
@@ -52,7 +55,8 @@ const resources = {
     ui: uiES,
     searchProfiles: searchProfilesES,
     profileGroup: profileGroupES,
-    ads: adsES
+    ads: adsES,
+    settings: settingsES
   }
 };
 
@@ -63,7 +67,20 @@ i18n
     resources,
     fallbackLng: 'es',
     defaultNS: 'common', 
-    ns: ['common', 'auth', 'chat', 'music', 'profile', 'posts', 'comments', 'ui', 'searchProfiles', 'profileGroup', 'ads'],
+    ns: [
+      'common', 
+      'auth', 
+      'chat', 
+      'music', 
+      'profile', 
+      'posts', 
+      'comments', 
+      'ui', 
+      'searchProfiles', 
+      'profileGroup', 
+      'ads',
+      'settings'
+    ],
     interpolation: {
       escapeValue: false
     }

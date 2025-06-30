@@ -140,3 +140,16 @@
   - Refreshes RSVPs when updated.
 
 ---
+
+## users.ui_preferences
+
+- **trg_touch_ui_prefs**
+  - Table: `users.ui_preferences`
+  - Calls funciton: `users.touch_ui_prefs()`
+  - updates updtated_at
+
+
+CREATE TRIGGER trg_touch_privacy
+BEFORE UPDATE ON users.privacy_settings
+FOR EACH ROW
+EXECUTE FUNCTION users.touch_privacy();

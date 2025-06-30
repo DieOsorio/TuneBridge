@@ -63,6 +63,36 @@ const HamburgerMenu = ({ id }) => {
                   {t("nav.links.profile")}
                 </Link>
               </li>
+
+              <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+                <FaRegCompass size={24} className="text-sky-600" />
+
+                <Link
+                  to="/explore"
+                  className="block text-lg"
+                  onClick={() => {
+                    manageView(null, "postsList");
+                    toggleMenu();
+                  }}
+                >
+                  {t("nav.links.explore")}
+                </Link>
+              </li>
+              
+              <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
+                <GrAnnounce size={24} className="text-sky-600" />
+
+                <Link
+                  to="/ads"
+                  className="block text-lg"
+                  onClick={() => {
+                    manageView(null, "ads");
+                    toggleMenu();
+                  }}
+                >
+                  {t("nav.links.ads")}
+                </Link>
+              </li>
               
               <li className="px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
                 <TiMediaFastForwardOutline size={24} className="text-sky-600" />

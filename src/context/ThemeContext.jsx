@@ -1,29 +1,40 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import { useSettings } from "./settings/SettingsContext";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext(null);
+export const useTheme = () => useContext(ThemeContext);
 
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("dark"); // Default to "dark"
+export function ThemeProvider({ children }) {
+  const { prefs, saveUiPreferences } = useSettings();  
+  const [mode, setModeState] = useState(prefs?.theme || "dark");
 
-  // Persist theme in localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setTheme(savedTheme);
-    }
-  }, []);
+    if (prefs?.theme && prefs.theme !== mode) setModeState(prefs.theme);
+  }, [prefs]);
 
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme); // Save theme to localStorage
-  };
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", mode === "dark");
+    root.classList.toggle("light", mode === "light");
+  }, [mode]);
+
+  const setMode = useCallback(
+    async (next) => {
+      setModeState(next);
+      await saveUiPreferences({ ...prefs, theme: next });
+    },
+    [prefs, saveUiPreferences]
+  );
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ mode, setMode }}>
       {children}
     </ThemeContext.Provider>
   );
-};
-
-export const useTheme = () => useContext(ThemeContext);
+}

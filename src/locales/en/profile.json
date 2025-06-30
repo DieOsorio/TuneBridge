@@ -31,6 +31,15 @@
       "years": "years"
     }
   },
+  "notifications": {
+    "like":"{{user}} liked your post",
+    "comment":"{{user}} commented on your post",
+    "follow_request":"{{user}} wants to follow you",
+    "group_join":"You joined the group",
+    "group_member_left":"{{user}} left the group",
+    "group_member_removed":"You were removed from the group by {{user}}",
+    "noNotifications": "You don't have notifications yet"
+  },
   "connection": {
     "loading": "Checking connection...",
     "connect": "Connect",

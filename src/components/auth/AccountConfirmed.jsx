@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../context/profile/ProfileContext";
 import Loading from "../../utils/Loading";
-import EditProfile from "../profiles/EditProfile";
+import ProfileSettings from "../profiles/ProfileSettings";
 import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -34,7 +34,7 @@ const AccountConfirmed = () => {
           {t("accountConfirmed.completeProfile")}
         </Button>
       ) : (
-        <EditProfile 
+        <ProfileSettings 
         profile={profile}
         onSave={() => navigate(`/profile/${user.id}`)}
         onCancel={() => setShowEditor(false)} 

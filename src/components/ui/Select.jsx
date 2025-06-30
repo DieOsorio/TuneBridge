@@ -34,7 +34,7 @@ const Select = ({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={id} className={`block text-sm font-medium mb-2 ${classForLabel}`}>
+        <label htmlFor={id} className={`block text-sm font-bold text-gray-200 mb-2 ${classForLabel}`}>
           {label}
         </label>
       )}

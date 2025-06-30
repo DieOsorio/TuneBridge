@@ -1,0 +1,104 @@
+{
+  "account": {
+    "title": "Información de la cuenta",
+    "preferences": {
+      "title": "Preferencias de la interfaz"
+    },
+    "buttons": {
+      "saving": "Guardando…",
+      "save": "Guardar",
+      "saved": "¡Guardado!",
+      "change": "Cambiar contraseña",
+      "changed": "¡Contraseña actualizada!",
+      "delete": "Eliminar mi cuenta"
+    },
+    "labels": {
+      "language": "Idioma",
+      "theme": "Tema",
+      "new": "Nueva contraseña",
+      "confirm": "Confirmar contraseña"
+    },
+    "placeholders": {
+      "new": "Ingresa la nueva contraseña",
+      "confirm": "Confirma la nueva contraseña"
+    },
+    "validations": {
+      "required": "La contraseña es obligatoria",
+      "mismatch": "Las contraseñas no coinciden",
+      "min": "Debe tener al menos 6 caracteres"
+    },
+    "password": {
+      "title": "Cambiar contraseña"
+    },
+    "danger": {
+      "title": "Zona peligrosa",
+      "confirm": "Esta acción es irreversible. ¿Estás seguro?",
+      "yesDelete": "Sí, eliminar",
+      "cancel": "Cancelar"
+    }
+  },
+
+  "privacy": {
+    "title": "Configuración de privacidad",
+    "toggles": {
+      "showEmail": "Mostrar mi correo electrónico",
+      "showLastSeen": "Mostrar mi última conexión"
+    },
+    "allowMessages": {
+      "label": "Mensajes directos",
+      "options": {
+        "all": "Todos",
+        "connections": "Solo conexiones",
+        "none": "Nadie"
+      }
+    },
+    "buttons": {
+      "saving": "Guardando…",
+      "save": "Guardar",
+      "saved": "¡Guardado!"
+    }
+  },
+  "notifications": {
+    "title": "Preferencias de notificaciones",
+
+    "toggles": {
+      "likes": "Me gusta en mis publicaciones",
+      "comments": "Comentarios en mis publicaciones",
+      "connections": "Solicitudes / estado de conexión",
+      "groups": "Actividad en grupos",
+      "matches": "Nuevas sugerencias de match"
+    },
+
+    "buttons": {
+      "saving": "Guardando…",
+      "save": "Guardar",
+      "saved": "¡Guardado!"
+    }
+  },
+  "providers": {
+    "title": "Apps conectadas",
+    "buttons": {
+      "connect": "Conectar",
+      "disconnect": "Desconectar"
+    }
+  },
+  "data": {
+    "title": "Datos y seguridad",
+    "buttons": {
+      "export": "Exportar mis datos",
+      "exporting": "Preparando la descarga…",
+      "cancel": "Cancelar"
+    },
+    "export": {
+      "desc": "Puedes solicitar un archivo ZIP con tu perfil, publicaciones, enlaces de medios y grupos.",
+      "error": "La exportación falló. Inténtalo de nuevo más tarde."
+    },
+    "sessions": {
+      "title": "Sesiones activas",
+      "none": "No hay otras sesiones.",
+      "revoke": "Revocar",
+      "confirmTitle": "Revocar sesión",
+      "confirmText": "¿Seguro que deseas revocar esta sesión? Se cerrará inmediatamente."
+    }
+  }
+}
