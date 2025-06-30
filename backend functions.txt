@@ -402,7 +402,7 @@ $$;
 
 
  
--- Automatically creates a user profile upon authentication if it does not already exist
+-- Automatically creates a user profile (and companion rows) upon authentication
 CREATE OR REPLACE FUNCTION public.create_profile_when_authenticated()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -410,6 +410,7 @@ SECURITY DEFINER
 AS $$
 BEGIN
   IF NEW.role = 'authenticated' THEN
+    -- 1) Core profile
     INSERT INTO users.profiles (id, email, username)
     VALUES (
       NEW.id,
@@ -417,10 +418,35 @@ BEGIN
       NEW.raw_user_meta_data->>'full_name'
     )
     ON CONFLICT (id) DO NOTHING;
+
+    -- 2) Privacy‑settings defaults
+    INSERT INTO users.privacy_settings (profile_id, prefs)
+    VALUES (
+      NEW.id,
+      jsonb_build_object(
+        'show_email',        false,
+        'allow_messages',    'all',
+        'show_last_seen',    true,
+        'searchable_profile', true
+      )
+    )
+    ON CONFLICT (profile_id) DO NOTHING;
+
+    -- 3) UI‑preferences defaults
+    INSERT INTO users.ui_preferences (profile_id, lang, theme, time_format)
+    VALUES (
+      NEW.id,
+      'en',
+      'dark',
+      '24h'
+    )
+    ON CONFLICT (profile_id) DO NOTHING;
   END IF;
+
   RETURN NEW;
 END;
 $$;
+
 
 
 
