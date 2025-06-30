@@ -22,7 +22,8 @@ const Navbar = () => {
     <nav className="w-full bg-gradient-to-t from-gray-950 to-gray-800 shadow-lg text-gray-300 p-4 flex items-center justify-between relative z-20">
       {/* Logo Placeholder */}
       <Link to="/" className="flex items-center gap-2">
-        <Logo text={t("nav.logo")} />
+        {/* <img src="Logo.png" className="w-25"/> */}
+        <Logo />
       </Link>
 
       {/* Navigation Links (Hidden on Small Screens) */}

@@ -23,7 +23,7 @@
     "placeholders": {
       "title": "Ingresa un título",
       "content": "Escribe tu contenido aquí...",
-      "hashtags": "Agrega hashtags separados por espacio, ej. #rock #jazz"
+      "hashtags": "Ingresa un hashtag a la vez, ej. #rock"
     },
     "buttons": {
       "post": "Publicar",

@@ -18,7 +18,7 @@ const Textarea = ({
       {label && (
         <label
           htmlFor={id}
-          className={`block text-sm font-medium mb-2 text-gray-400 ${classForLabel}`}
+          className={`block text-sm font-bold mb-2 text-gray-200 ${classForLabel}`}
         >
           {label}
         </label>

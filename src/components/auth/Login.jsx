@@ -12,8 +12,8 @@ const Login = () => {
   const { 
     user, 
     loading, 
-    signIn, error: 
-    authError 
+    signIn, 
+    error: authError 
   } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -34,6 +34,7 @@ const Login = () => {
     try {
       setError("");
       await signIn(data.email, data.password);
+      
     } catch (err) {
       setError(t("auth:login.errors.authError", { error: err.message }));
     }
@@ -85,10 +86,15 @@ const Login = () => {
           </Button>
         </form>
 
-        <p className="mt-4 text-sm text-center">
-          {t("auth:login.noAccount")}{" "}
+        <p className="mt-4 text-sm flex flex-col gap-2 text-center">
+          <div>
+            {t("auth:login.noAccount")}{" "}
           <Link to="/signup" className="text-blue-500 hover:underline">
             {t("auth:login.signupHere")}
+          </Link>
+          </div>
+          <Link to="/forgot-password" className="text-sm mx-auto text-blue-500 hover:underline">
+            {t("auth:login.forgot")}
           </Link>
         </p>
       </div>

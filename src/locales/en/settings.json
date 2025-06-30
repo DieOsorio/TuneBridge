@@ -1,0 +1,104 @@
+{
+  "account": {
+    "title": "Account Information",
+    "preferences": {
+      "title": "Interface preferences"      
+    },
+    "buttons": {
+      "saving": "Saving…",
+      "save": "Save",
+      "saved": "Saved!",
+      "change": "Change password",
+      "changed": "Password updated!",
+      "delete": "Delete my account"
+    },
+    "labels": {
+      "language": "Language",
+      "theme": "Theme",
+      "new": "New password",
+      "confirm": "Confirm password"
+    },
+    "placeholders": {
+      "new": "Insert new password",
+      "confirm": "confirm new password"
+    },
+    "validations": {
+      "required": "Password required",
+      "mismatch": "Passwords do not match",
+      "min": "Must be at least 6 characters"
+    },
+    "password": {
+      "title": "Change password"
+    },
+    "danger": {
+      "title": "Danger zone",
+      "confirm": "This action is irreversible. Are you sure?",
+      "yesDelete": "Yes, delete",
+      "cancel": "Cancel"
+    }
+  },
+
+    "privacy": {
+    "title": "Privacy settings",
+    "toggles": {
+      "showEmail": "Show my email",
+      "showLastSeen": "Show last-seen status"
+    },
+    "allowMessages": {
+      "label": "Direct messages",
+      "options": {
+        "all": "Everyone",
+        "connections": "Connections only",
+        "none": "No one"
+      }
+    },
+    "buttons": {
+      "saving": "Saving…",
+      "save": "Save",
+      "saved": "Saved!"
+    }
+  },
+  "notifications": {
+    "title": "Notification preferences",
+
+    "toggles": {
+      "likes": "Likes on my posts",
+      "comments": "Comments on my posts",
+      "connections": "Connection requests / status",
+      "groups": "Group activity",
+      "matches": "New match suggestions"
+    },
+
+    "buttons": {
+      "saving": "Saving…",
+      "save": "Save",
+      "saved": "Saved!"
+    }
+  },
+  "providers": {
+    "title": "Connected apps",
+    "buttons": {
+      "connect": "Connect",
+      "disconnect": "Disconnect"
+    }
+  },
+   "data": {
+    "title": "Data & security",
+    "buttons": {
+      "export": "Export my data",
+      "exporting": "Preparing export…",
+      "cancel": "Cancel"
+    },
+    "export": {
+      "desc": "You can request a ZIP archive containing your profile, posts, media links and groups.",
+      "error": "Export failed. Please try again later."
+    },
+    "sessions": {
+      "title": "Active sessions",
+      "none": "No other sessions found.",
+      "revoke": "Revoke",
+      "confirmTitle": "Revoke session",
+      "confirmText": "Are you sure you want to revoke this session? It will be logged out immediately."
+    }
+  }
+}

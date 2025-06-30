@@ -16,11 +16,14 @@ import AdsPage from "../components/social/ads/AdsPage";
 import AdDetailsPage from "../components/social/ads/AdDetailsPage";
 import AdCreateEditPage from "../components/social/ads/AdCreateEditPage";
 import MediaSection from "../components/music/MediaSection"
-import MediaEditPage from "../components/music/MediaEditPage";
+import MediaSettings from "../components/music/MediaSettings";
 import TermsPage from "../components/ui/TermsPage"
 import DiscoverMatches from "../pages/DiscoverMatches";
 import PostForm from "../components/social/PostForm";
 import GroupForm from "../components/profiles/group/GroupForm";
+import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
+import ResetPasswordForm from "../components/auth/ResetPasswordForm";
+import Settings from "../pages/Settings";
 
 const AppRouter = () => {
     
@@ -38,11 +41,14 @@ const AppRouter = () => {
           <Route path="/ads" element={<AdsPage />} />
           <Route path="/ads/:id" element={<AdDetailsPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+          <Route path="/reset-password"  element={<ResetPasswordForm />} />
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
-          {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}          
+          {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
+          <Route path="/settings/*" element={<ProtectedRoute><Settings /></ProtectedRoute>} />          
           <Route path="/matches" element={<ProtectedRoute><DiscoverMatches  /></ProtectedRoute>} />
-          <Route path="/media/edit/:id" element={<ProtectedRoute><MediaEditPage  /></ProtectedRoute>} />
+          <Route path="/media/edit/:id" element={<ProtectedRoute><MediaSettings  /></ProtectedRoute>} />
           <Route path="/media/:id" element={<ProtectedRoute><MediaSection  /></ProtectedRoute>} />
           <Route path="/ads/edit/:id" element={<ProtectedRoute><AdCreateEditPage  /></ProtectedRoute>} />
           <Route path="/ads/new" element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import Logo from '../components/ui/Logo';
 
-const Loading = () => {
+const Loading = ({ size=400, color="#9CA3AF" }) => {
   const circleRef = useRef(null);
 
   useEffect(() => {
@@ -25,10 +26,12 @@ const Loading = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div
+      {/* <div
         ref={circleRef}
-        className="w-16 h-16 border-4 border-gray-400 border-t-transparent rounded-full"
-      />
+        classNam
+        e="w-16 h-16 border-4 border-gray-400 border-t-transparent rounded-full"
+      /> */}
+      <Logo size={size} color={color} />
     </div>
   );
 };

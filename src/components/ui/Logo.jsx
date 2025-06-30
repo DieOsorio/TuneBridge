@@ -1,10 +1,16 @@
-const Logo = ({ text }) => {
-  return (
-    <h1 
-    style={{ fontFamily: "'Great Vibes', cursive" }}
-    className="text-4xl font-bold bg-gradient-to-r from-amber-400 via-amber-600 to-amber-700 text-transparent bg-clip-text drop-shadow-md select-none pr-4">
-      {text}
-    </h1>
+import Lottie from "lottie-react";
+import logo from "../../assets/TuneBridge.json";
+import "./styles/logo.css";
+
+const Logo = ({ size, color }) => {
+   return (
+    <Lottie
+      animationData={logo}
+      autoplay
+      loop={true}
+      style={{ width: size ? size : 130, color }}
+      className={color ? "mono-logo" : ""}
+    />
   );
 };
 

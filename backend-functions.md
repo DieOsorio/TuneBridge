@@ -48,6 +48,16 @@
 
 ---
 
+## [users.ui_preferences] [users.privacy_settings] – UI and Privacy Updates
+
+- **Updates the timestamp when a user's UI preferences change.**
+  `CREATE OR REPLACE FUNCTION users.touch_ui_prefs()`
+
+- **Updates the timestamp when a user's privacy settings change.**
+  `CREATE OR REPLACE FUNCTION users.touch_privacy()`
+
+  ---
+
 ## [social.notifications] – Notification Triggers
 
 - **Sends a notification when a comment is made on a post.**  

@@ -1,8 +1,8 @@
-import { Component } from 'react';
 import './ButtonGlow.css';
 
 const Button = ({ 
-  type = "button", 
+  type = "button",
+  disabled, 
   children, 
   onClick, 
   className = "", 
@@ -33,7 +33,8 @@ const Button = ({
         <button
           type={type}
           onClick={onClick}
-          className="inner-content cursor-pointer"
+          disabled={disabled}
+          className="inner-content cursor-pointer disabled:opacity-50"
           style={{
             width: '100%',
             boxSizing: 'border-box',
@@ -51,7 +52,8 @@ const Button = ({
     <button
       type={type}
       onClick={onClick}
-      className={`px-4 py-2 font-bold w-50 rounded-md cursor-pointer bg-sky-600 text-gray-200 hover:bg-sky-700 transition-all ${className}`}
+      disabled={disabled}
+      className={`px-4 py-2 font-bold w-50 rounded-md cursor-pointer disabled:opacity-50 bg-sky-600 text-gray-200 hover:bg-sky-700 transition-all ${className}`}
       {...props}
     >
       {children}

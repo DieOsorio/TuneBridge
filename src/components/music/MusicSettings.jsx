@@ -9,7 +9,7 @@ import Loading from "../../utils/Loading";
 import Select from "../ui/Select";
 import { useTranslation } from "react-i18next";
 
-const EditMusicInfo = ({ profileId }) => {
+const MusicSettings = ({ profileId }) => {
   const { t } = useTranslation("music")
   const { fetchRoles } = useRoles();
   const { data: roles = [], isLoading, isError } = fetchRoles(profileId);
@@ -73,10 +73,10 @@ const EditMusicInfo = ({ profileId }) => {
   if (isError) return <ErrorMessage error={isError.message} />;
 
   return (
-    <div className="p-6 bg-gradient-to-r  from-gray-900 text-white rounded-b-2xl shadow-lg max-w-4xl mx-auto">      
+    <div className="p-6 bg-gradient-to-r from-gray-900 text-white rounded-b-2xl shadow-lg max-w-4xl mx-auto">      
       {/* Add New Role */}
       <form onSubmit={handleSubmit(onSubmit)} className="mb-6 space-y-4">
-        <h2 className="text-2xl font-semibold text-center mb-4">
+        <h2 className="text-2xl text-yellow-600 font-semibold text-center mb-4">
           {t("edit.addRoleTitle")}
         </h2>
 
@@ -164,4 +164,4 @@ const EditMusicInfo = ({ profileId }) => {
   );
 };
 
-export default EditMusicInfo;
+export default MusicSettings;
