@@ -11,6 +11,7 @@ import {
     useProfilesMap,
     useSearchProfilesQuery,
     useInfiniteProfilesQuery,
+    useLastSeen
 } from './profileActions';
 
 const ProfileContext = createContext(null);
@@ -23,6 +24,7 @@ export const ProfileProvider = ({ children }) => {
     const deleteProfile = useDeleteProfile().mutateAsync;
     const matchScore = useGetProfileMatchScore().mutateAsync;
     const matchAll = useGetProfilesMatch().mutateAsync;
+    const lastSeen = useLastSeen().mutateAsync;
 
     const value = {
         allProfiles,
@@ -38,6 +40,7 @@ export const ProfileProvider = ({ children }) => {
         deleteProfile,
         searchProfiles: useSearchProfilesQuery,
         infiniteProfiles: useInfiniteProfilesQuery,
+        lastSeen
     };
 
     return (

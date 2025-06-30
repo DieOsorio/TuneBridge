@@ -1,5 +1,6 @@
 // --- PROFILES KEY FACTORY ---
 export const PROFILES_KEY = () => ["allProfiles"];
+export const PROFILE_LAST_SEEN_KEY = (id) => ["profileLastSeen", id];
 export const PROFILE_KEY = (idOrUsername) => ["profile", idOrUsername];
 export const PROFILES_MAP_KEY = (profileIds) => ["profilesMap", profileIds];
 export const PROFILES_INFINITE_KEY = () => ["profilesInfinite"];
@@ -10,6 +11,7 @@ export const profileKeyFactory = ({ id, username, searchTerm, profileIds, infini
   map: profileIds ? PROFILES_MAP_KEY(profileIds) : undefined,
   infinite: infinite ? PROFILES_INFINITE_KEY() : undefined,
   search: searchTerm ? SEARCH_PROFILES_KEY(searchTerm) : undefined,
+  lastSeen: id ? PROFILE_LAST_SEEN_KEY(id) : undefined,
 });
 
 // --- PROFILE GROUPS KEY FACTORY ---

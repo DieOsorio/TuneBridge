@@ -44,7 +44,7 @@ const Banner = ({
       style={{ backgroundImage: `url("${backgroundImage}")` }}
     >
       <div className="absolute inset-0 bg-black/0 flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-sm md:text-4xl font-light mb-4 mt-70 flex flex-wrap justify-center gap-2">
+        <h1 className="text-3xl md:text-4xl font-light mb-4 mt-60 flex flex-wrap justify-center gap-2">
           {words.map((word, i) => (
             <span
               key={i}

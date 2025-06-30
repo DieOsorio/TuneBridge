@@ -746,3 +746,17 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+create or replace function users.touch_profile_last_seen()
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  update users.profiles
+  set    last_seen = now()
+  where  id = auth.uid();
+end;
+$$;
