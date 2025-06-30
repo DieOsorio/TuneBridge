@@ -5,6 +5,7 @@
     "userGroupsComing": "User Groups is in development. Coming soon!",
     "musicComing": "Music section is in development. Coming soon!",
     "noNotifications": "No notifications",
+    "lastSeen": "Last seen {{time}}",
     "navigation": {
       "about": "About",
       "ads": "Music Ads",

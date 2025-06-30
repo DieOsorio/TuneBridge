@@ -17,6 +17,7 @@ Schema: users
         gender (text): User gender.
         birthdate (date): User birthdate.
         bio (text): User biography.
+        last_seen (timestamptz): Last activity of the user
         content_search (tsvector): Full-text search vector with basic fields.
         content_search_roles (tsvector): Full-text search vector for roles.
         content_search_details (tsvector): Full-text search vector for role details (hashtags).

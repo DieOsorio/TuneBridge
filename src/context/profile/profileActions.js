@@ -23,6 +23,39 @@ export const useGetProfilesMatch = () => {
 };
 
 
+// Touch last seen for the current user
+export const useLastSeen = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["touchLastSeen"],
+    mutationFn: async () => {
+      const { error } = await supabase.rpc("touch_profile_last_seen");
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const userId = session?.user?.id;
+      if (!userId) return;
+
+      invalidateKeys({
+        queryClient,
+        keyFactory: () => profileKeyFactory({ id: userId }).lastSeen,
+      });
+      invalidateKeys({
+        queryClient,
+        keyFactory: () => ({
+          lastSeen: profileKeyFactory({ id: userId }).lastSeen,
+        }),
+      });
+    },
+  });
+};
+
+
 // Match score between two profiles
 export const useGetProfileMatchScore = () => {
   return useMutation({

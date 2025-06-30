@@ -23,7 +23,7 @@ function Explore() {
     <div className="min-h-screen text-white">
 
       {/* Header */}      
-      <div className="text-center py-8 bg-gradient-to-r mb-3 from-sky-950 via-sky-900 to-sky-950 rounded-b-lg shadow-lg flex flex-col items-center">
+      <div className="text-center py-8 bg-gradient-to-r mb-3 from-sky-900 to-gray-950 rounded-b-lg shadow-lg flex flex-col items-center">
         <div className="flex items-center gap-3 mb-3">
           <FaCompass className="text-sky-500 text-4xl animate-custom-pulse" />
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">

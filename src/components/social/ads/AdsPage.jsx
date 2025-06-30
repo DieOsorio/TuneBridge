@@ -27,7 +27,7 @@ const AdsPage = () => {
     : ads.filter(ad => ad.ad_type === selectedTab);
 
   const tabClasses = (tab) => {
-  const base = "px-4 py-2 rounded-md border-b-2 text-sm font-medium cursor-pointer transition-colors";
+  const base = "px-4 py-2 rounded-md border-b-2 text-sm text-gray-400 hover:text-gray-100 font-medium cursor-pointer transition-colors";
   const isSelected = selectedTab === tab;
 
   const selectedColor = {
@@ -38,8 +38,8 @@ const AdsPage = () => {
 
   return `${base} ${
     isSelected
-      ? `${selectedColor} text-white`
-      : "text-gray-300"
+      ? `${selectedColor} !text-gray-100`
+      : "text-gray-400"
     }`;
   };
 

@@ -20,12 +20,15 @@ import { ImBlocked } from "react-icons/im";
 import { handleStartChat } from '../social/chat/utilis/handleStartChat';
 import MatchScoreIndicator from './MatchScoreIndicator';
 import { FaUserCheck, FaUserClock, FaUserPlus, FaUserSlash } from 'react-icons/fa';
+import formatLastSeen from '../../utils/formatLastSeen';
+import { usePrivacySettingsQuery } from '../../context/settings/settingsActions';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
     const { manageView } = useView();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { data: privacyPrefs } = usePrivacySettingsQuery(profileData.id); // Fetch privacy preferences for the profile
     const { totalUnreadMessages } = useMessages();
     const { data: unreadMessagesCount, isLoading: loadingUnreadMessages } = totalUnreadMessages(user?.id);
     const {findConversation, createConversation} = useConversations();
@@ -40,6 +43,8 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [hoverText, setHoverText] = useState(null);
     const unreadCount = notifications?.filter(n => !n.is_read).length || 0;
+
+    const lastSeenActive = Boolean(privacyPrefs?.show_last_seen && profileData.last_seen);
 
     const startChat = () => {
       if(isStartingChat) return;
@@ -252,70 +257,79 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end mt-6">
         {!isOwnProfile && 
-        <div className='mx-auto mb-3 flex items-center gap-6'>          
-          {/* Styled Connection Status Badge */}
-          {!loadingConnection && (
-            <button
-              title={
-                connection
-                  ? connection.status === "accepted"
-                    ? t("connection.disconnect")
-                    : connection.status === "pending"
-                    ? t("connection.cancelRequest")
-                    : connection.status === "blocked"
-                      ? connection.follower_profile_id === user.id
-                        ? t("connection.unblock")
-                        : t("connection.blockedByOther")
-                      : "" // fallback
-                  : t("connection.connect")
-              }
-              onClick={() => {
-                if (!connection) return handleConnect();
-                if (connection.status === "pending") return handleDisconnect();
-                if (connection.status === "accepted") return handleDisconnect();
-                if (connection.status === "blocked" && connection.follower_profile_id === user.id) return handleUnblock();
-              }}
-              className={`inline-flex items-center min-w-35 justify-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition
-                ${
-                  connection
+          <div className="mx-auto md:mx-0 md:!mr-auto mb-3 flex flex-col items-start gap-6 mt-3">
+            <div className="flex flex-col items-center md:flex-row gap-3 md:gap-6">          
+              {/* Styled Connection Status Badge */}
+              {!loadingConnection && (
+                <button
+                  title={
+                    connection
+                      ? connection.status === "accepted"
+                        ? t("connection.disconnect")
+                        : connection.status === "pending"
+                        ? t("connection.cancelRequest")
+                        : connection.status === "blocked"
+                          ? connection.follower_profile_id === user.id
+                            ? t("connection.unblock")
+                            : t("connection.blockedByOther")
+                          : "" // fallback
+                      : t("connection.connect")
+                  }
+                  onClick={() => {
+                    if (!connection) return handleConnect();
+                    if (connection.status === "pending") return handleDisconnect();
+                    if (connection.status === "accepted") return handleDisconnect();
+                    if (connection.status === "blocked" && connection.follower_profile_id === user.id) return handleUnblock();
+                  }}
+                  className={`inline-flex items-center min-w-35 justify-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition
+                    ${
+                      connection
+                        ? connection.status === "accepted"
+                          ? "bg-emerald-700 text-white hover:bg-emerald-800"
+                          : connection.status === "pending"
+                          ? "bg-yellow-600 text-white hover:bg-yellow-700"
+                          : connection.status === "blocked" && connection.follower_profile_id === user.id
+                          ? "bg-red-700 text-white hover:bg-red-800"
+                          : connection.status === "blocked" && connection.follower_profile_id === profileData.id
+                          ? "bg-gray-600 text-gray-200 cursor-not-allowed"
+                          : "bg-gray-700 text-white"
+                        : "bg-sky-700 text-white hover:bg-sky-800"
+                    }
+                    ${
+                      connection?.status === "blocked" && connection.follower_profile_id === profileData.id
+                        ? "pointer-events-none"
+                        : "cursor-pointer"
+                    }
+                  `}
+                  disabled={connection?.status === "blocked" && connection.follower_profile_id === profileData.id}
+                >
+                  {getConnectionIcon(connection?.status)}
+                  {connection
                     ? connection.status === "accepted"
-                      ? "bg-emerald-700 text-white hover:bg-emerald-800"
+                      ? t("connection.accepted")
                       : connection.status === "pending"
-                      ? "bg-yellow-600 text-white hover:bg-yellow-700"
+                      ? t("connection.pending")
                       : connection.status === "blocked" && connection.follower_profile_id === user.id
-                      ? "bg-red-700 text-white hover:bg-red-800"
+                      ? t("connection.blocked")
                       : connection.status === "blocked" && connection.follower_profile_id === profileData.id
-                      ? "bg-gray-600 text-gray-200 cursor-not-allowed"
-                      : "bg-gray-700 text-white"
-                    : "bg-sky-700 text-white hover:bg-sky-800"
-                }
-                ${
-                  connection?.status === "blocked" && connection.follower_profile_id === profileData.id
-                    ? "pointer-events-none"
-                    : "cursor-pointer"
-                }
-              `}
-              disabled={connection?.status === "blocked" && connection.follower_profile_id === profileData.id}
-            >
-              {getConnectionIcon(connection?.status)}
-              {connection
-                ? connection.status === "accepted"
-                  ? t("connection.accepted")
-                  : connection.status === "pending"
-                  ? t("connection.pending")
-                  : connection.status === "blocked" && connection.follower_profile_id === user.id
-                  ? t("connection.blocked")
-                  : connection.status === "blocked" && connection.follower_profile_id === profileData.id
-                  ? t("connection.blockedByOther")
-                  : ""
-                : t("connection.connect")}
-            </button>
+                      ? t("connection.blockedByOther")
+                      : ""
+                    : t("connection.connect")}
+                </button>
 
-          )}
-          <div >
-            <MatchScoreIndicator otherProfile={profileData} />
+              )}
+              {/* Match Score Indicator */}
+              <div >
+                <MatchScoreIndicator otherProfile={profileData} />
+              </div>
+            </div>
+              {/* Last‑seen badge */}
+              {lastSeenActive && (
+                <p className="text-xs text-gray-400">
+                  {t("profile.lastSeen", { time: formatLastSeen(profileData.last_seen) })}
+                </p>
+              )}
           </div>
-        </div>
         }
         
         <div>
