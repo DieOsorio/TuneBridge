@@ -60,22 +60,22 @@ export const AuthProvider = ({ children }) => {
 
   const deleteMyAccount = async () => {
     setLoading(true);
-    setError("");
+    setError('');
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      await fetch("/api/delete-user", {
-        method: "POST",
+
+      await fetch('/api/delete-user', {
+        method : 'POST',
         headers: { authorization: `Bearer ${session.access_token}` }
       });
-      setUser(null);
-      window.location.href = "/";
+
     } catch (err) {
       setError(err.message);
       throw err;
     } finally {
       setLoading(false);
     }
-  };
+    };
 
   const signIn = async (email, password) => {
     setLoading(true);

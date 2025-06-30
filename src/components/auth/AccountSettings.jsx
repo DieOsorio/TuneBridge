@@ -10,6 +10,7 @@ import Select from "../ui/Select";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog"
 import { useTheme } from "../../context/ThemeContext";
+import { useProfile } from "../../context/profile/ProfileContext";
 
 const LANGS  = [ { value:"en", label:"English" }, { value:"es", label:"Español" } ];
 const THEMES = [ { value:"dark", label:"Dark"  }, { value:"light", label:"Light" } ];
@@ -17,7 +18,8 @@ const THEMES = [ { value:"dark", label:"Dark"  }, { value:"light", label:"Light"
 const AccountSettings = () => {
   const { setMode } = useTheme();
   const { t } = useTranslation("settings", { keyPrefix: "account" });
-  const { user, updatePassword, deleteMyAccount } = useAuth();
+  const { deleteProfile } = useProfile();
+  const { user, updatePassword, deleteMyAccount, signOut } = useAuth();
 
   /* ─── UI prefs hooks ─── */
   const { prefs, saveUiPreferences } = useSettings();
@@ -58,6 +60,18 @@ const AccountSettings = () => {
     reset();
   };
 
+  /* ====== SECTION 3 – Delete account ====== */
+  const handleDeleteAccount = async () => {
+     try {
+    await deleteProfile(user.id); 
+    await deleteMyAccount();                 
+    await signOut();                     
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setDialogOpen(false);
+  }
+  };
 
   return (
     <div className="flex flex-col gap-10 bg-gradient-to-l to-gray-900 light:bg-gradient-to-l light:to-gray-200 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto">
@@ -162,10 +176,7 @@ const AccountSettings = () => {
           isOpen={dialogOpen}
           title={t("danger.title")}
           message={t("danger.confirm")}
-          onConfirm={async () => {
-            await deleteMyAccount();
-            setDialogOpen(false);
-          }}
+          onConfirm={handleDeleteAccount}
           onCancel={() => setDialogOpen(false)}
           confirmLabel={t("danger.yesDelete")}
           cancelLabel={t("danger.cancel")}
