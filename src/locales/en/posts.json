@@ -60,5 +60,9 @@
       "delete": "Error deleting the post. Please try again.",
       "confirmDelete": "Are you sure you want to delete this post?"
     }
+  },
+  "likes": {
+    "count_one": "{{count}} like",
+    "count_other": "{{count}} likes"
   }
 }

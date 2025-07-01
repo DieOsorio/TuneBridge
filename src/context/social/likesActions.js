@@ -58,6 +58,43 @@ export const useUserLikesQuery = (profile_id) => {
   });
 };
 
+// FETCH LIKES FOR A POST
+export const usePostLikesQuery = (post_id) => {
+  return useQuery({
+    queryKey: likeKeyFactory({ postId: post_id }).post,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("social")
+        .from("likes")
+        .select("*")
+        .eq("post_id", post_id);
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!post_id,
+  });
+};
+
+// CHECK IF USER LIKED A POST
+export const useUserLikedPostQuery = (post_id, profile_id) => {
+  return useQuery({
+    queryKey: likeKeyFactory({ postId: post_id, profileId: profile_id }).userPost,
+    queryFn: async () => {
+      if (!post_id || !profile_id) return false;
+      const { data, error } = await supabase
+        .schema("social")
+        .from("likes")
+        .select("id")
+        .eq("post_id", post_id)
+        .eq("profile_id", profile_id)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!post_id && !!profile_id,
+  });
+};
+
 // INSERT NEW LIKE
 export const useInsertLikeMutation = () => {
   const queryClient = useQueryClient();
@@ -79,6 +116,7 @@ export const useInsertLikeMutation = () => {
           ...like,
           commentId: like.comment_id,
           profileId: like.profile_id,
+          postId: like.post_id,
         },
         type: "add",
       });
@@ -91,6 +129,7 @@ export const useInsertLikeMutation = () => {
           ...variables,
           commentId: variables.comment_id,
           profileId: variables.profile_id,
+          postId: variables.post_id,
         },
         newEntity: newLike,
       });
@@ -109,6 +148,7 @@ export const useInsertLikeMutation = () => {
           ...variables,
           commentId: variables.comment_id,
           profileId: variables.profile_id,
+          postId: variables.post_id,
         },
       });
     },
@@ -138,6 +178,7 @@ export const useUpdateLikeMutation = () => {
           ...updatedLike,
           commentId: updatedLike.comment_id,
           profileId: updatedLike.profile_id,
+          postId: updatedLike.post_id,
         },
         type: "update",
       });
@@ -157,6 +198,7 @@ export const useUpdateLikeMutation = () => {
           ...variables.updatedLike,
           commentId: variables.updatedLike.comment_id,
           profileId: variables.updatedLike.profile_id,
+          postId: variables.updatedLike.post_id,
         },
         newEntity: newLike,
       });
@@ -170,6 +212,7 @@ export const useUpdateLikeMutation = () => {
           ...variables.updatedLike,
           commentId: variables.updatedLike.comment_id,
           profileId: variables.updatedLike.profile_id,
+          postId: variables.updatedLike.post_id,
         },
       });
     },
@@ -196,6 +239,7 @@ export const useDeleteLikeMutation = () => {
           ...like,
           commentId: like.comment_id,
           profileId: like.profile_id,
+          postId: like.post_id,
         },
         type: "remove",
       });
@@ -214,6 +258,7 @@ export const useDeleteLikeMutation = () => {
           ...variables,
           commentId: variables.comment_id,
           profileId: variables.profile_id,
+          postId: variables.post_id,
         },
       });
     },

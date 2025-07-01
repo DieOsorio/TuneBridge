@@ -2,19 +2,17 @@ import React from 'react';
 import { useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import PostCard from './PostCard';
 import PostCardSkeleton from './PostCardSkeleton';
 import ErrorMessage from '../../utils/ErrorMessage';
 import { usePosts } from '../../context/social/PostsContext';
-import { FiPlus } from 'react-icons/fi';
+import PlusButton from "../social/ads/PlusButton";
 
 const PostsSearch = () => {
     const { t } = useTranslation(["posts", "common"]);
     const { searchPosts, infinitePosts } = usePosts();
     const { register, handleSubmit, watch } = useForm();
     const searchTerm = watch("searchTerm");
-    const navigate = useNavigate();
 
     const {
         data: allPostsData,
@@ -52,34 +50,23 @@ const PostsSearch = () => {
                     className="border rounded-lg p-2 focus:outline-none focus:ring w-full max-w-md"
                 />
                 {/* Desktop: Plus icon beside search */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:flex items-center group">
-                    <button
-                        type="button"
-                        onClick={() => navigate("/create-post")}
-                        className="text-emerald-500 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-colors"
-                    >
-                        <FiPlus size={28} />
-                    </button>
-                    <span
-                        className="ml-2 whitespace-nowrap text-emerald-500 font-semibold text-base px-3 py-1 rounded-lg shadow transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none"
-                        style={{ willChange: 'opacity, transform' }}
-                    >
-                        {t("posts:buttons.createPost")}
-                    </span>
+                <div className="absolute right-0 top-9 -translate-y-1/2 hidden lg:flex items-center group">
+                    <PlusButton
+                        label={t("posts:buttons.createPost")}
+                        to="/create-post"
+                        iconSize={28}
+                        showLabelOnMobile={false}
+                    />
                 </div>
             </form>
             {/* Mobile: Plus icon below search */}
-            <div className="flex justify-center items-center lg:hidden mb-4">
-                <button
-                    type="button"
-                    onClick={() => navigate("/create-post")}
-                    className="text-emerald-500 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-colors"
-                >
-                    <FiPlus size={32} />
-                </button>
-                <span className="text-emerald-500 font-semibold text-base mt-1">
-                    {t("posts:buttons.createPost")}
-                </span>
+            <div className="flex justify-center items-center lg:hidden mb-4 mr-6">
+                <PlusButton
+                    label={t("posts:buttons.createPost")}
+                    to="/create-post"
+                    iconSize={32}
+                    showLabelOnMobile={true}
+                />
             </div>
 
             {/* Display Posts */}

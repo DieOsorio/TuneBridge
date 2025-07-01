@@ -9,7 +9,8 @@
     "dj": "DJ",
     "producer": "Producer",
     "composer": "Composer",
-    "custom": "Custom Role"
+    "custom": "Custom Role",
+    "addRole": "Add Role"
   },
   "fields": {
     "instrument": "Instrument",
@@ -83,7 +84,8 @@
     "actions": {
       "edit": "Edit",
       "delete": "Delete",
-      "seeMore": "See more"
+      "seeMore": "See more",
+      "add": "Add Media"
     }
   },
   "errors": {

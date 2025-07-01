@@ -60,5 +60,8 @@
       "delete": "Error al eliminar la publicación. Por favor, intenta nuevamente.",
       "confirmDelete": "¿Estás seguro de que deseas eliminar esta publicación?"
     }
+  },
+  "likes": {
+    "count": "{{count}} me gusta"
   }
 }

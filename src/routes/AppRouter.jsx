@@ -48,6 +48,7 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
           <Route path="/settings/*" element={<ProtectedRoute><Settings /></ProtectedRoute>} />          
           <Route path="/matches" element={<ProtectedRoute><DiscoverMatches  /></ProtectedRoute>} />
+          <Route path="/media/create" element={<ProtectedRoute><MediaSettings  /></ProtectedRoute>} />
           <Route path="/media/edit/:id" element={<ProtectedRoute><MediaSettings  /></ProtectedRoute>} />
           <Route path="/media/:id" element={<ProtectedRoute><MediaSection  /></ProtectedRoute>} />
           <Route path="/ads/edit/:id" element={<ProtectedRoute><AdCreateEditPage  /></ProtectedRoute>} />

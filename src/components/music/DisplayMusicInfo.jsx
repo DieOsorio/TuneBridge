@@ -13,9 +13,12 @@ import RoleItem from "./RoleItem";
 import { useTranslation } from "react-i18next";
 import ShinyText from "../ui/ShinyText";
 import MediaSummary from "./MediaSummary";
+import PlusButton from "../social/ads/PlusButton";
+import { useAuth } from "../../context/AuthContext";
 
 const DisplayMusicInfo = ({ profileId }) => {
   const { t } = useTranslation("music");
+  const { user } = useAuth();
   const  [roleId, setRoleId]  = useState();
   const { fetchRoles } = useRoles();
   const { data: roles, isLoading: loading, error} = fetchRoles(profileId);
@@ -30,6 +33,8 @@ const DisplayMusicInfo = ({ profileId }) => {
   const { fetchDj } = useDjDetails();
   const { data: djDetails } = fetchDj(roleId);
   const [expandedRole, setExpandedRole] = useState(null); // Track which role is expanded
+  
+  const ownProfile = user.id === profileId;
 
   const handleRoleClick = (role) => {
     if (expandedRole === role.id) {
@@ -63,6 +68,12 @@ const DisplayMusicInfo = ({ profileId }) => {
 
       <MediaSummary profileId={profileId} />
 
+      {ownProfile && (
+        <PlusButton
+          label={t("roles.addRole")}
+          to="/settings/music"
+        />
+      )}
       {roles.length === 0 ? (
         <p className="text-gray-500">
           {t("roles.none")}

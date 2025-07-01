@@ -66,7 +66,10 @@ const AdsPage = () => {
           </button>
         </div>
         
-        <PlusButton t={t} />
+        <PlusButton 
+          label={t("adsPage.buttons.createAd")}
+          to="/ads/new"
+        />
 
         {isLoading && <Loading />}
         {error && <ErrorMessage error={error.message} />}

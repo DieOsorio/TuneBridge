@@ -6,7 +6,9 @@ import {
   useInsertLikeMutation,
   useUpdateLikeMutation,
   useDeleteLikeMutation,
-  useCommentLikesQuery
+  useCommentLikesQuery,
+  usePostLikesQuery,
+  useUserLikedPostQuery
 } from "./likesActions";
 
 const LikesContext = createContext();
@@ -28,6 +30,8 @@ export const LikesProvider = ({children}) => {
     updateLike,
     deleteLike,
     commentLikesQuery: useCommentLikesQuery,
+    postLikesQuery: usePostLikesQuery,
+    userLikedPostQuery: useUserLikedPostQuery
   };
 
   return(

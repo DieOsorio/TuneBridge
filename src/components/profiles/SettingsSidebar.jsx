@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import { IoMusicalNotesOutline, IoMusicalNotes } from "react-icons/io5"
 import { BsBell, BsBellFill } from "react-icons/bs";
-import { TiMediaFastForwardOutline, TiMediaFastForward } from "react-icons/ti";
 import { useNavigate, useLocation } from "react-router-dom";
 import gsap from "gsap";
 import { useTranslation } from "react-i18next";
@@ -79,12 +78,6 @@ const SettingsSidebar = ({ avatarUrl }) => {
       to: "/settings/music",
       label: t("musicSettings"),
       icon: (active) => (active ? <IoMusicalNotes /> : <IoMusicalNotesOutline />),
-    },
-    {
-      to: "/settings/media",
-      label: t("mediaSettings"),
-      icon: (active) =>
-        active ? <TiMediaFastForward /> : <TiMediaFastForwardOutline />,
     },
     // {
     //   to: "/settings/apps",
