@@ -3,12 +3,18 @@ import { useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import Button from "../ui/Button";
 import { useTranslation } from "react-i18next";
+import { FiPlus } from "react-icons/fi";
+import PlusButton from "../social/ads/PlusButton";
+import { useAuth } from "../../context/AuthContext";
 
 const MediaSummary = ({ profileId }) => {
+  const { user } = useAuth();
   const { t } = useTranslation("music");
   const { userMediaLinks } = useMediaLinks();
   const { data: mediaLinks = [] } = userMediaLinks(profileId);
   const navigate = useNavigate();
+
+  const ownProfile = user.id === profileId;
 
   const getSpotifyEmbedUrl = (url) => {
     const match = url.match(/spotify\.com\/(track|playlist|album)\/([a-zA-Z0-9]+)/);
@@ -21,6 +27,12 @@ const MediaSummary = ({ profileId }) => {
 
   return (
     <section className="mb-10">
+      {ownProfile && (
+        <PlusButton
+          label={t("media.actions.add")}
+          to="/media/create"
+        />
+      )}
       <ul className="space-y-4 text-center">
         {displayedMedia.map((media) => (
           <li

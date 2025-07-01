@@ -1,4 +1,3 @@
-
 // --- CONNECTIONS KEY FACTORIES ---
 export const CONNECTIONS_KEY = (profileId) => ["connections", profileId];
 export const CONNECTION_BETWEEN_KEY = (followerId, followingId) => ["connection-between", followerId, followingId];
@@ -54,10 +53,14 @@ export const notificationKeyFactory = ({ profileId, id } = {}) => ({
 export const LIKES_KEY = () => ["likes"];
 export const COMMENT_LIKES_KEY = (commentId) => ["commentLikes", commentId];
 export const USER_LIKES_KEY = (profileId) => ["userLikes", profileId];
-export const likeKeyFactory = ({ commentId, profileId } = {}) => ({
+export const POST_LIKES_KEY = (postId) => ["postLikes", postId];
+export const USER_LIKED_POST_KEY = (postId, profileId) => ["userLikedPost", postId, profileId];
+export const likeKeyFactory = ({ commentId, profileId, postId } = {}) => ({
   all: LIKES_KEY(),
   comment: commentId ? COMMENT_LIKES_KEY(commentId) : undefined,
   user: profileId ? USER_LIKES_KEY(profileId) : undefined,
+  post: postId ? POST_LIKES_KEY(postId) : undefined,
+  userPost: postId && profileId ? USER_LIKED_POST_KEY(postId, profileId) : undefined,
 });
 
 // --- COMMENTS KEY FACTORY ---

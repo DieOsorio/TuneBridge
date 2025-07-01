@@ -263,3 +263,56 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
 };
 
 export default ProfileSettings;
+
+
+// components/CountryCitySelect.jsx
+// import { useCountries, useCities } from "../hooks/useCountryCity";
+// import Select from "../ui/Select";
+// import { Controller } from "react-hook-form";
+
+// const CountryCitySelect = ({ control, watch, setValue, errors }) => {
+//   const selectedCountry = watch("country");
+//   const { data: countries = [] } = useCountries();
+//   const { data: cities = [] } = useCities(selectedCountry);
+
+//   return (
+//     <>
+//       <Controller
+//         control={control}
+//         name="country"
+//         rules={{ required: true }}
+//         render={({ field }) => (
+//           <Select
+//             id="country"
+//             label="Country"
+//             options={countries.map(c => ({ value: c.iso2, label: c.name }))}
+//             {...field}
+//             onChange={e => {
+//               field.onChange(e);
+//               setValue("city", ""); // resetea ciudad si cambia país
+//             }}
+//             error={errors.country}
+//           />
+//         )}
+//       />
+
+//       <Controller
+//         control={control}
+//         name="city"
+//         rules={{ required: true }}
+//         render={({ field }) => (
+//           <Select
+//             id="city"
+//             label="City"
+//             options={(cities || []).map(c => ({ value: c.name, label: c.name }))}
+//             {...field}
+//             disabled={!selectedCountry}
+//             error={errors.city}
+//           />
+//         )}
+//       />
+//     </>
+//   );
+// };
+
+// export default CountryCitySelect;

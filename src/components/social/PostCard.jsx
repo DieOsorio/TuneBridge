@@ -33,6 +33,17 @@ import { FaEdit } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { usePostHashtags } from '../../context/social/PostHashtagsContext';
 
+
+const Tooltip = ({ children }) => (
+  <div className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2
+                  whitespace-nowrap rounded-md bg-gray-900/90 py-1 px-2 text-xs
+                  font-semibold text-sky-200 shadow-lg backdrop-blur">
+    {children}
+    {/* flechita */}
+   <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2 w-2 rotate-45 bg-gray-900/90" />
+  </div>
+);
+
 function PostCard({ post }) {
   const { t } = useTranslation("posts")
   const { user } = useAuth(); // logged user
@@ -43,8 +54,13 @@ function PostCard({ post }) {
   const { fetchProfile } = useProfile();
   const { data: profile, error, isLoading } = fetchProfile(post.profile_id); // retrieve the profile associated with the post
 
-  const { insertLike, deleteLike, userLikes } = useLikes(); // custom hooks to manage the likes
-  const { data: rawLikes } = userLikes(loggedIn ? user.id : undefined); // retrieve the likes associated with logged user
+  const { insertLike, deleteLike, userLikedPostQuery, postLikesQuery } = useLikes(); // custom hooks to manage the likes
+  const { data: existingLike } = userLikedPostQuery(
+    post.id,
+    loggedIn? user.id : undefined
+  ); // retrieve the likes associated with logged user
+  const { data: postlikes = [] } = postLikesQuery(post.id); // retrieve the likes associated with the post
+  const likesCount = postlikes.length; // count the number of likes for the post
 
   const { manageView } = useView(); // manage the views
   const { getHashtagsByPostId } = usePostHashtags(); // fetch post hashtags
@@ -53,12 +69,8 @@ function PostCard({ post }) {
   const [showComments, setShowComments] = useState(false); // manage comments visibility
   const [isModalOpen, setIsModalOpen] = useState(false); // manage modal visibility
   const [currentImage, setCurrentImage] = useState(null); // current image in modal
-  
-  const likes = Array.isArray(rawLikes)
-    ? rawLikes
-    : Array.isArray(rawLikes?.pages)
-      ? rawLikes.pages.flat()
-      : [];
+
+  const likeLabel = t("likes.count", { count: likesCount });
 
   // Prefetch profile info to view in the minibox
   const prefetchProfile = usePrefetchProfile();
@@ -73,9 +85,6 @@ function PostCard({ post }) {
   ? {profile_id: user.id, post_id: post.id}
   : null;
 
-  // Find if there is a like associated with this post
-  const existingLike = likes?.find((like) => like.post_id === post.id);
-
   // Boolean that checks if the like exists
   const alreadyLiked = !!existingLike;
 
@@ -86,11 +95,13 @@ function PostCard({ post }) {
       return;
     }
 
-    if (alreadyLiked) {
-      deleteLike(existingLike);
-    } else {
-      insertLike(like);
-    }
+    alreadyLiked
+      ? deleteLike({
+          ...existingLike,
+          post_id: post.id,
+          profile_id: user.id
+        }) // If already liked, delete the like
+      : insertLike(like);
   };
 
   // Navigate to the edit page
@@ -175,7 +186,7 @@ function PostCard({ post }) {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onClick={handleLikeClick}
-              className="cursor-pointer transition-transform duration-200 hover:scale-110"
+              className="relative cursor-pointer transition-transform duration-200 hover:scale-110"
             >
               <motion.div
                 key={alreadyLiked ? "liked" : "not-liked"}
@@ -187,6 +198,9 @@ function PostCard({ post }) {
                   <FcLike className="w-8 h-8 sm:w-10 sm:h-10" />
                 ) : (
                   <FcLikePlaceholder className="w-8 h-8 sm:w-10 sm:h-10" />
+                )}
+                {isHovered && (
+                  <Tooltip>{likeLabel}</Tooltip>
                 )}
               </motion.div>
             </div>

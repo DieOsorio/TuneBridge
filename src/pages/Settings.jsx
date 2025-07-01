@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProfileSettings from "../components/profiles/ProfileSettings";
 import MusicSettings from "../components/music/MusicSettings";
-import MediaSettings from "../components/music/MediaSettings";
 import SettingsSidebar from "../components/profiles/SettingsSidebar";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/profile/ProfileContext";
@@ -29,8 +28,7 @@ const Settings = () => {
             <div className="settings-content flex-grow p-6 overflow-auto max-w-4xl ml-auto md:!mx-auto">
                 <Routes>
                     <Route path="profile" element={<ProfileSettings profile={profile} />} />
-                    <Route path="music"   element={<MusicSettings profileId={user.id} />} />
-                    <Route path="media"   element={<MediaSettings />} />
+                    <Route path="music"   element={<MusicSettings profileId={user.id} />} />                    
                     <Route path="account" element={<AccountSettings />} />
                     <Route path="privacy" element={<PrivacySettings />} />
                     <Route path="notifications" element={<NotificationSettings />} />
