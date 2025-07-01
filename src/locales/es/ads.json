@@ -69,12 +69,12 @@
       "location": "Ubicación"
     },
     "placeholders": {
-      "title": "Ingresa un título (hasta 30 caracteres)", 
+      "title": "Ingresa un título", 
       "looking": "Ingresa rol/instrumento (hasta 3)", 
       "offering": "Ingresa rol/instrumento (hasta 3)", 
       "genres": "Ingresa géneros (hasta 3)",
-      "description": "Escribe una descripción corta (hasta 200 caracteres)",
-      "location": "ingresa la ubicación"
+      "description": "Escribe una descripción corta",
+      "location": "Ingresa la ubicación"
     },
     "validations": {
       "title": "El título no puede exeder los 30 caracteres",

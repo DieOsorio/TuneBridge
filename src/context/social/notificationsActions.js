@@ -9,9 +9,10 @@ import {
   replaceOptimisticItem,
 } from "../helpers/cacheHandler";
 
-// FETCH USER NOTIFICATIONS
+/* ────── fetch list ────── */
 export const useUserNotificationsQuery = (profile_id) => {
   const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: notificationKeyFactory({ profileId: profile_id }).all,
     queryFn: async () => {
@@ -24,94 +25,79 @@ export const useUserNotificationsQuery = (profile_id) => {
 
       if (error) throw new Error(error.message);
 
-      data.forEach((notif) => {
+      data.forEach((n) =>
         queryClient.setQueryData(
-          notificationKeyFactory({ id: notif.id }).single,
-          notif
+          notificationKeyFactory({ id: n.id }).single,
+          n
         )
-      })
+      );
+
       return data;
     },
-    enabled: !!profile_id
+    enabled: !!profile_id,
   });
 };
 
-// INSERT NOTIFICATION
+/* ────── insert ────── */
 export const useInsertNotificationMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (notification) => {
+    mutationFn: async (n) => {
       const { data, error } = await supabase
         .schema("social")
         .from("notifications")
-        .insert(notification)
+        .insert(n)
         .select();
 
       if (error) throw new Error(error.message);
       return data[0];
     },
 
-    onMutate: async (notification) => {
-      const completeNotification = {
-        ...notification,
-        profile_id: notification.profile_id || profile_id,
-      };
-
-      return optimisticUpdate({
+    onMutate: async (n) =>
+      optimisticUpdate({
         queryClient,
-        entity: completeNotification,
         keyFactory: notificationKeyFactory,
         type: "add",
-      });
-    },
+        entity: { ...n, profileId: n.profile_id },
+      }),
 
-    onSuccess: (newNotification, variables) => {
-      const completeNotification = {
-        ...variables,
-        profile_id: variables.profile_id || profile_id,
-      }
+    onSuccess: (newN, vars) =>
       replaceOptimisticItem({
         queryClient,
-        entity: completeNotification,
-        newEntity: newNotification,
         keyFactory: notificationKeyFactory,
-      });
-    },
+        entity: { ...vars, profileId: vars.profile_id },
+        newEntity: newN,
+      }),
 
-    onError: (_err, variables, context) => {
+    onError: (_e, vars, ctx) =>
       rollbackCache({
         queryClient,
-        entity: variables,
         keyFactory: notificationKeyFactory,
-        previousData: context
-      });
-    },
+        entity: { ...vars, profileId: vars.profile_id },
+        previousData: ctx,
+      }),
 
-    onSettled: (_data, _error, variables) => {
+    onSettled: (_d, _e, vars) =>
       invalidateKeys({
         queryClient,
-        entity: {
-          ...variables,
-          profile_id: variables.profile_id || profile_id,
-        },
         keyFactory: notificationKeyFactory,
-      });
-    },
+        entity: { ...vars, profileId: vars.profile_id },
+      }),
   });
 };
 
-// UPDATE NOTIFICATION (e.g., mark as read)
+/* ────── update (mark as read) ────── */
 export const useUpdateNotificationMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (notif) => {
-      const { id, profile_id, ...updatedFields} = notif
+    mutationFn: async (n) => {
+      const { id, profile_id, ...rest } = n;
       const { data, error } = await supabase
         .schema("social")
         .from("notifications")
-        .update(updatedFields)
+        .update(rest)
         .eq("id", id)
         .select();
 
@@ -119,32 +105,32 @@ export const useUpdateNotificationMutation = () => {
       return data[0];
     },
 
-    onMutate: async (notif) => {  
-      return optimisticUpdate({
+    onMutate: async (n) =>
+      optimisticUpdate({
         queryClient,
-        entity: notif,
         keyFactory: notificationKeyFactory,
         type: "update",
-      });
-    },
-    onError: (_err, variables, context) => {
+        entity: { ...n, profileId: n.profile_id },
+      }),
+
+    onError: (_e, vars, ctx) =>
       rollbackCache({
         queryClient,
-        entity: variables.notif,
-        previousData: context,
-      });
-    },
-    onSettled: (_data, _error, variables) => {
+        keyFactory: notificationKeyFactory,
+        entity: { ...vars, profileId: vars.profile_id },
+        previousData: ctx,
+      }),
+
+    onSettled: (_d, _e, vars) =>
       invalidateKeys({
         queryClient,
-        entity: variables.notif,
         keyFactory: notificationKeyFactory,
-      });
-    },
+        entity: { ...vars, profileId: vars.profile_id },
+      }),
   });
 };
 
-// REALTIME HOOK
+/* ────── realtime feed ────── */
 export const useNotificationsRealtime = (profile_id) => {
   const queryClient = useQueryClient();
 
@@ -161,16 +147,13 @@ export const useNotificationsRealtime = (profile_id) => {
           table: "notifications",
           filter: `profile_id=eq.${profile_id}`,
         },
-        () => {
+        () =>
           queryClient.invalidateQueries({
             queryKey: notificationKeyFactory({ profileId: profile_id }).all,
-          });
-        }
+          })
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => supabase.removeChannel(channel);
   }, [profile_id, queryClient]);
 };
