@@ -14,6 +14,9 @@
       "looking": "Looking",
       "offering": "Offering"
     },
+    "filters": {
+      "placeholder": "Search ads..."
+    },
     "buttons": {
       "createAd": "Create Ad"
     }

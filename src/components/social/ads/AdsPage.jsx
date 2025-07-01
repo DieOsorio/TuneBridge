@@ -19,8 +19,14 @@ const AdsPage = () => {
     search: "",
   });
 
-  const { fetchAllAds } = useAds();
-  const { data: ads = [], isLoading, error } = fetchAllAds();
+  const { fetchAllAds, searchMusicianAds } = useAds();
+  const { 
+    data: ads = [], 
+    isLoading, 
+    error 
+  } = filters.search.trim() 
+    ? searchMusicianAds(filters.search) 
+    : fetchAllAds();
 
   const filteredAds = selectedTab === "all"
     ? ads
@@ -45,13 +51,17 @@ const AdsPage = () => {
 
   return (
     <div className="flex flex-col md:flex-row gap-4 p-4">
-      {/* <div className="md:w-1/4"> */}
-        {/* <AdsFiltersPanel filters={filters} setFilters={setFilters} /> */}
-      {/* </div> */}
       <div className="flex-1">
         <div className="text-center">
           <ShinyText text={t("adsPage.title")} speed={3} className="text-3xl font-semibold tracking-wide"/>
         </div>
+      <div className="max-w-md mx-auto mt-4">
+        <AdsFiltersPanel 
+          filters={filters} 
+          setFilters={setFilters} 
+          placeholder={t("adsPage.filters.placeholder")}  
+        />
+      </div>
 
         {/* Tabs */}
         <div className="flex justify-center gap-6 my-4">

@@ -153,3 +153,10 @@ CREATE TRIGGER trg_touch_privacy
 BEFORE UPDATE ON users.privacy_settings
 FOR EACH ROW
 EXECUTE FUNCTION users.touch_privacy();
+
+
+CREATE TRIGGER trg_tsv_musician_ads
+BEFORE INSERT OR UPDATE
+ON social.musician_ads
+FOR EACH ROW
+EXECUTE FUNCTION social.musician_ads_tsv_update();

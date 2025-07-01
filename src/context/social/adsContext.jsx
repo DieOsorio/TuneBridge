@@ -9,6 +9,7 @@ import {
   useUpdateMusicianAdMutation,
   useDeleteMusicianAdMutation,
   useInfiniteUserMusicianAdsQuery,
+  useSearchMusicianAdsQuery
 } from "./adsActions";
 
 const AdsContext = createContext();
@@ -25,6 +26,7 @@ export const AdsProvider = ({ children }) => {
     fetchUserAds: useFetchUserMusicianAdsQuery,
     fetchGroupAds: useFetchGroupMusicianAdsQuery,
     fetchInfiniteByUser: useInfiniteUserMusicianAdsQuery,
+    searchMusicianAds: useSearchMusicianAdsQuery,
     createAd,
     updateAd,
     deleteAd,
