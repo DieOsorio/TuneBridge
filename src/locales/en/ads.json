@@ -69,11 +69,11 @@
       "location": "Location"
     },
     "placeholders": {
-      "title": "Enter a title (up to 30 characters)",
+      "title": "Enter a title",
       "looking": "Enter role/instrument (up to 3)", 
       "offering": "Enter role/instrument (up to 3)", 
       "genres": "Enter genres (up to 3)",
-      "description": "Write a short description (up to 200 charachters)",
+      "description": "Write a short description",
       "location": "Enter location"
     },
     "validations": {

@@ -42,7 +42,7 @@ const AdCreateEditPage = ({ publisherId }) => {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl text-center font-bold mb-4">
+      <h1 className="text-2xl text-yellow-600 font-semibold text-center mb-4">
         {isEditing ? t("adCreateEditPage.title.edit") : t("adCreateEditPage.title.create")}
       </h1>
       <AdForm defaultValues={adData} onSubmit={handleSubmit} publisherId={publisherId} />
