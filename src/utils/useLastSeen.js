@@ -23,5 +23,5 @@ export default function useLastSeen(enabled) {
       document.removeEventListener("visibilitychange", onVisibilityChange);
       if (timer.current) clearInterval(timer.current);
     };
-  }, [lastSeen]);
+  }, [lastSeen, enabled]);
 }

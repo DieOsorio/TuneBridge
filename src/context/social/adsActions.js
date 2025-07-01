@@ -8,6 +8,32 @@ import {
 } from "../helpers/cacheHandler";
 import { musicianAdKeyFactory } from "../helpers/social/socialKeys";
 
+/**
+ * Full‑text search on musician ads.
+ * Uses the tsvector column `content_search` plus a GIN index.
+ *
+ * @param {string} searchTerm User input
+ * @returns {UseQueryResult<Array>} Matching ads
+ */
+export const useSearchMusicianAdsQuery = (searchTerm) =>
+  useQuery({
+    queryKey: musicianAdKeyFactory({ searchTerm }).search,
+    queryFn: async () => {
+      if (!searchTerm) return [];
+
+      const { data, error } = await supabase
+        .schema("social")
+        .from("musician_ads")
+        .select("*")
+        .textSearch("content_search", searchTerm, { type: "websearch" });
+
+      if (error) throw new Error(error.message);
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!searchTerm,
+    select: (data) => (Array.isArray(data) ? data : []),
+  });
+
 // FETCH ALL ADS
 export const useFetchMusicianAdsQuery = () => {
   return useQuery({

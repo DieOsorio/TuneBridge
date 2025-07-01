@@ -786,3 +786,20 @@ begin
   where  id = auth.uid();
 end;
 $$;
+
+
+
+CREATE OR REPLACE FUNCTION social.musician_ads_tsv_update()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.content_search :=
+        setweight(to_tsvector('simple', coalesce(NEW.title,       '')), 'A') ||
+        setweight(to_tsvector('simple', coalesce(NEW.description, '')), 'B') ||
+        setweight(to_tsvector('simple', array_to_string(NEW.looking_for, ' ')), 'B') ||
+        setweight(to_tsvector('simple', array_to_string(NEW.genres,      ' ')), 'C') ||
+        setweight(to_tsvector('simple', coalesce(NEW.location,   '')), 'C');
+  RETURN NEW;
+END;
+$$;

@@ -1,9 +1,32 @@
+import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";      
+import Input from "../../ui/Input";
 
-export const AdsFiltersPanel = ({ filters, setFilters }) => {
+export const AdsFiltersPanel = ({ filters, setFilters, placeholder }) => {
+  const { control, watch } = useForm({
+    defaultValues: { search: filters.search },
+  });
+
+  // propagate changes to the parent
+  const searchValue = watch("search");
+  useEffect(() => {
+    setFilters((f) => ({ ...f, search: searchValue }));
+  }, [searchValue, setFilters]);
+
   return (
-    <div className="p-4 border rounded-lg shadow-md space-y-4">
-      <h2 className="text-lg font-medium">Filter ads</h2>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
+    <form className="p-4 rounded-lg shadow-md space-y-4">
+      <Controller
+        control={control}
+        name="search"
+        render={({ field }) => (
+          <Input
+            id="search"
+            placeholder={placeholder || "Search ads..."}
+            className="bg-gray-800"
+            register={() => field}
+          />
+        )}
+      />
+    </form>
   );
 };
