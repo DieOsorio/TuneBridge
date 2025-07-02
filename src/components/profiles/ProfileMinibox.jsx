@@ -55,7 +55,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
 
   if (!profile) return null;
 
-  const { username, city, country, bio, avatar_url, id } = profile;
+  const { username, state, neighborhood, country, bio, avatar_url, id } = profile;
 
   return (
     <motion.div
@@ -77,9 +77,9 @@ const ProfileMinibox = ({ profile, isLoading }) => {
         </Link>
         <div>
           <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">@{username}</p>
-          {(city || country) && (
+          {(state || country) && (
             <p className="text-zinc-500 text-xs">
-              {city}{city && country ? ", " : ""}{country}
+              {state}{state && country ? ", " : ""}{country}
             </p>
           )}
         </div>

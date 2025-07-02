@@ -81,14 +81,14 @@ const ProfileCard = ({ profile }) => {
             {/* Profile name and location */}
             <div className="text-center">
                 <h3 className="font-semibold text-lg">{profile.username}</h3>
-                {profile.city && profile.country ? (
+                {profile.state && profile.country ? (
                     <p className="text-gray-500">
-                        {profile.city}, {profile.country}
+                        {profile.state}, {profile.country}
                     </p>
                 ) : profile.country ? (
                     <p className="text-gray-500">{profile.country}</p>
-                ) : profile.city ? (
-                    <p className="text-gray-500">{profile.city}</p>
+                ) : profile.state ? (
+                    <p className="text-gray-500">{profile.state}</p>
                 ) : null}
             </div>
 

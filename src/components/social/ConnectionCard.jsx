@@ -99,9 +99,9 @@ const ConnectionCard = ({ profileId, connection, ownProfile }) => {
 
             <div className="text-center px-2 pb-2">
                 <h3 className="font-semibold text-lg">{profile.username}</h3>
-                {profile.city || profile.country ? (
+                {profile.state || profile.country ? (
                     <p className="text-gray-400 text-sm">
-                        {[profile.city, profile.country].filter(Boolean).join(", ")}
+                        {[profile.state, profile.country].filter(Boolean).join(", ")}
                     </p>
                 ) : null}
             </div>

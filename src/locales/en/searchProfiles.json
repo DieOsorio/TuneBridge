@@ -6,8 +6,8 @@
       { "value": "Argentina", "label": "Argentina" }
     ]
   },
-  "city": {
-    "defaultOption": "All Cities",
+  "state": {
+    "defaultOption": "All States",
     "options": [
       { "value": "Montevideo", "label": "Montevideo" },
       { "value": "Buenos Aires", "label": "Buenos Aires" }
