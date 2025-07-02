@@ -19,7 +19,8 @@ const ProfilesSearch = () => {
     const [showFilters, setShowFilters] = useState(false);
     const searchTerm = watch("searchTerm");
     const country = watch("country");
-    const city = watch("city");
+    const state = watch("state");
+    const neighborhood = watch("neighborhood");
     const role = watch("role");
     const instrument = watch("instrument");
 
@@ -36,7 +37,8 @@ const ProfilesSearch = () => {
     // Compose the effective search term by combining searchTerm and selected filters
     let effectiveSearchTerm = searchTerm || "";
     if (country) effectiveSearchTerm += ` ${country}`;
-    if (city) effectiveSearchTerm += ` ${city}`;
+    if (state) effectiveSearchTerm += ` ${state}`;
+    if (neighborhood) effectiveSearchTerm += ` ${neighborhood}`;
     if (role) effectiveSearchTerm += ` ${role}`;
     if (instrument) effectiveSearchTerm += ` ${instrument}`;
 
@@ -93,11 +95,11 @@ const ProfilesSearch = () => {
             ],
         },
         {
-            id: "city",
-            defaultOption: t("city.defaultOption"),
+            id: "state",
+            defaultOption: t("state.defaultOption"),
             options: [
-                { value: "Montevideo", label: t("city.options.0.label") },
-                { value: "Buenos Aires", label: t("city.options.1.label") },
+                { value: "Montevideo", label: t("state.options.0.label") },
+                { value: "Buenos Aires", label: t("state.options.1.label") },
             ],
         },
         {

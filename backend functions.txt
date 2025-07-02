@@ -374,30 +374,41 @@ $$;
 
 
 
--- Updates the searchable content field for a profile based on basic fields
+-- Updates the searchable content field for a profile
 CREATE OR REPLACE FUNCTION users.update_profile_content_search()
-RETURNS TRIGGER
+RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
   NEW.content_search :=
-    to_tsvector('spanish', coalesce(NEW.username, '')) ||
-    to_tsvector('english', coalesce(NEW.username, '')) ||
-    to_tsvector('spanish', coalesce(NEW.firstname, '')) ||
-    to_tsvector('english', coalesce(NEW.firstname, '')) ||
-    to_tsvector('spanish', coalesce(NEW.lastname, '')) ||
-    to_tsvector('english', coalesce(NEW.lastname, '')) ||
-    to_tsvector('spanish', coalesce(NEW.email, '')) ||
-    to_tsvector('english', coalesce(NEW.email, '')) ||
-    to_tsvector('spanish', coalesce(NEW.country, '')) ||
-    to_tsvector('english', coalesce(NEW.country, '')) ||
-    to_tsvector('spanish', coalesce(NEW.city, '')) ||
-    to_tsvector('english', coalesce(NEW.city, '')) ||
-    to_tsvector('spanish', coalesce(NEW.bio, '')) ||
-    to_tsvector('english', coalesce(NEW.bio, ''));
+      to_tsvector('spanish', coalesce(NEW.username,      '')) ||
+      to_tsvector('english', coalesce(NEW.username,      '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.firstname,     '')) ||
+      to_tsvector('english', coalesce(NEW.firstname,     '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.lastname,      '')) ||
+      to_tsvector('english', coalesce(NEW.lastname,      '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.email,         '')) ||
+      to_tsvector('english', coalesce(NEW.email,         '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.country,       '')) ||
+      to_tsvector('english', coalesce(NEW.country,       '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.state,         '')) ||
+      to_tsvector('english', coalesce(NEW.state,         '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.neighborhood,  '')) ||
+      to_tsvector('english', coalesce(NEW.neighborhood,  '')) ||
+
+      to_tsvector('spanish', coalesce(NEW.bio,           '')) ||
+      to_tsvector('english', coalesce(NEW.bio,           ''));
+
   RETURN NEW;
 END;
 $$;
+
 
 
 

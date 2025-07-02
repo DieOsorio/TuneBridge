@@ -1,33 +1,41 @@
-// hooks/useCountryCity.js
 import { useQuery } from "@tanstack/react-query";
+import { Country, State, City } from "country-state-city";
+import { useTranslation } from "react-i18next";
+import countriesLib from "../../locales/countries";
 
-const API = "https://api.countrystatecity.in/v1";
-const HEADERS = {
-  "X-CSCAPI-KEY": import.meta.env.VITE_CSC_API_KEY,
-};
-
+/* countries (ISO‑2, name, etc.) */
 export const useCountries = () => {
+  const { i18n } = useTranslation();        // "en" | "es" | …
+  const lang     = i18n.language.startsWith("es") ? "es" : "en";
+
   return useQuery({
-    queryKey: ["countries"],
-    queryFn: async () => {
-      const res = await fetch(`${API}/countries`, { headers: HEADERS });
-      if (!res.ok) throw new Error("Error fetching countries");
-      return res.json();
+    queryKey: ["countries", lang],
+    queryFn: () => {
+      const raw = Country.getAllCountries();
+      return raw.map((c) => ({
+        isoCode: c.isoCode,
+        name: countriesLib.getName(c.isoCode, lang) || c.name, // fallback to EN
+      }));
     },
     staleTime: 1000 * 60 * 60 * 24,
   });
 };
 
-export const useCities = (countryCode) => {
-  return useQuery({
-    queryKey: ["cities", countryCode],
+/* states / provinces of a country */
+export const useStates = (countryCode) =>
+  useQuery({
+    queryKey: ["states", countryCode],
     enabled: !!countryCode,
-    queryFn: async () => {
-      const res = await fetch(`${API}/countries/${countryCode}/cities`, {
-        headers: HEADERS,
-      });
-      if (!res.ok) throw new Error("Error fetching cities");
-      return res.json();
-    },
+    queryFn: () => State.getStatesOfCountry(countryCode),
   });
-};
+
+/* cities of a state OR fall back to all cities of the country */
+export const useCities = (countryCode, stateCode) =>
+  useQuery({
+    queryKey: ["cities", countryCode, stateCode],
+    enabled: !!countryCode,
+    queryFn: () =>
+      stateCode
+        ? City.getCitiesOfState(countryCode, stateCode)
+        : City.getCitiesOfCountry(countryCode),
+  });

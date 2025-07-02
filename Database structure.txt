@@ -2,7 +2,7 @@ users (schema)
 │
 ├── profiles
 │   ├─ id (UUID, auth.uid())
-│   ├─ username, email, avatar_url, country, city, firstname, lastname, gender, birthdate, bio
+│   ├─ username, email, avatar_url, country, neighborhood, state, firstname, lastname, gender, birthdate, bio
 │   ├─ content_search (tsvector) and related search vectors
 │   └─ Triggers (unique username enforcement, update search vectors)
 │

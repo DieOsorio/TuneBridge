@@ -26,7 +26,8 @@
       "firstname": "Name",
       "lastname": "Last Name",
       "country": "Country",
-      "city": "City",
+      "state": "State",
+      "neighborhood": "City",
       "gender": "Gender",
       "age": "Age",
       "years": "years"
@@ -73,18 +74,21 @@
         "firstname": "First name",
         "lastname": "Last name",
         "country": "Country",
-        "city": "City",
+        "state": "State",
+        "neighborhood": "City",
         "username": "Username",
         "gender": "Gender",
         "birthdate": "Birthdate",
-        "bioCount": "Characters used"
+        "bioCount": "Characters used",
+        "saved": "Saved ✓"
       },
       "placeholders": {
         "bio": "Bio",
         "firstname": "First name",
         "lastname": "Last name",
         "country": "Country",
-        "city": "City",
+        "state": "State",
+        "neighborhood": "City",
         "username": "Username",
         "genderDefault": "Choose your gender",
         "genderOptions": {

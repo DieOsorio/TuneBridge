@@ -109,9 +109,13 @@ const AccountSettings = () => {
               disabled={savingPrefs}
               className="!bg-emerald-600 hover:!bg-emerald-700"
             >
-              {savingPrefs ? t("buttons.saving") : t("buttons.save")}
+              {savingPrefs 
+                ? t("buttons.saving")
+                : saved 
+                  ? t("buttons.saved")
+                  : t("buttons.save")
+              }
             </Button>
-            {saved && <span className="my-auto text-emerald-400">{t("buttons.saved")}</span>}
           </div>
         </form>
       </section>

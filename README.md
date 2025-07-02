@@ -57,7 +57,7 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 - Users create accounts via username, email, and password.
 - A confirmation email is sent. After clicking the link, users are prompted to complete their profile with:
   - First & Last Name  
-  - Country, City, Gender, Date of Birth  
+  - Country, State, Neighborhood, Gender, Date of Birth  
   - Editable Username  
   - Short Bio (max 100 characters)  
   - Profile Picture
@@ -210,7 +210,7 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 ### 🔍 Advanced Search & Filters
 
 - Easily search for posts and profiles using a single search bar  
-- Filter musician profiles by country, city, role, and instrument  
+- Filter musician profiles by country, state, neighborhood, role, and instrument  
 - Switch between basic and advanced filters seamlessly  
 - Interface is designed to work across both desktop and mobile devices
 

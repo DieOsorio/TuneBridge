@@ -12,6 +12,12 @@ import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useTranslation } from "react-i18next";
 import Textarea from "../ui/Textarea";
+import { useCities, useCountries, useStates } from "../../context/helpers/useCountryCity";
+import { Country, State, City } from "country-state-city";
+
+
+const cleanStateName = (name) =>
+  name.endsWith(" Department") ? name.replace(/ Department$/, "") : name;
 
 const ProfileSettings = ({ profile, onSave, onCancel }) => {
   const { t } = useTranslation("profile");
@@ -24,6 +30,7 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
     setValue,
     reset,
     watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -31,8 +38,9 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
       username: "",
       gender: "",
       country: "",
+      state: "",
       birthdate: null,
-      city: "",
+      neighborhood: "",
       firstname: "",
       lastname: "",
     },
@@ -42,24 +50,42 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [localError, setLocalError] = useState("");
+  const [saved, setSaved] = useState(false);
 
   const avatarClickRef = useRef(null);
 
   useEffect(() => {
     if (profile) {
+      const countryCode = Country.getAllCountries()
+        .find(c => c.name === profile.country)?.isoCode || profile.country || "";
+      
+      const stateCode = State.getStatesOfCountry(countryCode)
+        .find(s => cleanStateName(s.name) === profile.state)?.isoCode || profile.state || "";
+
+      const neighborhood = City.getCitiesOfState(countryCode, stateCode)
+        .find(c => c.name === profile.neighborhood)?.name || profile.neighborhood || "";  
+      
       reset({
         bio: profile.bio || "",
         username: profile.username || "",
         gender: profile.gender || "",
-        country: profile.country || "",
+        country: countryCode,
+        state: stateCode,
         birthdate: profile.birthdate ? new Date(profile.birthdate) : "",
-        city: profile.city || "",
+        neighborhood: neighborhood,
         firstname: profile.firstname || "",
         lastname: profile.lastname || "",
       });
       setAvatar_url(profile.avatar_url || "");
     }
   }, [profile, reset]);
+
+  // fetch lists country, state, neighborhood
+  const { data: countries = [] } = useCountries();
+  const selectedCountry = watch("country");
+  const { data: states = [] } = useStates(selectedCountry);
+  const selectedState = watch("state");
+  const { data: cities = [] } = useCities(selectedCountry, selectedState);
 
   const handleAvatarUpdate = (file) => {
     if (file.length > 0) {
@@ -88,14 +114,22 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
         );
         setAvatar_url(avatar);
       }
-
+      const countryObj = Country.getCountryByCode(data.country);
+      const stateObj = State.getStateByCodeAndCountry(data.state, data.country);
       await updateProfile({
         ...data,
-        avatar_url: avatar,
-        id: user.id,
+         country:      countryObj?.name || data.country,
+         state:        cleanStateName(stateObj?.name || data.state),
+         neighborhood: data.neighborhood,
+         avatar_url: avatar,
+         id: user.id,
       });
 
       if (onSave) onSave();
+      setSaved(true);
+      setTimeout(() => {
+        setSaved(false);
+      }, 2500);
     } catch (error) {
       setLocalError(error.message || t("edit.errors.updateFailed"));
     }
@@ -167,20 +201,42 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
           error={errors.lastname}
         />
 
-        <Input
+        <Select
           id="country"
           label={t("edit.labels.country")}
-          placeholder={t("edit.placeholders.country")}
-          register={register}
+          defaultOption={t("edit.placeholders.country")}
+          options={countries.map(c => ({ value: c.isoCode, label: c.name }))}
+          control={control}
           error={errors.country}
+          onChange={(e) => {
+            setValue("country", e.target.value);
+            setValue("state",  ""); // reset lower levels
+            setValue("neighborhood",   "");
+          }}
         />
 
-        <Input
-          id="city"
-          label={t("edit.labels.city")}
-          placeholder={t("edit.placeholders.city")}
-          register={register}
-          error={errors.city}
+        <Select
+          id="state"
+          label={t("edit.labels.state")}
+          defaultOption={t("edit.placeholders.state")}
+          options={states.map(s => ({ value: s.isoCode, label: cleanStateName(s.name) }))}
+          control={control}
+          error={errors.state}
+          disabled={!selectedCountry}
+          onChange={(e) => {
+            setValue("state", e.target.value);
+            setValue("neighborhood",  "");
+          }}
+        />
+
+        <Select
+          id="neighborhood"
+          label={t("edit.labels.neighborhood")}
+          defaultOption={t("edit.placeholders.neighborhood")}
+          options={cities.map(c => ({ value: c.name, label: c.name }))}
+          control={control}
+          error={errors.neighborhood}
+          disabled={!selectedState}
         />
 
         <Input
@@ -219,7 +275,7 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
           error={errors.gender}
         />
 
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-1">
           <label htmlFor="birthdate" className="block text-sm font-medium mb-2 text-gray-200">
             {t("edit.labels.birthdate")}
           </label>
@@ -238,13 +294,19 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
           />
         </div>
         <div className="sm:col-span-2 flex justify-center mt-10 gap-4">
-          <Button 
-            className="!bg-emerald-600 hover:!bg-emerald-700 text-white" 
-            type="submit" 
-            disabled={isSubmitting}            
-            >
-            {isSubmitting ? t("edit.buttons.saving") : t("edit.buttons.save")}
+          <Button
+            className="!bg-emerald-600 hover:!bg-emerald-700 text-white"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting 
+            ? t("edit.buttons.saving")
+            : saved 
+              ? t("edit.labels.saved")
+              : t("edit.buttons.save")
+            }
           </Button>
+
           {onCancel &&
             <Button
               className="!bg-gray-600 hover:!bg-gray-700 text-white"
@@ -263,56 +325,3 @@ const ProfileSettings = ({ profile, onSave, onCancel }) => {
 };
 
 export default ProfileSettings;
-
-
-// components/CountryCitySelect.jsx
-// import { useCountries, useCities } from "../hooks/useCountryCity";
-// import Select from "../ui/Select";
-// import { Controller } from "react-hook-form";
-
-// const CountryCitySelect = ({ control, watch, setValue, errors }) => {
-//   const selectedCountry = watch("country");
-//   const { data: countries = [] } = useCountries();
-//   const { data: cities = [] } = useCities(selectedCountry);
-
-//   return (
-//     <>
-//       <Controller
-//         control={control}
-//         name="country"
-//         rules={{ required: true }}
-//         render={({ field }) => (
-//           <Select
-//             id="country"
-//             label="Country"
-//             options={countries.map(c => ({ value: c.iso2, label: c.name }))}
-//             {...field}
-//             onChange={e => {
-//               field.onChange(e);
-//               setValue("city", ""); // resetea ciudad si cambia país
-//             }}
-//             error={errors.country}
-//           />
-//         )}
-//       />
-
-//       <Controller
-//         control={control}
-//         name="city"
-//         rules={{ required: true }}
-//         render={({ field }) => (
-//           <Select
-//             id="city"
-//             label="City"
-//             options={(cities || []).map(c => ({ value: c.name, label: c.name }))}
-//             {...field}
-//             disabled={!selectedCountry}
-//             error={errors.city}
-//           />
-//         )}
-//       />
-//     </>
-//   );
-// };
-
-// export default CountryCitySelect;

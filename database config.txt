@@ -11,7 +11,8 @@ Schema: users
         email (text): User email.
         avatar_url (text): User avatar URL.
         country (text): User country.
-        city (text): User city.
+        neighborhood (text): User neighborhood.
+        state (text): User state
         firstname (text): User first name.
         lastname (text): User last name.
         gender (text): User gender.
