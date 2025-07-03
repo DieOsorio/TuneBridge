@@ -4,19 +4,17 @@ import Button from "../../ui/Button";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import { useTranslation } from "react-i18next";
-import { useView } from "../../../context/ViewContext";
 
 const GroupItem = ({ groupId }) => {
   const { t } = useTranslation("profileGroup");
   const { fetchProfileGroup } = useProfileGroups(); // Fetch group details
   const navigate = useNavigate();
-  const { manageView } = useView();
 
   // Fetch the profile group data
   const { data: group, isLoading, error } = fetchProfileGroup(groupId);
 
   const handleViewGroup = () => {
-    manageView("members", "group");
+    // manageView("members", "group");
     navigate(`/group/${group.id}`);
   }
 

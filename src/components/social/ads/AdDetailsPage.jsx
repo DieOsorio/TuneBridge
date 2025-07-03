@@ -12,7 +12,6 @@ import { useConversations } from "../../../context/social/chat/ConversationsCont
 import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
 import { useAuth } from "../../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { useView } from "../../../context/ViewContext";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
 import ConfirmDialog from "../../ui/ConfirmDialog";
@@ -22,7 +21,6 @@ const AdDetailsPage = () => {
   const { user } = useAuth();
   const { id } = useParams();
   const { fetchAd, deleteAd } = useAds();
-  const { externalView } = useView();
   const {findConversation, createConversation} = useConversations();
   const { addParticipant } = useParticipants();
   const { data: ad, isLoading: adLoading, error } = fetchAd(id);
@@ -204,7 +202,7 @@ const AdDetailsPage = () => {
       <div className="flex justify-between items-center">
         {/* Desktop: text + arrow */}        
         <Link
-          to={externalView === "profile" ? `/profile/${profile.id}` : "/ads"}
+          to="/ads"
           className={`group relative items-center justify-end hidden md:flex ${isSearching ? "text-cyan-400 hover:text-cyan-300" : "text-emerald-400 hover:text-emerald-300"} transition-colors text-sm font-medium`}
         >
           <FiArrowLeft size={25} />

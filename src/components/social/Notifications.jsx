@@ -1,49 +1,53 @@
-import { useView } from "../../context/ViewContext";
-import NotificationsList from "./NotificationsList";
-import ConnectionsList from "./ConnectionsList"; 
-import { useTranslation } from "react-i18next";
+import { NavLink, Routes, Route } from "react-router-dom";
+import { useTranslation }         from "react-i18next";
 
-function Notifications({ profileId }) {
+import NotificationsList from "./NotificationsList";
+import ConnectionsList   from "./ConnectionsList";
+
+export default function Notifications({ profileId }) {
   const { t } = useTranslation("profile");
-  const { internalView, setInternalView } = useView();
+
+  /* ---------- helpers ---------- */
+  const base =
+    "cursor-pointer px-4 py-2 text-sm sm:text-base font-semibold rounded-lg transition-all";
+  const active   = `${base} border-b-2 border-sky-600 text-white shadow-lg`;
+  const inactive = `${base} text-gray-300 hover:text-sky-600`;
 
   return (
     <>
-      <div className="bg-gradient-to-b max-w-4xl mx-auto from-gray-800 to-gray-950 text-white p-4 rounded-t-lg h-25">
-        <div className="flex space-x-8 justify-center">
-          <span
-            onClick={() => setInternalView("allNotifications")}
-            className={`cursor-pointer px-4 py-2 text-sm sm:text-base text-center rounded-lg font-semibold transition-all duration-300 ${
-              internalView === "allNotifications"
-                ? "border-b-2 border-sky-600 text-white shadow-lg"
-                : "hover:text-sky-600 text-gray-300"
-            }`}
+      {/* internal nav */}
+      <div className="bg-gradient-to-b from-gray-800 to-gray-950 rounded-t-lg">
+        <nav className="flex justify-center space-x-8 py-3">
+          <NavLink
+            end
+            to={`/profile/${profileId}/notifications`}
+            className={({ isActive }) => (isActive ? active : inactive)}
           >
             {t("profile.internNav.notifications")}
-          </span>
+          </NavLink>
 
-          <span
-            onClick={() => setInternalView("pending")}
-            className={`cursor-pointer px-4 py-2 text-sm sm:text-base text-center rounded-lg font-semibold transition-all duration-300 ${
-              internalView === "pending"
-                ? "border-b-2 border-sky-600 text-white shadow-lg"
-                : "hover:text-sky-600 text-gray-300"
-            }`}
+          <NavLink
+            to={`/profile/${profileId}/notifications/pending`}
+            className={({ isActive }) => (isActive ? active : inactive)}
           >
             {t("profile.internNav.pending")}
-          </span>
-        </div>
+          </NavLink>
+        </nav>
       </div>
 
-      {internalView === "pending" && (
-        <ConnectionsList profileId={profileId} checkStatus="pending" />
-      )}
+      {/* internal routes */}
+      <Routes>
+        {/* all notifications */}
+        <Route index element={<NotificationsList profileId={profileId} />} />
 
-      {internalView === "allNotifications" && (
-        <NotificationsList profileId={profileId} />
-      )}
+        {/* pending notifications */}
+        <Route
+          path="pending"
+          element={
+            <ConnectionsList profileId={profileId} checkStatus="pending" />
+          }
+        />
+      </Routes>
     </>
   );
 }
-
-export default Notifications;

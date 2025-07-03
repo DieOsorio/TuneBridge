@@ -5,7 +5,6 @@ import { FcLikePlaceholder } from "react-icons/fc";
 import { FcLike } from "react-icons/fc";
 import { LiaCommentsSolid } from "react-icons/lia";
 import { Link, useNavigate } from 'react-router-dom';
-import { useView } from '../../context/ViewContext';
 import { usePrefetchProfile } from '../../context/profile/profileActions';
 import ErrorMessage from '../../utils/ErrorMessage';
 import Loading from '../../utils/Loading';
@@ -62,7 +61,6 @@ function PostCard({ post }) {
   const { data: postlikes = [] } = postLikesQuery(post.id); // retrieve the likes associated with the post
   const likesCount = postlikes.length; // count the number of likes for the post
 
-  const { manageView } = useView(); // manage the views
   const { getHashtagsByPostId } = usePostHashtags(); // fetch post hashtags
   const { data: hashtags } = getHashtagsByPostId(post.id); // retrieve hashtags associated with the post
   const [showMinibox, setShowMinibox] = useState(false); // manage minibox visibility
@@ -150,7 +148,6 @@ function PostCard({ post }) {
             className="relative mb-auto"
           >
             <Link
-              onClick={() => manageView("about", "profile")}
               to={`/profile/${profile.id}`}
             >
               <h2 className="font-bold text-lg text-gray-200">

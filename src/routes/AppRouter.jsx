@@ -34,7 +34,7 @@ const AppRouter = () => {
       <main className="flex-grow p-4">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/explore" element={<Explore />} />
+          <Route path="/explore/*" element={<Explore />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup-success" element={<SignUpSuccess />} />
@@ -60,7 +60,7 @@ const AppRouter = () => {
           <Route path="/chat/" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
           <Route path="/edit-post/:postId" element={<ProtectedRoute><PostForm /></ProtectedRoute>} />
           <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-          <Route path="/profile/:identifier" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/profile/:identifier/*" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/hashtag/:hashtag" element={<Hashtag />} />
         </Routes>
       </main>

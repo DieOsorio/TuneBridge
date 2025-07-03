@@ -75,7 +75,7 @@ const DisplayMusicInfo = ({ profileId }) => {
         />
       )}
       {roles.length === 0 ? (
-        <p className="text-gray-500">
+        <p className="text-gray-400 text-center">
           {t("roles.none")}
         </p>
       ) : (
