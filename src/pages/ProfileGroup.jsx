@@ -7,11 +7,11 @@ import ErrorMessage from "../utils/ErrorMessage";
 import GroupHeader from "../components/profiles/group/GroupHeader"; // Header for group info
 import { useTranslation } from "react-i18next";
 import GroupMembers from "../components/profiles/group/GroupMembers";
-import { useView } from "../context/ViewContext";
+// import { useView } from "../context/ViewContext";
 import GroupForm from "../components/profiles/group/GroupForm";
 
 const ProfileGroup = () => {
-  const { externalView, internalView, manageView } = useView(); // Manage internal/external views
+  // const { externalView, internalView, manageView } = useView(); // Manage internal/external views
   const { groupId } = useParams(); // Get the group ID from the URL
   const { user } = useAuth(); // Get the logged-in user's info
   const { fetchProfileGroup } = useProfileGroups(); // Fetch group details
@@ -63,7 +63,7 @@ const ProfileGroup = () => {
         <GroupHeader groupData={groupData} isAdmin={isAdmin} />
 
         {/* Group Members */}
-        {(externalView === "group" || externalView == "") && (internalView === "members" || internalView == "") &&
+        {/* {(externalView === "group" || externalView == "") && (internalView === "members" || internalView == "") && */}
         (<GroupMembers
           groupId={groupId}
           groupMembers={groupMembers}
@@ -73,14 +73,14 @@ const ProfileGroup = () => {
           removeGroupMember={removeGroupMember}
           updateGroupMember={updateGroupMember}
           refetch={refetch}
-        />  )  }
-        {externalView === "group" && internalView === "edit" &&
+        />  )  
+        {/* {externalView === "group" && internalView === "members" && */}
         <GroupForm
           group={groupData}
           onSave={() => manageView("members", "group")}
           onCancel={() => manageView("members", "group")}
         />
-        }     
+        {/* }      */}
       </div>
     </div>
   );

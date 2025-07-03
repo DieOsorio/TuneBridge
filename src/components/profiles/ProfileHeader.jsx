@@ -1,12 +1,11 @@
 import ProfileAvatar from './ProfileAvatar';
-import { useView } from '../../context/ViewContext'
 import { useAuth } from "../../context/AuthContext";
 import Button from '../ui/Button';
 import { BsFillBellFill } from "react-icons/bs";
 import { IoIosSettings } from "react-icons/io";
 import { IoChatboxSharp } from "react-icons/io5";
 import { IoChatbubblesSharp } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useConversations } from '../../context/social/chat/ConversationsContext';
 import { useParticipants } from '../../context/social/chat/ParticipantsContext';
 import { useState, useEffect } from 'react';
@@ -25,7 +24,6 @@ import { usePrivacySettingsQuery } from '../../context/settings/settingsActions'
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
-    const { manageView } = useView();
     const { user } = useAuth();
     const navigate = useNavigate();
     const { data: privacyPrefs } = usePrivacySettingsQuery(profileData.id); // Fetch privacy preferences for the profile
@@ -127,12 +125,13 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
         {/* Profile Avatar and Info */}
         <div className="flex items-center gap-4 flex-grow">
-          <ProfileAvatar
-            onClick={() => manageView("about", "profile")}
-            avatar_url={profileData.avatar_url}
-            className="flex-shrink-0 !w-24 !h-24"
-            gender={profileData.gender}
-          />
+          <Link to={`/profile/${profileData.id}`}>
+            <ProfileAvatar
+              avatar_url={profileData.avatar_url}
+              className="flex-shrink-0 !w-24 !h-24"
+              gender={profileData.gender}
+            />
+          </Link>
           <div className="flex flex-col gap-2 flex-grow">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 break-words">
               {profileData.username}
@@ -240,7 +239,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
               <div className="relative">
                 <BsFillBellFill
                   className="w-7 h-7 text-white cursor-pointer"
-                  onClick={() => manageView("allNotifications", "notifications")}
+                  onClick={() => navigate(`/profile/${profileData.id}/notifications`)}
                   title={t("profile.titles.notifications")}
                 />
                 {!isLoading && unreadCount > 0 && (
@@ -334,12 +333,12 @@ function ProfileHeader({ isOwnProfile, profileData }) {
         
         <div>
           <div className="mb-4">
-            <Button onClick={() => manageView("about", "profile")}>
+            <Button onClick={() => navigate(`/profile/${profileData.id}`)}>
               {t("profile.navigation.about")}
             </Button>
           </div>
           <div className="sm:mb-4">
-            <Button onClick={() => manageView("ads", "profile")}>
+            <Button onClick={() => navigate(`/profile/${profileData.id}/ads`)}>
               {t("profile.navigation.ads")}
             </Button>
           </div>
@@ -347,14 +346,14 @@ function ProfileHeader({ isOwnProfile, profileData }) {
 
         <div>
           <div className="mb-4">
-            <Button onClick={() => manageView("displayPosts", "profile")}>
+            <Button onClick={() => navigate(`/profile/${profileData.id}/posts`)}>
               {t("profile.navigation.posts")}
             </Button>
           </div>
           <div className="sm:mb-4">
             <Button
               starBorder
-              onClick={() => manageView("groups", "profile")}
+              onClick={() => navigate(`/profile/${profileData.id}/groups`)}
               className='!bg-amber-800 hover:!bg-amber-900'
             >
               {t("profile.navigation.groups")}

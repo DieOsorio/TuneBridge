@@ -4,7 +4,8 @@
     "groups": "Grupos",
     "createNewGroup": "Crear Nuevo Grupo",
     "notInAnyGroups": "Aún no formas parte de ningún grupo.",
-    "userNotInAnyGroups": "Este usuario no forma parte de ningún grupo."
+    "userNotInAnyGroups": "Este usuario no forma parte de ningún grupo.",
+    "userGroupsComing": "Los Grupos de Usuarios están en desarrollo. ¡Próximamente!"
   },
 
   "manageMembers": {

@@ -5,9 +5,11 @@ import Loading from "../../../utils/Loading";
 import AdCard from "./AdCard";
 import ShinyText from "../../ui/ShinyText";
 import PlusButton from "./PlusButton"
+import { useAuth } from "../../../context/AuthContext";
 
 function ProfileAds({ profileId }) {
   const { t } = useTranslation("ads");
+  const { user } = useAuth();
   const { fetchInfiniteByUser } = useAds();
   const { 
     data: ads, 
@@ -17,6 +19,8 @@ function ProfileAds({ profileId }) {
     isLoading,
     error,
    } = fetchInfiniteByUser(profileId);
+
+  const ownProfile = profileId === user.id;
 
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error.message} />
@@ -28,7 +32,15 @@ function ProfileAds({ profileId }) {
         <ShinyText text={t("profileAds.title")} speed={3} className="text-3xl tracking-wide"/> 
       </h2>
 
-      <PlusButton t={t} />
+      {
+        ownProfile && (
+          <PlusButton 
+            label={t("adsPage.buttons.createAd")}
+            to="/ads/new"
+            showLabelOnMobile={true}
+          />
+        )
+      }
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {userAds.length > 0 ? (
@@ -36,7 +48,7 @@ function ProfileAds({ profileId }) {
               <AdCard key={ad.id} ad={ad} publisherId={profileId} />
           ))
       ) : (
-          <p className="col-span-full text-center text-gray-500">
+          <p className="col-span-full text-center text-gray-400">
               {t("profileAds.empty")}
           </p>
       )}

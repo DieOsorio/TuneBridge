@@ -1,9 +1,7 @@
 import ProfileAvatar from "../ProfileAvatar";
 import Button from "../../ui/Button"; // Import the Button component
-import { useView } from "../../../context/ViewContext"; // Context to manage views
 
 const GroupHeader = ({ groupData, isAdmin }) => {
-  const { manageView } = useView(); // Manage internal/external views
 
   return (
     <div className="bg-gradient-to-l from-amber-950 to-amber-800 mb-4 p-4 rounded-b-lg">
@@ -25,7 +23,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
               <div className="mb-4">
                 <Button
                   className="!bg-sky-700 hover:!bg-sky-800"
-                  onClick={() => manageView("calendar", "group")}
+                  // onClick={() => manageView("calendar", "group")}
                 >
                   Calendar
                 </Button>
@@ -35,7 +33,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
           <div className="sm:mb-4">
             <Button
               className="!bg-sky-700 hover:!bg-sky-800"
-              onClick={() => manageView("posts", "group")}
+              // onClick={() => manageView("posts", "group")}
             >
               View Posts
             </Button>
@@ -50,7 +48,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
               <div className="mb-4">
                 <Button
                   className="!bg-sky-700 hover:!bg-sky-800"
-                  onClick={() => manageView("edit", "group")}
+                  // onClick={() => manageView("edit", "group")}
                 >
                   Edit Group
                 </Button>
@@ -61,7 +59,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
             <div className="sm:mb-4">
               <Button
                 className="!bg-sky-700 hover:!bg-sky-800"
-                onClick={() => manageView("members", "group")}
+                // onClick={() => manageView("members", "group")}
               >
                 Members
               </Button>

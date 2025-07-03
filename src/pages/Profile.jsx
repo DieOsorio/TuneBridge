@@ -1,128 +1,96 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
-import { useAuth } from "../context/AuthContext";
-import Loading from "../utils/Loading";
-import ErrorMessage from "../utils/ErrorMessage"
-import ConnectionsList from "../components/social/ConnectionsList";
-import PostsList from "../components/social/PostsList";
-import { useView } from "../context/ViewContext";
-import ProfileData from "../components/profiles/ProfileData";
-import ProfileHeader from "../components/profiles/ProfileHeader";
-import Notifications from "../components/social/Notifications";
+import {
+  Routes,
+  Route,
+  useParams,
+} from "react-router-dom";
+
+import { useAuth }    from "../context/AuthContext";
 import { useProfile } from "../context/profile/ProfileContext";
-import UserGroups from "../components/profiles/group/UserGroups";
+
+import Loading        from "../utils/Loading";
+import ErrorMessage   from "../utils/ErrorMessage";
+import ProfileHeader  from "../components/profiles/ProfileHeader";
+
+import ProfileData          from "../components/profiles/ProfileData";
+import DisplayMusicInfo     from "../components/music/DisplayMusicInfo";
+import ConnectionsList      from "../components/social/ConnectionsList";
+import PostsList            from "../components/social/PostsList";
+import PostForm             from "../components/social/PostForm";
+import UserGroups           from "../components/profiles/group/UserGroups";
+import ProfileAds           from "../components/social/ads/ProfileAds";
+import Notifications        from "../components/social/Notifications";
 import { useTranslation } from "react-i18next";
-import ProfileAds from "../components/social/ads/ProfileAds";
-import MatchScoreIndicator from "../components/profiles/MatchScoreIndicator";
-import PostForm from "../components/social/PostForm";
 
-const Profile = () => {
-  const { t } = useTranslation("profile"); // Initialize translation function
-  const { identifier } = useParams(); // Get the profile identifier from the URL
-  const { user, loading: authLoading } = useAuth(); // Get the logged-in user's info
+export default function Profile() {
+  const { t } = useTranslation("profileGroup", {keyPrefix: "userGroups"});
+  const { identifier } = useParams();
+  const { user, loading: authLoading } = useAuth();
   const { fetchProfile } = useProfile();
-  const { data: profileData, isLoading: profileQueryLoading, error } = fetchProfile(identifier); // Get the profile data
-  const { externalView, internalView, manageView } = useView(); // Context to manage views
-  
-  // On refresh, go to profile -> about View
-  useEffect(() => {
-    if (!externalView) {
-      manageView("about", "profile");
-    }
-  }, [externalView, manageView]);
 
-  if (authLoading || profileQueryLoading) {
-    return <Loading />;
-  }
+  const {
+    data: profile,
+    isLoading,
+    error,
+  } = fetchProfile(identifier);
 
-  if (error) {
-    return <ErrorMessage error={error.message || t("profile.errorLoading")} />;
-  }
+  if (authLoading || isLoading) return <Loading />;
+  if (error)                  return <ErrorMessage error={error.message} />;
+  if (!profile)               return null;
 
-  if (!profileData) {
-    return <div>{t("profile.noData")}</div>;
-  }
+  const isOwn = user.id === identifier;
 
-  // Check if the logged-in user is viewing their own profile
-  const isOwnProfile = user.id === identifier;
+  /* ---------- Internal Views ---------- */
+
+  const About = () => (
+    <>
+      <ProfileData        profileData={profile} />
+      <DisplayMusicInfo   profileId={profile.id} />
+      <ConnectionsList    profileId={profile.id} checkStatus="accepted" />
+    </>
+  );
+
+  const Posts = () => (
+    <PostsList profileId={profile.id} isOwnProfile={isOwn} />
+  );
+
+  const CreatePost = () => <PostForm />;
+
+  const Groups = () => (
+    // <UserGroups profileId={profile.id} isOwnProfile={isOwn} />
+    <p className="text-center text-gray-400">{t("userGroupsComing")}</p>
+  );
+
+  const Ads = () => <ProfileAds profileId={profile.id} />;
+
+  /* ---------- UI ---------- */
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-transparent text-white">
-      {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8 gap-8">
-        {/* Render based on externalView */}
-        <div className="max-w-4xl y mx-auto">
-          <ProfileHeader profileData={profileData} isOwnProfile={isOwnProfile} />
-        </div>
-        
-        {/* Create Post View */}
-        {isOwnProfile && externalView === "profile" && internalView === "createPost" && (
-          <PostForm />
-        )}
+    <div className="flex flex-col min-h-screen text-white">
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
 
-        {/* Notifications View */}
-        {isOwnProfile && externalView === "notifications" && (
-          <Notifications profileId={profileData.id} />
-        )}
-        
+        <ProfileHeader profileData={profile} isOwnProfile={isOwn} />
 
-        {/* Default Profile View */}
-        {externalView === "profile" && (
-          <div className="bg-gradient-to-l max-w-4xl mx-auto to-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8">
-            {/* About View */}
-            {internalView === "about" && (
-              <>
-                <ProfileData profileData={profileData} />
-                <DisplayMusicInfo profileId={profileData.id} />
-              </>
-            )}
 
-            {/* Match View */}
-            {!isOwnProfile && externalView === "profile" && internalView === "matchScore" && (
-              <MatchScoreIndicator 
-              otherProfile={profileData} />
-            )}
+        {/* Internal Routes */}
+        <Routes>
+          <Route index        element={<About />} />
+          <Route path="posts" element={<Posts />} />
 
-            {/* Posts View */}
-            {externalView === "profile" && internalView === "displayPosts" && (
-              <PostsList 
-              isOwnProfile={isOwnProfile}
-              profileId={profileData.id} />
-            )}
+          {isOwn && (
+            <Route path="create" element={<CreatePost />} />
+          )}
 
-            {/* User Groups View */}
-            {/* {internalView === "groups" && externalView === "profile" && (
-              <UserGroups
-              isOwnProfile={isOwnProfile} 
-              profileId={identifier}
-              />
-            )} */}
+          <Route path="groups"        element={<Groups />} />
+          <Route path="ads"           element={<Ads />} />
 
-            {internalView === "groups" && externalView === "profile" && (
-              <div className="text-center text-gray-400 py-8">
-                {t("profile.userGroupsComing")}
-              </div>
-            )}
-
-            {/* Music Ads View */}
-            {internalView === "ads" && externalView === "profile" && (
-              <ProfileAds 
-                profileId={profileData.id}
-              />
-            )}
-
-            {/* Connections List View */}
-            {externalView === "profile" && internalView === "about" && (
-            <ConnectionsList
-              profileId={profileData.id}
-              checkStatus="accepted"
-            />)}
-          </div>
-        )}
+          {isOwn && (
+            <Route
+              path="notifications/*"
+              element={<Notifications profileId={profile.id} />}
+            />
+          )}
+        </Routes>
       </div>
     </div>
   );
-};
-
-export default Profile;
+}

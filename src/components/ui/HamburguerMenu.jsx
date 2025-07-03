@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth to access signOut
-import { useView } from "../../context/ViewContext";
+import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaBolt, FaRegCompass, FaRegUser } from "react-icons/fa";
 import { FiLogIn, FiUserPlus } from "react-icons/fi";
@@ -12,8 +11,7 @@ import { TiMediaFastForwardOutline } from "react-icons/ti";
 const HamburgerMenu = ({ id }) => {
   const { t } = useTranslation("ui");
   const [isOpen, setIsOpen] = useState(false);
-  const { signOut } = useAuth(); // Access signOut from AuthContext
-  const { manageView } = useView();
+  const { signOut } = useAuth();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -56,7 +54,6 @@ const HamburgerMenu = ({ id }) => {
                   to={`/profile/${id}`}
                   className="block text-lg"
                   onClick={() => {
-                    manageView("about", "profile");
                     toggleMenu();
                   }}
                 >
@@ -71,7 +68,6 @@ const HamburgerMenu = ({ id }) => {
                   to="/explore"
                   className="block text-lg"
                   onClick={() => {
-                    manageView(null, "postsList");
                     toggleMenu();
                   }}
                 >
@@ -86,27 +82,12 @@ const HamburgerMenu = ({ id }) => {
                   to="/ads"
                   className="block text-lg"
                   onClick={() => {
-                    manageView(null, "ads");
                     toggleMenu();
                   }}
                 >
                   {t("nav.links.ads")}
                 </Link>
-              </li>
-              
-              <li className="px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
-                <TiMediaFastForwardOutline size={24} className="text-sky-600" />
-
-                <Link
-                  to={`/media/${id}`}
-                  className="block text-lg"
-                  onClick={() => {
-                    toggleMenu();
-                  }}
-                >
-                  {t("nav.links.media")}
-                </Link>
-              </li>
+              </li>              
 
               <li className="md:hidden px-4 py-2  flex justify-between rounded-md items-center border-b border-sky-700 hover:bg-gray-800 transition">
                 <FaBolt size={24} className="text-sky-600" />
@@ -141,7 +122,6 @@ const HamburgerMenu = ({ id }) => {
                   to="/explore"
                   className="block text-lg"
                   onClick={() => {
-                    manageView(null, "postsList");
                     toggleMenu();
                   }}
                 >
@@ -155,7 +135,6 @@ const HamburgerMenu = ({ id }) => {
                   to="/ads"
                   className="block text-lg"
                   onClick={() => {
-                    manageView(null, "ads");
                     toggleMenu();
                   }}
                 >

@@ -4,7 +4,6 @@ import { useUserConnections } from "../../context/social/UserConnectionsContext"
 import { useAuth } from "../../context/AuthContext";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im"
-import { useView } from "../../context/ViewContext";
 import ProfileAvatar from "./ProfileAvatar";
 import { useTranslation } from "react-i18next";
 
@@ -15,7 +14,6 @@ const ProfileCard = ({ profile }) => {
     const { addConnection, deleteConnection, userConnections, updateConnection } = useUserConnections();
     const { data: connections } = userConnections(profile.id)
     const [hoverText, setHoverText] = useState("");
-    const { manageView } = useView();
 
     const navigate = useNavigate();
     
@@ -69,7 +67,7 @@ const ProfileCard = ({ profile }) => {
     return (
         <div className="flex flex-col w-60 h-90 text-gray-800 items-center gap-2 border rounded-lg shadow-sm bg-gray-200">
             {/* Profile avatar with link to profile */}
-            <Link onClick={() => manageView("about", "profile")} to={`/profile/${profile.id}`}>
+            <Link to={`/profile/${profile.id}`}>
             <ProfileAvatar
                 avatar_url={profile.avatar_url}
                 alt={`${profile.username}'s avatar`}

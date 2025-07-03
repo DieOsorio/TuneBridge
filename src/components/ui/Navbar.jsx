@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth to access user state
 import HamburgerMenu from "./HamburguerMenu";
-import { useView } from "../../context/ViewContext";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n"; // Import i18n for language support
 import Logo from "./Logo";
@@ -9,7 +8,6 @@ import Logo from "./Logo";
 const Navbar = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
-  const { manageView } = useView();
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -30,7 +28,6 @@ const Navbar = () => {
       <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 gap-8 items-center">
         <Link
           to="/explore"
-          onClick={() => manageView(null, "postsList")}
           className={`font-medium ${
             isActive("/explore")
               ? "text-sky-400"
@@ -42,7 +39,6 @@ const Navbar = () => {
 
         <Link
         to="/ads"
-        onClick={() => manageView(null, "ads")}
         className={`font-medium ${
           isActive("/ads")
             ? "text-sky-400"
@@ -67,7 +63,6 @@ const Navbar = () => {
         {user && (
           <Link
             to={`/profile/${user.id}`}
-            onClick={() => manageView("about", "profile")}
             className={`font-medium ${
               isActive(`/profile/${user.id}`)
                 ? "text-sky-400"

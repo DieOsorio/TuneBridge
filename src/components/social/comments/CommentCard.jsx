@@ -5,7 +5,6 @@ import ReplyForm from "./ReplyForm";
 import EditCommentBox from "./EditCommentBox";
 import CommentMenu from "./CommentMenu";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
-import { useView } from "../../../context/ViewContext";
 import { useLikes } from "../../../context/social/LikesContext";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +19,6 @@ function CommentCard({
   currentUserId 
 }) {
   const { t } = useTranslation("comments");
-  const { manageView } = useView();
   const [showAllReplies, setShowAllReplies] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState(""); // manage local reply content
@@ -122,7 +120,6 @@ function CommentCard({
     <div className="flex mb-4">
       {/* profile avatar from comment sender */}
       <Link 
-      onClick={() => manageView("about", "profile")} 
       to={`/profile/${profile?.id}`}>
 
         <ProfileAvatar 

@@ -6,13 +6,11 @@ import { useComments } from '../../../context/social/CommentsContext';
 import CommentCard from './CommentCard';
 import Loading from "../../../utils/Loading"
 import { Link } from 'react-router-dom';
-import { useView } from '../../../context/ViewContext';
 import { useProfile } from '../../../context/profile/ProfileContext';
 import { useTranslation } from 'react-i18next';
 
 function CommentsBox({ postId }) {
   const { t } = useTranslation("comments");
-  const { manageView } = useView();
   const { user } = useAuth(); // logged user
   const { fetchProfile, profilesMap } = useProfile();
   const { data: profile } = fetchProfile(user?.id); // retrieve logged users data
@@ -136,7 +134,6 @@ function CommentsBox({ postId }) {
       {/* Form to send comment */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex items-start gap-3 mt-4">
         <Link
-        onClick={() => manageView("about", "profile")} 
         to={`/profile/${profile.id}`}>
           <ProfileAvatar
             avatar_url={profile.avatar_url}

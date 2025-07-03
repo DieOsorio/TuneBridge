@@ -2,8 +2,6 @@
   "profile": {
     "noData": "No profile data available.",
     "errorLoading": "Error loading profile.",
-    "userGroupsComing": "User Groups is in development. Coming soon!",
-    "musicComing": "Music section is in development. Coming soon!",
     "noNotifications": "No notifications",
     "lastSeen": "Last seen {{time}}",
     "navigation": {

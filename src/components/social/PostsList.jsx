@@ -46,7 +46,7 @@ const PostsList = ({ profileId, posts, disableSearch, isOwnProfile }) => {
                             <PostCard key={post.id} post={post} />
                         ))
                     ) : (
-                        <p className="col-span-full text-center text-gray-500">
+                        <p className="col-span-full text-center text-gray-400">
                             {t("posts:messages.empty")}
                         </p>
                     )}
