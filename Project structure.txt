@@ -111,7 +111,7 @@ TuneBridge
 │   │
 │   ├── context
 │   │   ├── AuthContext.jsx
-│   │   ├── ThemeContext.jsx
+│   │   │ 
 │   │   ├── ViewContext.jsx
 │   │   │
 │   │   ├── music

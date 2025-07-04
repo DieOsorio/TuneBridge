@@ -43,12 +43,15 @@ export const useUpsertUiPreferences = () => {
 
   return useMutation({
     mutationFn: async ({ profile_id, lang, theme }) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .schema("users")
         .from("ui_preferences")
-        .upsert({ profile_id, lang, theme });
+        .upsert({ profile_id, lang, theme })
+        .select("*")
+        .single();
+        
       if (error) throw new Error(error.message);
-      return { profile_id, lang, theme };
+      return data ;
     },
 
     /* ---------- Optimistic cache ---------- */

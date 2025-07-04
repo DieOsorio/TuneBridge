@@ -44,7 +44,7 @@ const ProfileCard = ({ profile }) => {
             }); // Call the server to follow the user
         } else if (status === "pending") {
             await deleteConnection(userConnection); // Call the server to unfollow the user
-        } else if (status === " accepted") {
+        } else if (status === "accepted") {
             await deleteConnection(userConnection); // Call the server to unconnect the user
         } else if (status === "blocked") {
             await updateConnection({

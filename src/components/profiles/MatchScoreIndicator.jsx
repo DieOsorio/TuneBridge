@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import LoadingBadge from "../ui/LoadingBadge";
 import { useTranslation } from "react-i18next";
 
-export default function MatchScoreIndicator({ otherProfile }) {
+export default function MatchScoreIndicator({ otherProfile, className="" }) {
   const { t } = useTranslation("profile");
   const { user } = useAuth();
   const { matchScore } = useProfile();
@@ -32,13 +32,13 @@ export default function MatchScoreIndicator({ otherProfile }) {
 
   return (
     <div
-      className="inline-flex items-center gap-1 cursor-help select-none"
+      className={`w-full sm:w-auto flex sm:inline-flex items-center justify-center gap-1 cursor-help select-none ${className}`}
       title={t("matchScore.title")}
     >
       <FaBolt className="text-amber-700 text-xl" />
 
       <span
-        className={`inline-block px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ${
+        className={`inline-block w-full text-center px-3 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap ${
           percentage >= 70
             ? "bg-amber-800 text-white"
             : percentage >= 40

@@ -3,7 +3,8 @@
     "title": "Conexiones",
     "pendingTitle": "Conexiones Pendientes",
     "noPendingConnections": "No hay conexiones pendientes",
-    "noConnections": "No hay conexiones aún"
+    "noConnections": "No hay conexiones aún",
+    "viewAll": "Ver todas las conexiones"
   },
   "explore": {
     "title": "Explorar",
