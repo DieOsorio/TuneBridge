@@ -3,7 +3,8 @@
     "title": "Connections",
     "pendingTitle": "Pending Connections",
     "noPendingConnections": "You have no pending connections",
-    "noConnections": "No connections yet"
+    "noConnections": "No connections yet",
+    "viewAll": "View all connections"
   },
   "explore": {
     "title": "Explore",

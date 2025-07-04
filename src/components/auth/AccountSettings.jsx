@@ -9,14 +9,12 @@ import Input  from "../ui/Input";
 import Select from "../ui/Select";
 import Button from "../ui/Button";
 import ConfirmDialog from "../ui/ConfirmDialog"
-import { useTheme } from "../../context/ThemeContext";
 import { useProfile } from "../../context/profile/ProfileContext";
 
 const LANGS  = [ { value:"en", label:"English" }, { value:"es", label:"Español" } ];
 const THEMES = [ { value:"dark", label:"Dark"  }, { value:"light", label:"Light" } ];
 
 const AccountSettings = () => {
-  const { setMode } = useTheme();
   const { t } = useTranslation("settings", { keyPrefix: "account" });
   const { deleteProfile } = useProfile();
   const { user, updatePassword, deleteMyAccount, signOut } = useAuth();
@@ -41,7 +39,6 @@ const AccountSettings = () => {
   const [saved, setSaved] = useState(false);
   const savePrefs = async ({ language, theme }) => {
     await saveUiPreferences({ lang: language, theme });
-    setMode(theme);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };

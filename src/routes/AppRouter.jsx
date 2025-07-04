@@ -46,6 +46,7 @@ const AppRouter = () => {
           {/* <Route path="/followers" element={<Followers />} /> */}
           {/* Rutas protegidas */}
           {/* <Route path="/followers" element={<ProtectedRoute><Followers /></ProtectedRoute>} /> */}
+
           <Route path="/settings/*" element={<ProtectedRoute><Settings /></ProtectedRoute>} />          
           <Route path="/matches" element={<ProtectedRoute><DiscoverMatches  /></ProtectedRoute>} />
           <Route path="/media/create" element={<ProtectedRoute><MediaSettings  /></ProtectedRoute>} />

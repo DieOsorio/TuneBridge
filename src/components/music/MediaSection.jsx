@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../../utils/Loading";
 import ErrorMessage from "../../utils/ErrorMessage";
+import PlusButton from "../social/ads/PlusButton";
 
 
 const MediaSection = () => {
@@ -49,7 +50,14 @@ const MediaSection = () => {
     <section className="max-w-260 mx-auto">
       <div className="text-center font-semibold">
         <ShinyText text={t("media.title")} className="text-3xl font-semibold tracking-wide mb-12"/>
-      </div> 
+      </div>
+
+      {isOwnProfile && (
+        <PlusButton
+          label={t("media.actions.add")}
+          to="/media/create"
+        />
+      )}
 
       {/* Media List */}
       <ul className="space-y-4 text-center">

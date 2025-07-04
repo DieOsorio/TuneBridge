@@ -256,8 +256,8 @@ function ProfileHeader({ isOwnProfile, profileData }) {
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end mt-6">
         {!isOwnProfile && 
-          <div className="mx-auto md:mx-0 md:!mr-auto mb-3 flex flex-col items-start gap-6 mt-3">
-            <div className="flex flex-col items-center md:flex-row gap-3 md:gap-6">          
+          <div className="w-full mx-auto md:mx-0 md:!mr-auto mb-3 flex flex-col items-start gap-6 mt-3">
+            <div className="flex flex-col items-stretch w-full md:flex-row gap-3 md:gap-6">
               {/* Styled Connection Status Badge */}
               {!loadingConnection && (
                 <button
@@ -280,7 +280,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
                     if (connection.status === "accepted") return handleDisconnect();
                     if (connection.status === "blocked" && connection.follower_profile_id === user.id) return handleUnblock();
                   }}
-                  className={`inline-flex items-center min-w-35 justify-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition
+                  className={`w-full sm:w-auto inline-flex items-center justify-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition
                     ${
                       connection
                         ? connection.status === "accepted"
@@ -319,12 +319,14 @@ function ProfileHeader({ isOwnProfile, profileData }) {
               )}
               {/* Match Score Indicator */}
               <div >
-                <MatchScoreIndicator otherProfile={profileData} />
+                <MatchScoreIndicator 
+                  otherProfile={profileData}
+                />
               </div>
             </div>
               {/* Last‑seen badge */}
               {lastSeenActive && (
-                <p className="text-xs text-gray-400">
+                <p className="text-xs mx-auto sm:mx-0 sm:mr-auto text-gray-400">
                   {t("profile.lastSeen", { time: formatLastSeen(profileData.last_seen) })}
                 </p>
               )}

@@ -43,9 +43,13 @@ export default function Profile() {
 
   const About = () => (
     <>
-      <ProfileData        profileData={profile} />
-      <DisplayMusicInfo   profileId={profile.id} />
-      <ConnectionsList    profileId={profile.id} checkStatus="accepted" />
+      <ProfileData profileData={profile} />
+      <DisplayMusicInfo profileId={profile.id} />
+      <ConnectionsList 
+        profileId={profile.id} 
+        checkStatus="accepted"
+        maxVisible={4} 
+      />
     </>
   );
 
@@ -75,6 +79,15 @@ export default function Profile() {
         <Routes>
           <Route index        element={<About />} />
           <Route path="posts" element={<Posts />} />
+          <Route
+            path="connections"
+            element={
+              <ConnectionsList
+                profileId={profile.id}
+                checkStatus="accepted"
+              />
+            }
+          />
 
           {isOwn && (
             <Route path="create" element={<CreatePost />} />
