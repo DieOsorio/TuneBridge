@@ -9,12 +9,14 @@ import { useParticipants } from "../../context/social/chat/ParticipantsContext";
 import { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { handleStartChat } from "../social/chat/utilis/handleStartChat";
+import { useCanSendDM } from "../../utils/useCanSendDM";
 
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { user } = useAuth();
   const loggedIn = Boolean(user);
   const {findConversation, createConversation} = useConversations();
   const { addParticipant } = useParticipants();
+  const { canSend, loading } = useCanSendDM(profile.id);
   const [isStartingChat, setIsStartingChat] = useState(false);
   
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
     })
   };
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -107,13 +109,15 @@ const ProfileMinibox = ({ profile, isLoading }) => {
           <BsPostcard size={30} />
         </Link>
 
-        <button
-          title="Send Message"
-          className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"
-          onClick={startChat}
-        >
-          <IoChatboxOutline size={30} />
-        </button>
+        {canSend && (
+          <button
+            title="Send Message"
+            className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"
+            onClick={startChat}
+          >
+            <IoChatboxOutline size={30} />
+          </button>
+        )}
       </div>
     </motion.div>
   );

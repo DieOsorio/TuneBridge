@@ -3,10 +3,10 @@
 ## Auto-creation & Uniqueness
 
 - **Automatically creates a user profile upon authentication if it does not already exist.**  
-  `CREATE OR REPLACE FUNCTION public.create_profile_when_authenticated()`
+  `CREATE OR REPLACE FUNCTION users.create_profile_when_authenticated()`
 
 - **Prevents duplicate usernames in the profiles table.**  
-  `CREATE OR REPLACE FUNCTION public.prevent_duplicate_usernames()`
+  `CREATE OR REPLACE FUNCTION users.prevent_duplicate_usernames()`
 
 ---
 
@@ -41,7 +41,7 @@
   `CREATE OR REPLACE FUNCTION add_creator_to_group_members()`
 
 - **Reassigns a new admin when the last admin leaves a group.**  
-  `CREATE OR REPLACE FUNCTION public.reassign_admin_on_leave()`
+  `CREATE OR REPLACE FUNCTION users.reassign_admin_on_leave()`
 
 - **Validates that no duplicate roles exist in roles_in_group array.**  
   `CREATE OR REPLACE FUNCTION users.roles_in_group_no_duplicates(roles TEXT[])`
@@ -61,38 +61,38 @@
 ## [social.notifications] – Notification Triggers
 
 - **Sends a notification when a comment is made on a post.**  
-  `CREATE OR REPLACE FUNCTION public.notify_comment()`
+  `CREATE OR REPLACE FUNCTION social.notify_comment()`
 
 - **Sends a notification when a post is liked.**  
-  `CREATE OR REPLACE FUNCTION public.notify_like()`
+  `CREATE OR REPLACE FUNCTION social.notify_like()`
 
 - **Sends a notification when a follow request is created.**  
-  `CREATE OR REPLACE FUNCTION public.notify_follow_request()`
+  `CREATE OR REPLACE FUNCTION social.notify_follow_request()`
 
 - **Sends a notification when a user joins a group.**  
-  `CREATE OR REPLACE FUNCTION public.notify_profile_group_join()`
+  `CREATE OR REPLACE FUNCTION users.notify_profile_group_join()`
 
 - **Sends notifications when a user leaves or is removed from a group.**  
-  `CREATE OR REPLACE FUNCTION public.notify_profile_group_leave()`
+  `CREATE OR REPLACE FUNCTION users.notify_profile_group_leave()`
 
 ---
 
 ## [social.messages & chat] – Conversations & Messaging
 
 - **Soft deletes a message by setting the deleted_at timestamp.**  
-  `CREATE OR REPLACE FUNCTION public.soft_delete_message()`
+  `CREATE OR REPLACE FUNCTION social.soft_delete_message()`
 
 - **Updates the timestamp when a message is updated.**  
-  `CREATE OR REPLACE FUNCTION public.update_message_timestamp()`
+  `CREATE OR REPLACE FUNCTION social.update_message_timestamp()`
 
 - **Deletes all messages when a conversation is deleted.**  
   `CREATE OR REPLACE FUNCTION delete_messages_on_conversation_delete()`
 
 - **Assigns the conversation creator as admin when a conversation is converted into a group.**  
-  `CREATE OR REPLACE FUNCTION set_creator_as_admin()`
+  `CREATE OR REPLACE FUNCTION social.set_creator_as_admin()`
 
 - **Prevents adding the same participant to a conversation more than once.**  
-  `CREATE OR REPLACE FUNCTION public.prevent_duplicate_participants()`
+  `CREATE OR REPLACE FUNCTION social.prevent_duplicate_participants()`
 
 - **Finds an existing one-on-one conversation between two profiles.**  
   `CREATE OR REPLACE FUNCTION social.find_one_on_one_conversation(profile_a UUID, profile_b UUID)`
@@ -102,26 +102,26 @@
 ## [social.posts & comments] – Posts, Likes, Comments
 
 - **Prevents duplicate likes on the same post or comment by the same user.**  
-  `CREATE OR REPLACE FUNCTION public.prevent_duplicate_likes()`
+  `CREATE OR REPLACE FUNCTION social.prevent_duplicate_likes()`
 
 - **Toggles like on post or comment: deletes if exists, inserts otherwise.**  
   `CREATE OR REPLACE FUNCTION social.update_like_status()`
 
 - **Updates the timestamp when a comment is updated.**  
-  `CREATE OR REPLACE FUNCTION public.update_comment_timestamp()`
+  `CREATE OR REPLACE FUNCTION social.update_comment_timestamp()`
 
 - **Updates the content_search field for a post when its hashtags, title or content change.**  
   `CREATE OR REPLACE FUNCTION social.refresh_post_content_search()`
 
 - **Updates the timestamp when a post is updated.**  
-  `CREATE OR REPLACE FUNCTION public.update_post_timestamp()`
+  `CREATE OR REPLACE FUNCTION social.update_post_timestamp()`
 
 ---
 
 ## [social.connections] – Profile Connections
 
 - **Updates the timestamp when a connection is updated.**  
-  `CREATE OR REPLACE FUNCTION public.update_connection_timestamp()`
+  `CREATE OR REPLACE FUNCTION social.update_connection_timestamp()`
 
 - **Ensures only one connection per follower_profile_id by deleting existing entries.**  
   `CREATE OR REPLACE FUNCTION social.check_and_delete_duplicate()`

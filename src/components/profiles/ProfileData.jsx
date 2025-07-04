@@ -1,8 +1,11 @@
 import { useTranslation } from "react-i18next";
+import { useSettings } from "../../context/settings/SettingsContext";
 
 function ProfileData({ profileData }) {
   const { t } = useTranslation("profile")
-
+  const { privacyOthers } = useSettings();
+  const { data: privacyPrefs = {} } = privacyOthers(profileData.id);
+  
   function calculateAge(birthdate) {
     const birth = new Date(birthdate);
     const today = new Date();
@@ -73,6 +76,15 @@ function ProfileData({ profileData }) {
           </span>
           <span>{calculateAge(profileData.birthdate)} {t("profile.data.years")}</span>
         </li>}
+
+        {privacyPrefs.show_email && profileData.email && (
+          <li className="flex items-center">
+            <span className="font-semibold w-28 text-gray-500">
+              {t("profile.data.email")}:
+            </span>
+            <span>{profileData.email}</span>
+          </li>
+        )}
       </ul>
     </div>
   )

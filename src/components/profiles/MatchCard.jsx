@@ -12,6 +12,7 @@ import { handleStartChat } from "../social/chat/utilis/handleStartChat";
 import { useConversations } from "../../context/social/chat/ConversationsContext";
 import { useParticipants } from "../../context/social/chat/ParticipantsContext";
 import ProfileAvatar from "./ProfileAvatar";
+import { useCanSendDM } from "../../utils/useCanSendDM";
 
 function MatchCard({ profile, loading }) {
   const { t } = useTranslation("profile");
@@ -28,6 +29,8 @@ function MatchCard({ profile, loading }) {
 
   const [hoverText, setHoverText] = useState(null);
   const [isStartingChat, setIsStartingChat] = useState(false);
+
+  const { canSend, loading: loadingCanSend } = useCanSendDM(profile.profile_id);
 
   const navigate = useNavigate();
 
@@ -75,9 +78,9 @@ function MatchCard({ profile, loading }) {
       }
 
   const percentage = Math.round(profile.match_score * 100);
-  
-  if (!profile || loading) return <LoadingBadge color="amber" label="Buscando músicos compatibles..." />;
-  
+
+  if (!profile || loading || loadingCanSend) return <LoadingBadge color="amber" label="Buscando músicos compatibles..." />;
+
   const badgeClasses =
     percentage >= 70
       ? "bg-amber-800 text-white"
@@ -115,7 +118,6 @@ function MatchCard({ profile, loading }) {
             avatar_url={profile.avatar_url}
             alt={profile.username}
             className="!w-13 !h-13"
-            loading="lazy"
           />
         </Link>
         <div>
@@ -136,12 +138,14 @@ function MatchCard({ profile, loading }) {
 
       <div className="flex flex-col items-end gap-2 text-sm">
         {/* Chat button */}
-        <button
-          onClick={startChat}
-          className="absolute top-4 right-4 text-amber-700 cursor-pointer hover:text-amber-800 transition"
-        >
-          <IoChatbubble size={30} />
-        </button>
+        {canSend && (
+          <button
+            onClick={startChat}
+            className="absolute top-4 right-4 text-amber-700 cursor-pointer hover:text-amber-800 transition"
+          >
+            <IoChatbubble size={30} />
+          </button>
+        )}
 
         {/* Connect button */}
         <button

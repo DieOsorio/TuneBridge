@@ -21,6 +21,7 @@ import MatchScoreIndicator from './MatchScoreIndicator';
 import { FaUserCheck, FaUserClock, FaUserPlus, FaUserSlash } from 'react-icons/fa';
 import formatLastSeen from '../../utils/formatLastSeen';
 import { usePrivacySettingsQuery } from '../../context/settings/settingsActions';
+import { useCanSendDM } from '../../utils/useCanSendDM';
 
 function ProfileHeader({ isOwnProfile, profileData }) {
     const { t } = useTranslation("profile");
@@ -36,7 +37,10 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const { data: notifications, isLoading } = userNotifications(user.id);
     const { connectionBetweenProfiles, addConnection, updateConnection, deleteConnection } = useUserConnections();
     const { data: connection, isLoading: loadingConnection } = connectionBetweenProfiles(user?.id, profileData.id);
+    const { canSend, loading, reason } = useCanSendDM(profileData.id);
 
+    // console.log(`ProfileHeader: canSend=${canSend}, loading=${loading}, reason=${reason}`);
+    
     const [isStartingChat, setIsStartingChat] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [hoverText, setHoverText] = useState(null);
@@ -143,13 +147,15 @@ function ProfileHeader({ isOwnProfile, profileData }) {
         {/* Action Buttons */}
         <div className="flex gap-4 ml-auto sm:mb-auto items-center relative">
           {!isOwnProfile && (
-            <>              
-              <IoChatboxSharp
-                className="w-8 h-8 text-white cursor-pointer"
-                onClick={startChat}
-                disabled={isStartingChat}
-                title={t("profile.titles.startChat")}
-              />
+            <>
+              {canSend && (
+                <IoChatboxSharp
+                  className="w-8 h-8 text-white cursor-pointer"
+                  onClick={startChat}
+                  disabled={isStartingChat}
+                  title={t("profile.titles.startChat")}
+                />
+              )}
               {/* Three dots menu for connection actions */}
               <div className="relative">
                 <button

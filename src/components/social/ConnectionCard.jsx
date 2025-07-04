@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import ErrorMessage from "../../utils/ErrorMessage";
-import Loading from "../../utils/Loading";
 import { ImCross } from "react-icons/im";
 import { FaCheck } from 'react-icons/fa';
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -9,6 +8,7 @@ import { useUserConnections } from "../../context/social/UserConnectionsContext"
 import { useProfile } from "../../context/profile/ProfileContext";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import ConnectionCardSkeleton from "./skeletons/ConnectionCardSkeleton";
 
 const ConnectionCard = ({ profileId, connection, ownProfile }) => {
     const { t } = useTranslation("profile");
@@ -32,7 +32,7 @@ const ConnectionCard = ({ profileId, connection, ownProfile }) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
 
-    if (loading) return <Loading />;
+    if (loading) return <ConnectionCardSkeleton />;
     
     if (error) return <ErrorMessage error={error.message || "Error loading profile."} />;
 

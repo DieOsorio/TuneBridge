@@ -1,5 +1,5 @@
 -- Sends a notification when a comment is made on a post
-CREATE OR REPLACE FUNCTION public.notify_comment()
+CREATE OR REPLACE FUNCTION social.notify_comment()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -32,7 +32,7 @@ $function$;
 
 
 -- Sends a notification when a follow request is created
-CREATE OR REPLACE FUNCTION public.notify_follow_request()
+CREATE OR REPLACE FUNCTION social.notify_follow_request()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -65,7 +65,7 @@ $function$;
 
 
 -- Sends a notification when a post is liked
-CREATE OR REPLACE FUNCTION public.notify_like()
+CREATE OR REPLACE FUNCTION social.notify_like()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -98,7 +98,7 @@ $function$;
 
 
 -- Sends a notification when a user joins a group
-CREATE OR REPLACE FUNCTION public.notify_profile_group_join()
+CREATE OR REPLACE FUNCTION users.notify_profile_group_join()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -131,7 +131,7 @@ $function$;
 
 
 -- Sends a notification when a user leaves a group
-CREATE OR REPLACE FUNCTION public.notify_profile_group_leave()
+CREATE OR REPLACE FUNCTION users.notify_profile_group_leave()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -191,7 +191,7 @@ $function$;
 
 
 -- Prevents duplicate likes on the same post or comment by the same user
-CREATE OR REPLACE FUNCTION public.prevent_duplicate_likes()
+CREATE OR REPLACE FUNCTION social.prevent_duplicate_likes()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -212,7 +212,7 @@ $function$;
 
 
 -- Prevents adding the same participant to a conversation more than once
-CREATE OR REPLACE FUNCTION public.prevent_duplicate_participants()
+CREATE OR REPLACE FUNCTION social.prevent_duplicate_participants()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -233,7 +233,7 @@ $function$;
 
 
 -- Prevents duplicate usernames in the profiles table
-CREATE OR REPLACE FUNCTION public.prevent_duplicate_usernames()
+CREATE OR REPLACE FUNCTION users.prevent_duplicate_usernames()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -254,41 +254,48 @@ $function$;
 
 
 -- Reassigns a new admin when the last admin leaves a group
-CREATE OR REPLACE FUNCTION public.reassign_admin_on_leave()
-RETURNS trigger
-LANGUAGE plpgsql
-AS $function$
-DECLARE
-  remaining_admins INT;
-  new_admin UUID;
-BEGIN
-  SELECT COUNT(*) INTO remaining_admins
-  FROM users.profile_group_members
-  WHERE profile_group_id = OLD.profile_group_id AND role = 'admin' AND profile_id != OLD.profile_id;
+create or replace function users.reassign_admin_on_leave()
+returns trigger
+language plpgsql
+set search_path to users, pg_catalog 
+as $$
+declare
+  remaining_admins int;
+  new_admin        uuid;
+begin
+  /* Count remaining admins in the group (excluding the leaver) */
+  select count(*) into remaining_admins
+    from users.profile_group_members
+   where profile_group_id = old.profile_group_id
+     and role             = 'admin'
+     and profile_id       <> old.profile_id;
 
-  IF remaining_admins = 0 THEN
-    SELECT profile_id INTO new_admin
-    FROM users.profile_group_members
-    WHERE profile_group_id = OLD.profile_group_id
-    ORDER BY joined_at ASC
-    LIMIT 1;
+  /* If none left → promote the earliest member */
+  if remaining_admins = 0 then
+    select profile_id
+      into new_admin
+      from users.profile_group_members
+     where profile_group_id = old.profile_group_id
+  order by joined_at asc
+     limit 1;
 
-    IF new_admin IS NOT NULL THEN
-      UPDATE users.profile_group_members
-      SET role = 'admin'
-      WHERE profile_group_id = OLD.profile_group_id AND profile_id = new_admin;
-    END IF;
-  END IF;
+    if new_admin is not null then
+      update users.profile_group_members
+         set role = 'admin'
+       where profile_group_id = old.profile_group_id
+         and profile_id       = new_admin;
+    end if;
+  end if;
 
-  RETURN OLD;
-END;
-$function$;
+  return old;        
+end;
+$$
 
 
 
 
 -- Soft deletes a message by setting the deleted_at timestamp
-CREATE OR REPLACE FUNCTION public.soft_delete_message()
+CREATE OR REPLACE FUNCTION social.soft_delete_message()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -302,7 +309,7 @@ $function$;
 
 
 -- Updates the timestamp when a comment is updated
-CREATE OR REPLACE FUNCTION public.update_comment_timestamp()
+CREATE OR REPLACE FUNCTION social.update_comment_timestamp()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -316,7 +323,7 @@ $function$;
 
 
 -- Updates the timestamp when a connection is updated
-CREATE OR REPLACE FUNCTION public.update_connection_timestamp()
+CREATE OR REPLACE FUNCTION social.update_connection_timestamp()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -330,7 +337,7 @@ $function$;
 
 
 -- Updates the timestamp when a message is updated
-CREATE OR REPLACE FUNCTION public.update_message_timestamp()
+CREATE OR REPLACE FUNCTION social.update_message_timestamp()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -344,7 +351,7 @@ $function$;
 
 
 -- Updates the timestamp when a post is updated
-CREATE OR REPLACE FUNCTION public.update_post_timestamp()
+CREATE OR REPLACE FUNCTION social.update_post_timestamp()
 RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -414,7 +421,7 @@ $$;
 
  
 -- Automatically creates a user profile (and companion rows) upon authentication
-CREATE OR REPLACE FUNCTION public.create_profile_when_authenticated()
+CREATE OR REPLACE FUNCTION useres.create_profile_when_authenticated()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -606,7 +613,7 @@ $$ LANGUAGE plpgsql;
 
 
 -- Assigns the conversation creator as admin when a conversation is converted into a group
-create or replace function set_creator_as_admin()
+create or replace function social.set_creator_as_admin()
 returns trigger as $$
 begin
   -- Only executes if is_group changed to TRUE
@@ -813,4 +820,22 @@ BEGIN
         setweight(to_tsvector('simple', coalesce(NEW.location,   '')), 'C');
   RETURN NEW;
 END;
+$$;
+
+create or replace function social.check_and_delete_duplicate()
+returns trigger
+language plpgsql
+set search_path to social, public
+as $$
+begin
+  if exists (
+      select 1
+      from social.user_connections     
+      where follower_profile_id = new.follower_profile_id
+  ) then
+      delete from social.user_connections
+      where follower_profile_id = new.follower_profile_id;
+  end if;
+  return new;
+end;
 $$;

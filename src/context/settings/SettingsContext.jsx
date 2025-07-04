@@ -89,6 +89,7 @@ export const SettingsProvider = ({ children }) => {
 
     //privacy settings
     privacyPrefs,
+    privacyOthers: usePrivacySettingsQuery,
     savePrivacySettings,
 
     //notification settings
