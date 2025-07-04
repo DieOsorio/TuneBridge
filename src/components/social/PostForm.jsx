@@ -175,6 +175,8 @@ const PostForm = () => {
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error.message} />;
 
+  const isValidHashtag = /^#[\w-]+$/.test(newHashtag || "");
+
   return (
     <>
       <h2 className="text-2xl text-yellow-600 font-semibold text-center mb-4">
@@ -223,8 +225,18 @@ const PostForm = () => {
             <button
               type="button"
               onClick={handleAddHashtag}
-              disabled={!newHashtag || hashtagItems.length >= 5}
-              className="text-emerald-500 mt-6 cursor-pointer hover:text-emerald-700 p-2 rounded-full"
+              disabled={
+                !newHashtag ||
+                hashtagItems.length >= 5 ||
+                !isValidHashtag
+              }
+              className={`
+                mt-4 p-2 rounded-full
+                ${!newHashtag || hashtagItems.length >= 5 || !isValidHashtag
+                  ? "cursor-not-allowed text-emerald-900"
+                  : "cursor-pointer text-emerald-500 hover:text-emerald-700"
+                }
+              `}
             >
               <FiPlus size={22} />
             </button>

@@ -5,7 +5,7 @@ import Loading from "./utils/Loading";
 import useLastSeen from "./utils/useLastSeen"
 
 const App = () => {
-  const { privacyPrefs, prefs, isLoading } = useSettings(); // Access theme from backend
+  const { privacyPrefs, isLoading } = useSettings(); // Access theme from backend
 
 
   useLastSeen(privacyPrefs.show_last_seen); // Initialize last seen tracking

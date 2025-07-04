@@ -1,5 +1,5 @@
 // components/settings/PrivacySettings.jsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Toggle from "../ui/Toggle";
@@ -24,6 +24,8 @@ const PrivacySettings = () => {
     },
   });
 
+  const [saved, setSaved] = useState(false);
+
   // Sync form when prefs arrive/change
   useEffect(() => {
     if (privacyPrefs) reset(privacyPrefs);
@@ -32,6 +34,8 @@ const PrivacySettings = () => {
   // Submit → upsert prefs
   const onSubmit = async (data) => {
     await savePrivacySettings(data);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   return (
@@ -69,8 +73,12 @@ const PrivacySettings = () => {
           disabled={!isDirty || isSubmitting}
           className="!bg-emerald-600 hover:!bg-emerald-700"
         >
-          {isSubmitting ? t("buttons.saving") : t("buttons.save")}
-        </Button>
+          {isSubmitting 
+            ? t("buttons.saving")
+            : saved
+              ? t("buttons.saved")
+              : t("buttons.save")}
+          </Button>
       </div>
     </section>
   );

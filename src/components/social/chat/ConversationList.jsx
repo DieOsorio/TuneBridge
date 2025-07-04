@@ -33,7 +33,7 @@ const ConversationList = () => {
     setIsConversationListVisible(false); // Collapse sidebar on selection
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading size={200} />;
   if (error) return <ErrorMessage error={error.message} />;
 
   return (

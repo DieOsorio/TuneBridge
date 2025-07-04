@@ -94,42 +94,42 @@
 
 ## users.profile_group_members
 
-- **reassign_admin_on_leave_trg**
+- **trg_reassign_admin_on_leave**
   - Table: `users.profile_group_members`
-  - Calls function: `public.reassign_admin_on_leave`
+  - Calls function: `users.reassign_admin_on_leave`
   - Automatically promotes a new admin when the last admin leaves.
 
 ## social.messages
 
 - **soft_delete_message_trg**
   - Table: `social.messages`
-  - Calls function: `public.soft_delete_message`
+  - Calls function: `social.soft_delete_message`
   - Marks message as deleted upon delete action.
 
 - **update_message_timestamp_trg**
   - Table: `social.messages`
-  - Calls function: `public.update_message_timestamp`
+  - Calls function: `social.update_message_timestamp`
   - Refreshes `updated_at` timestamp on message update.
 
 ## social.posts (timestamp tracking)
 
 - **update_post_timestamp_trg**
   - Table: `social.posts`
-  - Calls function: `public.update_post_timestamp`
+  - Calls function: `social.update_post_timestamp`
   - Updates `updated_at` on post edits.
 
 ## social.post_comments (timestamp tracking)
 
 - **update_comment_timestamp_trg**
   - Table: `social.post_comments`
-  - Calls function: `public.update_comment_timestamp`
+  - Calls function: `social.update_comment_timestamp`
   - Updates `updated_at` when a comment is edited.
 
 ## social.user_connections (timestamp tracking)
 
 - **update_connection_timestamp_trg**
   - Table: `social.user_connections`
-  - Calls function: `public.update_connection_timestamp`
+  - Calls function: `social.update_connection_timestamp`
   - Updates timestamp on connection changes.
 
 ## groups.event_rsvps
@@ -160,3 +160,5 @@ BEFORE INSERT OR UPDATE
 ON social.musician_ads
 FOR EACH ROW
 EXECUTE FUNCTION social.musician_ads_tsv_update();
+
+CREATE TRIGGER trigger_create_profile AFTER UPDATE ON auth.users FOR EACH ROW WHEN (old.role::text IS DISTINCT FROM new.role::text) EXECUTE FUNCTION users.create_profile_when_authenticated()

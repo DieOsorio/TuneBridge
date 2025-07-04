@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
 import ConfirmDialog from "../../ui/ConfirmDialog";
+import { useCanSendDM } from "../../../utils/useCanSendDM";
 
 const AdDetailsPage = () => {
   const { t } = useTranslation("ads");
@@ -28,10 +29,11 @@ const AdDetailsPage = () => {
   const { data: profile, isLoading: profileLoading } = fetchProfile(ad?.profile_id, { enabled: !!ad?.profile_id });
   const navigate = useNavigate();
   const [isStartingChat, setIsStartingChat] = useState(false);
-  
+  const { canSend, loading } = useCanSendDM(profile?.id);
+
   const [confirmOpen, setConfirmOpen] = useState(false);
-  
-  if (adLoading || profileLoading)
+
+  if (adLoading || profileLoading || loading)
     return (
     <Loading />
   );
@@ -223,16 +225,18 @@ const AdDetailsPage = () => {
           <FiArrowLeft title={t("adsDetailsPage.buttons.back")} size={22} />
         </Link>
 
-        <Button
-          className={`${
-            isSearching
-              ? "!bg-cyan-700 hover:!bg-cyan-800"
-              : "!bg-emerald-600 hover:!bg-emerald-700"
-          }`}
+        {canSend && (
+          <Button
+            className={`${
+              isSearching
+                ? "!bg-cyan-700 hover:!bg-cyan-800"
+                : "!bg-emerald-600 hover:!bg-emerald-700"
+            }`}
           onClick={startChat}
         >
           {t("adsDetailsPage.buttons.contact")}
         </Button>
+      )}
       </div>
       <ConfirmDialog 
         isOpen={confirmOpen}

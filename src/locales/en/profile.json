@@ -23,6 +23,7 @@
     "data": {
       "firstname": "Name",
       "lastname": "Last Name",
+      "email": "Email",
       "country": "Country",
       "state": "State",
       "neighborhood": "City",
