@@ -2,31 +2,35 @@
 CREATE OR REPLACE FUNCTION social.notify_comment()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $function$
+SET search_path = social
+AS $$
+DECLARE
+  tgt_profile uuid;
 BEGIN
+  SELECT profile_id INTO tgt_profile
+  FROM   social.posts
+  WHERE  id = NEW.post_id;
+
+  IF social.can_receive_notif(tgt_profile, 'comments') THEN
     INSERT INTO social.notifications (
-        id,
-        created_at,
-        profile_id,
-        type,
-        entity_id,
-        from_user_id,
-        is_read,
-        message
+      id, created_at, profile_id, type,
+      entity_id, from_user_id, is_read, message
     )
     VALUES (
-        gen_random_uuid(),
-        NOW(),
-        (SELECT profile_id FROM social.posts WHERE id = NEW.post_id), -- Post owner
-        'comment',
-        NEW.post_id,
-        NEW.profile_id,
-        false,
-        'Someone commented on your post!'
+      gen_random_uuid(), NOW(),
+      tgt_profile,
+      'comment',
+      NEW.post_id,
+      NEW.profile_id,
+      false,
+      'Someone commented on your post!'
     );
-    RETURN NEW;
+  END IF;
+
+  RETURN NEW;
 END;
-$function$;
+$$;
+
 
 
 
@@ -35,31 +39,28 @@ $function$;
 CREATE OR REPLACE FUNCTION social.notify_follow_request()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $function$
+SET search_path = social
+AS $$
 BEGIN
+  IF social.can_receive_notif(NEW.following_profile_id, 'connections') THEN
     INSERT INTO social.notifications (
-        id,
-        created_at,
-        profile_id,
-        type,
-        entity_id,
-        from_user_id,
-        is_read,
-        message
+      id, created_at, profile_id, type,
+      entity_id, from_user_id, is_read, message
     )
     VALUES (
-        gen_random_uuid(),
-        NOW(),
-        NEW.following_profile_id,
-        'follow_request',
-        NEW.id,
-        NEW.follower_profile_id,
-        false,
-        'You have a new follow request!'
+      gen_random_uuid(), NOW(),
+      NEW.following_profile_id,
+      'follow_request',
+      NEW.id,
+      NEW.follower_profile_id,
+      false,
+      'You have a new follow request!'
     );
-    RETURN NEW;
+  END IF;
+
+  RETURN NEW;
 END;
-$function$;
+$$;
 
 
 
@@ -68,31 +69,34 @@ $function$;
 CREATE OR REPLACE FUNCTION social.notify_like()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $function$
+SET search_path = social
+AS $$
+DECLARE
+  tgt_profile uuid;
 BEGIN
+  SELECT profile_id INTO tgt_profile
+  FROM   social.posts
+  WHERE  id = NEW.post_id;
+
+  IF social.can_receive_notif(tgt_profile, 'likes') THEN
     INSERT INTO social.notifications (
-        id,
-        created_at,
-        profile_id,
-        type,
-        entity_id,
-        from_user_id,
-        is_read,
-        message
+      id, created_at, profile_id, type,
+      entity_id, from_user_id, is_read, message
     )
     VALUES (
-        gen_random_uuid(),
-        NOW(),
-        (SELECT profile_id FROM social.posts WHERE id = NEW.post_id),
-        'like',
-        NEW.post_id,
-        NEW.profile_id,
-        false,
-        'Someone liked your post!'
+      gen_random_uuid(), NOW(),
+      tgt_profile,
+      'like',
+      NEW.post_id,
+      NEW.profile_id,
+      false,
+      'Someone liked your post!'
     );
-    RETURN NEW;
+  END IF;
+
+  RETURN NEW;
 END;
-$function$;
+$$;
 
 
 
@@ -101,31 +105,29 @@ $function$;
 CREATE OR REPLACE FUNCTION users.notify_profile_group_join()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $function$
+SET search_path = users, social
+AS $$
 BEGIN
-  INSERT INTO social.notifications (
-    id,
-    created_at,
-    profile_id,
-    type,
-    entity_id,
-    from_user_id,
-    is_read,
-    message
-  )
-  VALUES (
-    gen_random_uuid(),
-    NOW(),
-    NEW.profile_id,
-    'group_join',
-    NEW.profile_group_id,
-    NEW.profile_id,
-    FALSE,
-    'You have joined the group.'
-  );
+  IF social.can_receive_notif(NEW.profile_id, 'groups') THEN
+    INSERT INTO social.notifications (
+      id, created_at, profile_id, type,
+      entity_id, from_user_id, is_read, message
+    )
+    VALUES (
+      gen_random_uuid(), NOW(),
+      NEW.profile_id,
+      'group_join',
+      NEW.profile_group_id,
+      NEW.profile_id,
+      false,
+      'You have joined the group.'
+    );
+  END IF;
+
   RETURN NEW;
 END;
-$function$;
+$$;
+
 
 
 
@@ -134,56 +136,57 @@ $function$;
 CREATE OR REPLACE FUNCTION users.notify_profile_group_leave()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $function$
+SET search_path = users, social
+AS $$
 DECLARE
-  acting_user_id UUID;
-  acting_user_id_text TEXT;
+  acting_user_id uuid := (current_setting('request.jwt.claims', true)::json->>'sub')::uuid;
 BEGIN
-  -- Get the user ID executing the action from the JWT claims as text
-  acting_user_id_text := current_setting('request.jwt.claims', true)::json->>'sub';
-
-  -- Cast acting_user_id_text to UUID for later use
-  acting_user_id := acting_user_id_text::uuid;
-
-  -- Compare UUID types directly without casting OLD.profile_id to text
+  ------------------------------------------------------------------
+  -- Case 1: user leave group
+  ------------------------------------------------------------------
   IF acting_user_id = OLD.profile_id THEN
-    -- Case: user left voluntarily → notify other group members
     INSERT INTO social.notifications (
-      id, created_at, profile_id, type, entity_id, from_user_id, is_read, message
+      id, created_at, profile_id, type,
+      entity_id, from_user_id, is_read, message
     )
     SELECT
-      gen_random_uuid(),
-      NOW(),
-      pgm.profile_id,         -- recipient
+      gen_random_uuid(), NOW(),
+      pgm.profile_id,                 -- destinatario
       'group_member_left',
       OLD.profile_group_id,
-      OLD.profile_id,         -- the user who left
-      FALSE,
+      OLD.profile_id,                 -- quien se fue
+      false,
       'A member has left your group.'
     FROM users.profile_group_members pgm
     WHERE pgm.profile_group_id = OLD.profile_group_id
-      AND pgm.profile_id != OLD.profile_id; -- don't notify the user who left
+      AND pgm.profile_id != OLD.profile_id                -- no avisar a quien se fue
+      AND social.can_receive_notif(pgm.profile_id, 'groups');
 
+  ------------------------------------------------------------------
+  -- Case 2: user was kicked by other
+  ------------------------------------------------------------------
   ELSE
-    -- Case: user was removed by another → notify only the removed user
-    INSERT INTO social.notifications (
-      id, created_at, profile_id, type, entity_id, from_user_id, is_read, message
-    )
-    VALUES (
-      gen_random_uuid(),
-      NOW(),
-      OLD.profile_id,          -- recipient
-      'group_member_removed',
-      OLD.profile_group_id,
-      acting_user_id,          -- user who removed
-      FALSE,
-      'You have been removed from the group.'
-    );
+    IF social.can_receive_notif(OLD.profile_id, 'groups') THEN
+      INSERT INTO social.notifications (
+        id, created_at, profile_id, type,
+        entity_id, from_user_id, is_read, message
+      )
+      VALUES (
+        gen_random_uuid(), NOW(),
+        OLD.profile_id,               -- destinatario
+        'group_member_removed',
+        OLD.profile_group_id,
+        acting_user_id,               -- quién lo expulsó
+        false,
+        'You have been removed from the group.'
+      );
+    END IF;
   END IF;
 
   RETURN OLD;
 END;
-$function$;
+$$;
+
 
 
 
@@ -630,7 +633,7 @@ $$ language plpgsql;
 
 
 
--- 
+-- Deletes every message that belonged to a conversation when that conversation row itself is removed
 CREATE OR REPLACE FUNCTION delete_messages_on_conversation_delete()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -662,7 +665,7 @@ $$ LANGUAGE plpgsql;
 
 
 
---
+-- Finds an existing one‑on‑one (non‑group) conversation between two specific profiles; returns NULL if none exists
 CREATE OR REPLACE FUNCTION social.find_one_on_one_conversation(
   profile_a UUID,
   profile_b UUID
@@ -690,7 +693,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-
+-- Calculates a similarity score (0‑1) between two profiles based on token overlap in content_search_all
 CREATE OR REPLACE FUNCTION users.profile_match_score(
   profile_a UUID,
   profile_b UUID
@@ -744,7 +747,7 @@ $$ LANGUAGE plpgsql STABLE;
 
 
 
-
+-- Produces an ordered list of the best‑matched profiles for a given profile, using profile_match_score as the metric
 CREATE OR REPLACE FUNCTION users.profile_match_all(
   profile_a UUID,
   limit_results INT DEFAULT 10
@@ -773,6 +776,7 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 
+-- Touch‑trigger: updates updated_at every time the row in users.privacy_settings is INSERTed / UPDATEd
 CREATE OR REPLACE FUNCTION users.touch_ui_prefs()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -792,7 +796,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
+-- Updates last_seen to NOW() for the currently authenticated user
 create or replace function users.touch_profile_last_seen()
 returns void
 language plpgsql
@@ -807,6 +811,7 @@ $$;
 
 
 
+-- Rebuilds the full‑text search vector (content_search) for a musician ad whenever its searchable columns change
 CREATE OR REPLACE FUNCTION social.musician_ads_tsv_update()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -822,6 +827,10 @@ BEGIN
 END;
 $$;
 
+
+
+
+-- Before‑insert trigger that guarantees a follower has at most one user_connections row (keeps newest, removes existing duplicates)
 create or replace function social.check_and_delete_duplicate()
 returns trigger
 language plpgsql
@@ -838,4 +847,26 @@ begin
   end if;
   return new;
 end;
+$$;
+
+
+-- social.can_receive_notif(profile_id, 'likes' | 'comments' | 'connections' | 'groups' | 'matches')
+CREATE OR REPLACE FUNCTION social.can_receive_notif(
+  tgt_profile uuid,
+  channel     text
+) RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+AS $$
+  SELECT COALESCE((
+      SELECT CASE channel
+               WHEN 'likes'        THEN likes
+               WHEN 'comments'     THEN comments
+               WHEN 'connections'  THEN connections
+               WHEN 'groups'       THEN groups
+               WHEN 'matches'      THEN matches
+             END
+      FROM   social.notification_prefs
+      WHERE  profile_id = tgt_profile
+    ), true);          -- si no hay fila ⇒ notificaciones habilitadas
 $$;
