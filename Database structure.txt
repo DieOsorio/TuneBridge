@@ -1,121 +1,208 @@
-users (schema)
+users
 │
 ├── profiles
 │   ├─ id (UUID, auth.uid())
-│   ├─ username, email, avatar_url, country, neighborhood, state, firstname, lastname, gender, birthdate, bio
-│   ├─ content_search (tsvector) and related search vectors
-│   └─ Triggers (unique username enforcement, update search vectors)
+│   ├─ username, email, avatar_url, country, neighborhood, state
+│   ├─ firstname, lastname, gender, birthdate, bio, last_seen
+│   ├─ content_search, content_search_roles, content_search_details, content_search_all (tsvector)
+│   └─ Triggers:
+│       ├─ prevent_duplicate_usernames
+│       ├─ update_profile_content_search_trg
+│       ├─ update_content_search_all_trg
+│
+├── ui_preferences
+│   ├─ profile_id (UUID → profiles.id) [PK]
+│   ├─ lang, theme, time_format
+│   ├─ created_at, updated_at
+│   └─ Trigger:
+│       └─ trg_touch_ui_prefs → users.touch_ui_prefs()
+│
+├── privacy_settings
+│   ├─ profile_id (UUID → profiles.id) [PK]
+│   ├─ prefs (jsonb), created_at, updated_at
+│   └─ Trigger:
+│       └─ trg_touch_privacy → users.touch_privacy()
 │
 ├── profile_groups
 │   ├─ id (UUID)
 │   ├─ name, bio, avatar_url, country, city, genre
-│   ├─ created_by (UUID -> profiles.id)
+│   ├─ created_by (UUID → profiles.id)
 │   ├─ created_at
-│   └─ Trigger: add_creator_to_group_members (creator assigned as admin)
+│   └─ Trigger:
+│       └─ add_creator_to_group_members_trg → add_creator_to_group_members()
 │
 └── profile_group_members
     ├─ id (UUID)
-    ├─ profile_group_id (UUID -> profile_groups.id)
-    ├─ profile_id (UUID -> profiles.id)
-    ├─ role (default 'member')
+    ├─ profile_group_id (UUID → profile_groups.id)
+    ├─ profile_id (UUID → profiles.id)
+    ├─ role (text, default 'member')
     ├─ joined_at
-    └─ Triggers (reassign admin if needed, notifications on join/leave)
+    └─ Triggers:
+        ├─ trg_reassign_admin_on_leave → reassign_admin_on_leave()
+        ├─ notify_profile_group_join_trg
+        └─ notify_profile_group_leave_trg
 
-music (schema)
+
+
+
+music
 │
 ├── roles
 │   ├─ id (UUID)
 │   ├─ role (instrumentalist, singer, DJ, producer, composer)
-│   ├─ profile_id (UUID -> profiles.id)
-│   └─ Trigger: update content_search_roles on insert/update
+│   ├─ profile_id (UUID → users.profiles)
+│   └─ Trigger:
+│       └─ update_content_search_roles_trg → users.update_content_search_roles_trigger()
 │
 ├── instrument_details
 │   ├─ id, profile_id, role_id
-│   ├─ instrument, years_of_experience, level
+│   └─ instrument, years_of_experience, level
 │
 ├── singer_details
 │   ├─ id, role_id, profile_id
-│   ├─ voice_type, music_genre, level
+│   └─ voice_type, music_genre, level
 │
 ├── dj_details
 │   ├─ id, role_id, profile_id
-│   ├─ preferred_genres, events_played, level
+│   └─ preferred_genres, events_played, level
 │
 ├── producer_details
 │   ├─ id, role_id, profile_id
-│   ├─ production_type, years_of_experience, level
+│   └─ production_type, years_of_experience, level
 │
-└── composer_details
-    ├─ id, role_id, profile_id
-    ├─ composition_style, years_of_experience, level
+├── composer_details
+│   ├─ id, role_id, profile_id
+│   └─ composition_style, years_of_experience, level
+│
+└── user_media_links
+    ├─ id, created_at
+    ├─ profile_id (UUID → users.profiles.id)
+    ├─ profile_group_id (UUID → users.profile_groups.id)
+    ├─ url, media_type, title, description
 
-social (schema)
-│
-├── post_hashtags
-│   ├─ post_id (UUID -> posts.id)
-│   ├─ hashtag_id (UUID -> hashtags.id)
-│   ├─ created_at
-│   └─ Trigger: update content_search on posts
-│
-├── profile_hashtags
-│   ├─ profile_id (UUID -> profiles.id)
-│   ├─ hashtag_id (UUID -> hashtags.id)
-│   ├─ created_at
-│   └─ Trigger: update content_search_details on profiles
+
+
+
+social
 │
 ├── hashtags
-│   ├─ id (UUID)
-│   ├─ name (text)
+│   └─ id (UUID), name (text)
+│
+├── profile_hashtags
+│   ├─ profile_id (UUID → users.profiles)
+│   ├─ hashtag_id (UUID → hashtags.id)
+│   ├─ created_at
+│   └─ Trigger:
+│       └─ refresh_profile_content_search_details_trg
+│
+├── post_hashtags
+│   ├─ post_id (UUID → posts.id)
+│   ├─ hashtag_id (UUID → hashtags.id)
+│   ├─ created_at
+│   └─ Trigger:
+│       └─ refresh_post_content_search_trg
 │
 ├── user_connections
 │   ├─ id (UUID)
-│   ├─ follower_profile_id, following_profile_id (UUID -> profiles.id)
+│   ├─ follower_profile_id, following_profile_id (UUID → users.profiles)
 │   ├─ status, updated_at
-│   └─ Triggers (notifications on follow requests, update timestamp)
+│   └─ Triggers:
+│       ├─ notify_follow_request_trg
+│       ├─ update_connection_timestamp_trg
 │
 ├── posts
 │   ├─ id (UUID)
-│   ├─ profile_id (UUID -> profiles.id)
+│   ├─ profile_id (UUID → users.profiles)
 │   ├─ title, content, images_urls
 │   ├─ created_at, updated_at
 │   ├─ content_search (tsvector)
-│   └─ Triggers (likes, comments, update content_search)
+│   └─ Triggers:
+│       ├─ update_post_timestamp_trg
+│       ├─ notify_like_trg
+│       ├─ notify_comment_trg
+│       └─ refresh_post_content_search_trg
 │
-├── comments
+├── comments (aka post_comments)
 │   ├─ id (UUID)
-│   ├─ post_id (UUID -> posts.id)
-│   ├─ profile_id (UUID -> profiles.id)
+│   ├─ post_id (UUID → posts.id)
+│   ├─ profile_id (UUID → users.profiles)
 │   ├─ content, updated_at
-│   └─ Triggers (comment notifications, update timestamp)
+│   └─ Triggers:
+│       ├─ update_comment_timestamp_trg
+│       └─ notify_comment_trg
 │
 ├── likes
 │   ├─ id (UUID)
-│   ├─ profile_id (UUID -> profiles.id)
+│   ├─ profile_id (UUID → users.profiles)
 │   ├─ post_id (UUID, nullable)
 │   ├─ comment_id (UUID, nullable)
-│   └─ Triggers (prevent duplicate likes)
+│   ├─ updated_at
+│   └─ Triggers:
+│       ├─ prevent_duplicate_likes_trg
+│       └─ update_like_toggle_trg
 │
 ├── conversations
 │   ├─ id (UUID)
 │   ├─ created_at, updated_at
 │   ├─ avatar_url, title, is_group
-│   ├─ created_by (UUID -> profiles.id)
+│   ├─ created_by (UUID → users.profiles)
+│   └─ Triggers:
+│       ├─ set_creator_as_admin_trg
+│       └─ delete_messages_on_conversation_delete_trg
 │
 ├── conversation_participants
-│   ├─ conversation_id (UUID -> conversations.id)
-│   ├─ profile_id (UUID -> profiles.id)
+│   ├─ conversation_id (UUID → conversations.id)
+│   ├─ profile_id (UUID → users.profiles)
 │   ├─ joined_at, role
+│   └─ Trigger:
+│       └─ prevent_duplicate_participants_trg
 │
 ├── messages
 │   ├─ id (UUID)
 │   ├─ created_at, updated_at, deleted_at
-│   ├─ conversation_id (UUID -> conversations.id)
-│   ├─ sender_profile_id (UUID -> profiles.id)
+│   ├─ conversation_id (UUID → conversations.id)
+│   ├─ sender_profile_id (UUID → users.profiles)
 │   ├─ content, delivered_to (UUID[]), read_by (UUID[])
-│   └─ Triggers (notifications on send, soft delete, update timestamp)
+│   └─ Triggers:
+│       ├─ soft_delete_message_trg
+│       └─ update_message_timestamp_trg
 │
-└── notifications
-    ├─ id (UUID)
-    ├─ created_at
-    ├─ profile_id (UUID -> profiles.id)
-    ├─ type, entity_id, from_user_id, is_read, message
+├── notifications
+│   ├─ id (UUID)
+│   ├─ created_at
+│   ├─ profile_id (UUID → users.profiles)
+│   ├─ type, entity_id, from_user_id, is_read, message
+│
+├── notification_prefs
+│   ├─ profile_id (UUID → users.profiles) [PK]
+│   └─ likes, comments, connections, groups, matches
+│
+└── musician_ads
+    ├─ id (UUID), profile_id, group_id
+    ├─ title, ad_type (looking/offering), looking_for[], genres[], location, description
+    ├─ content_search (tsvector), created_at
+    └─ Trigger:
+        └─ trg_tsv_musician_ads → social.musician_ads_tsv_update()
+
+
+
+
+groups
+│
+├── group_events
+│   ├─ id (UUID)
+│   ├─ profile_group_id (UUID → users.profile_groups)
+│   ├─ title, description, location
+│   ├─ type (rehearsal, gig, meeting)
+│   ├─ start_time, end_time
+│   ├─ created_by (UUID → users.profiles)
+│   └─ created_at
+│
+└── event_rsvps
+    ├─ event_id (UUID → group_events.id)
+    ├─ profile_id (UUID → users.profiles)
+    ├─ status (attending, not_attending, pending)
+    ├─ updated_at
+    └─ Trigger:
+        └─ update_rsvp_timestamp_trg → groups.update_rsvp_timestamp()
+

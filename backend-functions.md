@@ -27,12 +27,15 @@
 ---
 
 ## [users.profiles] – Profile Matching
-- **Calculates a similarity score between two profiles based on shared content tokens.**
+- **Calculates a similarity score between two profiles based on shared content tokens.**  
   `CREATE OR REPLACE FUNCTION users.profile_match_score(profile_a UUID, profile_b UUID)`
 
-- **Returns a list of matching profiles ordered by similarity to the given profile.**
+- **Returns a list of matching profiles ordered by similarity to the given profile.**  
   `CREATE OR REPLACE FUNCTION users.profile_match_all(profile_a UUID, limit_results INT DEFAULT 10)`
-  
+
+- **Updates `last_seen` for the currently authenticated user.**  
+  `CREATE OR REPLACE FUNCTION users.touch_profile_last_seen()`
+
 ---
 
 ## [users.profile_group_members] – Profile Groups
@@ -50,15 +53,15 @@
 
 ## [users.ui_preferences] [users.privacy_settings] – UI and Privacy Updates
 
-- **Updates the timestamp when a user's UI preferences change.**
+- **Updates the timestamp when a user's UI preferences change.**  
   `CREATE OR REPLACE FUNCTION users.touch_ui_prefs()`
 
-- **Updates the timestamp when a user's privacy settings change.**
+- **Updates the timestamp when a user's privacy settings change.**  
   `CREATE OR REPLACE FUNCTION users.touch_privacy()`
 
-  ---
+---
 
-## [social.notifications] – Notification Triggers
+## [social.notifications] – Notification Triggers & Helpers
 
 - **Sends a notification when a comment is made on a post.**  
   `CREATE OR REPLACE FUNCTION social.notify_comment()`
@@ -74,6 +77,9 @@
 
 - **Sends notifications when a user leaves or is removed from a group.**  
   `CREATE OR REPLACE FUNCTION users.notify_profile_group_leave()`
+
+- **Helper: returns `TRUE` if a profile has a given notification channel enabled.**  
+  `CREATE OR REPLACE FUNCTION social.can_receive_notif(tgt_profile UUID, channel TEXT)`
 
 ---
 
@@ -94,7 +100,7 @@
 - **Prevents adding the same participant to a conversation more than once.**  
   `CREATE OR REPLACE FUNCTION social.prevent_duplicate_participants()`
 
-- **Finds an existing one-on-one conversation between two profiles.**  
+- **Finds an existing one‑on‑one conversation between two profiles.**  
   `CREATE OR REPLACE FUNCTION social.find_one_on_one_conversation(profile_a UUID, profile_b UUID)`
 
 ---
@@ -103,9 +109,6 @@
 
 - **Prevents duplicate likes on the same post or comment by the same user.**  
   `CREATE OR REPLACE FUNCTION social.prevent_duplicate_likes()`
-
-- **Toggles like on post or comment: deletes if exists, inserts otherwise.**  
-  `CREATE OR REPLACE FUNCTION social.update_like_status()`
 
 - **Updates the timestamp when a comment is updated.**  
   `CREATE OR REPLACE FUNCTION social.update_comment_timestamp()`
@@ -125,6 +128,13 @@
 
 - **Ensures only one connection per follower_profile_id by deleting existing entries.**  
   `CREATE OR REPLACE FUNCTION social.check_and_delete_duplicate()`
+
+---
+
+## [social.musician_ads] – Musician Ads
+
+- **Rebuilds the full‑text search vector for a musician ad whenever its searchable fields change.**  
+  `CREATE OR REPLACE FUNCTION social.musician_ads_tsv_update()`
 
 ---
 
