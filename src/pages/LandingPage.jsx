@@ -72,7 +72,7 @@ const LandingPage = () => {
         <Banner
           title={t("landingpage.hero.title")}
           subtitle={t("landingpage.hero.subtitle")}
-          backgroundImage="/rhythmic-hands-drumming-stockcake.jpg"
+          backgroundImage="/heroImage.webp"
           button= {t("landingpage.callToAction.buttons.joinUs")}
           user={user}
         />

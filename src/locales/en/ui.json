@@ -37,32 +37,32 @@
         {
           "title": "Find Musicians & Bands",
           "description": "Search and filter by location, musical roles, or instruments. Discover solo artists and complete groups.",
-          "svgSrc": "/for-landing-page/features/search.gif"
+          "svgSrc": "/for-landing-page/features/search.webp"
         },
         {
           "title": "Post & Share Your Ideas",
           "description": "Create posts with images, hashtags and updates. Join the conversation and express your musical journey.",
-          "svgSrc": "/for-landing-page/features/posts.gif"
+          "svgSrc": "/for-landing-page/features/posts.webp"
         },
         {
           "title": "One-on-One & Group Chat",
           "description": "Start private chats or group conversations with bandmates and collaborators in real time.",
-          "svgSrc": "/for-landing-page/features/chat.gif"
+          "svgSrc": "/for-landing-page/features/chat.webp"
         },
         {
           "title": "Showcase Your Music",
           "description": "Upload your YouTube, Spotify, or SoundCloud links. Feature two highlights on your profile and organize the rest in a media section.",
-          "svgSrc": "/for-landing-page/features/media.gif"
+          "svgSrc": "/for-landing-page/features/media.webp"
         },
         {
           "title": "Post Musician Ads",
           "description": "Looking for a bassist? Offering yourself as a producer? Publish musician ads to find or offer musical talent.",
-          "svgSrc": "/for-landing-page/features/ads.gif"
+          "svgSrc": "/for-landing-page/features/ads.webp"
         },
         {
           "title": "Create or Join a Music Group",
           "description": "Form a band or project, invite other members, assign custom musical roles, and manage your group collaboratively.",
-          "svgSrc": "/for-landing-page/features/group.gif"
+          "svgSrc": "/for-landing-page/features/group.webp"
         }
       ]
     },
@@ -106,129 +106,24 @@
         {
           "title": "Solo Artists",
           "description": "Showcase your music, connect with producers, and find musicians to start a new project.",
-          "gifSrc": "/for-landing-page/audience/solo.gif"
+          "gifSrc": "/for-landing-page/audience/solo.webp"
         },
         {
           "title": "Bands",
           "description": "Manage your group, organize events, chat with members, and share content as a band.",
-          "gifSrc": "/for-landing-page/audience/band.gif"
+          "gifSrc": "/for-landing-page/audience/band.webp"
         },
         {
           "title": "Producers",
           "description": "Discover new talent, offer your services, and collaborate on new musical projects.",
-          "gifSrc": "/for-landing-page/audience/producer.gif"
+          "gifSrc": "/for-landing-page/audience/producer.webp"
         },
         {
           "title": "Freelance Musicians",
           "description": "Promote your services, respond to musician ads, and find opportunities across the country.",
-          "gifSrc": "/for-landing-page/audience/freelance.gif"
+          "gifSrc": "/for-landing-page/audience/freelance.webp"
         }
       ]
-    },    
-    "screenshots": {
-      "sectionTitle": "App Look & Feel",
-      "description": "A glimpse into the TuneBridge app and its collaborative features.",
-      "profile": {
-        "title": "Profile & Setup",
-        "description": "Create and customize your musician profile with roles, genres, and media.",
-        "images": [
-          {
-            "src": "/for-landing-page/profile/profile-setup-1-EN.png",
-            "alt": "Profile creation form",
-            "caption": "Sign up and start building your musical presence."
-          },
-          {
-            "src": "/for-landing-page/profile/profile-setup-2-EN.png",
-            "alt": "Profile roles and genres",
-            "caption": "Add your music roles, genres, and instruments."
-          },
-          {
-            "src": "/for-landing-page/profile/profile-setup-3-EN.png",
-            "alt": "Public profile view",
-            "caption": "Your profile becomes visible to the community."
-          }
-        ]
-      },
-      "media": {
-        "title": "Media Links",
-        "description": "Showcase your music with embedded media.",
-        "images": [
-          {
-            "src": "/for-landing-page/media/media-1-EN.png",
-            "alt": "Media section",
-            "caption": "Add YouTube, Spotify, or SoundCloud links to your profile."
-          },
-          {
-            "src": "/for-landing-page/media/media-2-EN.png",
-            "alt": "Featured media preview",
-            "caption": "Feature up to two links directly on your profile."
-          }
-        ]
-      },
-      "ads": {
-        "title": "Musician Ads",
-        "description": "Find or offer music collaborations.",
-        "images": [
-          {
-            "src": "/for-landing-page/ads/ads-1-EN.png",
-            "alt": "Ad creation",
-            "caption": "Post a musician ad as an individual or a group."
-          },
-          {
-            "src": "/for-landing-page/ads/ads-2-EN.png",
-            "alt": "Ad listings",
-            "caption": "Browse ads by type, genre, and location."
-          }
-        ]
-      },
-      "groups": {
-        "title": "Music Groups",
-        "description": "Create and manage bands or music projects.",
-        "images": [
-          {
-            "src": "/for-landing-page/groups/groups-1-EN.png",
-            "alt": "Group creation",
-            "caption": "Start a new group and invite other musicians."
-          },
-          {
-            "src": "/for-landing-page/groups/groups-2-EN.png",
-            "alt": "Group profile",
-            "caption": "Manage members, roles, and group details."
-          }
-        ]
-      },
-      "events": {
-        "title": "Calendar & Events",
-        "description": "Plan rehearsals, gigs, or meetings with your group.",
-        "images": [
-          {
-            "src": "/for-landing-page/calendar/calendar-1-EN.png",
-            "alt": "Group calendar",
-            "caption": "Schedule events visible only to group members."
-          },
-          {
-            "src": "/for-landing-page/calendar/calendar-2-EN.png",
-            "alt": "RSVP functionality",
-            "caption": "Members can confirm their attendance or opt out."
-          }
-        ]
-      },
-      "chat": {
-        "title": "Real-time Chat",
-        "description": "Private and group messaging for collaboration.",
-        "images": [
-          {
-            "src": "/for-landing-page/chat/chat-1-EN.png",
-            "alt": "Direct chat",
-            "caption": "Message any musician directly in real time."
-          },
-          {
-            "src": "/for-landing-page/chat/chat-2-EN.png",
-            "alt": "Group chat",
-            "caption": "Collaborate with your group through dedicated chat rooms."
-          }
-        ]
-      }
     }
   },
   "nav": {
