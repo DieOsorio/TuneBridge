@@ -23,7 +23,7 @@ const FeatureCard = ({ title, description, svgSrc, index }) => {
       </div>
 
       <h3 className="text-xl font-bold text-amber-700 mb-2">{title}</h3>
-      <p className="text-gray-400 text-sm">{description}</p>
+      <p className="text-gray-300">{description}</p>
     </motion.div>
   );
 };
