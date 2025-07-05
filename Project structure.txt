@@ -14,7 +14,7 @@ TuneBridge
 ├── vite.config.js
 │
 ├── public
-│   ├── rhythmic-hands-drumming-stockcake.jpg
+│   ├── heroImage.jpg
 │   └── for-landing-page
 │       ├── musician-1.jpg
 │       ├── musician-2.jpg
