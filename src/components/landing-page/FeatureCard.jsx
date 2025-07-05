@@ -10,7 +10,7 @@ const FeatureCard = ({ title, description, svgSrc, index }) => {
       transition={{
         duration: 0.6,
         ease: "easeOut",
-        delay: index * 0.15, // escalonado por índice
+        delay: index * 0.15,
       }}
     >
       <div className="w-36 h-36 mb-4">
