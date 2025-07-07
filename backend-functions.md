@@ -1,144 +1,119 @@
-# TuneBridge Backend Functions Overview
+# TuneBridge – Backend Functions Reference
 
-## Auto-creation & Uniqueness
-
-- **Automatically creates a user profile upon authentication if it does not already exist.**  
-  `CREATE OR REPLACE FUNCTION users.create_profile_when_authenticated()`
-
-- **Prevents duplicate usernames in the profiles table.**  
-  `CREATE OR REPLACE FUNCTION users.prevent_duplicate_usernames()`
+> **Scope**  All user‑defined functions in the project schemas (`users`, `social`, `music`, …). System functions and extensions are intentionally omitted.
 
 ---
 
-## Search Index Maintenance (Profiles)
+## 1  Profile Creation & Validation
 
-- **Updates the searchable content field for a profile based on basic fields (username, name, email, location, bio).**  
-  `CREATE OR REPLACE FUNCTION users.update_profile_content_search()`
-
-- **Updates the content_search_roles field in profiles when roles related to a profile change.**  
-  `CREATE OR REPLACE FUNCTION users.update_content_search_roles_trigger()`
-
-- **Updates the content_search_details field in profiles when hashtags or related details change.**  
-  `CREATE OR REPLACE FUNCTION social.refresh_profile_content_search_details()`
-
-- **Aggregates multiple search vectors into a single comprehensive content_search_all field in profiles.**  
-  `CREATE OR REPLACE FUNCTION users.update_content_search_all()`
+| Function                                                     | Purpose                                                                                                                               |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `users.create_profile_when_authenticated()`                  | Auto‑creates a profile, privacy settings and UI preferences whenever an `auth.users` row transitions into the **authenticated** role. |
+| `users.prevent_duplicate_usernames()`                        | Rejects `INSERT / UPDATE` if another profile already owns the same `username`.                                                        |
+| `users.roles_in_group_no_duplicates(roles TEXT[]) → BOOLEAN` | Helper used in constraints – returns **false** if the provided text array contains repeated roles.                                    |
 
 ---
 
-## [users.profiles] – Profile Matching
-- **Calculates a similarity score between two profiles based on shared content tokens.**  
-  `CREATE OR REPLACE FUNCTION users.profile_match_score(profile_a UUID, profile_b UUID)`
+## 2  Search Vector Maintenance (Profiles)
 
-- **Returns a list of matching profiles ordered by similarity to the given profile.**  
-  `CREATE OR REPLACE FUNCTION users.profile_match_all(profile_a UUID, limit_results INT DEFAULT 10)`
-
-- **Updates `last_seen` for the currently authenticated user.**  
-  `CREATE OR REPLACE FUNCTION users.touch_profile_last_seen()`
-
----
-
-## [users.profile_group_members] – Profile Groups
-
-- **Automatically adds the creator of a group as an admin in the group members table.**  
-  `CREATE OR REPLACE FUNCTION add_creator_to_group_members()`
-
-- **Reassigns a new admin when the last admin leaves a group.**  
-  `CREATE OR REPLACE FUNCTION users.reassign_admin_on_leave()`
-
-- **Validates that no duplicate roles exist in roles_in_group array.**  
-  `CREATE OR REPLACE FUNCTION users.roles_in_group_no_duplicates(roles TEXT[])`
+| Function                                          | Purpose                                                                                                                                                                     |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `users.update_profile_content_search()`           | Rebuilds the base search vector (`content_search`) from username, name, e‑mail, location and bio fields (Spanish + English dictionaries).                                   |
+| `users.update_content_search_roles_trigger()`     | Regenerates `content_search_roles` every time the **roles** of a profile change. Runs under *SECURITY DEFINER* so the trigger on `music.roles` can update `users.profiles`. |
+| `social.refresh_profile_content_search_details()` | Updates `content_search_details` when hashtags linked to a profile are inserted, updated or deleted.                                                                        |
+| `users.update_content_search_all()`               | Concatenates `content_search`, `content_search_roles` and `content_search_details` into the final `content_search_all` column.                                              |
 
 ---
 
-## [users.ui_preferences] [users.privacy_settings] – UI and Privacy Updates
+## 3  Profile Matching & Activity Tracking
 
-- **Updates the timestamp when a user's UI preferences change.**  
-  `CREATE OR REPLACE FUNCTION users.touch_ui_prefs()`
-
-- **Updates the timestamp when a user's privacy settings change.**  
-  `CREATE OR REPLACE FUNCTION users.touch_privacy()`
-
----
-
-## [social.notifications] – Notification Triggers & Helpers
-
-- **Sends a notification when a comment is made on a post.**  
-  `CREATE OR REPLACE FUNCTION social.notify_comment()`
-
-- **Sends a notification when a post is liked.**  
-  `CREATE OR REPLACE FUNCTION social.notify_like()`
-
-- **Sends a notification when a follow request is created.**  
-  `CREATE OR REPLACE FUNCTION social.notify_follow_request()`
-
-- **Sends a notification when a user joins a group.**  
-  `CREATE OR REPLACE FUNCTION users.notify_profile_group_join()`
-
-- **Sends notifications when a user leaves or is removed from a group.**  
-  `CREATE OR REPLACE FUNCTION users.notify_profile_group_leave()`
-
-- **Helper: returns `TRUE` if a profile has a given notification channel enabled.**  
-  `CREATE OR REPLACE FUNCTION social.can_receive_notif(tgt_profile UUID, channel TEXT)`
+| Function                                                                | Purpose                                                                                                                   |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `users.profile_match_score(profile_a UUID, profile_b UUID)`             | Calculates a similarity score between two profiles based on the token intersection of their `content_search_all` vectors. |
+| `users.profile_match_all(profile_a UUID, limit_results INT DEFAULT 10)` | Returns the top‑N matching profiles for a given profile, ordered by the score above.                                      |
+| `users.touch_profile_last_seen()`                                       | Updates the `last_seen` column of the currently authenticated user (`auth.uid()`). Runs as *SECURITY DEFINER*.            |
 
 ---
 
-## [social.messages & chat] – Conversations & Messaging
+## 4  Profile Groups
 
-- **Soft deletes a message by setting the deleted_at timestamp.**  
-  `CREATE OR REPLACE FUNCTION social.soft_delete_message()`
-
-- **Updates the timestamp when a message is updated.**  
-  `CREATE OR REPLACE FUNCTION social.update_message_timestamp()`
-
-- **Deletes all messages when a conversation is deleted.**  
-  `CREATE OR REPLACE FUNCTION delete_messages_on_conversation_delete()`
-
-- **Assigns the conversation creator as admin when a conversation is converted into a group.**  
-  `CREATE OR REPLACE FUNCTION social.set_creator_as_admin()`
-
-- **Prevents adding the same participant to a conversation more than once.**  
-  `CREATE OR REPLACE FUNCTION social.prevent_duplicate_participants()`
-
-- **Finds an existing one‑on‑one conversation between two profiles.**  
-  `CREATE OR REPLACE FUNCTION social.find_one_on_one_conversation(profile_a UUID, profile_b UUID)`
+| Function                               | Purpose                                                                                                  |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `users.add_creator_to_group_members()` | Inserts the group creator as an **admin** in `profile_group_members` right after a new group is created. |
+| `users.reassign_admin_on_leave()`      | Promotes the earliest member to admin when the last admin leaves a group.                                |
 
 ---
 
-## [social.posts & comments] – Posts, Likes, Comments
+## 5  UI & Privacy Preferences
 
-- **Prevents duplicate likes on the same post or comment by the same user.**  
-  `CREATE OR REPLACE FUNCTION social.prevent_duplicate_likes()`
-
-- **Updates the timestamp when a comment is updated.**  
-  `CREATE OR REPLACE FUNCTION social.update_comment_timestamp()`
-
-- **Updates the content_search field for a post when its hashtags, title or content change.**  
-  `CREATE OR REPLACE FUNCTION social.refresh_post_content_search()`
-
-- **Updates the timestamp when a post is updated.**  
-  `CREATE OR REPLACE FUNCTION social.update_post_timestamp()`
+| Function                 | Purpose                                                                           |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `users.touch_ui_prefs()` | Sets `updated_at = NOW()` on the row being updated inside `users.ui_preferences`. |
+| `users.touch_privacy()`  | Same behaviour for `users.privacy_settings`.                                      |
 
 ---
 
-## [social.connections] – Profile Connections
+## 6  Notifications Framework
 
-- **Updates the timestamp when a connection is updated.**  
-  `CREATE OR REPLACE FUNCTION social.update_connection_timestamp()`
-
-- **Ensures only one connection per follower_profile_id by deleting existing entries.**  
-  `CREATE OR REPLACE FUNCTION social.check_and_delete_duplicate()`
-
----
-
-## [social.musician_ads] – Musician Ads
-
-- **Rebuilds the full‑text search vector for a musician ad whenever its searchable fields change.**  
-  `CREATE OR REPLACE FUNCTION social.musician_ads_tsv_update()`
+| Function                                                             | Purpose                                                                                                                |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `social.can_receive_notif(tgt_profile UUID, channel TEXT) → BOOLEAN` | Returns whether the target profile has a given notification channel enabled (defaults to **true** when no row exists). |
+| `social.notify_comment()`                                            | Inserts a **comment** notification for the post owner.                                                                 |
+| `social.notify_like()`                                               | Inserts a **like** notification for the post owner.                                                                    |
+| `social.notify_follow_request()`                                     | Inserts a **follow\_request** notification for the target user.                                                        |
+| `users.notify_profile_group_join()`                                  | Notifies a user when they join a group.                                                                                |
+| `users.notify_profile_group_leave()`                                 | Handles notifications when a user leaves or is removed from a group.                                                   |
 
 ---
 
-## [groups.event_rsvps] – Calendar Events
+## 7  Conversations & Messaging
 
-- **Updates event_rsvps.updated_at to the current date.**  
-  `CREATE OR REPLACE FUNCTION groups.update_rsvp_timestamp()`
+| Function                                                              | Purpose                                                                                |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `social.prevent_duplicate_participants()`                             | Rejects duplicate participants in a conversation.                                      |
+| `social.set_creator_as_admin()`                                       | Promotes the conversation creator to admin when the conversation becomes a group chat. |
+| `social.delete_messages_on_conversation_delete()`                     | Cascades a hard delete of all messages once a conversation is removed.                 |
+| `social.soft_delete_message()`                                        | Converts a DELETE on `messages` into a soft delete (`deleted_at`).                     |
+| `social.update_message_timestamp()`                                   | Updates `updated_at` whenever a message is edited.                                     |
+| `social.find_one_on_one_conversation(profile_a UUID, profile_b UUID)` | Retrieves an existing private conversation between two profiles, if any.               |
+
+---
+
+## 8  Posts, Comments & Likes
+
+| Function                               | Purpose                                                                                |
+| -------------------------------------- | -------------------------------------------------------------------------------------- |
+| `social.refresh_post_content_search()` | Recomputes the post search vector whenever the post or its hashtags change.            |
+| `social.update_post_timestamp()`       | Touches `updated_at` on post edits.                                                    |
+| `social.update_comment_timestamp()`    | Touches `updated_at` on comment edits.                                                 |
+| `social.prevent_duplicate_likes()`     | Throws an error if the same user tries to like the same entity twice.                  |
+| `social.update_like_status()`          | Toggle behaviour: inserts a like when none exists, otherwise deletes the existing one. |
+
+---
+
+## 9  Connections & Follows
+
+| Function                               | Purpose                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `social.update_connection_timestamp()` | Touches `updated_at` when a connection row changes status.                                 |
+| `social.check_and_delete_duplicate()`  | Ensures at most one connection per follower by deleting existing duplicates before insert. |
+
+---
+
+## 10  Musician Ads
+
+| Function                           | Purpose                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `social.musician_ads_tsv_update()` | Builds or refreshes the full‑text search vector (`content_search`) on `social.musician_ads` insert / update. |
+
+---
+
+## 11  Events (groups.event\_rsvps)
+
+| Function                         | Purpose                                                  |
+| -------------------------------- | -------------------------------------------------------- |
+| `groups.update_rsvp_timestamp()` | Updates `updated_at` every time an RSVP row is modified. |
+
+---
+
+> **Note**  All trigger functions are declared `SET search_path`‑safe and run under the minimal privileges required. Security‑definer is only used when cross‑schema permissions are necessary.

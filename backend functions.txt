@@ -603,15 +603,25 @@ $$ LANGUAGE plpgsql;
 
 -- Aggregates multiple search vectors into a single comprehensive content_search_all field in profiles
 CREATE OR REPLACE FUNCTION users.update_content_search_all()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = users
+AS $$
+DECLARE
+  combined  tsvector := COALESCE(NEW.content_search, '') ||
+                        COALESCE(NEW.content_search_roles, '') ||
+                        COALESCE(NEW.content_search_details, '');
 BEGIN
-  NEW.content_search_all :=
-    coalesce(NEW.content_search, '') ||
-    coalesce(NEW.content_search_roles, '') ||
-    coalesce(NEW.content_search_details, '');
+  IF combined IS DISTINCT FROM OLD.content_search_all THEN
+    UPDATE users.profiles
+    SET content_search_all = combined
+    WHERE id = NEW.id;
+  END IF;
+
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
+
 
 
 

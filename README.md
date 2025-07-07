@@ -1,4 +1,3 @@
-
 # 🎵 TuneBridge
 
 TuneBridge is a music-centered social network designed to connect musicians, artists, producers, and music lovers. Built entirely solo, this beta version offers a wide range of features to encourage artistic collaboration and community.
@@ -7,15 +6,49 @@ TuneBridge is a music-centered social network designed to connect musicians, art
 
 ## 🧠 Technologies Used
 
-TuneBridge is built with modern, efficient technologies:
+TuneBridge is built with a modern tech stack that enables rich interactivity, real-time collaboration, and strong scalability:
 
-- **Frontend:** React, Vite, React Router, React Context API  
-- **Styling:** Tailwind CSS  
-- **State Management:** React Context (`useContext`, `createContext`)  
-- **Backend-as-a-Service:** [Supabase](https://supabase.com) (auth, database, storage, real-time)  
-- **Internationalization:** i18next with `react-i18next`  
-- **Deployment:** GitHub Pages with custom domain (`www.tunebridge.net`)  
-- **CI/CD:** GitHub Actions  
+- **Frontend:**  
+  React 19, Vite, React Router v7  
+  React Context API for global state  
+  TanStack React Query for async state and caching  
+  Framer Motion and GSAP for animations  
+  MUI (Material UI) for date pickers and select UI components  
+  Filepond for file uploads
+
+- **Styling:**  
+  Tailwind CSS 4  
+  GitHub Markdown CSS for rendering rich content
+
+- **Form & Validation:**  
+  React Hook Form  
+  PropTypes
+
+- **Backend-as-a-Service:**  
+  Supabase (Auth, Realtime DB, Storage, Edge Functions)
+
+- **Internationalization (i18n):**  
+  i18next with react-i18next  
+  Language detection and ISO country helpers
+
+- **Calendar & Events:**  
+  FullCalendar (DayGrid, TimeGrid, Interaction plugins)
+
+- **Media & Content:**  
+  React Player (for embedded YouTube, Spotify, SoundCloud, etc.)  
+  React Markdown
+
+- **Utility Libraries:**  
+  UUID for unique IDs  
+  Date-fns for date handling  
+  Country-State-City for location data  
+  Lottie React for animations
+
+- **Developer Experience:**  
+  ESLint, React Refresh, Why Did You Render  
+  GitHub Actions for CI/CD  
+  Deployed via GitHub Pages (`www.tunebridge.net`)
+
 
 ---
 
@@ -23,22 +56,63 @@ TuneBridge is built with modern, efficient technologies:
 
 The codebase is modular and organized by feature domain:
 
+
+
 ```
-src/
-├── components/        // Feature-specific components
-│   ├── auth/          // Login, SignUp, Account confirmation
-│   ├── profiles/      // Profile creation, edition, serach and group profiles retated components
-│   ├── music/         // Music section (roles, details, media summary) and Media Section
-│   ├── social/        // Posts, chat, comments, notifications, connections, ads
-│   ├── ui/            // Buttons, Navbar, Input, etc.
+.
+├── public/                       # Static assets served as‑is
+│   ├── favicon/                  # Multi–size icons & manifest
+│   └── for-landing-page/         # Optimised images for the marketing page
+│       ├── audience/
+│       └── features/
 │
-├── context/           // Global state management (auth, music, profile, social, etc)
-├── locales/           // i18n translations (en, es)
-├── utils/             // Helper functions, constants, env handler
-├── routes/            // App routes
-├── supabase.js        // Supabase client instance
-└── i18n.js            // i18next config
+├── src/                          # Application code
+│   ├── assets/                   # Lottie JSON, SVG, misc. media used in‑app
+│   ├── components/               # UI split by domain / feature
+│   │   ├── auth/                 # Sign‑up, log‑in, password reset, …
+│   │   ├── groups/               # Band/group specific components
+│   │   ├── landing-page/         # Public marketing site
+│   │   ├── music/                # Role editors, media sections, etc.
+│   │   ├── profiles/             # Profile cards, headers, group sub‑folder
+│   │   │   └── group/
+│   │   ├── settings/             # Privacy / notification settings UIs
+│   │   ├── social/               # Posts, chat, ads, comments, notifications
+│   │   │   ├── ads/
+│   │   │   ├── chat/             # Real‑time messaging widgets & helpers
+│   │   │   ├── comments/
+│   │   │   └── skeletons/        # Loading placeholders
+│   │   └── ui/                   # Generic, reusable primitives
+│   │       └── styles/           # CSS helpers for shiny text, stars, …
+│   │
+│   ├── context/                  # React Context / TanStack Query wrappers
+│   │   ├── AuthContext.jsx
+│   │   ├── groups/
+│   │   ├── music/
+│   │   ├── profile/
+│   │   ├── settings/
+│   │   └── social/
+│   │
+│   ├── locales/                  # i18n resources (en ▸, es ▸)
+│   ├── pages/                    # Top‑level routes (Feed, Explore, etc.)
+│   ├── routes/                   # React‑Router configuration
+│   ├── utils/                    # Helper hooks & utility functions
+│   ├── i18n.js                   # i18next initialisation
+│   ├── index.css                 # Tailwind base theme
+│   └── main.jsx                  # React hydration entry‑point
+│
+├── supabase/                     # Local dev config & edge functions (.ts)
+│   └── functions/
+│
+├── backend-triggers.md           # Auto‑generated DB trigger documentation
+├── backend-functions.md          # Auto‑generated DB function documentation
+├── tailwind.config.js            # Tailwind v4 design tokens & presets
+├── vite.config.js                # Vite build & chunking rules
+├── eslint.config.js              # Flat‑config ESLint setup
+├── package.json
+└── README.md                     # ← You are here
+
 ```
+
 
 ---
 
@@ -57,7 +131,7 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 - Users create accounts via username, email, and password.
 - A confirmation email is sent. After clicking the link, users are prompted to complete their profile with:
   - First & Last Name  
-  - Country, State, Neighborhood, Gender, Date of Birth  
+  - Country, State, Neighborhood/City, Gender, Date of Birth  
   - Editable Username  
   - Short Bio (max 100 characters)  
   - Profile Picture
@@ -160,19 +234,6 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 
 ---
 
-### 🧑‍🤝‍🧑 Musical Groups (Profile Groups)
-
-- Musicians can create and manage collaborative **Group Profiles**  
-- Each group has its own separate profile layout and identity  
-- Group admins and managers can:
-  - Invite or remove members  
-  - Assign roles (admin, member, manager, musician)  
-  - Define custom musical roles for each member (e.g. Guitarist, Vocalist, Composer)  
-- Groups support automatic notifications for key actions (new member joins, role changes, etc.)  
-- Groups can publish posts under their group identity (feature in progress)
-
----
-
 ### 📢 Musician Ads
 
 - A dedicated **Ads** section allows musicians to:
@@ -210,11 +271,76 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
 ### 🔍 Advanced Search & Filters
 
 - Easily search for posts and profiles using a single search bar  
-- Filter musician profiles by country, state, neighborhood, role, and instrument  
+- Filter musician profiles by country, state, neighborhood/city, role, and instrument  
 - Switch between basic and advanced filters seamlessly  
 - Interface is designed to work across both desktop and mobile devices
 
 ---
+
+## ⚙️ Settings Section
+
+### 🧭 Settings Layout & Routing
+
+- Central `Settings` component manages routes to all settings subsections.
+- Responsive layout with sidebar navigation on desktop and full-width content on mobile.
+- Sidebar shows user avatar and expands on hover (desktop only).
+
+---
+
+### 👤 Profile Settings
+
+- Edit personal information including:  
+  - First & Last Name  
+  - Editable Username (validated)  
+  - Gender, Birthdate  
+  - Location: Country, State, Neighborhood/City (using country-state-city data)  
+  - Short Bio (max 100 characters)  
+  - Profile avatar upload with preview and cloud storage integration.
+- Client-side validation powered by `react-hook-form`.
+- Fully internationalized UI texts and validation messages.
+
+---
+
+### 🎵 Music Settings
+
+- Manage musical roles (Composer, DJ, Instrumentalist, Producer, Singer).  
+- Add up to 6 roles with duplicate prevention and input validation.  
+- Expandable role list with inline editing.  
+- Delete individual roles with confirmation.
+
+---
+
+### 🔐 Account Settings
+
+- Interface preferences:  
+  - Language selection (English, Español)  
+  - Theme toggle (Dark, Light)
+- Change password functionality with validation and confirmation.  
+- Account deletion with confirmation dialog.  
+- Displays logged-in user’s email.
+
+---
+
+### 🔒 Privacy Settings
+
+- Toggle visibility of email and last seen status.  
+- Control who can send messages: all, connections only, or none.  
+- Settings persist with immediate user feedback.
+
+---
+
+### 🔔 Notification Settings
+
+- Enable or disable notifications for:  
+  - Likes  
+  - Comments  
+  - Connections  
+  - Groups  
+  - Matches  
+- Preferences saved and synchronized live.
+
+---
+
 
 ## 🔧 Future Improvements
 
@@ -245,7 +371,9 @@ Secrets and environment variables (Supabase keys) are handled securely via GitHu
   - Ideal for building a “press kit” feel on the profile.
   
   ---
-  
-- **Public Announcements from Groups:**
-  - Groups can create public posts under their identity.
-  - Useful for promoting shows, recruiting members, etc.
+
+
+## 📚 Documentation
+
+- [Backend Functions](./backend-functions.md)  
+- [Backend Triggers](./backend-triggers.md)

@@ -110,34 +110,73 @@ const RoleEditor = ({
   };
 
   const handleSaveDetail = async (detail) => {
-    const updated = {
-      ...detail,
-      ...(editingDetail?.[detail.id] || {}),
-    };
+  // Merge existing edits for this detail
+  const updated = {
+    ...detail,
+    ...(editingDetail?.[detail.id] || {}),
+  };
 
-    const isValid = fields.every(field =>
-      !field.required || updated[field.name]?.toString().trim()
+  // Validate required fields
+  const isValid = fields.every(field =>
+    !field.required || updated[field.name]?.toString().trim()
+  );
+
+  if (!isValid) {
+    setError("root", { message: t("form.validation.allRequired") });
+    return;
+  }
+
+  try {
+    // Update the detail in backend
+    await updateDetails(detail.id, { ...detail, ...updated });
+
+    // Extract hashtags from principalFields
+    const hashtags = [];
+    for (const field of fields) {
+      if (principalFields.has(field.name) && updated[field.name]) {
+        const values = updated[field.name]
+          .split(",")
+          .map((val) => val.trim())
+          .filter(Boolean);
+        hashtags.push(...values.map((val) => `#${val.replace(/\s+/g, "")}`));
+      }
+    }
+
+    // Upsert each hashtag into hashtags table
+    const upsertedHashtags = await Promise.all(
+      hashtags.map(async (tag) => {
+        const hashtag = await upsertHashtag({ name: tag });
+        return hashtag;
+      })
     );
 
-    if (!isValid) {
-      setError("root", { message: t("form.validation.allRequired") });
-      return;
-    }
+    // Associate hashtags with profile in profile_hashtags table
+    await Promise.all(
+      upsertedHashtags.map(async (hashtag) => {
+        await upsertProfileHashtag({
+          profile_id: profileId,
+          hashtag_id: hashtag.id,
+        });
+      })
+    );
 
-    try {
-      await updateDetails(detail.id, { ...detail, ...updated });
-      setSuccessMessage(t("messages.success.update", {item: title}));
-      setTimeout(() => setSuccessMessage(""), 3000);
-      setEditingDetail((prev) => {
-        const { [detail.id]: _, ...rest } = prev || {};
-        return rest;
-      });
-      refetch();
-    } catch (err) {
-      console.error(`Error updating ${title.toLowerCase()}:`, err);
-      setError("root", { message: t("messages.error.update", {title: title.toLowerCase()}) });
-    }
-  };
+    // Show success message and cleanup
+    setSuccessMessage(t("messages.success.update", { item: title }));
+    setTimeout(() => setSuccessMessage(""), 3000);
+
+    setEditingDetail((prev) => {
+      const { [detail.id]: _, ...rest } = prev || {};
+      return rest;
+    });
+
+    // Refetch data after update
+    refetch();
+  } catch (err) {
+    console.error(`Error updating ${title.toLowerCase()}:`, err);
+    setError("root", { message: t("messages.error.update", { title: title.toLowerCase() }) });
+  }
+};
+
 
   const handleDeleteDetail = async (id) => {
     console.log(`Deleting ${title.toLowerCase()} with ID:`, id);
