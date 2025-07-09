@@ -109,15 +109,17 @@
       "name": "Nombre del Grupo",
       "bio": "Biografía",
       "country": "País",
-      "city": "Cuidad",
+      "state": "Estado",
+      "city": "Ciudad",
       "genres": "Géneros"
     },
     "placeholders": {
       "name": "Ingrese el nombre del grupo",
       "bio": "ingrese una breve biografía",
       "country": "Ingrese el país",
-      "city": "Ingrese la cuidad",
-      "genres": "Ingrese los géneros"
+      "state": "Ingrese el estado",
+      "city": "Ingrese la ciudad",
+      "genres": "Ingrese el género musical"
     },
     "validations": {
       "name": "El nombre del grupo es obligatorio"

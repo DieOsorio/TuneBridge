@@ -4,7 +4,7 @@ import ErrorMessage from "../../../utils/ErrorMessage";
 import Loading from "../../../utils/Loading";
 import AdCard from "./AdCard";
 import ShinyText from "../../ui/ShinyText";
-import PlusButton from "./PlusButton"
+import PlusButton from "../../ui/PlusButton";
 import { useAuth } from "../../../context/AuthContext";
 
 function ProfileAds({ profileId }) {

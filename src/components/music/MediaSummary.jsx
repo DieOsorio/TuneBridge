@@ -4,7 +4,7 @@ import ReactPlayer from "react-player";
 import Button from "../ui/Button";
 import { useTranslation } from "react-i18next";
 import { FiPlus } from "react-icons/fi";
-import PlusButton from "../social/ads/PlusButton";
+import PlusButton from "../ui/PlusButton";
 import { useAuth } from "../../context/AuthContext";
 
 const MediaSummary = ({ profileId }) => {

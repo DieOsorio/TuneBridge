@@ -1,69 +1,78 @@
+import { useNavigate } from "react-router-dom";
 import ProfileAvatar from "../ProfileAvatar";
-import Button from "../../ui/Button"; // Import the Button component
+import Button from "../../ui/Button";
+
+import { IoIosSettings }   from "react-icons/io";
+import { BsFillBellFill }  from "react-icons/bs";
 
 const GroupHeader = ({ groupData, isAdmin }) => {
+  const navigate  = useNavigate();
+  const basePath  = `/group/${groupData.id}`;
+  const navBtnCls = "!bg-sky-700 hover:!bg-sky-800";
 
   return (
-    <div className="bg-gradient-to-l from-amber-950 to-amber-800 mb-4 p-4 rounded-b-lg">
-      <div className="flex items-center gap-4">
-        <ProfileAvatar avatar_url={groupData.avatar_url} />
-        <div>
-          <h1 className="text-3xl font-bold text-white">{groupData.name}</h1>
-          <p className="text-gray-300">{groupData.bio}</p>
+    <div className="bg-gradient-to-l md:min-w-2xl lg:min-w-4xl from-amber-950 to-amber-800 mb-4 p-4 rounded-b-lg">
+      {/* avatar and info + top-right icons */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4 flex-grow">
+          <ProfileAvatar
+            avatar_url={groupData.avatar_url}
+            className="flex-shrink-0 !w-24 !h-24"
+          />
+          <div className="flex flex-col gap-2 flex-grow">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white break-words">
+              {groupData.name}
+            </h1>
+            <p className="text-gray-200 break-words">{groupData.bio}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-4 ml-auto items-center">
+          {isAdmin && (
+            <IoIosSettings
+              className="w-8 h-8 text-white cursor-pointer"
+              onClick={() => navigate(`${basePath}/settings`)}
+              title="Group settings"
+            />
+          )}
+
+          <BsFillBellFill
+            className="w-7 h-7 text-white cursor-pointer"
+            onClick={() => navigate(`${basePath}/notifications`)}
+            title="Group notifications"
+          />
         </div>
       </div>
 
-      {/* Buttons for managing views */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-end mt-4">
-        {/* View Posts Button (Visible to Everyone) */}
+      {/* navigation buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center sm:justify-end mt-6">
         <div>
-          {isAdmin && (
-            <>
-              {/* Calendar Button */}
-              <div className="mb-4">
-                <Button
-                  className="!bg-sky-700 hover:!bg-sky-800"
-                  // onClick={() => manageView("calendar", "group")}
-                >
-                  Calendar
-                </Button>
-              </div>              
-            </>
-          )}
+          <div className="mb-4">
+            <Button className={navBtnCls} onClick={() => navigate(basePath)}>
+              About
+            </Button>
+          </div>
           <div className="sm:mb-4">
-            <Button
-              className="!bg-sky-700 hover:!bg-sky-800"
-              // onClick={() => manageView("posts", "group")}
-            >
-              View Posts
+            <Button className={navBtnCls} onClick={() => navigate(`${basePath}/posts`)}>
+              Posts
             </Button>
           </div>
         </div>
 
-        {/* Admin-Only Buttons */}
         <div>
+          <div className="mb-4">
+            <Button className={navBtnCls} onClick={() => navigate(`${basePath}/`)}>
+              vamo'a've
+            </Button>
+          </div>
+
           {isAdmin && (
-            <>
-              {/* Edit Group Button */}
-              <div className="mb-4">
-                <Button
-                  className="!bg-sky-700 hover:!bg-sky-800"
-                  // onClick={() => manageView("edit", "group")}
-                >
-                  Edit Group
-                </Button>
-              </div>              
-            </>
-          )}
-          {/* Manage Members Button */}
             <div className="sm:mb-4">
-              <Button
-                className="!bg-sky-700 hover:!bg-sky-800"
-                // onClick={() => manageView("members", "group")}
-              >
-                Members
+              <Button className={navBtnCls} onClick={() => navigate(`${basePath}/calendar`)}>
+                Calendar
               </Button>
             </div>
+          )}
         </div>
       </div>
     </div>

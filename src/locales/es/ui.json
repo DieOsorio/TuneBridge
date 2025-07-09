@@ -133,7 +133,8 @@
       "profile": "Perfil",
       "ads": "Anuncios",
       "media": "Contenido",
-      "matches": "Matches"
+      "matches": "Matches",
+      "groups": "Grupos"
     },
     "auth": {
       "signIn": "Iniciar sesión",

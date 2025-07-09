@@ -98,3 +98,20 @@ body {
   animation: custom-pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite;
 }
 
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #4b3f2f; /* dark amber */
+  border-radius: 4px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #d97706; /* amber-600 */
+  border-radius: 4px;
+  border: 2px solid #4b3f2f;
+}
+/* Firefox */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #d97706 #4b3f2f;
+}

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -8,12 +8,24 @@ import { IoIosCamera } from "react-icons/io";
 import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
 import { useAuth } from "../../../context/AuthContext";
 
-import Input        from "../../ui/Input";
-import Textarea     from "../../ui/Textarea";
-import Button       from "../../ui/Button";
+import Input from "../../ui/Input";
+import Textarea from "../../ui/Textarea";
+import Button from "../../ui/Button";
+import Select from "../../ui/Select";
 import ProfileAvatar from "../ProfileAvatar";
 import ImageUploader from "../../../utils/ImageUploader";
 import { uploadFileToBucket } from "../../../utils/avatarUtils";
+
+import {
+  useCountries,
+  useStates,
+  useCities,
+} from "../../../context/helpers/useCountryCity";
+import { Country, State } from "country-state-city";
+
+/* strip “ Department” suffix (e.g. “Montevideo Department” → “Montevideo”) */
+const cleanStateName = (name) =>
+  name?.endsWith(" Department") ? name.replace(/ Department$/, "") : name;
 
 const GroupForm = ({ group = null, onSave, onCancel }) => {
   const isEdit = Boolean(group);
@@ -22,37 +34,62 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // react-hook-form  
+  /* react‑hook‑form */
   const {
     register,
+    control,
     handleSubmit,
-    reset,
-    watch,
     setValue,
+    watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name:     group?.name     || "",
-      bio:      group?.bio      || "",
-      country:  group?.country  || "",
-      city:     group?.city     || "",
+      name: group?.name || "",
+      bio: group?.bio || "",
+      country: "",   // ISO‑2, filled in useEffect
+      state: "",
+      city: "",
       newGenre: "",
     },
   });
 
-  // local state
-  const [avatarUrl,  setAvatarUrl]  = useState(group?.avatar_url || "");
-  const [preview,    setPreview]    = useState(null);           // local <img> preview
-  const [file,       setFile]       = useState(null);           // File chosen
-  const [errorMsg,   setErrorMsg]   = useState("");
+  /* pre‑populate location fields when editing */
+  useEffect(() => {
+    if (!group) return;
 
-  /* Genres with “+” logic */
+    const countryIso =
+      Country.getAllCountries().find((c) => c.name === group.country)?.isoCode ||
+      "";
+    const stateIso =
+      State.getStatesOfCountry(countryIso).find(
+        (s) => cleanStateName(s.name) === group.state
+      )?.isoCode || "";
+    setValue("country", countryIso);
+    setValue("state", stateIso);
+    setValue("city", group.city || "");
+  }, [group, setValue]);
+
+  /* avatar local state */
+  const [avatarUrl, setAvatarUrl] = useState(group?.avatar_url || "");
+  const [preview, setPreview] = useState(null);
+  const [file, setFile] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  /* genres chip logic */
   const [genres, setGenres] = useState(group?.genres ?? []);
   const newGenre = watch("newGenre")?.trim();
 
-  // avatar picker
-  const avatarRef = useRef(null);
+  /* location selector data */
+  const countryIso = watch("country");
+  const stateIso = watch("state");
 
+  const { data: countries = [] } = useCountries();
+  const { data: states = [] } = useStates(countryIso);
+  const { data: cities = [] } = useCities(countryIso, stateIso);
+
+  /* avatar uploader */
+  const avatarRef = useRef(null);
   const handleAvatarUpdate = (files) => {
     if (files.length) {
       setFile(files[0]);
@@ -63,44 +100,55 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
     }
   };
 
-  // genre chips
-  const addGenre = () => {
-    if (newGenre && !genres.includes(newGenre) && genres.length < 5) {
-      setGenres([...genres, newGenre]);
-      setValue("newGenre", "");
-    }
-  };
-  const removeGenre = (tag) => setGenres(genres.filter((g) => g !== tag));
-
-  // submit
+  /* submit */
   const onSubmit = async (data) => {
     setErrorMsg("");
     try {
-      const { newGenre: _discard, ...body } = data; // remove helper field
+      const { newGenre: _omit, ...body } = data;
+
+      /* normalize country / state names */
+      const countryName =
+        Country.getCountryByCode(body.country)?.name || body.country;
+      const stateName =
+        cleanStateName(
+          states.find((s) => s.isoCode === body.state)?.name || body.state
+        ) || "";
+
       let avatar = avatarUrl;
 
+      /* upload avatar if changed */
+      if (file) {
+        avatar = await uploadFileToBucket(
+          file,
+          "group-avatars",
+          isEdit ? group.id : user.id,
+          avatarUrl,
+          true
+        );
+      }
+
       if (isEdit) {
-        //  EDIT
-        if (file) {
-          avatar = await uploadFileToBucket(
-            file,
-            "group-avatars",
-            group.id,
-            group.avatar_url,
-            true
-          );
-        }
         await updateProfileGroup({
           id: group.id,
-          updatedGroup: { ...body, avatar_url: avatar, genres },
+          updatedGroup: {
+            ...body,
+            country: countryName,
+            state: stateName,
+            city: body.city,
+            genres,
+            avatar_url: avatar,
+          },
         });
         onSave?.();
       } else {
-        // CREATE
+        /* optimistic “client_id” is handled in actions */
         const created = await createProfileGroup({
           ...body,
+          country: countryName,
+          state: stateName,
+          city: body.city,
           genres,
-          avatar_url: "",      // temporary
+          avatar_url: "", // temp
           created_by: user.id,
         });
 
@@ -112,7 +160,6 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
             "",
             false
           );
-          // patch newly created group with avatar
           await updateProfileGroup({
             id: created.id,
             updatedGroup: { avatar_url: avatar },
@@ -120,43 +167,27 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
         }
         navigate(`/profile/${user.id}`);
       }
-
       reset();
     } catch (err) {
       setErrorMsg(err.message || t("errors.default"));
     }
   };
 
-  // UI
-  const bannerTitle = isEdit
-    ? t("form.titles.edit")
-    : t("form.titles.create");
-
-  const submitLabel = isEdit
-    ? t("form.buttons.save")
-    : t("form.buttons.create");
-
-  const cancel = () => {
-    if (isEdit) {
-      onCancel?.();
-    } else {
-      navigate(`/profile/${user.id}`);
-    }
-  };
+  /* UI labels */
+  const bannerTitle = isEdit ? t("form.titles.edit") : t("form.titles.create");
+  const submitLabel = isEdit ? t("form.buttons.save") : t("form.buttons.create");
 
   return (
     <div className="bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto">
-      <h2 className="text-2xl font-semibold text-center mb-4">{bannerTitle}</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4 text-yellow-600">
+        {bannerTitle}
+      </h2>
 
       {errorMsg && <p className="text-red-500 mb-4 text-center">{errorMsg}</p>}
 
-      {/* ---------------------- Avatar picker ---------------------- */}
+      {/* avatar picker */}
       <div ref={avatarRef} className="relative mx-auto w-fit cursor-pointer group">
-        <ProfileAvatar
-          group
-          className="!bg-amber-700"
-          avatar_url={preview || avatarUrl}
-        />
+        <ProfileAvatar group avatar_url={preview || avatarUrl} />
         <span className="absolute bottom-1 right-1 bg-white rounded-full p-[2px] shadow-md">
           <IoIosCamera size={20} className="text-gray-700" />
         </span>
@@ -168,12 +199,22 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
         className="my-4"
       />
 
-      {/* ------------------------- FORM --------------------------- */}
+      {/* form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
-        {/* left column */}
+        <Textarea
+          id="bio"
+          label={t("form.labels.bio")}
+          placeholder={t("form.placeholders.bio")}
+          maxLength={100}
+          register={register}
+          validation={{ maxLength: { value: 100, message: t("form.validations.bioMax") } }}
+          error={errors.bio}
+          watchValue={watch("bio")}
+        />
+
         <Input
           id="name"
           label={t("form.labels.name")}
@@ -182,43 +223,10 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
           register={register}
           validation={{ required: t("form.validations.name") }}
           error={errors.name?.message}
-          classForLabel="!text-gray-400"
         />
 
-        <Textarea
-          id="bio"
-          label={t("form.labels.bio")}
-          placeholder={t("form.placeholders.bio")}
-          maxLength={100}
-          register={register}
-          validation={{
-            maxLength: { value: 100, message: t("form.validations.bioMax") },
-          }}
-          error={errors.bio}
-          watchValue={watch("bio")}
-          classForLabel="text-gray-400"
-        />
-
-        <Input
-          id="country"
-          label={t("form.labels.country")}
-          placeholder={t("form.placeholders.country")}
-          register={register}
-          error={errors.country?.message}
-          classForLabel="!text-gray-400"
-        />
-
-        <Input
-          id="city"
-          label={t("form.labels.city")}
-          placeholder={t("form.placeholders.city")}
-          register={register}
-          error={errors.city?.message}
-          classForLabel="!text-gray-400"
-        />
-
-        {/* -------------- Genres with “+” button ---------------- */}
-        <div className="sm:col-span-2 flex flex-col gap-2">
+        {/* genres chip selector */}
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <Input
               id="newGenre"
@@ -227,11 +235,15 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
               maxLength={12}
               register={register}
               className="!flex-1"
-              classForLabel="!text-gray-400"
             />
             <button
               type="button"
-              onClick={addGenre}
+              onClick={() => {
+                if (newGenre && !genres.includes(newGenre) && genres.length < 5) {
+                  setGenres([...genres, newGenre]);
+                  setValue("newGenre", "");
+                }
+              }}
               disabled={!newGenre || genres.length >= 5}
               className="text-emerald-500 mt-6 p-2 rounded-full hover:text-emerald-700 disabled:opacity-40"
             >
@@ -241,15 +253,15 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
 
           {genres.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {genres.map((g, i) => (
+              {genres.map((g) => (
                 <span
-                  key={i}
+                  key={g}
                   className="px-2 py-1 text-sm rounded bg-emerald-800 text-white flex items-center gap-2"
                 >
                   {g}
                   <button
                     type="button"
-                    onClick={() => removeGenre(g)}
+                    onClick={() => setGenres(genres.filter((x) => x !== g))}
                     className="text-red-300 hover:text-red-500"
                   >
                     ×
@@ -260,12 +272,53 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
           )}
         </div>
 
-        {/* ------------------- buttons ------------------- */}
+        <Select
+          id="country"
+          label={t("form.labels.country")}
+          defaultOption={t("form.placeholders.country")}
+          options={countries.map((c) => ({ value: c.isoCode, label: c.name }))}
+          register={register}
+          error={errors.country}
+          onChange={(e) => {
+            setValue("country", e.target.value);
+            setValue("state", "");
+            setValue("city", "");
+          }}
+        />
+
+        <Select
+          id="state"
+          label={t("form.labels.state")}
+          defaultOption={t("form.placeholders.state")}
+          options={states.map((s) => ({
+            value: s.isoCode,
+            label: cleanStateName(s.name),
+          }))}
+          register={register}
+          error={errors.state}
+          disabled={!countryIso}
+          onChange={(e) => {
+            setValue("state", e.target.value);
+            setValue("city", "");
+          }}
+        />
+
+        <Select
+          id="city"
+          label={t("form.labels.city")}
+          defaultOption={t("form.placeholders.city")}
+          options={cities.map((c) => ({ value: c.name, label: c.name }))}
+          register={register}
+          error={errors.city}
+          disabled={!stateIso}
+        />
+
+        {/* action buttons */}
         <div className="sm:col-span-2 flex justify-center gap-4 pt-4">
           <Button
             type="button"
             className="!bg-gray-600 hover:!bg-gray-700"
-            onClick={cancel}
+            onClick={() => (isEdit ? onCancel?.() : navigate(`/profile/${user.id}`))}
           >
             {t("form.buttons.cancel")}
           </Button>

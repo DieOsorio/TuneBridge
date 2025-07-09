@@ -109,6 +109,7 @@
       "name": "Group Name",
       "bio": "Bio",
       "country": "Country",
+      "state": "State",
       "city": "City",
       "genres": "Genres"
     },
@@ -116,8 +117,9 @@
       "name": "Enter group name",
       "bio": "Enter a short bio",
       "country": "Enter country",
+      "state": "Enter state",
       "city": "Enter city",
-      "genres": "Enter genres"
+      "genres": "Enter music genre"
     },
     "validations": {
       "name": "Group name is required"

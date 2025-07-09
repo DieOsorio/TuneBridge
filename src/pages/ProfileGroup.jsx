@@ -1,89 +1,80 @@
-import { useParams } from "react-router-dom";
-import { useProfileGroups } from "../context/profile/ProfileGroupsContext"; // CRUD for profile_groups
-import { useProfileGroupMembers } from "../context/profile/ProfileGroupMembersContext"; // CRUD for profile_group_members
-import { useAuth } from "../context/AuthContext"; // Import the AuthContext to get the logged-in user
-import Loading from "../utils/Loading";
+import {
+  Routes,
+  Route,
+  useParams,
+  Navigate,
+}                                 from "react-router-dom";
+import { useAuth }                from "../context/AuthContext";
+import { useProfileGroups }       from "../context/profile/ProfileGroupsContext";
+import { useProfileGroupMembers } from "../context/profile/ProfileGroupMembersContext";
+
+import Loading      from "../utils/Loading";
 import ErrorMessage from "../utils/ErrorMessage";
-import GroupHeader from "../components/profiles/group/GroupHeader"; // Header for group info
-import { useTranslation } from "react-i18next";
-import GroupMembers from "../components/profiles/group/GroupMembers";
-// import { useView } from "../context/ViewContext";
-import GroupForm from "../components/profiles/group/GroupForm";
+import GroupHeader  from "../components/profiles/group/GroupHeader";
 
-const ProfileGroup = () => {
-  // const { externalView, internalView, manageView } = useView(); // Manage internal/external views
-  const { groupId } = useParams(); // Get the group ID from the URL
-  const { user } = useAuth(); // Get the logged-in user's info
-  const { fetchProfileGroup } = useProfileGroups(); // Fetch group details
-  const { 
-    fetchGroupMembers, 
-    addGroupMember, 
-    removeGroupMember,
-    updateGroupMember, 
-  } = useProfileGroupMembers(); // Fetch group members, add and remove members
- 
-  const { t } = useTranslation("profileGroup");
+import GroupAbout     from "../components/profiles/group/GroupAbout";
+import GroupPosts     from "../components/profiles/group/GroupPosts";
+import CalendarScreen from "../components/profiles/group/GroupCalendar";
+import GroupForm      from "../components/profiles/group/GroupForm";
 
-  // Fetch group data
-  const { 
-    data: groupData, 
-    isLoading: groupLoading, 
-    error: groupError 
-  } = fetchProfileGroup(groupId);
+export default function ProfileGroup() {
+  const { groupId } = useParams();
+  const { user }    = useAuth();
 
-  // Fetch group members
-  const { 
-    data: groupMembers, 
-    isLoading: membersLoading, 
-    error: membersError,
-    refetch 
+  /** ---------- fetch info ---------- */
+  const { fetchProfileGroup } = useProfileGroups();
+  const { data: group, isLoading, error } = fetchProfileGroup(groupId);
+
+  const { fetchGroupMembers } = useProfileGroupMembers();
+  const {
+    data: members,
+    isLoading: mLoading,
+    error: mError,
   } = fetchGroupMembers(groupId);
-    
-  if (groupLoading || membersLoading) {
-    return <Loading />;
-  }
 
-  if (groupError || membersError) {
-    return <ErrorMessage error={groupError?.message || membersError?.message || t("errors.loading")} />;
-  }
+  if (isLoading || mLoading) return <Loading />;
+  if (error || mError)       return <ErrorMessage error={error?.message || mError?.message} />;
+  if (!group)                return <Navigate to="/" replace />;
 
-  if (!groupData) {
-    return <div>{t("errors.noData")}</div>;
-  }
+  /** ---------- permissions ---------- */
+  const me     = members?.find(m => m.profile_id === user.id);
+  const isAdmin   = me?.role === "admin";
+  const isMember  = !!me;
 
-  // Determine if the logged-in user is an admin
-  const userRole = groupMembers?.find((member) => member.profile_id === user.id)?.role;
-  const isAdmin = userRole === "admin";
-
+  /** ---------- internal views ---------- */
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-transparent text-white">
-      {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8 max-w-4xl mx-auto gap-8">
-        {/* Group Header */}
-        <GroupHeader groupData={groupData} isAdmin={isAdmin} />
+    <div className="flex flex-col min-h-screen text-white">
+      <div className="max-w-5xl mx-auto p-6 space-y-6">
 
-        {/* Group Members */}
-        {/* {(externalView === "group" || externalView == "") && (internalView === "members" || internalView == "") && */}
-        (<GroupMembers
-          groupId={groupId}
-          groupMembers={groupMembers}
+        {/* header with navigation buttons */}
+        <GroupHeader
+          groupData={group}
           isAdmin={isAdmin}
-          user={user}
-          addGroupMember={addGroupMember}
-          removeGroupMember={removeGroupMember}
-          updateGroupMember={updateGroupMember}
-          refetch={refetch}
-        />  )  
-        {/* {externalView === "group" && internalView === "members" && */}
-        <GroupForm
-          group={groupData}
-          onSave={() => manageView("members", "group")}
-          onCancel={() => manageView("members", "group")}
         />
-        {/* }      */}
+
+        {/* sub-routes */}
+        <Routes>
+          <Route index           element={<GroupAbout group={group} members={members} />} />
+          <Route path="posts/*"  element={<GroupPosts groupId={groupId} isMember={isMember} />} />
+
+          {isAdmin && (
+            <>
+              <Route path="calendar" element={<CalendarScreen groupId={groupId} />} />
+              <Route path="edit"     element={
+                <GroupForm
+                  group={group}
+                  onSave={() => window.history.back()}
+                  onCancel={() => window.history.back()}
+                />
+              } />
+            </>
+          )}
+
+          {/* fallback → about */}
+          <Route path="*" element={<Navigate to="" replace />} />
+        </Routes>
+
       </div>
     </div>
   );
-};
-
-export default ProfileGroup;
+}

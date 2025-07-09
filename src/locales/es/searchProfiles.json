@@ -13,6 +13,13 @@
       { "value": "Buenos Aires", "label": "Buenos Aires" }
     ]
   },
+  "neighborhood": {
+    "defaultOption": "Todas las ciudades",
+    "options": [
+      { "value": "Montevideo", "label": "Montevideo" },
+      { "value": "Buenos Aires", "label": "Buenos Aires" }
+    ]
+  },
   "role": {
     "defaultOption": "Todos los roles",
     "options": [
@@ -31,5 +38,7 @@
       { "value": "Drums", "label": "Batería" }
     ]
   },
-  "search": "Buscar perfiles..."
+  "search": "Buscar perfiles...",
+  "hideFilters": "Ocultar filtros",
+  "showFilters": "Mostrar filtros"
 }
