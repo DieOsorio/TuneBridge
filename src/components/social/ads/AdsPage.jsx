@@ -6,7 +6,7 @@ import ShinyText from "../../ui/ShinyText";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
-import PlusButton from "./PlusButton";
+import PlusButton from "../../ui/PlusButton";
 
 const AdsPage = () => {
   const { t } = useTranslation("ads");

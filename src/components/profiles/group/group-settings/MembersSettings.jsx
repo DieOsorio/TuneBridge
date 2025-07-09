@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { FiPlus } from "react-icons/fi";
-import Input from "../../ui/Input";
-import Select from "../../ui/Select";
-import Button from "../../ui/Button";
-import GroupMembersList from "./GroupMembersList";
-import { useProfile } from "../../../context/profile/ProfileContext";
-import Loading from "../../../utils/Loading";
+import { useForm }             from "react-hook-form";
+import { useTranslation }      from "react-i18next";
+import { useProfile }          from "../../../../context/profile/ProfileContext";
+import { FiPlus }              from "react-icons/fi";
 
-const GroupMembers = ({
+import GroupMembersList from "../GroupMembersList";
+
+import Input   from "../../../ui/Input";
+import Select  from "../../../ui/Select";
+import Button  from "../../../ui/Button";
+import Loading from "../../../../utils/Loading";
+
+const MembersSettings = ({
   groupId,
   groupMembers,
   isAdmin,
@@ -110,7 +112,7 @@ const GroupMembers = ({
 
   return (
     <div className="bg-gradient-to-r from-gray-900 shadow-md rounded-lg p-6 flex flex-col gap-8 w-full min-w-0 sm:min-w-[320px] sm:w-auto">
-      <h2 className="text-2xl font-semibold text-gray-100">
+      <h2 className="text-2xl font-semibold text-center text-yellow-600">
         {t("groupMembers.title")}
       </h2>
       {isAdmin && (
@@ -264,4 +266,4 @@ const GroupMembers = ({
   );
 };
 
-export default GroupMembers;
+export default MembersSettings;

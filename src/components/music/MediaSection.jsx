@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../../utils/Loading";
 import ErrorMessage from "../../utils/ErrorMessage";
-import PlusButton from "../social/ads/PlusButton";
+import PlusButton from "../ui/PlusButton";
 
 
 const MediaSection = () => {

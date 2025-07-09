@@ -6,7 +6,7 @@ import PostCard from './PostCard';
 import PostCardSkeleton from './PostCardSkeleton';
 import ErrorMessage from '../../utils/ErrorMessage';
 import { usePosts } from '../../context/social/PostsContext';
-import PlusButton from "../social/ads/PlusButton";
+import PlusButton from '../ui/PlusButton';
 
 const PostsSearch = () => {
     const { t } = useTranslation(["posts", "common"]);

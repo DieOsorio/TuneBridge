@@ -1,182 +1,234 @@
-import { useProfile } from "../../context/profile/ProfileContext";
-import { useAuth } from "../../context/AuthContext";
-import ErrorMessage from "../../utils/ErrorMessage";
-import ProfileCardSkeleton from "./ProfileCardSkeleton";
-import { useForm } from "react-hook-form";
-import { Button } from "@mui/material";
-import ProfilesList from "./ProfilesList";
-import Select from "../ui/Select";
-import { FiFilter } from "react-icons/fi";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { RiUserSearchLine, RiUserSearchFill } from "react-icons/ri";
+import { Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../context/AuthContext";
+import { useProfile } from "../../context/profile/ProfileContext";
 
-const ProfilesSearch = () => {
-    const { t } = useTranslation("searchProfiles");
-    const { searchProfiles, infiniteProfiles } = useProfile();
-    const { user } = useAuth();
-    const loggedIn = Boolean(user);
-    const { register, watch, handleSubmit } = useForm();
-    const [showFilters, setShowFilters] = useState(false);
-    const searchTerm = watch("searchTerm");
-    const country = watch("country");
-    const state = watch("state");
-    const neighborhood = watch("neighborhood");
-    const role = watch("role");
-    const instrument = watch("instrument");
+import ProfilesList from "./ProfilesList";
+import ProfileCardSkeleton from "./ProfileCardSkeleton";
+import ErrorMessage from "../../utils/ErrorMessage";
+import Select from "../ui/Select";
 
-    // Infinite profiles query
-    const {
-        data: allProfilesData,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isLoading: profileLoading,
-        error: profileError,
-    } = infiniteProfiles();
+import {
+  useCountries,
+  useStates,
+  useCities,
+} from "../../context/helpers/useCountryCity";
 
-    // Compose the effective search term by combining searchTerm and selected filters
-    let effectiveSearchTerm = searchTerm || "";
-    if (country) effectiveSearchTerm += ` ${country}`;
-    if (state) effectiveSearchTerm += ` ${state}`;
-    if (neighborhood) effectiveSearchTerm += ` ${neighborhood}`;
-    if (role) effectiveSearchTerm += ` ${role}`;
-    if (instrument) effectiveSearchTerm += ` ${instrument}`;
+import { Country, State, City } from "country-state-city";
 
-    // Always call searchProfiles with the composed string
-    const { data: searchResults = [], isLoading: isSearching } = searchProfiles(effectiveSearchTerm.trim() || undefined);
+const cleanStateName = (name) =>
+  name.endsWith(" Department") ? name.replace(/ Department$/, "") : name;
 
-    if (profileError) {
-        return <ErrorMessage error={profileError.message || "Error when loading profiles."} />;
-    }
+export default function ProfilesSearch() {
+  const { t } = useTranslation("searchProfiles");
+  const { user } = useAuth();
+  const { searchProfiles, infiniteProfiles } = useProfile();
 
-    if (profileLoading && !allProfilesData) {
-        return (
-            <div className="flex flex-col gap-4 items-center">
-                {[...Array(7)].map((_, i) => (
-                    <ProfileCardSkeleton key={i} />
-                ))}
-            </div>
-        );
-    }
+  const { register, watch, setValue, handleSubmit } = useForm();
+  const [showFilters, setShowFilters] = useState(false);
 
-    // Filter out the current user from the profiles
-    const flatAllProfiles = allProfilesData
-        ? allProfilesData.pages.flat()
-        : [];
+  const countryIso = watch("country");
+  const stateIso = watch("state");
+  const neighborhood = watch("neighborhood");
+  const role = watch("role");
+  const instrument = watch("instrument");
+  const searchTerm = watch("searchTerm");
 
-    const filteredProfiles = loggedIn
-        ? flatAllProfiles.filter((profile) => profile.id !== user.id)
-        : flatAllProfiles;
+  const { data: countries = [] } = useCountries();
+  const { data: states = [] } = useStates(countryIso);
+  const { data: cities = [] } = useCities(countryIso, stateIso);
 
-    const filteredSearchResults = loggedIn
-        ? searchResults.filter((profile) => profile.id !== user.id)
-        : searchResults;
+  const countryName = countryIso
+    ? Country.getCountryByCode(countryIso)?.name || countryIso
+    : "";
 
-    // Decide which profiles to show
-    let profilesToShow = [];
-    if (isSearching) {
-        profilesToShow = null; // Show skeletons
-    } else if (effectiveSearchTerm && filteredSearchResults.length > 0) {
-        profilesToShow = filteredSearchResults;
-    } else if (effectiveSearchTerm) {
-        profilesToShow = [];
-    } else {
-        profilesToShow = filteredProfiles;
-    }
+  const stateName = stateIso
+    ? cleanStateName(states.find((s) => s.isoCode === stateIso)?.name || stateIso)
+    : "";
 
-    // Define filter configs for generalization using i18n
-    const filterConfigs = [
-        {
-            id: "country",
-            defaultOption: t("country.defaultOption"),
-            options: [
-                { value: "Uruguay", label: t("country.options.0.label") },
-                { value: "Argentina", label: t("country.options.1.label") },
-            ],
-        },
-        {
-            id: "state",
-            defaultOption: t("state.defaultOption"),
-            options: [
-                { value: "Montevideo", label: t("state.options.0.label") },
-                { value: "Buenos Aires", label: t("state.options.1.label") },
-            ],
-        },
-        {
-            id: "role",
-            defaultOption: t("role.defaultOption"),
-            options: [
-                { value: "Instrumentalist", label: t("role.options.0.label") },
-                { value: "Singer", label: t("role.options.1.label") },
-                { value: "DJ", label: t("role.options.2.label") },
-                { value: "Producer", label: t("role.options.3.label") },
-                { value: "Composer", label: t("role.options.4.label") },
-            ],
-        },
-        {
-            id: "instrument",
-            defaultOption: t("instrument.defaultOption"),
-            options: [
-                { value: "Guitar", label: t("instrument.options.0.label") },
-                { value: "Piano", label: t("instrument.options.1.label") },
-                { value: "Drums", label: t("instrument.options.2.label") },
-            ],
-        },
-    ];
+  const neighborhoodName =
+    neighborhood && cities.find((c) => c.name === neighborhood)
+      ? neighborhood
+      : "";
 
+  let effective = searchTerm || "";
+  if (countryName) effective += ` ${countryName}`;
+  if (stateName) effective += ` ${stateName}`;
+  if (neighborhoodName) effective += ` ${neighborhoodName}`;
+  if (role) effective += ` ${role}`;
+  if (instrument) effective += ` ${instrument}`;
+
+  const {
+    data: allProfilesData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: profileLoading,
+    error: profileError,
+  } = infiniteProfiles();
+
+  const { data: searchResults = [], isLoading: isSearching } =
+    searchProfiles(effective.trim() || undefined);
+
+  if (profileError)
     return (
-        <div className="w-full py-4 flex flex-col items-center bg-gradient-to-l to-gray-900">
-            {/* Search Form */}
-            <form onSubmit={handleSubmit(() => {})} className="mb-5 w-full max-w-md flex flex-col gap-2">
-                <div className="flex items-center justify-center gap-4">
-                    <input
-                        type="text"
-                        {...register("searchTerm")}
-                        placeholder={t("search")}
-                        className="border rounded-lg p-2 focus:outline-none focus:ring"
-                    />
-                    <button
-                        type="button"
-                        aria-label={showFilters ? "Hide filters" : "Show filters"}
-                        onClick={() => setShowFilters((prev) => !prev)}
-                        className={`p-2 rounded-lg border border-gray-100 transition-colors ${showFilters ? "bg-sky-600" : "bg-transparent"} hover:bg-sky-700 focus:outline-none focus:ring`}
-                        style={{ minWidth: 40 }}
-                    >
-                        <FiFilter size={22} className={showFilters ? "text-white" : "text-gray-400"} />
-                    </button>
-                </div>
-                {showFilters && (
-                    <div className="flex gap-4 mt-4 justify-center flex-wrap animate-fade-in">
-                        {filterConfigs.map((filter) => (
-                            <Select
-                                key={filter.id}
-                                id={filter.id}
-                                label={null}
-                                defaultOption={filter.defaultOption}
-                                options={filter.options}
-                                register={register}
-                                className="!min-w-[210px]"
-                            />
-                        ))}
-                    </div>
-                )}
-            </form>
-
-            {/* Profiles List */}
-            <ProfilesList profiles={profilesToShow} isSearching={isSearching} />
-
-            {/* Load More Button */}
-            {!searchTerm && hasNextPage && (
-                <Button
-                    className="!w-1/2 md:!w-1/3 !font-bold mt-4 !mx-auto hover:!text-sky-600"
-                    onClick={() => fetchNextPage()}
-                    disabled={isFetchingNextPage}
-                >
-                    {isFetchingNextPage ? "Loading..." : "Load More"}
-                </Button>
-            )}
-        </div>
+      <ErrorMessage
+        error={profileError.message || "Error when loading profiles."}
+      />
     );
-};
 
-export default ProfilesSearch;
+  if (profileLoading && !allProfilesData)
+    return (
+      <div className="flex flex-col gap-4 items-center">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <ProfileCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+
+  const loggedIn = Boolean(user);
+  const flatAllProfiles = allProfilesData ? allProfilesData.pages.flat() : [];
+  const baseList = loggedIn
+    ? flatAllProfiles.filter((p) => p.id !== user.id)
+    : flatAllProfiles;
+
+  const filteredSearch = loggedIn
+    ? searchResults.filter((p) => p.id !== user.id)
+    : searchResults;
+
+  const profilesToShow = isSearching
+    ? null
+    : effective && filteredSearch.length
+    ? filteredSearch
+    : effective
+    ? []
+    : baseList;
+
+  const roleOptions = [
+    { value: "Instrumentalist", label: t("role.options.0.label") },
+    { value: "Singer", label: t("role.options.1.label") },
+    { value: "DJ", label: t("role.options.2.label") },
+    { value: "Producer", label: t("role.options.3.label") },
+    { value: "Composer", label: t("role.options.4.label") },
+  ];
+
+  const instrumentOptions = [
+    { value: "Guitar", label: t("instrument.options.0.label") },
+    { value: "Piano", label: t("instrument.options.1.label") },
+    { value: "Drums", label: t("instrument.options.2.label") },
+  ];
+
+  return (
+    <div className="w-full py-4 flex flex-col items-center bg-gradient-to-l to-gray-900">
+      <form onSubmit={handleSubmit(() => {})} className="w-full max-w-md mb-5">
+        <div className="flex items-center justify-center gap-4">
+          <input
+            {...register("searchTerm")}
+            placeholder={t("search")}
+            className="border rounded-lg p-2 flex-1 focus:outline-none focus:ring"
+          />
+          <button
+            type="button"
+            aria-label={showFilters ? "Hide filters" : "Show filters"}
+            title={showFilters ? t("hideFilters") : t("showFilters")}
+            onClick={() => setShowFilters((prev) => !prev)}
+            className={`p-2 cursor-pointer rounded-full transition-colors ${
+              showFilters ? "bg-sky-600" : ""
+            }`}
+          >
+            {showFilters ? (
+              <RiUserSearchFill
+                size={22}
+                className="text-white"
+              />
+            ) : (
+              <RiUserSearchLine
+                size={22}
+                className="text-gray-400"
+              />
+            )}
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className="flex flex-wrap justify-center gap-4 mt-4 animate-fade-in">
+            <Select
+              id="country"
+              defaultOption={t("country.defaultOption")}
+              options={countries.map((c) => ({
+                value: c.isoCode,
+                label: c.name,
+              }))}
+              register={register}
+              className="!w-[210px]"
+              onChange={(e) => {
+                setValue("country", e.target.value);
+                setValue("state", "");
+                setValue("neighborhood", "");
+              }}
+            />
+
+            <Select
+              id="state"
+              defaultOption={t("state.defaultOption")}
+              options={states.map((s) => ({
+                value: s.isoCode,
+                label: cleanStateName(s.name),
+              }))}
+              register={register}
+              className="!w-[210px]"
+              disabled={!countryIso}
+              onChange={(e) => {
+                setValue("state", e.target.value);
+                setValue("neighborhood", "");
+              }}
+            />
+
+            <Select
+              id="neighborhood"
+              defaultOption={t("neighborhood.defaultOption")}
+              options={cities.map((c) => ({
+                value: c.name,
+                label: c.name,
+              }))}
+              register={register}
+              className="!w-[210px]"
+              disabled={!stateIso}
+            />
+
+            <Select
+              id="role"
+              defaultOption={t("role.defaultOption")}
+              options={roleOptions}
+              register={register}
+              className="!w-[210px]"
+            />
+
+            <Select
+              id="instrument"
+              defaultOption={t("instrument.defaultOption")}
+              options={instrumentOptions}
+              register={register}
+              className="!w-[210px]"
+            />
+          </div>
+        )}
+      </form>
+
+      <ProfilesList profiles={profilesToShow} isSearching={isSearching} />
+
+      {!searchTerm && hasNextPage && (
+        <Button
+          className="!w-1/2 md:!w-1/3 !font-bold mt-4 !mx-auto hover:!text-sky-600"
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+        >
+          {isFetchingNextPage ? "Loading..." : "Load More"}
+        </Button>
+      )}
+    </div>
+  );
+}

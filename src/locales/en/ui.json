@@ -133,7 +133,8 @@
       "profile": "Profile",
       "ads": "Musician Ads",
       "media": "Media",
-      "matches": "Matches"
+      "matches": "Matches",
+      "groups": "Groups"
     },
     "auth": {
       "signIn": "Log In",

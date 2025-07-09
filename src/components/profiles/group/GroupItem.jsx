@@ -4,6 +4,7 @@ import Button from "../../ui/Button";
 import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import { useTranslation } from "react-i18next";
+import ProfileAvatar from "../ProfileAvatar";
 
 const GroupItem = ({ groupId }) => {
   const { t } = useTranslation("profileGroup");
@@ -31,16 +32,19 @@ const GroupItem = ({ groupId }) => {
   }
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col items-center">
-      <img
-        src={group.avatar_url || "/default-avatar.png"}
+    <div className="bg-gradient-to-r from-gray-800 p-4 rounded-lg shadow-md flex gap-4 items-center">
+      <ProfileAvatar
+        avatar_url={group.avatar_url || "/default-avatar.png"}
         alt={group.name}
-        className="w-20 h-20 rounded-full mb-2"
+        className="!w-20 !h-20"
+        group={true} // Indicate this is a group avatar
       />
-      <h3 className="text-lg font-semibold text-gray-100">{group.name}</h3>
-      <p className="text-sm text-gray-400">{group.bio}</p>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-100">{group.name}</h3>
+        <p className="text-sm text-gray-400">{group.bio}</p>
+      </div>
       <Button
-        className="mt-4  !bg-amber-800 hover:!bg-amber-900"
+        className="ml-auto !bg-amber-800 hover:!bg-amber-900"
         onClick={handleViewGroup}
       >
         {t("groupItem.viewGroup", "View Group")}

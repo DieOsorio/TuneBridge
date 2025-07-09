@@ -13,7 +13,7 @@ import RoleItem from "./RoleItem";
 import { useTranslation } from "react-i18next";
 import ShinyText from "../ui/ShinyText";
 import MediaSummary from "./MediaSummary";
-import PlusButton from "../social/ads/PlusButton";
+import PlusButton from "../ui/PlusButton";
 import { useAuth } from "../../context/AuthContext";
 
 const DisplayMusicInfo = ({ profileId }) => {

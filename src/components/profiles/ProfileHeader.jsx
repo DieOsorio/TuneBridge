@@ -38,8 +38,6 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const { connectionBetweenProfiles, addConnection, updateConnection, deleteConnection } = useUserConnections();
     const { data: connection, isLoading: loadingConnection } = connectionBetweenProfiles(user?.id, profileData.id);
     const { canSend, loading, reason } = useCanSendDM(profileData.id);
-
-    // console.log(`ProfileHeader: canSend=${canSend}, loading=${loading}, reason=${reason}`);
     
     const [isStartingChat, setIsStartingChat] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -125,7 +123,7 @@ function ProfileHeader({ isOwnProfile, profileData }) {
     const isOtherBlocked = connection?.status === 'blocked' && connection.follower_profile_id === profileData.id;
 
   return (
-    <div className="bg-gradient-to-l from-gray-900 to-gray-950 mb-4 p-4 rounded-b-lg">
+    <div className="bg-gradient-to-l md:min-w-2xl lg:min-w-4xl from-gray-900 to-gray-950 mb-4 p-4 rounded-b-lg">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
         {/* Profile Avatar and Info */}
         <div className="flex items-center gap-4 flex-grow">

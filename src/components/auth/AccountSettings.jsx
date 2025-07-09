@@ -26,7 +26,10 @@ const AccountSettings = () => {
   const {
     control: prefCtrl,
     handleSubmit: handlePrefs,
-    formState: { isSubmitting: savingPrefs }
+    formState: {
+      isDirty, 
+      isSubmitting: savingPrefs 
+    }
   } = useForm({
     defaultValues: {
       language: prefs?.lang  ?? "en",

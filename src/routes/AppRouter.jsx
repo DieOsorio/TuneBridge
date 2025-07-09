@@ -6,6 +6,7 @@ import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Loading from "../utils/Loading";
+import GroupSettings from "../components/profiles/group/group-settings/GroupSettings";
 
 // 🔥  Split‑per‑route 
 const LandingPage          = lazy(() => import("../pages/LandingPage"));
@@ -49,33 +50,34 @@ export default function AppRouter() {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/*  Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/explore/*" element={<Explore />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signup-success" element={<SignUpSuccess />} />
-            <Route path="/ads" element={<AdsPage />} />
-            <Route path="/ads/:id" element={<AdDetailsPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-            <Route path="/reset-password" element={<ResetPasswordForm />} />
+            <Route path="/"                 element={<LandingPage />} />
+            <Route path="/explore/*"        element={<Explore />} />
+            <Route path="/login"            element={<Login />} />
+            <Route path="/signup"           element={<SignUp />} />
+            <Route path="/signup-success"   element={<SignUpSuccess />} />
+            <Route path="/ads"              element={<AdsPage />} />
+            <Route path="/ads/:id"          element={<AdDetailsPage />} />
+            <Route path="/terms"            element={<TermsPage />} />
+            <Route path="/forgot-password"  element={<ForgotPasswordForm />} />
+            <Route path="/reset-password"   element={<ResetPasswordForm />} />
             <Route path="/hashtag/:hashtag" element={<Hashtag />} />
 
             {/*  Protected Routes */}
-            <Route path="/settings/*"           element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/matches"              element={<ProtectedRoute><DiscoverMatches /></ProtectedRoute>} />
-            <Route path="/media/create"         element={<ProtectedRoute><MediaSettings /></ProtectedRoute>} />
-            <Route path="/media/edit/:id"       element={<ProtectedRoute><MediaSettings /></ProtectedRoute>} />
-            <Route path="/media/:id"            element={<ProtectedRoute><MediaSection /></ProtectedRoute>} />
-            <Route path="/ads/edit/:id"         element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
-            <Route path="/ads/new"              element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
-            <Route path="/create-post"          element={<ProtectedRoute><PostForm /></ProtectedRoute>} />
-            <Route path="/group/:groupId"       element={<ProtectedRoute><ProfileGroup /></ProtectedRoute>} />
-            <Route path="/create-profile-group" element={<ProtectedRoute><GroupForm /></ProtectedRoute>} />
-            <Route path="/account-confirmed"    element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />
-            <Route path="/chat/"                element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-            <Route path="/chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-            <Route path="/profile/:identifier/*"element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/group/:groupId/settings/*" element={<ProtectedRoute><GroupSettings /></ProtectedRoute>} />
+            <Route path="/settings/*"                element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/matches"                   element={<ProtectedRoute><DiscoverMatches /></ProtectedRoute>} />
+            <Route path="/media/create"              element={<ProtectedRoute><MediaSettings /></ProtectedRoute>} />
+            <Route path="/media/edit/:id"            element={<ProtectedRoute><MediaSettings /></ProtectedRoute>} />
+            <Route path="/media/:id"                 element={<ProtectedRoute><MediaSection /></ProtectedRoute>} />
+            <Route path="/ads/edit/:id"              element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
+            <Route path="/ads/new"                   element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
+            <Route path="/create-post"               element={<ProtectedRoute><PostForm /></ProtectedRoute>} />
+            <Route path="/group/:groupId/*"          element={<ProtectedRoute><ProfileGroup /></ProtectedRoute>} />
+            <Route path="/create-profile-group"      element={<ProtectedRoute><GroupForm /></ProtectedRoute>} />
+            <Route path="/account-confirmed"         element={<ProtectedRoute><AccountConfirmed /></ProtectedRoute>} />
+            <Route path="/chat/"                     element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+            <Route path="/chat/:conversationId"      element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+            <Route path="/profile/:identifier/*"     element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Routes>
         </Suspense>
       </main>

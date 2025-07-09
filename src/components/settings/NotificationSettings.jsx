@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useSettings } from "../../context/settings/SettingsContext";
 import Toggle from "../ui/Toggle";
 import Button from "../ui/Button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const NotificationSettings = () => {
@@ -24,13 +24,21 @@ const NotificationSettings = () => {
     },
   });
 
+  const [saved, setSaved] = useState(false);
+
   useEffect(() => {
     if (notifPrefs) reset(notifPrefs);
   }, [notifPrefs, reset]);
 
+  const onSubmit = async (data) => {
+    await saveNotificationPrefs(data);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
   return (
     <form
-      onSubmit={handleSubmit(saveNotificationPrefs)}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-10 bg-gradient-to-l to-gray-900 p-6 rounded-b-lg shadow-lg max-w-4xl mx-auto"
     >
       <h2 className="text-2xl text-yellow-600 font-semibold mb-6 text-center">
@@ -69,7 +77,12 @@ const NotificationSettings = () => {
           disabled={!isDirty || isSubmitting}
           className="!bg-emerald-600 hover:!bg-emerald-700"
         >
-          {isSubmitting ? t("buttons.saving") : t("buttons.save")}
+          {isSubmitting 
+            ? t("buttons.saving")
+            : saved 
+              ? t("buttons.saved") 
+              : t("buttons.save")
+          }
         </Button>
       </div>
     </form>

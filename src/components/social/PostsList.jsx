@@ -5,7 +5,7 @@ import { usePosts } from '../../context/social/PostsContext';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PostsSearch from './PostsSearch';
-import PlusButton from "../social/ads/PlusButton";
+import PlusButton from '../ui/PlusButton';
 
 const PostsList = ({ profileId, posts, disableSearch, isOwnProfile }) => {
     const { t } = useTranslation(["posts", "common"]) 
