@@ -1,1 +1,0 @@
-import{j as o}from"./mui-B-xP7mtj.js";const x=({text:s,disabled:t=!1,speed:e=5,className:i="",style:n={}})=>{const a=`${e}s`;return o.jsx("div",{className:`shiny-text ${t?"disabled":""} ${i}`,style:{animationDuration:a,...n},children:s})};export{x as S};
