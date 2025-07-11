@@ -65,7 +65,13 @@ const ProfileCard = ({ profile }) => {
     }
 
     return (
-        <div className="flex flex-col w-60 h-90 text-gray-800 items-center gap-2 border rounded-lg shadow-sm bg-gray-200">
+        <div 
+            className="flex flex-col w-60 h-90 text-gray-800 items-center gap-2 border rounded-lg shadow-sm bg-gray-200"
+            style={{
+                contentVisibility: "auto",
+                containIntrinsicSize: "370px",
+            }}
+        >
             {/* Profile avatar with link to profile */}
             <Link to={`/profile/${profile.id}`}>
             <ProfileAvatar

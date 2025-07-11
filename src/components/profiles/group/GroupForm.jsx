@@ -54,21 +54,7 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
     },
   });
 
-  /* pre‑populate location fields when editing */
-  useEffect(() => {
-    if (!group) return;
 
-    const countryIso =
-      Country.getAllCountries().find((c) => c.name === group.country)?.isoCode ||
-      "";
-    const stateIso =
-      State.getStatesOfCountry(countryIso).find(
-        (s) => cleanStateName(s.name) === group.state
-      )?.isoCode || "";
-    setValue("country", countryIso);
-    setValue("state", stateIso);
-    setValue("city", group.city || "");
-  }, [group, setValue]);
 
   /* avatar local state */
   const [avatarUrl, setAvatarUrl] = useState(group?.avatar_url || "");
@@ -87,6 +73,32 @@ const GroupForm = ({ group = null, onSave, onCancel }) => {
   const { data: countries = [] } = useCountries();
   const { data: states = [] } = useStates(countryIso);
   const { data: cities = [] } = useCities(countryIso, stateIso);
+  
+  /* pre‑populate location fields when editing */
+  // First step: wait for group to load and set country
+useEffect(() => {
+  if (!group) return;
+
+  const countryIso =
+    Country.getAllCountries().find((c) => c.name === group.country)?.isoCode || "";
+  setValue("country", countryIso);
+}, [group, setValue]);
+
+// Second step: wait for countries to load and set state
+useEffect(() => {
+  if (!group || !states.length) return;
+
+  const stateIso =
+    states.find((s) => cleanStateName(s.name) === group.state)?.isoCode || "";
+  setValue("state", stateIso);
+}, [group, states, setValue]);
+
+useEffect(() => {
+  if (!group || !cities.length) return;
+
+  setValue("city", group.city || "");
+}, [group, cities, setValue]);
+
 
   /* avatar uploader */
   const avatarRef = useRef(null);

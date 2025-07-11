@@ -20,7 +20,8 @@
     ],
     "tabs": {
       "posts": "Posts",
-      "profiles": "Profiles"
+      "profiles": "Profiles",
+      "groups": "Groups"
     }
   },
   "hashtags": {

@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { formatDistanceToNow } from "date-fns";
+import { enUS, es } from "date-fns/locale";
 
 import ProfileAvatar from "../ProfileAvatar";
 
 function GroupAbout({ group, members }) {
-  const { t } = useTranslation("profileGroup");
-
+  const { t, i18n } = useTranslation("profileGroup");
+  const currentLocale = i18n.language === "es" ? es : enUS; 
+  
   return (
     <div className="space-y-6">
       {/* Genres */}
@@ -13,7 +16,7 @@ function GroupAbout({ group, members }) {
           {group.genres.map((g, i) => (
             <span
               key={i}
-              className="px-3 py-1 rounded bg-amber-800 text-sm"
+              className="px-3 py-1 rounded bg-amber-950 text-sm"
             >
               {g}
             </span>
@@ -78,9 +81,17 @@ function GroupAbout({ group, members }) {
                 </div>
 
                 {/* additional info */}
-                <div className="hidden md:flex flex-col items-end text-gray-400 text-xs min-w-[100px]">
-                  <span>Joined: {member.joinedDate || "N/A"}</span>
-                  <span>Status: {member.status || "Active"}</span>
+                <div className="hidden md:flex flex-col items-end text-gray-300 text-xs min-w-[100px]">
+                  <span>
+                    {member.joined_at
+                      ? t("groupAbout.joined", {
+                          days: formatDistanceToNow(new Date(member.joined_at), {
+                            addSuffix: true,
+                            locale: currentLocale
+                          }),
+                        })
+                      : t("groupAbout.joinedNA")}
+                  </span>
                 </div>
               </li>
             ))}

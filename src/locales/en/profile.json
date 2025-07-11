@@ -39,7 +39,11 @@
     "group_join":"You joined the group",
     "group_member_left":"{{user}} left the group",
     "group_member_removed":"You were removed from the group by {{user}}",
-    "noNotifications": "You don't have notifications yet"
+    "noNotifications": "You don't have notifications yet",
+    "someone": "Someone",
+    "group_follow": "{{user}} started following your group “{{group}}”.",
+    "seeAll": "See all notifications",
+    "seeLess": "Show less"
   },
   "connection": {
     "loading": "Checking connection...",

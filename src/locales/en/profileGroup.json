@@ -8,6 +8,45 @@
     "userGroupsComing": "User Groups is in development. Coming soon!"
   },
 
+  "groupAbout": {
+     "stats": {
+      "members": "Members",
+      "posts": "Posts",
+      "events": "Events"
+    },
+    "joined": "Joined {{days}}",
+    "joinedNA": "Joined: N/A",
+    "messages": {
+      "noMembers": "No members yet.",
+      "unknown": "Unknown"
+    }
+  },
+
+  "groupHeader": {
+    "badges": {
+      "status": {
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "following": "Following"
+      }
+    },
+    "nav": {
+      "media": "Media",
+      "about": "About",
+      "posts": "Posts",
+      "calendar": "Calendar",
+      "events": "Events"
+    },
+    "btnTitles": {
+      "follow": "Follow Group",
+      "unfollow": "Unfollow Group",
+      "edit": "Edit Group",
+      "manageMembers": "Manage Members",
+      "settings": "Group Settings",
+      "notifications": "Notifications"
+    }
+  },
+
   "manageMembers": {
     "labels": {
       "role": "Role",

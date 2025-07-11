@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
-import ErrorMessage from "../../utils/ErrorMessage";
-import { ImCross } from "react-icons/im";
-import { FaCheck } from 'react-icons/fa';
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState } from "react";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
 import { useProfile } from "../../context/profile/ProfileContext";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { ImCross } from "react-icons/im";
+import { FaCheck } from 'react-icons/fa';
+
+import ErrorMessage from "../../utils/ErrorMessage";
 import ConnectionCardSkeleton from "./skeletons/ConnectionCardSkeleton";
 
 const ConnectionCard = ({ profileId, connection, ownProfile }) => {
@@ -34,7 +36,7 @@ const ConnectionCard = ({ profileId, connection, ownProfile }) => {
 
     if (loading) return <ConnectionCardSkeleton />;
     
-    if (error) return <ErrorMessage error={error.message || "Error loading profile."} />;
+    if (error) return <ErrorMessage error={error.message} />;
 
     if (!profile) return null;
 

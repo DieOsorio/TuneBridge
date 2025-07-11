@@ -26,6 +26,24 @@ export const useFetchGroupMembersQuery = (profileGroupId) => {
   });
 };
 
+// HOW MANY MEMBERS
+export const useHowManyMembersQuery = (profileGroupId) => {
+  return useQuery({
+    queryKey: profileGroupMembersKeyFactory({ profileGroupId }).all,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("users")
+        .from("profile_group_members")
+        .select("*")
+        .eq("profile_group_id", profileGroupId);
+        
+      if (error) throw new Error (error.message);
+      return data.length;
+    },
+    enabled: !!profileGroupId,
+  })
+}
+
 // FETCH ALL GROUPS A USER IS PART OF
 export const useFetchUserGroupsQuery = (userId) => {
   return useQuery({

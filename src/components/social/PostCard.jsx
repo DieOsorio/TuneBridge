@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import ProfileAvatar from '../profiles/ProfileAvatar';
-import { FcLikePlaceholder } from "react-icons/fc";
-import { FcLike } from "react-icons/fc";
-import { LiaCommentsSolid } from "react-icons/lia";
 import { Link, useNavigate } from 'react-router-dom';
 import { usePrefetchProfile } from '../../context/profile/profileActions';
-import ErrorMessage from '../../utils/ErrorMessage';
-import Loading from '../../utils/Loading';
 import { useLikes } from '../../context/social/LikesContext';
+
+import { FcLike } from "react-icons/fc";
+import { FcLikePlaceholder } from "react-icons/fc";
+import { LiaCommentsSolid } from "react-icons/lia";
+import { AiOutlineClose } from "react-icons/ai";
+
+import ProfileAvatar from '../profiles/ProfileAvatar';
+import ErrorMessage from '../../utils/ErrorMessage';
 import CommentsBox from './comments/CommentsBox';
 import ProfileMinibox from '../profiles/ProfileMinibox';
-import { AiOutlineClose } from "react-icons/ai"; // Import the close icon
 
 // for animations
 import { motion } from 'framer-motion';
@@ -38,7 +39,7 @@ const Tooltip = ({ children }) => (
                   whitespace-nowrap rounded-md bg-gray-900/90 py-1 px-2 text-xs
                   font-semibold text-sky-200 shadow-lg backdrop-blur">
     {children}
-    {/* flechita */}
+    {/* arrow */}
    <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2 w-2 rotate-45 bg-gray-900/90" />
   </div>
 );
@@ -130,8 +131,6 @@ function PostCard({ post }) {
 
   if (error) return <ErrorMessage error={error.message} />;
 
-  if (isLoading) return <Loading />;
-
   return (
     <div className="bg-gradient-to-l to-gray-800 p-4 rounded-lg shadow-md mb-4 mx-auto max-w-3xl w-full">
       {/* Title of the post */}
@@ -148,16 +147,16 @@ function PostCard({ post }) {
             className="relative mb-auto"
           >
             <Link
-              to={`/profile/${profile.id}`}
+              to={`/profile/${profile?.id}`}
             >
               <h2 className="font-bold text-lg text-gray-200">
-                {profile.username}
+                {profile?.username}
               </h2>
               <ProfileAvatar
-                avatar_url={profile.avatar_url}
+                avatar_url={profile?.avatar_url}
                 className="!w-15 !h-15 mx-auto"
-                gender={profile.gender}
-                alt={`${profile.username}'s avatar`}
+                gender={profile?.gender}
+                alt={`${profile?.username}'s avatar`}
               />
             </Link>
             {showMinibox && (

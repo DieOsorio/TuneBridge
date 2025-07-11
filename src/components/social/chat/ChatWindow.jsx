@@ -1,12 +1,11 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useMessages } from "../../../context/social/chat/MessagesContext";
 import { useAuth } from "../../../context/AuthContext";
+
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import Loading from "../../../utils/Loading";
-import ErrorMessage from "../../../utils/ErrorMessage";
-import { useEffect } from "react";
 
 const ChatWindow = () => {
   const { conversationId } = useParams();
@@ -15,7 +14,7 @@ const ChatWindow = () => {
   const { fetchMessages, markMessagesAsRead, unreadMessages, messagesRealtime } = useMessages();
   // Only fetch and pass data if conversationId is valid
   const shouldFetch = !!conversationId;
-  const { data: messages, isLoading, error } = fetchMessages(shouldFetch ? conversationId : undefined);
+  const { data: messages } = fetchMessages(shouldFetch ? conversationId : undefined);
   messagesRealtime(shouldFetch ? conversationId : undefined);
   const { data: unreadMessagesData } = unreadMessages({ conversationId: shouldFetch ? conversationId : undefined, profileId: user.id });
 

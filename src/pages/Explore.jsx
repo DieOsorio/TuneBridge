@@ -5,6 +5,7 @@ import { FaCompass }                    from "react-icons/fa";
 import PostsList      from "../components/social/PostsList";
 import ProfilesSearch from "../components/profiles/ProfilesSearch";
 import ShinyText      from "../components/ui/ShinyText";
+// import GroupList from "../components/profiles/group/GroupList";
 
 export default function Explore() {
   const { t } = useTranslation("ui");
@@ -55,6 +56,10 @@ export default function Explore() {
           <NavLink    to="/explore/profiles"   className={({ isActive }) => (isActive ? active : inactive)}>
             {t("explore.tabs.profiles")}
           </NavLink>
+
+          {/* <NavLink    to="/explore/groups"   className={({ isActive }) => (isActive ? active : inactive)}>
+            {t("explore.tabs.groups")}
+          </NavLink> */}
         </div>
       </nav>
 
@@ -65,6 +70,7 @@ export default function Explore() {
 
         {/* profiles search */}
         <Route path="profiles" element={<ProfilesSearch />} />
+        {/* <Route path="groups" element={<GroupList />} /> */}
       </Routes>
     </div>
   );

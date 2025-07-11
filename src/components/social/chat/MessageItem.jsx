@@ -96,13 +96,23 @@ const MessageItem = ({ message, isMine }) => {
         <div className="flex flex-col items-start max-w-xs">
           <span className="text-xs font-medium text-sky-300 mb-1">
             {isLoading ? (
-              <Skeleton width={80} height={12} baseColor="#333" highlightColor="#444" />
+              <Skeleton 
+                width={80} 
+                height={12} 
+                baseColor="#a1a1aa" 
+                highlightColor="#e4e4e7" 
+              />
             ) : (
               `${senderProfile?.firstname || "Unknown"} ${senderProfile?.lastname || ""}`.trim()
             )}
           </span>
           {isLoading ? (
-            <Skeleton height={32} width={200} baseColor="#333" highlightColor="#444" />
+            <Skeleton 
+            height={32} 
+            width={200} 
+            baseColor="#a1a1aa" 
+            highlightColor="#e4e4e7" 
+            />
           ) : (
             <div className={`${bubbleColor} p-2 rounded-lg min-w-[80px] text-center`}>
               {message.content}

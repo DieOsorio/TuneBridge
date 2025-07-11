@@ -72,3 +72,9 @@
 ---
 
 *Last synchronised with production on **2025‑07‑07***
+
+
+create trigger trg_pg_follow_notif
+after insert on groups.profile_group_follows
+for each row
+execute function groups.notify_profile_group_follow();

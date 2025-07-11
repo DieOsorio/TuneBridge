@@ -1,11 +1,20 @@
 import ProfileCard from "./ProfileCard";
-import ProfileCardSkeleton from "./ProfileCardSkeleton";
+import ProfileCardSkeleton from "./skeletons/ProfileCardSkeleton";
 
-const ProfilesList = ({ profiles, isSearching }) => {
-    if (isSearching) {
+const ProfilesList = ({ profiles, isSearching, isLoading, error }) => {
+    const loading = isSearching || isLoading
+
+    if (error)
+    return (
+      <ErrorMessage
+        error={error.message}
+      />
+    );
+
+    if (loading) {
         return (
-            <div className="flex flex-col gap-4 items-center">
-                {[...Array(3)].map((_, i) => (
+            <div className="w-full flex flex-wrap justify-center gap-4">
+                {[...Array(4)].map((_, i) => (
                     <ProfileCardSkeleton key={i} />
                 ))}
             </div>
