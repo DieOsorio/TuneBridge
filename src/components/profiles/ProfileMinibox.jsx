@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import Skeleton from "react-loading-skeleton";
 import { Link, useNavigate } from "react-router-dom";
 import { IoChatboxOutline } from "react-icons/io5";
 import { BsPostcard } from "react-icons/bs";
@@ -10,15 +9,17 @@ import { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { handleStartChat } from "../social/chat/utilis/handleStartChat";
 import { useCanSendDM } from "../../utils/useCanSendDM";
+import ProfileMiniboxSkeleton from "./skeletons/ProfileMiniboxSkeleton";
 
 const ProfileMinibox = ({ profile, isLoading }) => {
   const { user } = useAuth();
   const loggedIn = Boolean(user);
   const {findConversation, createConversation} = useConversations();
   const { addParticipant } = useParticipants();
-  const { canSend, loading } = useCanSendDM(profile.id);
+  const { canSend, loading:LoadingSendDM } = useCanSendDM(profile.id);
   const [isStartingChat, setIsStartingChat] = useState(false);
   
+  const loading = isLoading || LoadingSendDM
   const navigate = useNavigate();
   const isOwnProfile = loggedIn && (user.id === profile.id);
 
@@ -39,23 +40,15 @@ const ProfileMinibox = ({ profile, isLoading }) => {
     })
   };
 
-  if (isLoading || loading) {
+  if (loading) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
-        className="absolute z-50 p-3 rounded-lg shadow-md bg-white dark:bg-zinc-900 w-64"
-      >
-        <Skeleton count={4} />
-      </motion.div>
+      <ProfileMiniboxSkeleton />
     );
   }
 
   if (!profile) return null;
 
-  const { username, state, neighborhood, country, bio, avatar_url, id } = profile;
+  const { username, state, country, bio, avatar_url, id } = profile;
 
   return (
     <motion.div

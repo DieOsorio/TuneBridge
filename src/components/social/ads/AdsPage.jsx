@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { AdsFiltersPanel } from "./AdsFiltersPanel";
-import AdsList from "./AdsList";
 import { useAds } from "../../../context/social/adsContext"
-import ShinyText from "../../ui/ShinyText";
 import { useTranslation } from "react-i18next";
-import Loading from "../../../utils/Loading";
+
+import AdsList from "./AdsList";
+import ShinyText from "../../ui/ShinyText";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import PlusButton from "../../ui/PlusButton";
+import AdsListSkeleton from "./skeletons/AdsListSkeleton";
 
 const AdsPage = () => {
   const { t } = useTranslation("ads");
@@ -81,9 +82,12 @@ const AdsPage = () => {
           to="/ads/new"
         />
 
-        {isLoading && <Loading />}
         {error && <ErrorMessage error={error.message} />}
-        {!isLoading && !error && <AdsList ads={filteredAds} />}
+        {isLoading ? (
+          <AdsListSkeleton />
+        ) : (
+          <AdsList ads={filteredAds} />
+        )}
       </div>
     </div>
   );

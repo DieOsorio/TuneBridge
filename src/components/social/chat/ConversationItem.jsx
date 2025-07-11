@@ -1,9 +1,9 @@
 import { useAuth } from "../../../context/AuthContext";
-import Loading from "../../../utils/Loading";
-import ErrorMessage from "../../../utils/ErrorMessage";
 import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
 import { useProfile } from "../../../context/profile/ProfileContext";
 import { useMessages } from "../../../context/social/chat/MessagesContext";
+
+import ErrorMessage from "../../../utils/ErrorMessage";
 import ConversationItemSkeleton from "./skeletons/ConversationItemSkeleton";
 
 const ConversationItem = ({ conversation, isSelected, onClick }) => {
@@ -32,8 +32,9 @@ const ConversationItem = ({ conversation, isSelected, onClick }) => {
     profileId: user.id
   });
   
+  const loading = isParticipantsLoading || loadingProfile
 
-  if (isParticipantsLoading || loadingProfile) return <ConversationItemSkeleton isSelected={isSelected} />;
+  if (loading) return <ConversationItemSkeleton isSelected={isSelected} />;
   if (errorParticipants || errorProfile) return <ErrorMessage error={errorParticipants?.message || errorProfile?.message} />;
 
   const avatarUrl = 

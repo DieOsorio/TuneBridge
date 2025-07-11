@@ -379,6 +379,7 @@ Schema: social
         from_user_id (UUID)
         is_read (boolean)
         message (text)
+        payload (jsonb)
 
 ------------   *   ------------
 
@@ -414,3 +415,18 @@ Schema: groups
     Triggers:
 
         rsvp_updated: on update, updates updated_at
+
+    -------- * --------
+
+    Table: profile_group_follows => To manage group follows by users
+
+    Columns:
+
+        id (UUID)
+        follower_profile_id (UUID) REFERENCES users.profiles(id)
+        profile_group_id (UUID) REFERENCES users.profile_groups(id)
+        created_at (timestamptz)
+
+    Triggers:
+
+        trg_pg_follow_notif: on insert, runs groups.notify_profile_group_follow()

@@ -8,6 +8,45 @@
     "userGroupsComing": "Los Grupos de Usuarios están en desarrollo. ¡Próximamente!"
   },
 
+  "groupAbout": {
+     "stats": {
+      "members": "Miembros",
+      "posts": "Publicaciones",
+      "events": "Eventos"
+    },
+    "joined": "Se unió {{days}}",
+    "joinedNA": "Se unió: N/A",
+    "messages": {
+      "noMembers": "Aún no hay miembros en este grupo.",
+      "unknown": "Desconocido"
+    }
+  },
+
+  "groupHeader": {
+    "badges": {
+      "status": {
+        "follow": "Seguir",
+        "unfollow": "Dejar de seguir",
+        "following": "Siguiendo"
+      }
+    },
+    "nav": {
+      "media": "Media",
+      "about": "Acerca de",
+      "posts": "Publicaciones",
+      "calendar": "Calendario",
+      "events": "Eventos"
+    },
+    "btnTitles": {
+      "follow": "Seguir Grupo",
+      "unfollow": "Dejar de seguir Grupo",
+      "edit": "Editar Grupo",
+      "manageMembers": "Administrar Miembros",
+      "settings": "Configuración del Grupo",
+      "notifications": "Notificaciones"
+    }
+  },
+
   "manageMembers": {
     "labels": {
       "role": "Rol",

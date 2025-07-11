@@ -1,9 +1,10 @@
+import { usePosts } from '../../context/social/PostsContext';
+import { useTranslation } from 'react-i18next';
+
 import PostCard from './PostCard';
 import ErrorMessage from '../../utils/ErrorMessage';
-import PostCardSkeleton from './PostCardSkeleton';
-import { usePosts } from '../../context/social/PostsContext';
+import PostCardSkeleton from './skeletons/PostCardSkeleton';
 import { Button } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import PostsSearch from './PostsSearch';
 import PlusButton from '../ui/PlusButton';
 

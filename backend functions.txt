@@ -151,15 +151,15 @@ BEGIN
     )
     SELECT
       gen_random_uuid(), NOW(),
-      pgm.profile_id,                 -- destinatario
+      pgm.profile_id,                
       'group_member_left',
       OLD.profile_group_id,
-      OLD.profile_id,                 -- quien se fue
+      OLD.profile_id,                 
       false,
       'A member has left your group.'
     FROM users.profile_group_members pgm
     WHERE pgm.profile_group_id = OLD.profile_group_id
-      AND pgm.profile_id != OLD.profile_id                -- no avisar a quien se fue
+      AND pgm.profile_id != OLD.profile_id                
       AND social.can_receive_notif(pgm.profile_id, 'groups');
 
   ------------------------------------------------------------------
@@ -878,5 +878,52 @@ AS $$
              END
       FROM   social.notification_prefs
       WHERE  profile_id = tgt_profile
-    ), true);          -- si no hay fila ⇒ notificaciones habilitadas
+    ), true); 
+$$;
+
+
+
+
+create or replace function groups.notify_profile_group_follow()
+returns trigger
+language plpgsql
+set search_path = groups, users, social
+as $$
+declare
+  admin_rec record;
+begin
+  /* Iterate over all admins of this group */
+  for admin_rec in
+      select pgm.profile_id
+      from   users.profile_group_members pgm
+      where  pgm.profile_group_id = new.profile_group_id
+        and  pgm.role = 'admin'
+  loop
+    /* Honour per‑user notification prefs (“groups” channel) */
+    if social.can_receive_notif(admin_rec.profile_id, 'groups') then
+      insert into social.notifications (
+        id,           created_at,
+        profile_id,   type,
+        entity_id,    from_user_id,
+        is_read,      message,
+        payload
+      )
+      values (
+        gen_random_uuid(), now(),
+        admin_rec.profile_id,
+        'group_follow',
+        new.profile_group_id,
+        new.follower_profile_id,
+        false,
+        'Your group has a new follower!',
+        jsonb_build_object(
+          'group_id',    new.profile_group_id,
+          'follower_id', new.follower_profile_id
+        )
+      );
+    end if;
+  end loop;
+
+  return new;
+end;
 $$;

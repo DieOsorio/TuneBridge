@@ -1,8 +1,9 @@
-import ConnectionCard from './ConnectionCard';
 import { useUserConnections } from '../../context/social/UserConnectionsContext';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+
+import ConnectionCard from './ConnectionCard';
 
 function ConnectionsList({ checkStatus, profileId, maxVisible  }) {
     const { user } = useAuth();

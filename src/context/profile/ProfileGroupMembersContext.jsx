@@ -6,6 +6,7 @@ import {
   useAddGroupMemberMutation,
   useRemoveGroupMemberMutation,
   useUpdateGroupMemberMutation,
+  useHowManyMembersQuery,
 } from "./profileGroupMembersActions";
 
 const ProfileGroupMembersContext = createContext();
@@ -22,6 +23,7 @@ export const ProfileGroupMembersProvider = ({ children }) => {
     addGroupMember,
     updateGroupMember,
     removeGroupMember,
+    howManyMembers: useHowManyMembersQuery
   };
 
   return (

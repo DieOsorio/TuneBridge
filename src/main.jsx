@@ -14,7 +14,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { SettingsProvider } from './context/settings/SettingsContext';
-// import { GroupsProvider } from './context/groups/GroupsContext';
+import { GroupsProvider } from './context/groups/GroupsContext';
 
 const queryClient = new QueryClient();
 
@@ -30,10 +30,10 @@ createRoot(document.getElementById('root')).render(
                   <ProfileGroupMembersProvider>
                     <SocialProvider>
                       <MusicProvider>
-                        {/* <GroupsProvider> */}
+                        <GroupsProvider>
                           <App />
                           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-                        {/* </GroupsProvider> */}
+                        </GroupsProvider>
                       </MusicProvider>
                     </SocialProvider>
                   </ProfileGroupMembersProvider> 

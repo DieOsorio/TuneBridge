@@ -2,6 +2,9 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ConversationItemSkeleton({ isSelected = false }) {
+  const baseColor = "#a1a1aa";
+  const highlightColor = "#e4e4e7";
+
   return (
     <div
       className={`flex items-center gap-3 px-4 py-2 ${
@@ -9,12 +12,21 @@ export default function ConversationItemSkeleton({ isSelected = false }) {
       }`}
     >
       {/* avatar */}
-      <Skeleton circle width={40} height={40} />
+      <Skeleton 
+        circle width={40} 
+        height={40}
+        baseColor={baseColor}
+        highlightColor={highlightColor}  
+      />
 
       {/* text */}
       <div className="flex flex-col grow">
-        <Skeleton height={14} width="55%" />
-        <Skeleton height={12} width="80%" style={{ marginTop: 4 }} />
+        <Skeleton 
+          height={15} 
+          width="80%"
+          baseColor={baseColor}
+          highlightColor={highlightColor}   
+        />
       </div>
     </div>
   );

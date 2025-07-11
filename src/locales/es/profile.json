@@ -39,7 +39,11 @@
       "group_join":      "Te uniste al grupo",
       "group_member_left":   "{{user}} salió del grupo",
       "group_member_removed":"{{user}} te sacó del grupo",
-      "noNotifications": "Todavía no tienes notificaciones"
+      "noNotifications": "Todavía no tienes notificaciones",
+      "someone": "Alguien",
+      "group_follow": "{{user}} comenzó a seguir tu grupo “{{group}}”.",
+      "seeAll": "Ver todas las notificaciones",
+      "seeLess": "Mostrar menos"
     },  
     "connection": {
       "loading": "Comprobando conexión...",

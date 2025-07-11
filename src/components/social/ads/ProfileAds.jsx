@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useAds } from "../../../context/social/adsContext";
+import { useAuth } from "../../../context/AuthContext";
+
 import ErrorMessage from "../../../utils/ErrorMessage";
-import Loading from "../../../utils/Loading";
 import AdCard from "./AdCard";
 import ShinyText from "../../ui/ShinyText";
 import PlusButton from "../../ui/PlusButton";
-import { useAuth } from "../../../context/AuthContext";
+import AdsListSkeleton from "./skeletons/AdsListSkeleton";
 
 function ProfileAds({ profileId }) {
   const { t } = useTranslation("ads");
@@ -22,7 +23,7 @@ function ProfileAds({ profileId }) {
 
   const ownProfile = profileId === user.id;
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <AdsListSkeleton isProfileView />;
   if (error) return <ErrorMessage error={error.message} />
 
   const userAds = ads ? ads.pages.flat() : [];

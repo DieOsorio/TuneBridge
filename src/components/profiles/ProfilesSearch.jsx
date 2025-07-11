@@ -7,8 +7,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useProfile } from "../../context/profile/ProfileContext";
 
 import ProfilesList from "./ProfilesList";
-import ProfileCardSkeleton from "./ProfileCardSkeleton";
-import ErrorMessage from "../../utils/ErrorMessage";
 import Select from "../ui/Select";
 
 import {
@@ -17,7 +15,7 @@ import {
   useCities,
 } from "../../context/helpers/useCountryCity";
 
-import { Country, State, City } from "country-state-city";
+import { Country } from "country-state-city";
 
 const cleanStateName = (name) =>
   name.endsWith(" Department") ? name.replace(/ Department$/, "") : name;
@@ -72,22 +70,6 @@ export default function ProfilesSearch() {
 
   const { data: searchResults = [], isLoading: isSearching } =
     searchProfiles(effective.trim() || undefined);
-
-  if (profileError)
-    return (
-      <ErrorMessage
-        error={profileError.message || "Error when loading profiles."}
-      />
-    );
-
-  if (profileLoading && !allProfilesData)
-    return (
-      <div className="flex flex-col gap-4 items-center">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <ProfileCardSkeleton key={i} />
-        ))}
-      </div>
-    );
 
   const loggedIn = Boolean(user);
   const flatAllProfiles = allProfilesData ? allProfilesData.pages.flat() : [];
@@ -218,7 +200,12 @@ export default function ProfilesSearch() {
         )}
       </form>
 
-      <ProfilesList profiles={profilesToShow} isSearching={isSearching} />
+      <ProfilesList 
+        profiles={profilesToShow} 
+        isSearching={isSearching} 
+        isLoading={profileLoading}
+        error={profileError} 
+      />
 
       {!searchTerm && hasNextPage && (
         <Button

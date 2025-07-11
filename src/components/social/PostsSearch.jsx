@@ -1,11 +1,13 @@
-import React from 'react';
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
+import { usePosts } from '../../context/social/PostsContext';
+
+
 import { Button } from '@mui/material';
 import PostCard from './PostCard';
-import PostCardSkeleton from './PostCardSkeleton';
+import PostCardSkeleton from './skeletons/PostCardSkeleton';
 import ErrorMessage from '../../utils/ErrorMessage';
-import { usePosts } from '../../context/social/PostsContext';
 import PlusButton from '../ui/PlusButton';
 
 const PostsSearch = () => {
