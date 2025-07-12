@@ -37,7 +37,10 @@ function PlusButton({
 
   const handleClick = () => {
     if (onClick) onClick();
-    else if (to) navigate(to);
+    else if (to) {
+      if (typeof to === "string") navigate(to);
+      else navigate(to.pathname, { state: to.state });
+    }
   };
 
   const btnBase = `cursor-pointer p-2 rounded-full transition-colors ${palette.text} ${palette.hover} ${palette.ring}`;

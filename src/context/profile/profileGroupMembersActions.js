@@ -8,6 +8,26 @@ import {
 } from "../helpers/cacheHandler";
 import { profileGroupMembersKeyFactory, userGroupsKeyFactory } from "../helpers/profile/profileKeys";
 
+// GET MEMBER ROLE
+export const useUserGroupRole = ({ profileId, groupId }) => {
+  return useQuery({
+    queryKey: ["user-group-role", profileId, groupId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("users")
+        .from("profile_group_members")
+        .select("role")
+        .eq("profile_id", profileId)
+        .eq("profile_group_id", groupId)
+        .maybeSingle();
+
+      if (error) throw new Error(error.message);  
+      return data?.role ?? null;
+    },
+    enabled: !!profileId && !!groupId,
+  });
+};
+
 // FETCH ALL MEMBERS OF A GROUP
 export const useFetchGroupMembersQuery = (profileGroupId) => {
   return useQuery({

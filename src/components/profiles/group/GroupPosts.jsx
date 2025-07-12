@@ -1,8 +1,15 @@
-import React from 'react'
+import { useNavigate } from "react-router-dom"
+import PlusButton from "../../ui/PlusButton"
 
-function GroupPosts() {
+
+function GroupPosts({groupId, isMember }) {
+  
   return (
-    <div>GroupPosts</div>
+    <PlusButton 
+      to={{ pathname: "/create-post", state: { groupId } }}
+      label="create post"
+      color="amber" 
+    />
   )
 }
 

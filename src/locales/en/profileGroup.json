@@ -19,7 +19,8 @@
     "messages": {
       "noMembers": "No members yet.",
       "unknown": "Unknown"
-    }
+    },
+    "noMembers":"No members yet."
   },
 
   "groupHeader": {
@@ -44,6 +45,16 @@
       "manageMembers": "Manage Members",
       "settings": "Group Settings",
       "notifications": "Notifications"
+    }
+  },
+
+  "followersList": {
+    "connection": {
+      "messages": {
+        "noFollowers": "This group has no followers yet."
+      },
+      "loadMore": "Load more",
+      "loadingMore": "Loading..."
     }
   },
 
@@ -178,5 +189,7 @@
   "errors": {
     "loading": "Error loading group data.",
     "noData": "No group data available."
-  }
+  },
+  "groupHeader.followersCount_one": "{{count}} follower",
+  "groupHeader.followersCount_other": "{{count}} followers"
 }

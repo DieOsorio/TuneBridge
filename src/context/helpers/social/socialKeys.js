@@ -1,11 +1,19 @@
 // --- CONNECTIONS KEY FACTORIES ---
 export const CONNECTIONS_KEY = (profileId) => ["connections", profileId];
 export const CONNECTION_BETWEEN_KEY = (followerId, followingId) => ["connection-between", followerId, followingId];
+export const CONNECTIONS_BETWEEN_MANY_KEY = (userId, followerIds = []) => [
+  "connections-between-many",
+  userId,
+  ...followerIds.sort()
+];
 
-export const connectionKeyFactory = ({ follower_profile_id, following_profile_id } = {}) => ({
+export const connectionKeyFactory = ({ follower_profile_id, following_profile_id, multiple_followers } = {}) => ({
   follower: follower_profile_id ? CONNECTIONS_KEY(follower_profile_id) : undefined,
   following: following_profile_id ? CONNECTIONS_KEY(following_profile_id) : undefined,
   between: follower_profile_id && following_profile_id ? CONNECTION_BETWEEN_KEY(follower_profile_id, following_profile_id) : undefined,
+  many: follower_profile_id && multiple_followers?.length > 0
+    ? CONNECTIONS_BETWEEN_MANY_KEY(follower_profile_id, multiple_followers)
+    : undefined,
 });
 
 // --- POSTS KEY FACTORIES ---

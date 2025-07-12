@@ -7,6 +7,8 @@ import {
   useFollowRowQuery,
   useFollowGroupMutation,
   useUnfollowGroupMutation,
+  useCountFollowers,
+  useGroupFollowersInfiniteQuery,
 } from "./profileGroupFollowsActions";
 
 /* ------------------------------------------------------------------ */
@@ -22,12 +24,12 @@ export const ProfileGroupFollowsProvider = ({ children }) => {
   const unfollowGroup = useUnfollowGroupMutation().mutateAsync;
 
   const value = {
-    /** list of follower IDs */
     followersOfGroup : useFollowersOfGroupQuery,
-    /** -> row | null */
     checkFollowStatus: (groupId) => useFollowRowQuery(groupId, authId),
     followGroup,
     unfollowGroup,
+    countFollowers: useCountFollowers,
+    followersInfiniteQuery: useGroupFollowersInfiniteQuery,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

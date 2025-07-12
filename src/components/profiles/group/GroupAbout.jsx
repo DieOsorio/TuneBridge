@@ -28,24 +28,32 @@ function GroupAbout({ group, members }) {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
         <div>
           <p className="text-3xl font-bold">{members.length}</p>
-          <p className="text-gray-400 text-sm">Members</p>
+          <p className="text-gray-400 text-sm">
+            {t("groupAbout.stats.members")}
+          </p>
         </div>
 
         {/* placeholders for future stats */}
         <div>
           <p className="text-3xl font-bold">—</p>
-          <p className="text-gray-400 text-sm">Posts</p>
+          <p className="text-gray-400 text-sm">
+            {t("groupAbout.stats.posts")}
+          </p>
         </div>
         <div>
           <p className="text-3xl font-bold">—</p>
-          <p className="text-gray-400 text-sm">Events</p>
+          <p className="text-gray-400 text-sm">
+            {t("groupAbout.stats.events")}
+          </p>
         </div>
       </div>
 
       {/* Members list */}
       <div className="max-h-64 overflow-y-auto border border-amber-700 rounded p-3 bg-amber-900 scrollbar-custom">
         {members.length === 0 ? (
-          <p className="text-gray-400 text-center">No members yet.</p>
+          <p className="text-gray-400 text-center">
+            {t("groupAbout.noMembers")}
+          </p>
         ) : (
           <ul className="space-y-3">
             {members.map((member) => (

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useConversations } from "../../../context/social/chat/ConversationsContext";
-import Loading from "../../../utils/Loading";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import ConversationItem from "./ConversationItem";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatUI } from "../../../context/social/chat/ChatUIContext";
 import { useTranslation } from "react-i18next";
+import ConversationItemSkeleton from "./skeletons/ConversationItemSkeleton";
 
 const ConversationList = () => {
   const { t } = useTranslation("chat");
@@ -33,7 +33,12 @@ const ConversationList = () => {
     setIsConversationListVisible(false); // Collapse sidebar on selection
   };
 
-  if (isLoading) return <Loading size={200} />;
+  if (isLoading) {
+    return (
+      [...Array(3)].map((_, i) => <ConversationItemSkeleton />)
+    );
+  }
+
   if (error) return <ErrorMessage error={error.message} />;
 
   return (
