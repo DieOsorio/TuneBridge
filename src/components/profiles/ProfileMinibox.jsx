@@ -11,7 +11,7 @@ import { handleStartChat } from "../social/chat/utilis/handleStartChat";
 import { useCanSendDM } from "../../utils/useCanSendDM";
 import ProfileMiniboxSkeleton from "./skeletons/ProfileMiniboxSkeleton";
 
-const ProfileMinibox = ({ profile, isLoading }) => {
+const ProfileMinibox = ({ profile, isLoading, isGroup }) => {
   const { user } = useAuth();
   const loggedIn = Boolean(user);
   const {findConversation, createConversation} = useConversations();
@@ -48,7 +48,7 @@ const ProfileMinibox = ({ profile, isLoading }) => {
 
   if (!profile) return null;
 
-  const { username, state, country, bio, avatar_url, id } = profile;
+  const { username, name, state, country, bio, avatar_url, id } = profile;
 
   return (
     <motion.div
@@ -60,15 +60,18 @@ const ProfileMinibox = ({ profile, isLoading }) => {
     >
       <div className="flex items-center gap-3 mb-2">
         <Link 
-          to={`/profile/${id}`}>
+          to={isGroup
+            ? `/group/${id}`
+            : `/profile/${id}`
+          }>
           <img
             src={avatar_url}
-            alt={`Avatar of ${username}`}
+            alt={`Avatar of ${username || name}`}
             className="w-10 h-10 rounded-full object-cover"
           />
         </Link>
         <div className="ml-6">
-          <p className="font-semibold text-center text-neutral-900 dark:text-neutral-100 mb-2">@{username}</p>
+          <p className="font-semibold text-center text-neutral-900 dark:text-neutral-100 mb-2">@{username || name}</p>
           {(state || country) && (
             <p className="text-neutral-400 text-xs">
               {state}{state && country ? ", " : ""}{country}
@@ -96,13 +99,16 @@ const ProfileMinibox = ({ profile, isLoading }) => {
 
         <Link
           title="View Posts"
-          to={`/profile/${id}/posts`}
+          to={isGroup
+            ? `/group/${id}/posts`
+            : `/profile/${id}/posts`
+          }
           className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"
         >
           <BsPostcard size={30} />
         </Link>
 
-        {canSend && (
+        {canSend && !isGroup && (
           <button
             title="Send Message"
             className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"

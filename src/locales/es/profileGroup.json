@@ -19,7 +19,8 @@
     "messages": {
       "noMembers": "Aún no hay miembros en este grupo.",
       "unknown": "Desconocido"
-    }
+    },
+    "noMembers":"Aún no hay miembros en este grupo."
   },
 
   "groupHeader": {
@@ -44,6 +45,16 @@
       "manageMembers": "Administrar Miembros",
       "settings": "Configuración del Grupo",
       "notifications": "Notificaciones"
+    }
+  },
+
+  "followersList": {
+    "connection": {
+      "messages": {
+        "noFollowers": "Este grupo no tiene seguidores todavía."
+      },
+      "loadMore": "Cargar más",
+      "loadingMore": "Cargando..."
     }
   },
 
@@ -178,5 +189,7 @@
   "errors": {
     "loading": "Error al cargar los datos del grupo.",
     "noData": "No hay datos disponibles del grupo."
-  }
+  },
+  "groupHeader.followersCount_one": "{{count}} follower",
+  "groupHeader.followersCount_other": "{{count}} followers"
 }

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
 import {
   optimisticUpdate,
@@ -22,7 +22,46 @@ const hydrate = (row) => ({
   followerProfileId : row.follower_profile_id,
 });
 
+const PAGE_SIZE = 8;
+
 /* ─── queries ──────────────────────────────────────────────── */
+
+
+export const useGroupFollowersInfiniteQuery = (groupId) => {
+  return useInfiniteQuery({
+    queryKey: profileGroupFollowsKeyFactory({ profileGroupId: groupId }).followersInfinite,
+    enabled: !!groupId,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length < PAGE_SIZE) return undefined;
+      const lastCreatedAt = lastPage[lastPage.length - 1]?.created_at;
+      return lastCreatedAt;
+    },
+    queryFn: async ({ pageParam }) => {
+      let query = supabase
+        .schema("groups")
+        .from("profile_group_followers_expanded")
+        .select("*")
+        .eq("profile_group_id", groupId)
+        .order("created_at", { ascending: false })
+        .limit(PAGE_SIZE);
+
+      if (pageParam) {
+        query = query.lt("created_at", pageParam);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw new Error(error.message);
+
+      return data; // ya vienen listos
+    },
+    staleTime: 60_000,
+  });
+};
+
+
+
+
 export const useFollowersOfGroupQuery = (profileGroupId) =>
   useQuery({
     queryKey : profileGroupFollowsKeyFactory({ profileGroupId }).followers,
@@ -39,6 +78,22 @@ export const useFollowersOfGroupQuery = (profileGroupId) =>
     },
     staleTime : 60_000,
   });
+
+export const useCountFollowers = (profileGroupId) =>
+  useQuery({
+    queryKey: profileGroupFollowsKeyFactory({ profileGroupId }).followers,
+    enabled: !! profileGroupId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema(SCHEMA)
+        .from(TABLE)
+        .select("follower_profile_id")
+        .eq("profile_group_id", profileGroupId);
+      
+      if (error) throw new Error(error.message);
+      return data.length;
+    }
+  })
 
 export const useFollowRowQuery = (profileGroupId, followerId) =>
   useQuery({

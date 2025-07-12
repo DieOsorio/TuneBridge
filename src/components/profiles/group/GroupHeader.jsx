@@ -1,4 +1,4 @@
-import { useNavigate }      from "react-router-dom";
+import { Link, useNavigate }      from "react-router-dom";
 import { useAuth }          from "../../../context/AuthContext";
 import { useProfileGroupFollows } from "../../../context/groups/ProfileGroupFollowsContext";
 import { useTranslation }   from "react-i18next";
@@ -11,7 +11,7 @@ import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 /* width classes kept in‑sync with ProfileHeader */
 const GroupHeader = ({ groupData, isAdmin }) => {
-  const { t }     = useTranslation("profileGroup", { keyPrefix: "groupHeader" });
+  const { t }     = useTranslation("profileGroup", { keyPrefix: "groupHeader"});
   const { user }  = useAuth();
   const navigate  = useNavigate();
   const basePath  = `/group/${groupData.id}`;
@@ -22,12 +22,17 @@ const GroupHeader = ({ groupData, isAdmin }) => {
     followGroup,
     unfollowGroup,
     checkFollowStatus,
+    countFollowers,
   } = useProfileGroupFollows();
 
   const {
     data: follow,             // null | { … }
     isLoading: loadingFollow,
   } = checkFollowStatus(groupData.id, user?.id);
+
+  const {
+    data: followers
+  } = countFollowers(groupData.id);
 
   const isFollowing = Boolean(follow);
 
@@ -93,17 +98,29 @@ const GroupHeader = ({ groupData, isAdmin }) => {
 
       {/* navigation buttons */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-end mt-6 flex-wrap">
-        {!isAdmin && user && (
-          <button
-            onClick={toggleFollow}
-            disabled={loadingFollow}
-            title={isFollowing ? t("btnTitles.unfollow") : t("btnTitles.follow")}
-            className={`${badgeClasses} cursor-pointer mr-auto mt-auto w-full justify-center md:w-auto inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition`}
-          >
-            {badgeIcon}
-            {badgeLabel}
-          </button>
-        )}
+        <div className="flex items-center gap-3 sm:mr-auto mt-auto">
+          {!isAdmin && user && (
+            <button
+              onClick={toggleFollow}
+              disabled={loadingFollow}
+              title={isFollowing ? t("btnTitles.unfollow") : t("btnTitles.follow")}
+              className={`${badgeClasses} cursor-pointer inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition`}
+            >
+              {badgeIcon}
+              {badgeLabel}
+            </button>
+          )}
+
+          {followers !== undefined && (
+            <Link
+              to={`${basePath}/followers`}
+              className="text-sm font-medium text-gray-300 hover:underline"
+              title={t("followersCount", { count: followers })}
+            >
+              {t("followersCount", { count: followers })}
+            </Link>
+          )}
+        </div>
         <div>
           <div className="mb-4">
             <Button className={navBtnCls} onClick={() => navigate(basePath)}>
@@ -135,24 +152,6 @@ const GroupHeader = ({ groupData, isAdmin }) => {
           )}
         </div>        
       </div>
-
-      {/* Follow badge in bottom left corner */}
-      {/* {!isAdmin && user && (
-        <button
-          onClick={toggleFollow}
-          disabled={loadingFollow}
-          title={
-            isFollowing
-              ? t("btnTitles.unfollow")
-              : t("btnTitles.follow")
-          }
-          className={`${badgeClasses} cursor-pointer inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition
-                      absolute bottom-4 left-4`}
-        >
-          {badgeIcon}
-          {badgeLabel}
-        </button>
-      )} */}
     </div>
   );
 };

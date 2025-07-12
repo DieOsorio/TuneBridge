@@ -20,6 +20,7 @@ export const groupEventRsvpsKeyFactory = ({ eventId }) => {
 /* --- PROFILE‑GROUP FOLLOWS KEY FACTORY ----------------------- */
 export const PROFILE_GROUP_FOLLOWS_KEY = (groupId)              => ["groupFollows", groupId];
 export const PROFILE_GROUP_FOLLOW_KEY  = (groupId, profileId)   => ["groupFollow",  groupId, profileId];
+export const PROFILE_GROUP_FOLLOWS_INFINITE_KEY = (groupId)     => ["groupFollowsInfinite", groupId];
 
 export const profileGroupFollowsKeyFactory = ({
   profileGroupId,
@@ -27,6 +28,9 @@ export const profileGroupFollowsKeyFactory = ({
 } = {}) => ({
   followers: profileGroupId ? PROFILE_GROUP_FOLLOWS_KEY(profileGroupId) : undefined,
   single: profileGroupId && followerProfileId
-              ? PROFILE_GROUP_FOLLOW_KEY(profileGroupId, followerProfileId)
-              : undefined,
+    ? PROFILE_GROUP_FOLLOW_KEY(profileGroupId, followerProfileId)
+    : undefined,
+  followersInfinite: profileGroupId
+    ? PROFILE_GROUP_FOLLOWS_INFINITE_KEY(profileGroupId)
+    : undefined,
 });

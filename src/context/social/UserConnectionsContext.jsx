@@ -26,7 +26,7 @@ export const UserConnectionsProvider = ({ children }) => {
     updateConnection,
     deleteConnection,
     userConnections: useFetchConnectionsQuery,
-    connectionBetweenProfiles: useConnectionBetweenProfiles,    
+    connectionBetweenProfiles: useConnectionBetweenProfiles,
   }
 
   return (

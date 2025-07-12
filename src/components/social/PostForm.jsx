@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { usePosts } from "../../context/social/PostsContext";
 import { useUploadPostImages } from "../../context/social/imagesActions";
@@ -8,6 +8,8 @@ import { usePostHashtags } from "../../context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
+
+import { FiPlus } from "react-icons/fi";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Textarea from "../ui/Textarea";
@@ -15,10 +17,11 @@ import ImageUploader from "../../utils/ImageUploader";
 import Loading from "../../utils/Loading";
 import ErrorMessage from "../../utils/ErrorMessage";
 import ConfirmDialog from "../ui/ConfirmDialog";
-import { FiPlus } from "react-icons/fi";
 
-const PostForm = () => {
+const PostForm = ( ) => {
   const { t } = useTranslation("posts");
+  const { state } = useLocation();
+  const groupId = state?.groupId || null;
   const { user } = useAuth();
   const { postId } = useParams();
   const navigate = useNavigate();
@@ -99,9 +102,15 @@ const PostForm = () => {
 
   const confirmDelete = async () => {
     await deletePost(postId);
-    navigate(`/profile/${postData.profile_id}`);
+    navigate(
+      groupId 
+        ? `/group/${gorupId}`
+        :`/profile/${postData.profile_id}`
+      );
     setIsConfirmOpen(false);
   };
+
+  console.log("groupId from state:", groupId);
 
   const onSubmit = async (formData) => {
     const { newHashtag, ...rest } = formData;
@@ -132,14 +141,17 @@ const PostForm = () => {
         await deletePostHashtags({ post_id: postId });
         post = postData;
       } else {
-        post = await createPost({ ...rest, profile_id: user.id, images_urls: [] });
+        post = await createPost({ 
+          ...rest, 
+          images_urls: [],
+        ...(groupId ? { group_id: groupId } : { profile_id: user.id }) });
 
         const uploadedImages = await Promise.all(
           images.map(async (file, index) => {
             const filename = `${Date.now()}-${index}-${file.name}`;
             return await uploadImageMutations.mutateAsync({
               file,
-              userId: user.id,
+              userId: groupId || user.id,
               postId: post.id,
               filename,
             });
@@ -166,7 +178,13 @@ const PostForm = () => {
       setImages([]);
       setHashtagItems([]);
 
-      navigate(postId ? `/profile/${post.profile_id}` : "/explore");
+      navigate(
+        postId
+          ? groupId
+            ? `/group/${groupId}` 
+            : `/profile/${post.profile_id}` 
+          : "/explore"
+      );
     } catch (err) {
       console.error("Post error:", err.message);
     }

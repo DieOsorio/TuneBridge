@@ -16,6 +16,7 @@ import GroupAbout     from "../components/profiles/group/GroupAbout";
 import GroupPosts     from "../components/profiles/group/GroupPosts";
 import CalendarScreen from "../components/profiles/group/GroupCalendar";
 import GroupForm      from "../components/profiles/group/GroupForm";
+import FollowersList  from "../components/profiles/group/FollowersList";
 
 export default function ProfileGroup() {
   const { groupId } = useParams();
@@ -32,9 +33,11 @@ export default function ProfileGroup() {
     error: mError,
   } = fetchGroupMembers(groupId);
 
-  if (isLoading || mLoading) return <Loading />;
-  if (error || mError)       return <ErrorMessage error={error?.message || mError?.message} />;
-  if (!group)                return <Navigate to="/" replace />;
+  const loading = isLoading || mLoading || !Array.isArray(members);
+
+  if (loading) return <Loading />;
+  if (error || mError) return <ErrorMessage error={error?.message || mError?.message} />;
+  if (!group) return <Navigate to="/" replace />;
 
   /** ---------- permissions ---------- */
   const me     = members?.find(m => m.profile_id === user.id);
@@ -56,6 +59,7 @@ export default function ProfileGroup() {
         <Routes>
           <Route index           element={<GroupAbout group={group} members={members} />} />
           <Route path="posts/*"  element={<GroupPosts groupId={groupId} isMember={isMember} />} />
+          <Route path="followers" element={<FollowersList groupId={groupId} />} />
 
           {isAdmin && (
             <>

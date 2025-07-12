@@ -325,15 +325,8 @@ useEffect(() => {
           disabled={!stateIso}
         />
 
-        {/* action buttons */}
+        {/* action button */}
         <div className="sm:col-span-2 flex justify-center gap-4 pt-4">
-          <Button
-            type="button"
-            className="!bg-gray-600 hover:!bg-gray-700"
-            onClick={() => (isEdit ? onCancel?.() : navigate(`/profile/${user.id}`))}
-          >
-            {t("form.buttons.cancel")}
-          </Button>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? t("form.buttons.saving") : submitLabel}
           </Button>

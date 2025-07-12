@@ -3,6 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePrefetchProfile } from '../../context/profile/profileActions';
 import { useLikes } from '../../context/social/LikesContext';
+import { useProfileGroups } from "../../context/profile/ProfileGroupsContext";
+import { useProfileGroupMembers } from "../../context/profile/ProfileGroupMembersContext";
 
 import { FcLike } from "react-icons/fc";
 import { FcLikePlaceholder } from "react-icons/fc";
@@ -54,6 +56,14 @@ function PostCard({ post }) {
   const { fetchProfile } = useProfile();
   const { data: profile, error, isLoading } = fetchProfile(post.profile_id); // retrieve the profile associated with the post
 
+  const isGroupPost = Boolean(post.group_id);
+  const { fetchProfileGroup } = useProfileGroups();
+  const { data: group, isLoading: isGroupLoading } = fetchProfileGroup(post.group_id);
+  const { userGroupRole } = useProfileGroupMembers();
+  const { role, isLoading: isRoleLoading } = userGroupRole({profileId: user.id, groupId: post.group_id});
+  
+  const author = isGroupPost ? group : profile;
+
   const { insertLike, deleteLike, userLikedPostQuery, postLikesQuery } = useLikes(); // custom hooks to manage the likes
   const { data: existingLike } = userLikedPostQuery(
     post.id,
@@ -70,6 +80,7 @@ function PostCard({ post }) {
   const [currentImage, setCurrentImage] = useState(null); // current image in modal
 
   const likeLabel = t("likes.count", { count: likesCount });
+  const loading = isGroupLoading || isRoleLoading || isLoading;
 
   // Prefetch profile info to view in the minibox
   const prefetchProfile = usePrefetchProfile();
@@ -131,10 +142,18 @@ function PostCard({ post }) {
 
   if (error) return <ErrorMessage error={error.message} />;
 
+ const userIsOwnerOfPost = post.profile_id === user?.id; // for individual posts
+  const userCanEditGroupPost = role === "admin" || role === "manager";
+
+  const canEditPost = loggedIn && (
+    (!isGroupPost && userIsOwnerOfPost) ||
+    (isGroupPost && userCanEditGroupPost)
+  );
+
   return (
     <div className="bg-gradient-to-l to-gray-800 p-4 rounded-lg shadow-md mb-4 mx-auto max-w-3xl w-full">
       {/* Title of the post */}
-      <h3 className="text-xl mb-4 font-semibold rounded-lg bg-gradient-to-l to-sky-600 p-4 text-gray-100">
+      <h3 className={`text-xl mb-4 font-semibold rounded-lg bg-gradient-to-l ${isGroupPost ? "to-amber-700" : "to-sky-600"} p-4 text-gray-100`}>
         {post.title}
       </h3>
 
@@ -147,20 +166,27 @@ function PostCard({ post }) {
             className="relative mb-auto"
           >
             <Link
-              to={`/profile/${profile?.id}`}
+              to={isGroupPost
+                ? `/group/${author?.id}`
+                :`/profile/${author?.id}`
+              }
             >
               <h2 className="font-bold text-lg text-gray-200">
-                {profile?.username}
+                {author?.username}
               </h2>
               <ProfileAvatar
-                avatar_url={profile?.avatar_url}
+                avatar_url={author?.avatar_url}
                 className="!w-15 !h-15 mx-auto"
-                gender={profile?.gender}
-                alt={`${profile?.username}'s avatar`}
+                gender={author?.gender}
+                alt={`${author?.username}'s avatar`}
               />
             </Link>
             {showMinibox && (
-              <ProfileMinibox profile={profile} isLoading={isLoading} />
+              <ProfileMinibox 
+                profile={author} 
+                isLoading={loading} 
+                isGroup={isGroupPost}
+                />
             )}
           </div>
 
@@ -168,7 +194,7 @@ function PostCard({ post }) {
           <div className="flex sm:h-full sm:justify-end sm:flex-col items-end ml-auto sm:ml-0 gap-3 sm:gap-8 mt-6">
             {/* Edit button for the logged-in user's posts */}
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-              {loggedIn && post.profile_id === user.id && (
+              {canEditPost &&  (
                 <FaEdit
                   title="Edit Post"
                   className="text-yellow-600 hover:text-yellow-700 cursor-pointer" 
@@ -205,8 +231,10 @@ function PostCard({ post }) {
               size={32}
               title="Post Comments"
               onClick={handleShowComments}
-              className={`text-gray-400 cursor-pointer hover:text-sky-600 ${
-                showComments && "text-sky-600"
+              className={`text-gray-400 cursor-pointer ${isGroupPost ? "hover:text-amber-700" : "hover:text-sky-600"} ${
+                showComments && !isGroupPost
+                ? "text-sky-600"
+                : "text-amber-700"
               } sm:!w-10 sm:!h-10`}
             />
           </div>
@@ -238,7 +266,7 @@ function PostCard({ post }) {
               ))}
             </Swiper>
           ) : (
-            <p className="font-semibold text-center text-white">
+            <p className="font-semibold m-auto text-center text-gray-400">
               {t('messages.noImages')}
             </p>
           )}
@@ -330,7 +358,7 @@ function PostCard({ post }) {
         </div>
 
       {/* Text content of the post */}
-      <p className="text-gray-300 mx-auto rounded-md bg-gray-900 font-semibold border-sky-700 border-1 sm:ml-auto sm:w-140 p-4 my-4">
+      <p className={`text-gray-300 mx-auto rounded-md bg-gray-900 font-semibold border-1 sm:ml-auto sm:w-140 p-4 my-4 ${isGroupPost ? "border-amber-700" : "border-sky-700"}`}>
         {post.content}
       </p>
 

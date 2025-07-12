@@ -71,6 +71,7 @@ export default function AppRouter() {
             <Route path="/media/:id"                 element={<ProtectedRoute><MediaSection /></ProtectedRoute>} />
             <Route path="/ads/edit/:id"              element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
             <Route path="/ads/new"                   element={<ProtectedRoute><AdCreateEditPage /></ProtectedRoute>} />
+            <Route path="/edit-post/:postId"         element={<ProtectedRoute><PostForm /></ProtectedRoute>} />
             <Route path="/create-post"               element={<ProtectedRoute><PostForm /></ProtectedRoute>} />
             <Route path="/group/:groupId/*"          element={<ProtectedRoute><ProfileGroup /></ProtectedRoute>} />
             <Route path="/create-profile-group"      element={<ProtectedRoute><GroupForm /></ProtectedRoute>} />

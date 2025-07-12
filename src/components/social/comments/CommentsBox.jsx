@@ -13,7 +13,7 @@ function CommentsBox({ postId }) {
   const { t } = useTranslation("comments");
   const { user } = useAuth(); // logged user
   const { fetchProfile, profilesMap } = useProfile();
-  const { data: profile } = fetchProfile(user?.id); // retrieve logged users data
+  const { data: profile, isLoading  } = fetchProfile(user?.id); // retrieve logged users data
   const { 
     fetchComments, 
     insertComment, 
@@ -35,7 +35,9 @@ function CommentsBox({ postId }) {
     formState: { errors }
   } = useForm();
 
-  if (profilesLoading || isCommentsLoading)  return <Loading />;
+  const loading = profilesLoading || isCommentsLoading || isLoading;
+
+  if (loading)  return <Loading />;
 
   // Send new comment
   const onSubmit = async (data) => {

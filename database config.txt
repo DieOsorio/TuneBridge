@@ -87,6 +87,7 @@ Schema: users
         profile_id (UUID, references users.profiles.id): ID of the profile that is a member of the group.
         role (text, default 'member'): Role of the profile within the group (e.g., "admin", "member").
         joined_at (timestamp, default now()): Timestamp indicating when the profile joined the group.
+        roles_in_group (text[]): Roles inside the band (e.g. "singer", "bassist", etc)
 
     Triggers:
 
@@ -430,3 +431,19 @@ Schema: groups
     Triggers:
 
         trg_pg_follow_notif: on insert, runs groups.notify_profile_group_follow()
+
+
+   create or replace view groups.profile_group_followers_expanded as
+    select
+    f.id                        as follow_id,
+    f.profile_group_id,
+    f.follower_profile_id,
+    f.created_at,
+    p.id                       as profile_id,
+    p.username,
+    p.avatar_url,
+    p.state,
+    p.country
+    from groups.profile_group_follows f
+    join users.profiles p
+    on f.follower_profile_id = p.id;
