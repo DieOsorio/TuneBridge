@@ -5,7 +5,7 @@ import { FaCompass }                    from "react-icons/fa";
 import PostsList      from "../components/social/PostsList";
 import ProfilesSearch from "../components/profiles/ProfilesSearch";
 import ShinyText      from "../components/ui/ShinyText";
-// import GroupList from "../components/profiles/group/GroupList";
+import GroupList from "../components/profiles/group/GroupList";
 
 export default function Explore() {
   const { t } = useTranslation("ui");

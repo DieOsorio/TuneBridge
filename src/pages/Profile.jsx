@@ -16,7 +16,7 @@ import DisplayMusicInfo     from "../components/music/DisplayMusicInfo";
 import ConnectionsList      from "../components/social/ConnectionsList";
 import PostsList            from "../components/social/PostsList";
 import PostForm             from "../components/social/PostForm";
-// import UserGroups           from "../components/profiles/group/UserGroups";
+import UserGroups           from "../components/profiles/group/UserGroups";
 import ProfileAds           from "../components/social/ads/ProfileAds";
 import Notifications        from "../components/social/Notifications";
 import { useTranslation } from "react-i18next";
