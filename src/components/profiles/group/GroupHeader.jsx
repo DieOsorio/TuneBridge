@@ -10,7 +10,7 @@ import { IoIosSettings }  from "react-icons/io";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 /* width classes kept in‑sync with ProfileHeader */
-const GroupHeader = ({ groupData, isAdmin }) => {
+const GroupHeader = ({ groupData, CanManageGroup }) => {
   const { t }     = useTranslation("profileGroup", { keyPrefix: "groupHeader"});
   const { user }  = useAuth();
   const navigate  = useNavigate();
@@ -80,7 +80,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
 
         {/* right side icons */}
         <div className="flex gap-4 ml-auto items-center mb-auto">
-          {isAdmin && (
+          {CanManageGroup && (
             <IoIosSettings
               className="w-8 h-8 text-white cursor-pointer"
               onClick={() => navigate(`${basePath}/settings`)}
@@ -99,7 +99,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
       {/* navigation buttons */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-end mt-6 flex-wrap">
         <div className="flex items-center gap-3 sm:mr-auto mt-auto">
-          {!isAdmin && user && (
+          {!CanManageGroup && user && (
             <button
               onClick={toggleFollow}
               disabled={loadingFollow}
@@ -143,7 +143,7 @@ const GroupHeader = ({ groupData, isAdmin }) => {
               {t("nav.media")}
             </Button>
           </div>
-          {isAdmin && (
+          {CanManageGroup && (
             <div className="sm:mb-4">
               <Button className={navBtnCls} onClick={() => navigate(`${basePath}/calendar`)}>
                 {t("nav.calendar")}

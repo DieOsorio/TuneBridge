@@ -42,6 +42,7 @@ export default function ProfileGroup() {
   /** ---------- permissions ---------- */
   const me     = members?.find(m => m.profile_id === user.id);
   const isAdmin   = me?.role === "admin";
+  const CanManageGroup = isAdmin || me?.role === "manager";
   const isMember  = !!me;
 
   /** ---------- internal views ---------- */
@@ -52,13 +53,13 @@ export default function ProfileGroup() {
         {/* header with navigation buttons */}
         <GroupHeader
           groupData={group}
-          isAdmin={isAdmin}
+          CanManageGroup={CanManageGroup}
         />
 
         {/* sub-routes */}
         <Routes>
           <Route index           element={<GroupAbout group={group} members={members} />} />
-          <Route path="posts/*"  element={<GroupPosts groupId={groupId} isMember={isMember} />} />
+          <Route path="posts/*"  element={<GroupPosts groupId={groupId} CanManageGroup={CanManageGroup} />} />
           <Route path="followers" element={<FollowersList groupId={groupId} />} />
 
           {isAdmin && (
