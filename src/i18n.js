@@ -15,6 +15,7 @@ import searchProfilesEN from './locales/en/searchProfiles.json';
 import profileGroupEN from './locales/en/profileGroup.json'; 
 import adsEN from './locales/en/ads.json'; 
 import settingsEN from './locales/en/settings.json'; 
+import groupEventsEN from './locales/en/groupEvents.json'; 
 
 import authES from './locales/es/auth.json';
 import commonES from './locales/es/common.json';
@@ -28,6 +29,7 @@ import searchProfilesES from './locales/es/searchProfiles.json';
 import profileGroupES from './locales/es/profileGroup.json';
 import adsES from './locales/es/ads.json';
 import settingsES from './locales/es/settings.json';
+import groupEventsES from './locales/es/groupEvents.json';
 
 const resources = {
   en: {
@@ -42,7 +44,8 @@ const resources = {
     searchProfiles: searchProfilesEN,
     profileGroup: profileGroupEN,
     ads: adsEN,
-    settings: settingsEN
+    settings: settingsEN,
+    groupEvents: groupEventsEN
   },
   es: {
     auth: authES,
@@ -56,7 +59,8 @@ const resources = {
     searchProfiles: searchProfilesES,
     profileGroup: profileGroupES,
     ads: adsES,
-    settings: settingsES
+    settings: settingsES,
+    groupEvents: groupEventsES
   }
 };
 
@@ -79,7 +83,8 @@ i18n
       'searchProfiles', 
       'profileGroup', 
       'ads',
-      'settings'
+      'settings',
+      'groupEvents'
     ],
     interpolation: {
       escapeValue: false

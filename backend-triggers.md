@@ -1,6 +1,7 @@
 # 🎯 TuneBridge — Database Triggers (Business Logic Only)
 
-> **Scope** : This file lists *only* the triggers that belong to the app‑level schemas (`auth`, `users`, `music`, `social`).  Low‑level system helpers created by Supabase (`pgsodium`, `storage`, `realtime`, `vault`, …) are intentionally omitted.
+> **Scope** : This file lists *only* the triggers that belong to the app‑level schemas (`auth`, `users`, `music`, `social`, `groups`).  
+Low‑level system helpers created by Supabase (`pgsodium`, `storage`, `realtime`, `vault`, …) are intentionally omitted.
 
 ---
 
@@ -61,7 +62,16 @@
 | `update_content_search_trigger`  | `social.posts`            | **AFTER INSERT / UPDATE**                    | `social.refresh_post_content_search`            | Regenerates post search vector.                  |
 | `update_content_search_hashtags` | `social.post_hashtags`    | **AFTER INSERT / DELETE / UPDATE**           | `social.refresh_post_content_search`            | Keeps post search vector in‑sync with hashtags.  |
 | `trg_refresh_profile_search`     | `social.profile_hashtags` | **AFTER INSERT / DELETE / UPDATE**           | `social.refresh_profile_content_search_details` | Maintains `content_search_details` for profiles. |
-| `trigger_update_post_timestamp`  | `social.posts`            | **BEFORE UPDATE** *(content / images\_urls)* | `social.update_post_timestamp`                  | Touches `updated_at`.                            |
+| `trigger_update_post_timestamp`  | `social.posts`            | **BEFORE UPDATE** *(content / images_urls)*  | `social.update_post_timestamp`                  | Touches `updated_at`.                            |
+
+---
+
+## groups schema
+
+| Trigger                               | Table                          | Fired On         | Function                            | Purpose                                                   |
+| ------------------------------------- | ------------------------------ | ---------------- | ----------------------------------- | --------------------------------------------------------- |
+| `trg_pg_follow_notif`                 | `groups.profile_group_follows` | **AFTER INSERT** | `groups.notify_profile_group_follow`| Sends a notification when a user follows a profile group. |
+| `update_rsvp_timestamp_trg`           | `groups.event_rsvps`           | **BEFORE UPDATE**| `groups.update_rsvp_timestamp`      | Touches `updated_at` when an RSVP row is updated.         |
 
 ---
 
@@ -71,10 +81,4 @@
 
 ---
 
-*Last synchronised with production on **2025‑07‑07***
-
-
-create trigger trg_pg_follow_notif
-after insert on groups.profile_group_follows
-for each row
-execute function groups.notify_profile_group_follow();
+*Last synchronised with production on **2025‑07‑15***

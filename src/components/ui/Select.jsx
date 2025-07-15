@@ -11,7 +11,9 @@ const Select = ({
   validation = {},
   error,
   classForLabel = "",
-  control, 
+  control,
+  value,
+  onChange 
 }) => {
   const fieldName = name || id;
 
@@ -24,6 +26,12 @@ const Select = ({
         name: controller.field.name,
         value: controller.field.value || "",
         onChange: controller.field.onChange,
+      }
+    : value !== undefined && onChange !== undefined
+    ? {
+        name: fieldName,
+        value,
+        onChange,
       }
     : {
         ...register(fieldName, validation),

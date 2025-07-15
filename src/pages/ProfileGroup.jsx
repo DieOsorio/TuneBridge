@@ -14,7 +14,7 @@ import GroupHeader  from "../components/profiles/group/GroupHeader";
 
 import GroupAbout     from "../components/profiles/group/GroupAbout";
 import GroupPosts     from "../components/profiles/group/GroupPosts";
-import CalendarScreen from "../components/profiles/group/GroupCalendar";
+import GroupCalendarScreen from "../components/profiles/group/group-events/GroupCalendarScreen";
 import GroupForm      from "../components/profiles/group/GroupForm";
 import FollowersList  from "../components/profiles/group/FollowersList";
 
@@ -54,6 +54,7 @@ export default function ProfileGroup() {
         <GroupHeader
           groupData={group}
           CanManageGroup={CanManageGroup}
+          isMember={isMember}
         />
 
         {/* sub-routes */}
@@ -62,9 +63,12 @@ export default function ProfileGroup() {
           <Route path="posts/*"  element={<GroupPosts groupId={groupId} CanManageGroup={CanManageGroup} />} />
           <Route path="followers" element={<FollowersList groupId={groupId} />} />
 
+          {isMember && (
+            <Route path="calendar" element={<GroupCalendarScreen groupId={groupId} isAdminOrManager={CanManageGroup} isMember={isMember} />} />
+          )}
+
           {isAdmin && (
             <>
-              <Route path="calendar" element={<CalendarScreen groupId={groupId} />} />
               <Route path="edit"     element={
                 <GroupForm
                   group={group}

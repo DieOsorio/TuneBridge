@@ -386,64 +386,67 @@ Schema: social
 
 Schema: groups
 
-    Table: group_events => Internal group calendar.
+    Table: group_events — Internal group calendar.
 
     Columns:
 
-        id (UUID)
-        profile_group_id (UUID) REFERENCES users.profile_groups(id)
-        title (text),
-        description (text),
-        location (text),
-        type (text) CHECK (type IN ('rehearsal', 'gig', 'meeting'))
-        start_time (timestamp)
-        end_time (timestamp) 
-        created_by (UUID) REFERENCES users.profiles(id)
-        created_at (timestamp)
+        id (UUID, primary key, default gen_random_uuid())
+        profile_group_id (UUID, not null, references users.profile_groups(id) on delete cascade)
+        title (text, not null)
+        description (text)
+        location (text)
+        type (text, not null, check (type IN ('rehearsal', 'gig', 'meeting')))
+        start_time (timestamptz, not null)
+        end_time (timestamptz, not null)
+        created_by (UUID, not null, references users.profiles(id) on delete cascade)
+        created_at (timestamptz, default current_timestamp)
 
     -------- * --------
 
-    Table: event_rsvps => To manage if the member will attend or not to the event.
+    Table: event_rsvps — RSVP status for group events.
 
     Columns:
 
-        event_id (UUID) REFERENCES groups.group_events(id)
-        profile_id (UUID) REFERENCES users.profiles(id)
-        status (text) CHECK (status IN ('attending', 'not_attending', 'pending')) NOT NULL DEFAULT 'pending'
-        updated_at (timestamp) DEFAULT now(),
-        PRIMARY KEY (event_id, profile_id)
+        event_id (UUID, references groups.group_events(id) on delete cascade)
+        profile_id (UUID, references users.profiles(id) on delete cascade)
+        status (text, default 'pending', check (status IN ('attending', 'not_attending', 'pending')))
+        updated_at (timestamptz, default current_timestamp)
+
+    Primary Key:
+
+        (event_id, profile_id)
 
     Triggers:
 
-        rsvp_updated: on update, updates updated_at
+        update_rsvp_timestamp_trg: on update, updates updated_at
 
     -------- * --------
 
-    Table: profile_group_follows => To manage group follows by users
+    Table: profile_group_follows — Users following profile groups.
 
     Columns:
 
         id (UUID)
-        follower_profile_id (UUID) REFERENCES users.profiles(id)
-        profile_group_id (UUID) REFERENCES users.profile_groups(id)
+        follower_profile_id (UUID, references users.profiles(id))
+        profile_group_id (UUID, references users.profile_groups(id))
         created_at (timestamptz)
 
     Triggers:
 
         trg_pg_follow_notif: on insert, runs groups.notify_profile_group_follow()
 
+    -------- * --------
 
-   create or replace view groups.profile_group_followers_expanded as
-    select
-    f.id                        as follow_id,
-    f.profile_group_id,
-    f.follower_profile_id,
-    f.created_at,
-    p.id                       as profile_id,
-    p.username,
-    p.avatar_url,
-    p.state,
-    p.country
-    from groups.profile_group_follows f
-    join users.profiles p
-    on f.follower_profile_id = p.id;
+    View: profile_group_followers_expanded — Expanded view of profile group followers.
+
+        Columns:
+
+            follow_id (UUID) — ID of the follow record
+            profile_group_id (UUID)
+            follower_profile_id (UUID)
+            created_at (timestamptz)
+            profile_id (UUID)
+            username (text)
+            avatar_url (text)
+            state (text)
+            country (text)

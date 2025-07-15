@@ -20,6 +20,8 @@ const PostsList = ({ profileId, posts, disableSearch, isOwnProfile }) => {
         error: errorUserPosts
     } = infiniteUserPosts(profileId); // Fetch posts based on profileId
 
+    const ITEM_HEIGHT = 540;
+
     // Display all posts or search results
     if (!profileId && !disableSearch) return <PostsSearch />;
 

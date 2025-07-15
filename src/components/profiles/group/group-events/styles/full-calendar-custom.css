@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* from full calendar */
+
+/* Desactiva el fondo blanco molesto al hacer hover */
+.fc .fc-list-event:hover td,
+.fc-theme-standard .fc-list-event:hover,
+.fc-theme-standard .fc-list-event td:hover,
+.fc-theme-standard .fc-list-event td {
+  @apply bg-transparent shadow-none
+}
+
+.fc-list-event.event-gig {
+  @apply hover:!bg-transparent;
+}
+
+.fc-list-empty {
+  @apply !bg-transparent;
+}
+
+.fc-col-header,
+.fc-list-day-cushion {
+  @apply !bg-gradient-to-r !from-slate-700 !to-slate-800;
+}
+a.fc-event {
+  @apply !bg-transparent;
+}
+.fc-day-other {
+  @apply bg-gray-800;
+}
+
+.fc-list-event-dot {
+  @apply !hidden;
+}
+.fc-list-event-time {
+  @apply hidden;
+}
+
+/* custom cells */
+.fc-list-event.event-gig,
+.event-gig {
+  @apply !bg-sky-900 hover:!bg-sky-800 cursor-pointer text-center;
+}
+.fc-list-event.event-rehearsal,
+.event-rehearsal {
+  @apply !bg-amber-900 hover:!bg-amber-800 cursor-pointer text-center;
+}
+.fc-list-event.event-meeting,
+.event-meeting {
+  @apply !bg-emerald-900 hover:!bg-emerald-800 cursor-pointer text-center;
+}
+.fc-list-event.event-other,
+.event-other {
+  @apply !bg-gray-700 hover:!bg-gray-600 cursor-pointer text-center;
+}

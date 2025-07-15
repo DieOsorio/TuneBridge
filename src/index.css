@@ -54,33 +54,62 @@ body {
 }
 
 /* Custom styles for the DatePicker component */
-.MuiPickersInputBase-root {
+:not(.MuiCustomDateTimePicker) .MuiPickersInputBase-root {
   background-color: transparent !important;
-  border-radius: 0.375rem !important; 
-  border: 1px solid #9CA3AF !important; 
-  color: #D1D5DB !important; 
+  border-radius: 0.375rem !important;
+  border: 1px solid #9CA3AF !important;
+  color: #D1D5DB !important;
 }
 
-.MuiButtonBase-root {
-  color: #D1D5DB !important; 
+:not(.MuiCustomDateTimePicker) .MuiButtonBase-root {
+  color: #D1D5DB !important;
 }
 
-.MuiPickersDay-root {
-  color: #66686b !important; 
+:not(.MuiCustomDateTimePicker) .MuiPickersDay-root {
+  color: #66686b !important;
 }
 
-.MuiPickersDay-root.Mui-selected {
-  color: #E5E7EB !important; 
-  background-color: #0369A1 !important; 
+:not(.MuiCustomDateTimePicker) .MuiPickersDay-root.Mui-selected {
+  color: #E5E7EB !important;
+  background-color: #0369A1 !important;
 }
 
-.MuiPickersDay-root.Mui-selected:hover {
-  background-color: #075985 !important; 
+:not(.MuiCustomDateTimePicker) .MuiPickersDay-root.Mui-selected:hover {
+  background-color: #075985 !important;
 }
 
-.MuiTypography-root {
-  color: #373839 !important; 
-  font-weight: 600 !important; 
+:not(.MuiCustomDateTimePicker) .MuiTypography-root {
+  color: #373839 !important;
+  font-weight: 600 !important;
+}
+
+.custom-datetime input.MuiInputBase-input:focus {
+  background-color: #111827 !important; /* bg-gray-900 */
+  color: #d1d5db !important; /* text-gray-300 */
+}
+
+.MuiCustomDateTimePicker input::placeholder {
+  color: #374151 !important; /* text-gray-700 */
+}
+
+.MuiCustomDateTimePicker input {
+  color: #111827 !important; /* text-gray-900 */
+}
+
+.MuiCustomDateTimePicker .MuiSvgIcon-root {
+  color: #4B5563 !important; /* text-gray-600 */
+}
+
+.MuiCustomDateTimePicker .MuiPickersInputBase-sectionContent {
+  color: #111827 !important; /* text-gray-900 */
+}
+
+.MuiCustomDateTimePicker .MuiPickersOutlinedInput-notchedOutline {
+  border-color: #9CA3AF !important; 
+}
+
+.MuiCustomDateTimePicker .Mui-focused .MuiPickersOutlinedInput-notchedOutline {
+  border-color: #111827 !important;
 }
 
 /* Custom pulse animation */
@@ -98,20 +127,39 @@ body {
   animation: custom-pulse 2.2s cubic-bezier(0.4,0,0.6,1) infinite;
 }
 
+/* Scrollbar custom: amber */
 .scrollbar-custom::-webkit-scrollbar {
   width: 8px;
 }
 .scrollbar-custom::-webkit-scrollbar-track {
-  background: #4b3f2f; /* dark amber */
-  border-radius: 4px;
+  @apply bg-amber-900 rounded;
 }
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #d97706; /* amber-600 */
-  border-radius: 4px;
-  border: 2px solid #4b3f2f;
+  @apply bg-amber-600 rounded border-2 border-amber-900;
 }
+
 /* Firefox */
 .scrollbar-custom {
   scrollbar-width: thin;
   scrollbar-color: #d97706 #4b3f2f;
 }
+
+/* Scrollbar sky variant */
+.scrollbar-sky::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-sky::-webkit-scrollbar-track {
+  @apply bg-sky-900 rounded;
+}
+.scrollbar-sky::-webkit-scrollbar-thumb {
+  @apply bg-sky-400 rounded border-2 border-sky-900;
+}
+
+/* Firefox */
+.scrollbar-sky {
+  scrollbar-width: thin;
+  scrollbar-color: #38bdf8 #0c4a6e;
+}
+
+
+

@@ -10,7 +10,7 @@ import { IoIosSettings }  from "react-icons/io";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 /* width classes kept in‑sync with ProfileHeader */
-const GroupHeader = ({ groupData, CanManageGroup }) => {
+const GroupHeader = ({ groupData, CanManageGroup, isMember }) => {
   const { t }     = useTranslation("profileGroup", { keyPrefix: "groupHeader"});
   const { user }  = useAuth();
   const navigate  = useNavigate();
@@ -111,7 +111,7 @@ const GroupHeader = ({ groupData, CanManageGroup }) => {
             </button>
           )}
 
-          {followers !== undefined && (
+          {followers !== undefined && typeof followers === "number" && (
             <Link
               to={`${basePath}/followers`}
               className="text-sm font-medium text-gray-300 hover:underline"
@@ -143,7 +143,7 @@ const GroupHeader = ({ groupData, CanManageGroup }) => {
               {t("nav.media")}
             </Button>
           </div>
-          {CanManageGroup && (
+          {isMember && (
             <div className="sm:mb-4">
               <Button className={navBtnCls} onClick={() => navigate(`${basePath}/calendar`)}>
                 {t("nav.calendar")}
