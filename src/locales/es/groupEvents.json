@@ -1,0 +1,63 @@
+{
+  "calendar": {
+    "title": "Calendario del grupo",
+    "event_list": "Próximos eventos",
+    "no_events": "Aún no hay eventos programados"
+  },
+  "types": {
+    "rehearsal": "Ensayo",
+    "gig": "Tocar en vivo",
+    "meeting": "Reunión"
+  },
+  "form": {
+    "titles": {
+      "edit_event": "Editar evento",
+      "create_event":"Crear evento"
+    },
+    "labels": {
+      "title": "Título",
+      "type": "Tipo de evento",
+      "start_time": "Fecha y hora de inicio",
+      "end_time": "Fecha y hora de fin",
+      "location": "Ubicación",
+      "description": "Descripción"
+    },
+    "types": {
+      "rehearsal": "Ensayo",
+      "gig": "Tocar en vivo",
+      "meeting": "Reunión"
+    },
+    "placeholders": {
+      "title": "Ingresa un título",
+      "type": "Selecciona un tipo",
+      "location": "Ingresa una ubicación",
+      "description": "Agrega una descripción (opcional)"
+    },
+    "validations": {
+      "title": "El título es obligatorio",
+      "start_time": "La fecha de inicio es obligatoria",
+      "end_time": "La fecha de fin es obligatoria"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "save": "Guardar",
+      "saving": "Guardando..."
+    }
+  },
+  "edit_event": "Editar evento",
+  "create_event": "Crear evento",
+  "close": "Cerrar",
+  "your_rsvp": "Tu respuesta",
+  "rsvp": {
+    "attending": "Asistiré",
+    "not_attending": "No asistiré",
+    "pending": "Pendiente"
+  },
+  "attending": "Asistiendo",
+  "not_attending": "No asistiendo",
+  "pending": "Pendiente",
+  "none": "Ninguna",
+  "error_updating_rsvp": "Error al actualizar la respuesta, por favor intenta nuevamente.",
+  "error_saving_event": "Error al guardar el evento. Intenta nuevamente."
+}

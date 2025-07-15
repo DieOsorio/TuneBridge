@@ -40,7 +40,7 @@ const FollowersList = ({ groupId }) => {
 
   if (isError) return <ErrorMessage error={error.message} />;
 
-  if (allFollowers.length === 0) {
+  if (allFollowers?.length === 0) {
     return <p className="text-gray-400">{t("connection.messages.noFollowers")}</p>;
   }
 

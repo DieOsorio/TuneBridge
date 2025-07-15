@@ -1,0 +1,63 @@
+{
+  "calendar": {
+    "title": "Group Calendar",
+    "event_list": "Upcoming Events",
+    "no_events": "No events scheduled yet."
+  },
+  "types": {
+    "rehearsal": "Rehearsal",
+    "gig": "Gig",
+    "meeting": "Meeting"
+  },
+  "form": {
+    "titles": {
+      "edit_event": "Edit Event",
+      "create_event":"Create Event"
+    },
+    "labels": {
+      "title": "Title",
+      "type": "Event Type",
+      "start_time": "Start Date & Time",
+      "end_time": "End Date & Time",
+      "location": "Location",
+      "description": "Description"
+    },
+    "types": {
+      "rehearsal": "Rehearsal",
+      "gig": "Gig",
+      "meeting": "Meeting"
+    },
+    "placeholders": {
+      "title": "Enter a title",
+      "type": "Select a type",
+      "location": "Enter a location",
+      "description": "Add a description (optional)"
+    },
+    "validations": {
+      "title": "Title is required",
+      "start_time": "Start time is required",
+      "end_time": "End time is required"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "saving": "Saving..."
+    }
+  },
+  "edit_event": "Edit Event",
+  "create_event": "Create Event",
+  "close": "Close",
+  "your_rsvp": "Your RSVP",
+  "rsvp": {
+    "attending": "Attending",
+    "not_attending": "Not attending",
+    "pending": "Pending"
+  },
+  "attending": "Attending",
+  "not_attending": "Not Attending",
+  "pending": "Pending",
+  "none": "None",
+  "error_updating_rsvp": "Error updating RSVP, please try again.",
+  "error_saving_event": "Error saving the event. Please try again."
+}

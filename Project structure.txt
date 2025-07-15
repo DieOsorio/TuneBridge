@@ -2,6 +2,8 @@ TuneBridge
 │
 ├── .env
 ├── backend functions.txt
+├── backend-functions.md
+├── backend-triggers.md
 ├── database config.txt
 ├── Database structure.txt
 ├── eslint.config.js
@@ -11,24 +13,58 @@ TuneBridge
 ├── Project structure.txt
 ├── README.md
 ├── structure.txt
+├── tailwind.config.js
 ├── vite.config.js
 │
 ├── public
-│   ├── heroImage.jpg
-│   └── for-landing-page
-│       ├── musician-1.jpg
-│       ├── musician-2.jpg
-│       └── musician-3.jpg
+│   ├── 404.html
+│   ├── Animated_Logo.svg
+│   ├── Asset 6.svg
+│   ├── favicon
+│   │   ├── android-chrome-192x192.png
+│   │   ├── android-chrome-512x512.png
+│   │   ├── apple-touch-icon.png
+│   │   ├── favicon-16x16.png
+│   │   ├── favicon-32x32.png
+│   │   ├── favicon.ico
+│   │   └── site.webmanifest
+│   ├── for-landing-page
+│   │   ├── audience
+│   │   │   ├── band.webp
+│   │   │   ├── freelance.webp
+│   │   │   ├── producer.webp
+│   │   │   └── solo.webp
+│   │   ├── features
+│   │   │   ├── ads.webp
+│   │   │   ├── chat.webp
+│   │   │   ├── group.webp
+│   │   │   ├── media.webp
+│   │   │   ├── posts.webp
+│   │   │   └── search.webp
+│   │   ├── group-users.png
+│   │   ├── group.png
+│   │   ├── heroImage.webp
+│   │   └── legal
+│   │       ├── terminos-y-condiciones.md
+│   │       └── terms-and-conditions.md
+│   ├── Logo.png
+│   ├── LogoAmber.png
+│   ├── LogoGray.png
+│   ├── LogoSky.png
+│   ├── tb-favicon.svg
+│   └── TuneBridge.jpg
 │
 ├── src
 │   ├── App.jsx
 │   ├── i18n.js
 │   ├── index.css
 │   ├── index.js
+│   ├── light.css
 │   ├── main.jsx
 │   ├── supabase.js
 │   │
 │   ├── assets
+│   │   ├── TuneBridge.json
 │   │   └── logo.png
 │   │
 │   ├── components
@@ -36,8 +72,17 @@ TuneBridge
 │   │   │
 │   │   ├── auth
 │   │   │   ├── AccountConfirmed.jsx
+│   │   │   ├── AccountSettings.jsx
+│   │   │   ├── ForgotPasswordForm.jsx
 │   │   │   ├── Login.jsx
+│   │   │   ├── ResetPasswordForm.jsx
 │   │   │   └── SignUp.jsx
+│   │   │
+│   │   ├── groups
+│   │   │   └── (vacío o archivos pendientes)
+│   │   │
+│   │   ├── landing-page
+│   │   │   └── FeatureCard.jsx
 │   │   │
 │   │   ├── music
 │   │   │   ├── ComposerEditor.jsx
@@ -46,11 +91,20 @@ TuneBridge
 │   │   │   ├── DjEditor.jsx
 │   │   │   ├── EditMusicInfo.jsx
 │   │   │   ├── InstrumentEditor.jsx
+│   │   │   ├── MediaSection.jsx
+│   │   │   ├── MediaSettings.jsx
+│   │   │   ├── MediaSummary.jsx
+│   │   │   ├── MusicSection.jsx
+│   │   │   ├── MusicSettings.jsx
 │   │   │   ├── ProducerEditor.jsx
 │   │   │   ├── RoleDataEditor.jsx
 │   │   │   ├── RoleEditor.jsx
 │   │   │   ├── RoleItem.jsx
-│   │   │   └── SingerEditor.jsx
+│   │   │   ├── SingerEditor.jsx
+│   │   │   └── skeletons
+│   │   │       ├── DisplayRoleInfoSkeleton.jsx
+│   │   │       ├── MediaSummarySkeleton.jsx
+│   │   │       └── RoleItemSkeleton.jsx
 │   │   │
 │   │   ├── profiles
 │   │   │   ├── CreateProfileGroup.jsx
@@ -62,24 +116,61 @@ TuneBridge
 │   │   │   ├── ProfileHeader.jsx
 │   │   │   ├── ProfileMinibox.jsx
 │   │   │   ├── ProfilesList.jsx
+│   │   │   ├── ProfilesSearch.jsx
+│   │   │   ├── searchProfiles.json
+│   │   │   ├── SettingsSidebar.jsx
 │   │   │   ├── Sidebar.jsx
+│   │   │   ├── skeletons
+│   │   │   │   ├── ProfileAvatarSkeleton.jsx
+│   │   │   │   ├── ProfileCardSkeleton.jsx
+│   │   │   │   └── ProfileMiniboxSkeleton.jsx
 │   │   │   └── group
+│   │   │       ├── FollowersList.jsx
+│   │   │       ├── group-events
+│   │   │       │   ├── AttendeesList.jsx
+│   │   │       │   ├── custom-calendar-components
+│   │   │       │   │   ├── CalendarHeader.jsx
+│   │   │       │   │   ├── CalendarViewSelector.jsx
+│   │   │       │   │   ├── CustomCellStyler.js
+│   │   │       │   │   ├── CustomEventContent.jsx
+│   │   │       │   │   └── CustomListCellStyler.js
+│   │   │       │   ├── GroupCalendarScreen.jsx
+│   │   │       │   ├── GroupEventCard.jsx
+│   │   │       │   ├── GroupEventDetails.jsx
+│   │   │       │   ├── GroupEventFormModal.jsx
+│   │   │       │   ├── RsvpSelector.jsx
+│   │   │       │   └── styles
+│   │   │       │       └── full-calendar-custom.css
+│   │   │       ├── group-settings
+│   │   │       │   ├── GroupSettings.jsx
+│   │   │       │   └── MembersSettings.jsx
+│   │   │       ├── GroupAbout.jsx
+│   │   │       ├── GroupCard.jsx
+│   │   │       ├── GroupForm.jsx
 │   │   │       ├── GroupHeader.jsx
 │   │   │       ├── GroupItem.jsx
+│   │   │       ├── GroupList.jsx
+│   │   │       ├── GroupMembers.jsx
 │   │   │       ├── GroupMembersList.jsx
+│   │   │       ├── GroupPosts.jsx
+│   │   │       ├── ManageMembersModal.jsx
+│   │   │       ├── skeletons
+│   │   │       │   └── GroupCardSkeleton.jsx
 │   │   │       └── UserGroups.jsx
 │   │   │
 │   │   ├── social
-│   │   │   ├── ConnectionCard.jsx
-│   │   │   ├── ConnectionsList.jsx
-│   │   │   ├── CreatePost.jsx
-│   │   │   ├── Notifications.jsx
-│   │   │   ├── NotificationsList.jsx
-│   │   │   ├── PostCard.jsx
-│   │   │   ├── PostCardSkeleton.jsx
-│   │   │   ├── PostsList.jsx
-│   │   │   ├── UpdatePost.jsx
-│   │   │   │
+│   │   │   ├── ads
+│   │   │   │   ├── AdCard.jsx
+│   │   │   │   ├── AdCreateEditPage.jsx
+│   │   │   │   ├── AdDetailsPage.jsx
+│   │   │   │   ├── AdForm.jsx
+│   │   │   │   ├── AdsFiltersPanel.jsx
+│   │   │   │   ├── AdsList.jsx
+│   │   │   │   ├── AdsPage.jsx
+│   │   │   │   ├── ProfileAds.jsx
+│   │   │   │   └── skeletons
+│   │   │   │       ├── AdCardSkeleton.jsx
+│   │   │   │       └── AdsListSkeleton.jsx
 │   │   │   ├── chat
 │   │   │   │   ├── ChatHeader.jsx
 │   │   │   │   ├── ChatPage.jsx
@@ -89,31 +180,82 @@ TuneBridge
 │   │   │   │   ├── MessageInput.jsx
 │   │   │   │   ├── MessageItem.jsx
 │   │   │   │   ├── MessageList.jsx
-│   │   │   │   └── MiniProfileCard.jsx
-│   │   │   │
-│   │   │   └── comments
-│   │   │       ├── CommentCard.jsx
-│   │   │       ├── CommentMenu.jsx
-│   │   │       ├── CommentsBox.jsx
-│   │   │       ├── EditCommentBox.jsx
-│   │   │       ├── ReplyForm.jsx
-│   │   │       └── helpers
-│   │   │           └── comments.js
+│   │   │   │   ├── MiniProfileCard.jsx
+│   │   │   │   └── skeletons
+│   │   │   │       └── ConversationItemSkeleton.jsx
+│   │   │   │   └── utilis
+│   │   │   │       └── handleStartChat.js
+│   │   │   ├── comments
+│   │   │   │   ├── CommentCard.jsx
+│   │   │   │   ├── CommentMenu.jsx
+│   │   │   │   ├── CommentsBox.jsx
+│   │   │   │   ├── EditCommentBox.jsx
+│   │   │   │   ├── ReplyForm.jsx
+│   │   │   │   └── helpers
+│   │   │   │       └── comments.js
+│   │   │   ├── ConnectionCard.jsx
+│   │   │   ├── ConnectionsList.jsx
+│   │   │   ├── CreatePost.jsx
+│   │   │   ├── Notifications.jsx
+│   │   │   ├── NotificationsList.jsx
+│   │   │   ├── PostCard.jsx
+│   │   │   ├── PostCardSkeleton.jsx
+│   │   │   ├── PostForm.jsx
+│   │   │   ├── PostsList.jsx
+│   │   │   ├── PostsSearch.jsx
+│   │   │   ├── UpdatePost.jsx
+│   │   │   ├── skeletons
+│   │   │   │   ├── ConnectionCardSkeleton.jsx
+│   │   │   │   ├── PostCardSkeleton.jsx
+│   │   │   │   └── (otros si hay)
 │   │   │
 │   │   └── ui
 │   │       ├── Banner.jsx
 │   │       ├── Button.jsx
+│   │       ├── ButtonGlow.css
+│   │       ├── ConfirmDialog.jsx
 │   │       ├── Footer.jsx
 │   │       ├── HamburguerMenu.jsx
 │   │       ├── Input.jsx
+│   │       ├── LazyImage.jsx
+│   │       ├── LoadingBadge.jsx
+│   │       ├── Logo.jsx
 │   │       ├── Navbar.jsx
-│   │       └── Select.jsx
+│   │       ├── PlusButton.jsx
+│   │       ├── Select.jsx
+│   │       ├── ShinyText.css
+│   │       ├── ShinyText.jsx
+│   │       ├── StarBorder.css
+│   │       ├── StarBorder.jsx
+│   │       ├── styles
+│   │       │   └── logo.css
+│   │       ├── TermsPage.jsx
+│   │       ├── Textarea.jsx
+│   │       └── Toggle.jsx
 │   │
 │   ├── context
 │   │   ├── AuthContext.jsx
-│   │   │ 
 │   │   ├── ViewContext.jsx
-│   │   │
+│   │   ├── groups
+│   │   │   ├── GroupEventRsvpsActions.js
+│   │   │   ├── GroupEventRsvpsContext.jsx
+│   │   │   ├── groupEventsActions.js
+│   │   │   ├── GroupEventsContext.jsx
+│   │   │   ├── GroupsContext.jsx
+│   │   │   ├── profileGroupFollowsActions.js
+│   │   │   └── ProfileGroupFollowsContext.jsx
+│   │   ├── helpers
+│   │   │   ├── cacheHandler.js
+│   │   │   ├── groups
+│   │   │   │   └── groupsKeys.js
+│   │   │   ├── music
+│   │   │   │   └── musicKeys.js
+│   │   │   ├── profile
+│   │   │   │   └── profileKeys.js
+│   │   │   ├── settings
+│   │   │   │   └── keys.js
+│   │   │   └── social
+│   │   │       └── socialKeys.js
 │   │   ├── music
 │   │   │   ├── ComposerDetailsActions.js
 │   │   │   ├── ComposerDetailsContext.jsx
@@ -121,6 +263,8 @@ TuneBridge
 │   │   │   ├── DjDetailsContext.jsx
 │   │   │   ├── instrumentDetailsActions.js
 │   │   │   ├── InstrumentDetailsContext.jsx
+│   │   │   ├── mediaLinksActions.js
+│   │   │   ├── MediaLinksContext.jsx
 │   │   │   ├── MusicContext.jsx
 │   │   │   ├── ProducerDetailsActions.js
 │   │   │   ├── ProducerDetailsContext.jsx
@@ -128,7 +272,6 @@ TuneBridge
 │   │   │   ├── RolesContext.jsx
 │   │   │   ├── SingerDetailsActions.js
 │   │   │   └── SingerDetailsContext.jsx
-│   │   │
 │   │   ├── profile
 │   │   │   ├── profileActions.js
 │   │   │   ├── ProfileContext.jsx
@@ -136,8 +279,21 @@ TuneBridge
 │   │   │   ├── ProfileGroupMembersContext.jsx
 │   │   │   ├── profileGroupsActions.js
 │   │   │   └── ProfileGroupsContext.jsx
-│   │   │
+│   │   ├── settings
+│   │   │   ├── settingsActions.js
+│   │   │   └── SettingsContext.jsx
 │   │   ├── social
+│   │   │   ├── adsActions.js
+│   │   │   ├── adsContext.jsx
+│   │   │   ├── chat
+│   │   │   │   ├── ChatContext.jsx
+│   │   │   │   ├── ChatUIContext.jsx
+│   │   │   │   ├── conversationsActions.js
+│   │   │   │   ├── ConversationsContext.jsx
+│   │   │   │   ├── messagesActions.js
+│   │   │   │   ├── MessagesContext.jsx
+│   │   │   │   ├── participantsActions.js
+│   │   │   │   └── ParticipantsContext.jsx
 │   │   │   ├── commentsActions.js
 │   │   │   ├── CommentsContext.jsx
 │   │   │   ├── hashtagsActions.js
@@ -156,40 +312,26 @@ TuneBridge
 │   │   │   ├── SocialContext.jsx
 │   │   │   ├── userConnectionsActions.js
 │   │   │   ├── UserConnectionsContext.jsx
-│   │   │   │
-│   │   │   └── chat
-│   │   │       ├── ChatContext.jsx
-│   │   │       ├── ChatUIContext.jsx
-│   │   │       ├── conversationsActions.js
-│   │   │       ├── ConversationsContext.jsx
-│   │   │       ├── messagesActions.js
-│   │   │       ├── MessagesContext.jsx
-│   │   │       ├── participantsActions.js
-│   │   │       └── ParticipantsContext.jsx
+│   │   │
+│   │   └── chat
+│   │       ├── ChatContext.jsx
+│   │       ├── ChatUIContext.jsx
+│   │       ├── conversationsActions.js
+│   │       ├── ConversationsContext.jsx
+│   │       ├── messagesActions.js
+│   │       ├── MessagesContext.jsx
+│   │       ├── participantsActions.js
+│   │       └── ParticipantsContext.jsx
 │   │
 │   ├── locales
+│   │   ├── countries.js
 │   │   ├── en
+│   │   │   ├── ads.json
 │   │   │   ├── auth.json
 │   │   │   ├── chat.json
 │   │   │   ├── comments.json
 │   │   │   ├── common.json
+│   │   │   ├── groupEvents.json
 │   │   │   ├── music.json
 │   │   │   ├── posts.json
 │   │   │   ├── profile.json
-│   │   │   └── ui.json
-│   │   │
-│   │   └── es
-│   │       ├── auth.json
-│   │       ├── chat.json
-│   │       ├── comments.json
-│   │       ├── common.json
-│   │       ├── music.json
-│   │       ├── posts.json
-│   │       ├── profile.json
-│   │       └── ui.json
-│   │
-│   └── utils
-│       ├── constants.js
-│       ├── functions.js
-│       ├── getEnvVars.js
-│       └── supabaseHelper.js
