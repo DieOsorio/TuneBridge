@@ -60,7 +60,7 @@ function PostCard({ post }) {
   const { fetchProfileGroup } = useProfileGroups();
   const { data: group, isLoading: isGroupLoading } = fetchProfileGroup(post.group_id);
   const { userGroupRole } = useProfileGroupMembers();
-  const { role, isLoading: isRoleLoading } = userGroupRole({profileId: user.id, groupId: post.group_id});
+  const { role, isLoading: isRoleLoading } = userGroupRole({profileId: user?.id, groupId: post.group_id});
   
   const author = isGroupPost ? group : profile;
 
