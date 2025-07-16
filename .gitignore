@@ -32,3 +32,6 @@ dist-ssr
 # Cache and temp files
 .cache/
 *.tmp
+
+# Prettier
+*.log
