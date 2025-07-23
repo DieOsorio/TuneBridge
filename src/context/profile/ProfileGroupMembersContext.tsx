@@ -7,8 +7,6 @@ import {
   useUpdateGroupMemberMutation,
   useHowManyMembersQuery,
   useUserGroupRole,
-  ProfileGroupMember,
-  UserGroup,
 } from "./profileGroupMembersActions";
 
 interface ProfileGroupMembersContextType {
@@ -24,11 +22,8 @@ interface ProfileGroupMembersContextType {
 const ProfileGroupMembersContext = createContext<ProfileGroupMembersContextType | null>(null);
 ProfileGroupMembersContext.displayName = "ProfileGroupMembersContext";
 
-interface ProfileGroupMembersProviderProps {
-  children: ReactNode;
-}
 
-export const ProfileGroupMembersProvider = ({ children }: ProfileGroupMembersProviderProps) => {
+export const ProfileGroupMembersProvider = ({ children }: { children: ReactNode }) => {
   const addGroupMember = useAddGroupMemberMutation().mutateAsync;
   const updateGroupMember = useUpdateGroupMemberMutation().mutateAsync;
   const removeGroupMember = useRemoveGroupMemberMutation().mutateAsync;

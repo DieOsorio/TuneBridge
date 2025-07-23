@@ -1,13 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { FieldError, UseFormRegister, ValidationRule } from "react-hook-form";
+import { FieldError, UseFormRegister, ValidationRule, FieldErrors } from "react-hook-form";
 
 interface TextareaProps {
   id: string;
   label?: string;
   register: UseFormRegister<any>;
   validation?: Record<string, ValidationRule>;
-  error?: FieldError;
+  error?: FieldError | FieldErrors | undefined;
   placeholder?: string;
   maxLength?: number;
   watchValue?: string;
@@ -48,7 +48,9 @@ const Textarea: React.FC<TextareaProps> = ({
         className={`mt-1 block w-full rounded-md border shadow-sm !border-gray-400 h-24 resize-none p-2 ${className}`}
       />
 
-      {error && <p className="text-sm text-red-500 mt-1">{error.message}</p>}
+      {(error as FieldError)?.message && (
+        <p className="text-sm text-red-500 mt-1">{(error as FieldError).message}</p>
+      )}
 
       {maxLength && (
         <p

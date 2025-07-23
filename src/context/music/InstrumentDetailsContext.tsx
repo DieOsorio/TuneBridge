@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchInstrumentsQuery,
   useFetchInstrumentById,
@@ -10,13 +10,9 @@ import {
   UpdateInstrumentParams,
   DeleteInstrumentParams
 } from "./instrumentDetailsActions";
-import { UseQueryResult, UseMutationResult } from "@tanstack/react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface InstrumentDetailsContextValue {
-  instruments?: InstrumentDetails[];
-  loading: boolean;
-  error: unknown;
-  refetch: () => void;
   fetchInstruments: (roleId: string) => UseQueryResult<InstrumentDetails[], Error>;
   fetchInstrumentById: (id: string) => UseQueryResult<InstrumentDetails, Error>;
   addInstrument: (params: AddInstrumentParams) => Promise<InstrumentDetails>;
@@ -27,19 +23,12 @@ interface InstrumentDetailsContextValue {
 const InstrumentDetailsContext = createContext<InstrumentDetailsContextValue | undefined>(undefined);
 InstrumentDetailsContext.displayName = "InstrumentDetailsContext";
 
-export const InstrumentDetailsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // NOTE: You must pass a roleId to useFetchInstrumentsQuery, so this context should be refactored to accept it as a prop or from a parent context
-  // For now, we'll use an empty string as a placeholder
-  const { data: instruments, isLoading: loading, error, refetch } = useFetchInstrumentsQuery("");
+export const InstrumentDetailsProvider = ({ children }: { children: ReactNode }) => {
   const addInstrument = useAddInstrumentMutation().mutateAsync;
   const updateInstrument = useUpdateInstrumentMutation().mutateAsync;
   const deleteInstrument = useDeleteInstrumentMutation().mutateAsync;
 
   const value: InstrumentDetailsContextValue = {
-    instruments,
-    loading,
-    error,
-    refetch,
     fetchInstruments: useFetchInstrumentsQuery,
     fetchInstrumentById: useFetchInstrumentById,
     addInstrument,

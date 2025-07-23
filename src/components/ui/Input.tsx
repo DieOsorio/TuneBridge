@@ -1,34 +1,105 @@
-import React from "react";
-import { UseFormRegister } from "react-hook-form";
+import React, { useState } from "react";
+import { ControllerRenderProps, UseFormRegister, RegisterOptions } from "react-hook-form";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 interface InputProps {
   id: string;
-  type?: string;
-  label: string;
   placeholder?: string;
-  register: ReturnType<UseFormRegister<any>>;
-  validation?: Record<string, any>;
-  error?: any;
   className?: string;
-  autoComplete?: string;
+  classForLabel?: string;
+  label?: string;
+  type?: React.HTMLInputTypeAttribute;
   maxLength?: number;
+  autoComplete?: string;
+  error?: { message?: string } | string | undefined;
+  register?: UseFormRegister<any>;
+  validation?: RegisterOptions;
+  field?: ControllerRenderProps<any, string>;
+  showToggle?: boolean; 
 }
 
-const Input: React.FC<InputProps> = ({ id, type = "text", label, placeholder, register, validation, error, className, autoComplete, maxLength }) => (
-  <div className={`flex flex-col gap-2 ${className ?? ""}`}>
-    <label htmlFor={id} className="font-semibold text-sm mb-1">{label}</label>
-    <input
-      id={id}
-      type={type}
-      placeholder={placeholder}
-      autoComplete={autoComplete}
-      maxLength={maxLength}
-      {...register}
-      {...validation}
-      className="rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500"
-    />
-    {error && <span className="text-red-500 text-xs">{error.message}</span>}
-  </div>
-);
+const Input: React.FC<InputProps> = ({
+  id,
+  placeholder,
+  className = "",
+  classForLabel = "",
+  label,
+  type = "text",
+  maxLength,
+  autoComplete,
+  error,
+  register,
+  validation,
+  field,
+  showToggle = true,
+}) => {
+  const [visible, setVisible] = useState(false);
+  const [charCount, setCharCount] = useState(
+    field?.value?.length || 0
+  );
+  const isPassword = type === "password";
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (field?.onChange) {
+      field.onChange(e);
+    }
+    if (maxLength) setCharCount(e.target.value.length);
+  };
+
+  const registerProps = register ? register(id, validation) : {};
+
+  return (
+    <div className={`flex flex-col gap-2 ${className}`}>
+      {label && (
+        <label htmlFor={id} className={`font-semibold text-sm mb-1 ${classForLabel}`}>
+          {label}
+        </label>
+      )}
+
+      <div className="relative">
+        <input
+          id={id}
+          type={isPassword && visible ? "text" : type}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          autoComplete={autoComplete}
+          className={`rounded-md px-3 py-2 border ${
+            error ? "border-red-500" : "border-gray-300"
+          } focus:outline-none focus:ring-2 focus:ring-sky-500 w-full`}
+          {...(field ?? registerProps)}
+          value={field?.value ?? undefined}
+          onChange={handleChange}
+        />
+
+        {isPassword && showToggle && (
+          <button
+            type="button"
+            onClick={() => setVisible((v) => !v)}
+            className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-300 focus:outline-none"
+            tabIndex={-1} 
+          >
+            {visible ? <FiEyeOff /> : <FiEye />}
+          </button>
+        )}
+      </div>
+
+      {maxLength !== undefined && (
+        <div
+          className={`text-right text-xs mt-1 ${
+            charCount >= maxLength ? "text-red-400" : "text-gray-400"
+          }`}
+        >
+          {charCount}/{maxLength}
+        </div>
+      )}
+
+      {error && (
+        <p className="text-red-500 text-sm mt-1">
+          {typeof error === "string" ? error : error?.message}
+        </p>
+      )}
+    </div>
+  );
+};
 
 export default Input;

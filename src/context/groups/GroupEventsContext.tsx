@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchGroupEventsQuery,
   useFetchGroupEventQuery,
@@ -23,13 +23,13 @@ export const GroupEventsProvider = ({ children }: { children: ReactNode }) => {
   const updateEvent = useUpdateGroupEventMutation().mutateAsync;
   const deleteEvent = useDeleteGroupEventMutation().mutateAsync;
 
-  const value = useMemo(() => ({
+  const value: GroupEventsContextValue = {
     fetchGroupEvents: useFetchGroupEventsQuery,
     fetchGroupEvent: useFetchGroupEventQuery,
     createEvent,
     updateEvent,
     deleteEvent,
-  }), [createEvent, updateEvent, deleteEvent]);
+  };
 
   return (
     <GroupEventsContext.Provider value={value}>

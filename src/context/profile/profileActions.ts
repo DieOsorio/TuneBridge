@@ -17,7 +17,6 @@ import {
 } from '../helpers/cacheHandler';
 import { profileKeyFactory } from '../helpers/profile/profileKeys';
 
-// Define Profile type (adjust fields if your profiles have more/less)
 export interface Profile {
   id: string;
   firstname?: string | null;
@@ -210,7 +209,7 @@ export const useProfileQuery = (
 // Map through an array of profile IDs and access each one
 export const useProfilesMap = (
   profileIds: string[] = []
-): UseQueryResult<Record<string, Pick<Profile, 'id' | 'avatar_url' | 'username'>>, Error> => {
+): UseQueryResult<Record<string, Profile>, Error> => {
   const uniqueSortedIds = useMemo(() => [...new Set(profileIds)].sort(), [profileIds]);
   return useQuery({
     queryKey: profileKeyFactory({ profileIds: uniqueSortedIds }).map!,
@@ -220,7 +219,7 @@ export const useProfilesMap = (
       const { data, error } = await supabase
         .schema("users")
         .from("profiles")
-        .select('id, avatar_url, username')
+        .select('*')
         .in('id', uniqueSortedIds);
       if (error) throw new Error(error.message);
       const map: Record<string, Pick<Profile, 'id' | 'avatar_url' | 'username'>> = {};

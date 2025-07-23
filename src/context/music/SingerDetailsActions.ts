@@ -12,9 +12,9 @@ import {
 export interface SingerDetail {
   id: string;
   role_id: string;
-  voice_type: string;
-  music_genre: string;
-  level: string;
+  voice_type: string | null;
+  music_genre: string | null;
+  level: string | null;
   profile_id: string;
 }
 

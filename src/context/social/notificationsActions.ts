@@ -12,7 +12,7 @@ import {
 export interface Notification {
   id: string;
   profile_id: string;
-  created_at: string;
+  is_read: boolean;
   [key: string]: any;
 }
 
@@ -72,13 +72,18 @@ export const useInsertNotificationMutation = (): UseMutationResult<Notification,
         queryClient,
         keyFactory: (entity: Notification) => notificationKeyFactory({ profileId: entity.profile_id }) ?? { all: ["userNotifications", entity.profile_id ?? ""] },
         type: "add",
-        entity: { ...n, profile_id: n.profile_id ?? "", id: n.id ?? "", created_at: n.created_at ?? "" },
+        entity: { 
+          ...n, 
+          profile_id: n.profile_id ?? "", 
+          id: n.id ?? "",
+          is_read: n.is_read ?? false, 
+        },
       }),
     onSuccess: (newN, vars) =>
       replaceOptimisticItem({
         queryClient,
         keyFactory: (entity: Notification) => notificationKeyFactory({ profileId: entity.profile_id }) ?? { all: ["userNotifications", entity.profile_id ?? ""] },
-        entity: { ...vars, profile_id: vars.profile_id ?? "", id: vars.id ?? "", created_at: vars.created_at ?? "" },
+        entity: newN,
         newEntity: newN,
       }),
     onError: (_e, vars, ctx) =>
@@ -90,7 +95,12 @@ export const useInsertNotificationMutation = (): UseMutationResult<Notification,
       invalidateKeys({
         queryClient,
         keyFactory: (entity: Notification) => notificationKeyFactory({ profileId: entity.profile_id }) ?? { all: ["userNotifications", entity.profile_id ?? ""] },
-        entity: { ...vars, profile_id: vars.profile_id ?? "", id: vars.id ?? "", created_at: vars.created_at ?? "" },
+        entity: { 
+          ...vars, 
+          profile_id: vars.profile_id ?? "", 
+          id: vars.id ?? "", 
+          is_read: vars.is_read ?? false
+        },
       }),
   });
 };
@@ -116,7 +126,12 @@ export const useUpdateNotificationMutation = (): UseMutationResult<Notification,
         queryClient,
         keyFactory: (entity: Notification) => notificationKeyFactory({ profileId: entity.profile_id }) ?? { all: ["userNotifications", entity.profile_id ?? ""] },
         type: "update",
-        entity: { ...n, profile_id: n.profile_id ?? "", id: n.id ?? "", created_at: n.created_at ?? "" },
+        entity: { 
+          ...n, 
+          profile_id: n.profile_id ?? "", 
+          id: n.id ?? "",
+          is_read: n.is_read ?? false, 
+        },
       }),
     onError: (_e, vars, ctx) =>
       rollbackCache({
@@ -127,7 +142,12 @@ export const useUpdateNotificationMutation = (): UseMutationResult<Notification,
       invalidateKeys({
         queryClient,
         keyFactory: (entity: Notification) => notificationKeyFactory({ profileId: entity.profile_id }) ?? { all: ["userNotifications", entity.profile_id ?? ""] },
-        entity: { ...vars, profile_id: vars.profile_id ?? "", id: vars.id ?? "", created_at: vars.created_at ?? "" },
+        entity: { 
+          ...vars, 
+          profile_id: vars.profile_id ?? "", 
+          id: vars.id ?? "",
+          is_read: vars.is_read ?? false, 
+        },
       }),
   });
 };

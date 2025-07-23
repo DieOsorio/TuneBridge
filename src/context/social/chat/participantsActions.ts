@@ -26,6 +26,7 @@ export interface RemoveParticipantParams {
   profile_id: string;
 }
 
+
 const isValidUUID = (id: string): boolean =>
   typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id);
 
@@ -88,7 +89,7 @@ export const useAddParticipantMutation = (): UseMutationResult<Participant, Erro
       invalidateKeys({
         queryClient,
         keyFactory: participantEntityKeyFactory,
-        entity: { conversation_id: variables.conversation_id, profile_id: variables.profile_id },
+        entity: variables,
       });
     },
   });
@@ -127,7 +128,7 @@ export const useUpdateParticipantRoleMutation = (): UseMutationResult<Participan
       replaceOptimisticItem({
         queryClient,
         keyFactory: participantEntityKeyFactory,
-        entity: { ...variables },
+        entity: newParticipant,
         newEntity: newParticipant,
       });
     },
@@ -135,7 +136,7 @@ export const useUpdateParticipantRoleMutation = (): UseMutationResult<Participan
       invalidateKeys({
         queryClient,
         keyFactory: participantEntityKeyFactory,
-        entity: { conversation_id: variables.conversation_id, profile_id: variables.profile_id },
+        entity: variables,
       });
     },
   });
@@ -157,7 +158,7 @@ export const useRemoveParticipantMutation = (): UseMutationResult<void, Error, R
       return optimisticUpdate({
         queryClient,
         keyFactory: participantEntityKeyFactory,
-        entity: { ...variables },
+        entity: { ...variables, role: "" },
         type: "remove",
       });
     },
@@ -171,7 +172,7 @@ export const useRemoveParticipantMutation = (): UseMutationResult<void, Error, R
       invalidateKeys({
         queryClient,
         keyFactory: participantEntityKeyFactory,
-        entity: { conversation_id: variables.conversation_id, profile_id: variables.profile_id },
+        entity: { ...variables, role: "" },
       });
     },
   });

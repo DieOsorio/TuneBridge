@@ -12,7 +12,10 @@ import {
 export interface DjDetails {
   id: string;
   role_id: string;
-  created_at?: string;
+  profile_id: string;
+  preferred_genres: string | null;
+  events_played: string | null;
+  level: string | null;
   [key: string]: any;
 }
 
@@ -97,10 +100,7 @@ export const useAddDjMutation = (): UseMutationResult<DjDetails, Error, AddDjPar
       replaceOptimisticItem({
         queryClient,
         keyFactory: djDetailsKeyFactory,
-        entity: {
-          id: newDj.id,
-          role_id: newDj.role_id ?? "",
-        },
+        entity: newDj,
         newEntity: newDj,
       });
     },
@@ -145,7 +145,7 @@ export const useUpdateDjMutation = (): UseMutationResult<DjDetails, Error, Updat
       replaceOptimisticItem({
         queryClient,
         keyFactory: djDetailsKeyFactory,
-        entity: { id: newDj.id, role_id: newDj.role_id ?? "" },
+        entity: newDj,
         newEntity: newDj,
       });
     },

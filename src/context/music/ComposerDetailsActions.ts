@@ -10,8 +10,11 @@ import {
 
 export interface ComposerDetails {
   id: string;
+  profile_id: string;
   role_id: string;
-  created_at?: string;
+  composition_style: string | null;
+  years_of_experience: string | null;
+  level: string | null;
   [key: string]: any;
 }
 
@@ -96,10 +99,7 @@ export const useAddComposerMutation = (): UseMutationResult<ComposerDetails, Err
       replaceOptimisticItem({
         queryClient,
         keyFactory: composerDetailsKeyFactory,
-        entity: {
-          id: newComposer.id,
-          role_id: newComposer.role_id ?? "",
-        },
+        entity: newComposer,
         newEntity: newComposer,
       });
     },
@@ -144,7 +144,7 @@ export const useUpdateComposerMutation = (): UseMutationResult<ComposerDetails, 
       replaceOptimisticItem({
         queryClient,
         keyFactory: composerDetailsKeyFactory,
-        entity: { id: newComposer.id, role_id: newComposer.role_id ?? "" },
+        entity: newComposer,
         newEntity: newComposer,
       });
     },

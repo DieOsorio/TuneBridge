@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchPostsQuery,
   useUserPostsQuery,
@@ -10,8 +10,8 @@ import {
   useInfinitePostsQuery,
   useInfiniteUserPostsQuery,
 } from "./postsActions";
-import { UseQueryResult, UseMutationResult, UseInfiniteQueryResult } from "@tanstack/react-query";
-import { Post } from "./postsActions";
+
+import type { Post } from "./postsActions";
 
 export interface PostsContextValue {
   posts: Post[] | undefined;
@@ -31,17 +31,13 @@ export interface PostsContextValue {
 const PostsContext = createContext<PostsContextValue | undefined>(undefined);
 PostsContext.displayName = "PostsContext";
 
-export interface PostsProviderProps {
-  children: ReactNode;
-}
-
-export const PostsProvider: React.FC<PostsProviderProps> = ({ children }) => {
+export const PostsProvider = ({ children }: { children: ReactNode }) => {
   const { data: posts, isLoading: loading, error, refetch } = useFetchPostsQuery();
   const createPost = useCreatePostMutation().mutateAsync;
   const updatePost = useUpdatePostMutation().mutateAsync;
   const deletePost = useDeletePostMutation().mutateAsync;
 
-  const value = useMemo<PostsContextValue>(() => ({
+  const value: PostsContextValue = {
     posts,
     loading,
     error,
@@ -54,7 +50,7 @@ export const PostsProvider: React.FC<PostsProviderProps> = ({ children }) => {
     searchPosts: useSearchPostsQuery,
     infinitePosts: useInfinitePostsQuery,
     infiniteUserPosts: useInfiniteUserPostsQuery,
-  }), [posts, loading, error, refetch, createPost, updatePost, deletePost]);
+  };
 
   return (
     <PostsContext.Provider value={value}>

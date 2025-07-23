@@ -17,13 +17,16 @@ export interface UiPreferences {
   profile_id: string;
   lang: string;
   theme: string;
+  time_format?: string;
 }
 
 export interface PrivacyPrefs {
-  show_email: boolean;
-  allow_messages: "all" | "connections_only" | "none";
-  show_last_seen: boolean;
-  searchable_profile: boolean;
+  prefs: {
+    show_email: boolean;
+    allow_messages: "all" | "connections_only" | "none";
+    show_last_seen: boolean;
+    searchable_profile: boolean;
+  }
 }
 
 export interface PrivacySettings {
@@ -114,8 +117,8 @@ export const useUpsertUiPreferences = (): UseMutationResult<UiPreferences, Error
 /* ------------------------------------------------------------------
  * SELECT – get privacy preferences
  * -----------------------------------------------------------------*/
-export const usePrivacySettingsQuery = (profileId: string): UseQueryResult<PrivacyPrefs, Error> =>
-  useQuery<PrivacyPrefs, Error>({
+export const usePrivacySettingsQuery = (profileId: string): UseQueryResult<PrivacyPrefs["prefs"], Error> =>
+  useQuery<PrivacyPrefs["prefs"], Error>({
     queryKey: privacyKeyFactory({ profileId: profileId ?? "__empty__" }).single,
     enabled : !!profileId,
     queryFn : async () => {
@@ -128,9 +131,9 @@ export const usePrivacySettingsQuery = (profileId: string): UseQueryResult<Priva
       if (error && error.code !== "PGRST116") throw new Error(error.message);
       return (
         data?.prefs ?? {
-          show_email        : false,
-          allow_messages    : "all",
-          show_last_seen    : true,
+          show_email: false,
+          allow_messages: "all",
+          show_last_seen: true,
           searchable_profile: true,
         }
       );
@@ -156,9 +159,9 @@ export const useUpsertPrivacySettings = (): UseMutationResult<PrivacySettings, E
       return optimisticUpdate({
         queryClient,
         keyFactory: (entity: PrivacySettings) => privacyKeyFactory({ profileId: entity.profile_id }).single,
-        entity    : newRow,
-        type      : "update",
-        idKey     : "profile_id",
+        entity: newRow,
+        type: "update",
+        idKey: "profile_id",
       });
     },
     onError: (_err, _vars, ctx) => rollbackCache({ queryClient, previousData: ctx as Record<string, unknown> }),
@@ -166,15 +169,15 @@ export const useUpsertPrivacySettings = (): UseMutationResult<PrivacySettings, E
       replaceOptimisticItem({
         queryClient,
         keyFactory: (entity: PrivacySettings) => privacyKeyFactory({ profileId: entity.profile_id }).single,
-        entity    : { profile_id: vars.profile_id, prefs: saved.prefs },
-        newEntity : saved,
-        idKey     : "profile_id",
+        entity: { profile_id: vars.profile_id, prefs: saved.prefs },
+        newEntity: saved,
+        idKey: "profile_id",
       }),
     onSettled: (_d, _e, vars) =>
       invalidateKeys({
         queryClient,
         keyFactory: (entity: PrivacySettings) => privacyKeyFactory({ profileId: entity.profile_id }).single,
-        entity    : { profile_id: vars.profile_id, prefs: { show_email: false, allow_messages: "all", show_last_seen: true, searchable_profile: true } },
+        entity: vars,
       }),
   });
 };
@@ -199,12 +202,12 @@ export const useNotificationPrefsQuery = (profileId: string): UseQueryResult<Not
       if (error && status !== 406) throw new Error(error.message);
       return (
         data ?? {
-          profile_id : profileId,
-          likes      : true,
-          comments   : true,
+          profile_id: profileId,
+          likes: true,
+          comments: true,
           connections: true,
-          groups     : true,
-          matches    : true,
+          groups: true,
+          matches: true,
         }
       );
     },
@@ -228,26 +231,26 @@ export const useUpsertNotificationPrefs = (): UseMutationResult<NotificationPref
     onMutate: async (newPrefs: NotificationPrefs) =>
       optimisticUpdate({
         queryClient,
-        keyFactory : (entity: NotificationPrefs) => notifPrefKeyFactory({ profileId: entity.profile_id }).single,
-        entity     : newPrefs,
-        type       : "update",
-        idKey      : "profile_id",
+        keyFactory: (entity: NotificationPrefs) => notifPrefKeyFactory({ profileId: entity.profile_id }).single,
+        entity: newPrefs,
+        type: "update",
+        idKey: "profile_id",
       }),
     onError: (_err, _vars, ctx) =>
       rollbackCache({ queryClient, previousData: ctx as Record<string, unknown> }),
     onSuccess: (savedPrefs, variables) =>
       replaceOptimisticItem({
         queryClient,
-        keyFactory : (entity: NotificationPrefs) => notifPrefKeyFactory({ profileId: entity.profile_id }).single,
-        entity     : { profile_id: variables.profile_id, likes: savedPrefs.likes, comments: savedPrefs.comments, connections: savedPrefs.connections, groups: savedPrefs.groups, matches: savedPrefs.matches },
-        newEntity  : savedPrefs,
-        idKey      : "profile_id",
+        keyFactory: (entity: NotificationPrefs) => notifPrefKeyFactory({ profileId: entity.profile_id }).single,
+        entity: { profile_id: variables.profile_id, likes: savedPrefs.likes, comments: savedPrefs.comments, connections: savedPrefs.connections, groups: savedPrefs.groups, matches: savedPrefs.matches },
+        newEntity: savedPrefs,
+        idKey: "profile_id",
       }),
     onSettled: (_d, _e, vars) =>
       invalidateKeys({
         queryClient,
-        keyFactory : (entity: NotificationPrefs) => notifPrefKeyFactory({ profileId: entity.profile_id }).single,
-        entity     : { profile_id: vars.profile_id, likes: true, comments: true, connections: true, groups: true, matches: true },
+        keyFactory: (entity: NotificationPrefs) => notifPrefKeyFactory({ profileId: entity.profile_id }).single,
+        entity: vars,
       }),
   });
 };

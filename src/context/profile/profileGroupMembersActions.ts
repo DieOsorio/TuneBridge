@@ -17,6 +17,7 @@ import {
   userGroupsKeyFactory,
 } from "../helpers/profile/profileKeys";
 import type { Profile } from "./profileActions"
+import type { ProfileGroup } from "./profileGroupsActions"
 
 // Define TypeScript types for group member and related entities
 
@@ -29,16 +30,6 @@ export interface ProfileGroupMember {
   roles_in_group?: string[];
   profiles?: Profile;
 }
-
-export interface UserGroup {
-  profile_group_id: string;
-  profile_groups: {
-    id: string;
-    name: string;
-    // add more group fields if needed
-  }[];
-}
-
 interface UpdateMemberContext {
   previousData: ReturnType<typeof optimisticUpdate>;
   optimisticMember: ProfileGroupMember;
@@ -118,19 +109,19 @@ export const useHowManyMembersQuery = (
 // FETCH ALL GROUPS A USER IS PART OF
 export const useFetchUserGroupsQuery = (
   userId: string
-): UseQueryResult<UserGroup[], Error> => {
+): UseQueryResult<ProfileGroup[], Error> => {
   return useQuery({
     queryKey: userGroupsKeyFactory({ userId }).all ?? [`userGroups`, userId],
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("users")
         .from("profile_group_members")
-        .select("profile_group_id, profile_groups(*)")
+        .select("profile_groups(*)")
         .eq("profile_id", userId);
 
       if (error) throw new Error(error.message);
-      // Map data to only groups
-      return (data as UserGroup[]).map((member) => member.profile_groups);
+
+      return (data ?? []).map((row) => row.profile_groups);
     },
     enabled: !!userId,
   });

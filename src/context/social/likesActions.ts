@@ -11,7 +11,7 @@ import {
 export interface Like {
   id: string;
   comment_id?: string;
-  profile_id?: string;
+  profile_id: string;
   post_id?: string;
   [key: string]: any;
 }
@@ -40,10 +40,7 @@ export const useFetchLikesQuery = (): UseQueryResult<Like[], Error> => {
   return useQuery<Like[], Error>({
     queryKey: likeKeyFactory().all,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .schema("social")
-        .from("likes")
-        .select("*");
+      const { data, error } = await supabase.schema("social").from("likes").select("*");
       if (error) throw new Error(error.message);
       return Array.isArray(data) ? data : [];
     },
@@ -88,29 +85,31 @@ export const usePostLikesQuery = (post_id: string): UseQueryResult<Like[], Error
 };
 
 // CHECK IF USER LIKED A POST
-export const useUserLikedPostQuery = (post_id: string, profile_id: string): UseQueryResult<Like | null, Error> => {
+export const useUserLikedPostQuery = (
+  post_id: string,
+  profile_id: string
+): UseQueryResult<Like | null, Error> => {
   return useQuery<Like | null, Error>({
-    queryKey: likeKeyFactory({ postId: post_id, profileId: profile_id }).userPost ?? ["userLikedPost", post_id ?? "", profile_id ?? ""],
+    queryKey: likeKeyFactory({ postId: post_id, profileId: profile_id }).userPost ?? ["userLikedPost", post_id, profile_id],
     queryFn: async () => {
-      if (!post_id || !profile_id) return null;
       const { data, error } = await supabase
         .schema("social")
         .from("likes")
-        .select("id")
+        .select("*")
         .eq("post_id", post_id)
         .eq("profile_id", profile_id)
         .maybeSingle();
       if (error) throw new Error(error.message);
-      return data ?? null;
+      return data ? (data as Like) : null;
     },
     enabled: !!post_id && !!profile_id,
   });
 };
 
-// INSERT NEW LIKE
+// INSERT LIKE
 export const useInsertLikeMutation = (): UseMutationResult<Like, Error, Partial<Like>> => {
   const queryClient = useQueryClient();
-  return useMutation<Like, Error, Partial<Like>>({
+  return useMutation({
     mutationFn: async (like) => {
       const { data, error } = await supabase
         .schema("social")
@@ -119,141 +118,60 @@ export const useInsertLikeMutation = (): UseMutationResult<Like, Error, Partial<
         .select()
         .single();
       if (error) throw new Error(error.message);
-      return data as Like;
+      return data;
     },
     onMutate: async (like) => {
-      const entity: Like = {
-        ...like,
-        comment_id: like.comment_id,
-        profile_id: like.profile_id,
-        post_id: like.post_id,
-      } as Like;
+      const optimisticLike: Like = {
+        id: like.id ?? `temp-${Date.now()}`,
+        profile_id: like.profile_id ?? "",
+        comment_id: like.comment_id ?? undefined,
+        post_id: like.post_id ?? undefined,
+      };
       return optimisticUpdate({
         queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
+        entity: optimisticLike,
+        keyFactory: () => likeKeyFactory({
+          commentId: optimisticLike.comment_id,
+          profileId: optimisticLike.profile_id,
+          postId: optimisticLike.post_id,
         }),
-        entity,
         type: "add",
       });
     },
     onSuccess: (newLike, variables) => {
       replaceOptimisticItem({
         queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
-        }),
         entity: {
-          ...variables,
-          comment_id: variables.comment_id,
-          profile_id: variables.profile_id,
-          post_id: variables.post_id,
-        } as Like,
+          id: variables.id ?? `temp-${Date.now()}`,
+          profile_id: variables.profile_id ?? "",
+          comment_id: variables.comment_id ?? null,
+          post_id: variables.post_id ?? null,
+        },
         newEntity: newLike,
+        keyFactory: () => likeKeyFactory({
+          commentId: newLike.comment_id,
+          profileId: newLike.profile_id,
+          postId: newLike.post_id,
+        }),
       });
     },
-    onError: (_err, _variables, context) => {
-      rollbackCache({
-        queryClient,
-        previousData: context as Record<string, unknown>,
-      });
+    onError: (_err, _vars, context) => {
+      rollbackCache({ queryClient, previousData: context as Record<string, unknown> });
     },
     onSettled: (_data, _error, variables) => {
       invalidateKeys({
         queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
-        }),
         entity: {
-          ...variables,
-          comment_id: variables.comment_id,
-          profile_id: variables.profile_id,
-          post_id: variables.post_id,
-        } as Like,
-      });
-    },
-  });
-};
-
-// UPDATE LIKE
-export const useUpdateLikeMutation = (): UseMutationResult<Like, Error, { id: string; updatedLike: Partial<Like> }> => {
-  const queryClient = useQueryClient();
-  return useMutation<Like, Error, { id: string; updatedLike: Partial<Like> }>({
-    mutationFn: async ({ id, updatedLike }) => {
-      const { data, error } = await supabase
-        .schema("social")
-        .from("likes")
-        .update(updatedLike)
-        .eq("id", id)
-        .select()
-        .single();
-      if (error) throw new Error(error.message);
-      return data as Like;
-    },
-    onMutate: async ({ id, updatedLike }) => {
-      const entity: Like = {
-        id,
-        ...updatedLike,
-        comment_id: updatedLike.comment_id,
-        profile_id: updatedLike.profile_id,
-        post_id: updatedLike.post_id,
-      } as Like;
-      return optimisticUpdate({
-        queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
+          id: variables.id ?? `temp-${Date.now()}`,
+          profile_id: variables.profile_id ?? "",
+          comment_id: variables.comment_id ?? null,
+          post_id: variables.post_id ?? null,
+        },
+        keyFactory: () => likeKeyFactory({
+          commentId: variables.comment_id,
+          profileId: variables.profile_id,
+          postId: variables.post_id,
         }),
-        entity,
-        type: "update",
-      });
-    },
-    onError: (_err, _variables, context) => {
-      rollbackCache({
-        queryClient,
-        previousData: context as Record<string, unknown>,
-      });
-    },
-    onSuccess: (newLike, variables) => {
-      replaceOptimisticItem({
-        queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
-        }),
-        entity: {
-          id: variables.id,
-          ...variables.updatedLike,
-          comment_id: variables.updatedLike.comment_id,
-          profile_id: variables.updatedLike.profile_id,
-          post_id: variables.updatedLike.post_id,
-        } as Like,
-        newEntity: newLike,
-      });
-    },
-    onSettled: (_data, _error, variables) => {
-      invalidateKeys({
-        queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
-        }),
-        entity: {
-          id: variables.id,
-          ...variables.updatedLike,
-          comment_id: variables.updatedLike.comment_id,
-          profile_id: variables.updatedLike.profile_id,
-          post_id: variables.updatedLike.post_id,
-        } as Like,
       });
     },
   });
@@ -262,7 +180,7 @@ export const useUpdateLikeMutation = (): UseMutationResult<Like, Error, { id: st
 // DELETE LIKE
 export const useDeleteLikeMutation = (): UseMutationResult<void, Error, Like> => {
   const queryClient = useQueryClient();
-  return useMutation<void, Error, Like>({
+  return useMutation({
     mutationFn: async (like) => {
       const { error } = await supabase
         .schema("social")
@@ -272,43 +190,39 @@ export const useDeleteLikeMutation = (): UseMutationResult<void, Error, Like> =>
       if (error) throw new Error(error.message);
     },
     onMutate: async (like) => {
-      const entity: Like = {
-        ...like,
-        comment_id: like.comment_id,
-        profile_id: like.profile_id,
-        post_id: like.post_id,
-      } as Like;
       return optimisticUpdate({
         queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
+        entity: {
+          id: like.id,
+          profile_id: like.profile_id,
+          comment_id: like.comment_id ?? null,
+          post_id: like.post_id ?? null,
+        },
+        keyFactory: () => likeKeyFactory({
+          commentId: like.comment_id,
+          profileId: like.profile_id,
+          postId: like.post_id,
         }),
-        entity,
         type: "remove",
       });
     },
-    onError: (_err, _variables, context) => {
-      rollbackCache({
-        queryClient,
-        previousData: context as Record<string, unknown>,
-      });
+    onError: (_err, _vars, context) => {
+      rollbackCache({ queryClient, previousData: context as Record<string, unknown> });
     },
-    onSettled: (_data, _error, variables) => {
+    onSettled: (_data, _error, like) => {
       invalidateKeys({
         queryClient,
-        keyFactory: (entity: Like) => likeKeyFactory({
-          commentId: entity.comment_id,
-          profileId: entity.profile_id,
-          postId: entity.post_id,
-        }),
         entity: {
-          ...variables,
-          comment_id: variables.comment_id,
-          profile_id: variables.profile_id,
-          post_id: variables.post_id,
-        } as Like,
+          id: like.id,
+          profile_id: like.profile_id,
+          comment_id: like.comment_id ?? null,
+          post_id: like.post_id ?? null,
+        },
+        keyFactory: () => likeKeyFactory({
+          commentId: like.comment_id,
+          profileId: like.profile_id,
+          postId: like.post_id,
+        }),
       });
     },
   });

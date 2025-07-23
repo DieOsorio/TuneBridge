@@ -10,11 +10,13 @@ import { conversationKeyFactory } from "../../helpers/social/socialKeys";
 
 export interface Conversation {
   id: string;
-  created_by: string;
-  updated_at?: string;
+  created_by?: string;
+  updated_at?: string | null;
+  avatar_url?: string;
+  title: string | null;
+  is_group?: boolean;
   [key: string]: any;
 }
-
 export interface ConversationParticipant {
   conversation_id: string;
   profile_id: string;
@@ -24,6 +26,16 @@ export interface FindConversationParams {
   myProfileId: string;
   otherProfileId: string;
 }
+
+const buildFullConversation = (partial: Partial<Conversation>): Conversation => ({
+  id: partial.id || `temp-${Date.now()}`,
+  created_by: partial.created_by ?? "",
+  created_at: partial.created_at ?? new Date().toISOString(),
+  updated_at: partial.updated_at ?? null,
+  title: partial.title ?? "",
+  is_group: partial.is_group ?? false,
+  avatar_url: partial.avatar_url ?? "",
+});
 
 export const useFindConversationWithUser = (): UseMutationResult<Conversation | null, Error, FindConversationParams> => {
   return useMutation<Conversation | null, Error, FindConversationParams>({
@@ -94,12 +106,7 @@ export const useCreateConversationMutation = (): UseMutationResult<Conversation,
       return data[0] as Conversation;
     },
     onMutate: async (conversation) => {
-      const optimisticConv: Conversation = {
-        id: conversation.id || `temp-${Date.now()}`,
-        created_by: conversation.created_by ?? "",
-        ...conversation,
-        created_at: new Date().toISOString(),
-      };
+      const optimisticConv = buildFullConversation(conversation);
       return optimisticUpdate({
         queryClient,
         keyFactory: conversationKeyFactory,
@@ -107,21 +114,17 @@ export const useCreateConversationMutation = (): UseMutationResult<Conversation,
         type: "add",
       });
     },
-    onError: (_err, variables, context) => {
+    onError: (_err, _variables, context) => {
       rollbackCache({
         queryClient,
         previousData: context as Record<string, unknown> | undefined,
       });
     },
-    onSuccess: (newConversation, variables) => {
+    onSuccess: (newConversation, _variables) => {
       replaceOptimisticItem({
         queryClient,
         keyFactory: conversationKeyFactory,
-        entity: {
-          id: variables.id || variables.tempId || `temp-${Date.now()}`,
-          profileId: variables.created_by ?? "",
-          created_by: variables.created_by ?? ""
-        },
+        entity: newConversation,
         newEntity: newConversation,
       });
     },
@@ -161,33 +164,25 @@ export const useUpdateConversationMutation = (): UseMutationResult<Conversation,
       return data[0] as Conversation;
     },
     onMutate: async ({ conversation, updates }) => {
+      const updatedConv = buildFullConversation({ ...conversation, ...updates });
       return optimisticUpdate({
         queryClient,
         keyFactory: conversationKeyFactory,
-        entity: {
-          ...conversation,
-          ...updates,
-          profileId: conversation.created_by,
-          created_by: conversation.created_by
-        },
+        entity: { ...updatedConv, profileId: updatedConv.created_by },
         type: "update",
       });
     },
-    onError: (_err, variables, context) => {
+    onError: (_err, _variables, context) => {
       rollbackCache({
         queryClient,
         previousData: context as Record<string, unknown> | undefined,
       });
     },
-    onSuccess: (newConversation, variables) => {
+    onSuccess: (newConversation, _variables) => {
       replaceOptimisticItem({
         queryClient,
         keyFactory: conversationKeyFactory,
-        entity: {
-          id: variables.conversation.id,
-          profileId: variables.conversation.created_by,
-          created_by: variables.conversation.created_by
-        },
+        entity: newConversation,
         newEntity: newConversation,
       });
     },
@@ -222,18 +217,15 @@ export const useDeleteConversationMutation = (): UseMutationResult<void, Error, 
       if (error) throw new Error(error.message);
     },
     onMutate: async (conversation) => {
+      const conv = buildFullConversation(conversation);
       return optimisticUpdate({
         queryClient,
         keyFactory: conversationKeyFactory,
-        entity: {
-          ...conversation,
-          profileId: conversation.created_by,
-          created_by: conversation.created_by
-        },
+        entity: { ...conv, profileId: conv.created_by },
         type: "remove",
       });
     },
-    onError: (_err, variables, context) => {
+    onError: (_err, _variables, context) => {
       rollbackCache({
         queryClient,
         previousData: context as Record<string, unknown> | undefined,

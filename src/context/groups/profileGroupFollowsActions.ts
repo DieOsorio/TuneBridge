@@ -1,26 +1,45 @@
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery, UseQueryResult, UseMutationResult } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery, UseQueryResult, UseMutationResult, UseInfiniteQueryResult, InfiniteData } from "@tanstack/react-query";
 import { supabase } from "../../supabase";
+import { v4 as uuidv4 } from "uuid";
 import {
   optimisticUpdate,
   rollbackCache,
   replaceOptimisticItem,
   invalidateKeys,
 } from "../helpers/cacheHandler";
-import { profileGroupFollowsKeyFactory, ProfileGroupFollowsKeyParams } from "../helpers/groups/groupsKeys";
+import { profileGroupFollowsKeyFactory } from "../helpers/groups/groupsKeys";
 
 const SCHEMA = "groups";
 const TABLE = "profile_group_follows";
 
 export interface ProfileGroupFollow {
+  id: string;
   profile_group_id: string;
   follower_profile_id: string;
-  created_at?: string;
+}
+
+export interface FollowerView {
+  follow_id: string;
+  profile_group_id: string;
+  follower_profile_id: string;
+  profile_id: string;
+  username: string;
+  avatar_url: string | null;
+  state: string | null;
+  country: string | null;
+  created_at: string;
 }
 
 export interface HydratedProfileGroupFollow extends ProfileGroupFollow {
   profileGroupId: string;
   followerProfileId: string;
 }
+
+const createOptimisticRow = (row: Partial<ProfileGroupFollow>): ProfileGroupFollow => ({
+  id: row.id || `optimistic-${uuidv4()}`,
+  profile_group_id: row.profile_group_id!,
+  follower_profile_id: row.follower_profile_id!,
+});
 
 const hydrate = (row: ProfileGroupFollow): HydratedProfileGroupFollow => ({
   ...row,
@@ -82,13 +101,16 @@ export const useCountFollowers = (profileGroupId: string): UseQueryResult<number
     },
   });
 
-export const useGroupFollowersInfiniteQuery = (groupId: string) =>
-  useInfiniteQuery({
+export const useGroupFollowersInfiniteQuery = (
+  groupId: string,
+  limit = 10
+): UseInfiniteQueryResult<InfiniteData<FollowerView[]>, Error> => {
+  return useInfiniteQuery<FollowerView[], Error>({
     queryKey: profileGroupFollowsKeyFactory({ profileGroupId: groupId }).followersInfinite ?? [],
     enabled: !!groupId,
     initialPageParam: undefined,
-    getNextPageParam: (lastPage: any[]) => {
-      if (lastPage.length < PAGE_SIZE) return undefined;
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length < limit) return undefined;
       return lastPage[lastPage.length - 1]?.created_at;
     },
     queryFn: async ({ pageParam }) => {
@@ -98,18 +120,23 @@ export const useGroupFollowersInfiniteQuery = (groupId: string) =>
         .select("*")
         .eq("profile_group_id", groupId)
         .order("created_at", { ascending: false })
-        .limit(PAGE_SIZE);
-      if (pageParam) query = query.lt("created_at", pageParam);
+        .limit(limit);
+
+      if (pageParam) {
+        query = query.lt("created_at", pageParam);
+      }
+
       const { data, error } = await query;
       if (error) throw new Error(error.message);
       return data ?? [];
     },
     staleTime: 60_000,
   });
+};
 
-export const useFollowGroupMutation = (): UseMutationResult<ProfileGroupFollow, Error, ProfileGroupFollow> => {
+export const useFollowGroupMutation = (): UseMutationResult<ProfileGroupFollow, Error, Partial<ProfileGroupFollow>> => {
   const queryClient = useQueryClient();
-  return useMutation<ProfileGroupFollow, Error, ProfileGroupFollow>({
+  return useMutation<ProfileGroupFollow, Error, Partial<ProfileGroupFollow>>({
     mutationFn: async (row) => {
       const { data, error } = await supabase
         .schema(SCHEMA)
@@ -121,18 +148,20 @@ export const useFollowGroupMutation = (): UseMutationResult<ProfileGroupFollow, 
       return data as ProfileGroupFollow;
     },
     onMutate: async (row) => {
+      const optimisticRow = createOptimisticRow(row);
       return optimisticUpdate({
         queryClient,
-        entity: hydrate(row),
+        entity: hydrate(optimisticRow),
         keyFactory: profileGroupFollowsKeyFactory,
         type: "add",
         idKey: rowMatch,
       });
     },
     onSuccess: (saved, vars) => {
+      const optimisticRow = createOptimisticRow(vars);
       replaceOptimisticItem({
         queryClient,
-        entity: hydrate(vars),
+        entity: hydrate(optimisticRow),
         newEntity: hydrate(saved),
         keyFactory: profileGroupFollowsKeyFactory,
         idKey: rowMatch,
@@ -145,18 +174,20 @@ export const useFollowGroupMutation = (): UseMutationResult<ProfileGroupFollow, 
       });
     },
     onSettled: (_data, _error, vars) => {
+      const optimisticRow = createOptimisticRow(vars);
       invalidateKeys({
         queryClient,
-        entity: hydrate(vars),
+        entity: hydrate(optimisticRow),
         keyFactory: profileGroupFollowsKeyFactory,
       });
     },
   });
 };
 
-export const useUnfollowGroupMutation = (): UseMutationResult<ProfileGroupFollow, Error, ProfileGroupFollow> => {
+export const useUnfollowGroupMutation = (): UseMutationResult<ProfileGroupFollow, Error, Partial<ProfileGroupFollow>> => {
   const queryClient = useQueryClient();
-  return useMutation<ProfileGroupFollow, Error, ProfileGroupFollow>({
+
+  return useMutation<ProfileGroupFollow, Error, Partial<ProfileGroupFollow>>({
     mutationFn: async (row) => {
       const { error } = await supabase
         .schema(SCHEMA)
@@ -164,30 +195,40 @@ export const useUnfollowGroupMutation = (): UseMutationResult<ProfileGroupFollow
         .delete()
         .eq("profile_group_id", row.profile_group_id)
         .eq("follower_profile_id", row.follower_profile_id);
+
       if (error) throw new Error(error.message);
-      return row;
+      return row as ProfileGroupFollow; 
     },
+
     onMutate: async (row) => {
+      const optimisticRow = createOptimisticRow(row);
+
       return optimisticUpdate({
         queryClient,
-        entity: hydrate(row),
+        entity: hydrate(optimisticRow),
         keyFactory: profileGroupFollowsKeyFactory,
         type: "remove",
         idKey: rowMatch,
       });
     },
-    onError: (_err, vars, ctx) => {
+
+    onError: (_err, _vars, ctx) => {
       rollbackCache({
         queryClient,
         previousData: ctx as Record<string, unknown> | undefined,
       });
     },
+
     onSettled: (_data, _error, vars) => {
+      const optimisticRow = createOptimisticRow(vars);
+
       invalidateKeys({
         queryClient,
-        entity: hydrate(vars),
+        entity: hydrate(optimisticRow),
         keyFactory: profileGroupFollowsKeyFactory,
       });
     },
   });
 };
+
+

@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode } from "react";
-import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import { UseMutationResult } from "@tanstack/react-query";
 
 import {
   useGetProfileMatchScore,
@@ -46,12 +46,9 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | null>(null);
 ProfileContext.displayName = "ProfileContext";
 
-interface ProfileProviderProps {
-  children: ReactNode;
-}
 
 // ProfileProvider component that fetches initial data and provides all actions
-export const ProfileProvider = ({ children }: ProfileProviderProps) => {
+export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   // Use the custom hooks to get data and mutations
   const { data: allProfiles, isLoading: loading, error, refetch } = useAllProfilesQuery();
 

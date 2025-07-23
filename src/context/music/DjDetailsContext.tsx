@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchDjsQuery,
   useFetchDjById,
@@ -10,7 +10,7 @@ import {
   UpdateDjParams,
   DeleteDjParams
 } from "./djDetailsActions";
-import { UseQueryResult, UseMutationResult } from "@tanstack/react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface DjDetailsContextValue {
   djDetails?: DjDetails[];
@@ -27,9 +27,7 @@ interface DjDetailsContextValue {
 const DjDetailsContext = createContext<DjDetailsContextValue | undefined>(undefined);
 DjDetailsContext.displayName = "DjDetailsContext";
 
-export const DjDetailsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // NOTE: You must pass a roleId to useFetchDjsQuery, so this context should be refactored to accept it as a prop or from a parent context
-  // For now, we'll use an empty string as a placeholder
+export const DjDetailsProvider = ({ children }: { children: ReactNode }) => {
   const { data: djDetails, isLoading: loading, error, refetch } = useFetchDjsQuery("");
   const addDj = useAddDjMutation().mutateAsync;
   const updateDj = useUpdateDjMutation().mutateAsync;

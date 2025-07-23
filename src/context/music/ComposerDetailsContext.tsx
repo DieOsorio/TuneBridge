@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchComposersQuery,
   useFetchComposerById,
@@ -10,13 +10,9 @@ import {
   UpdateComposerParams,
   DeleteComposerParams
 } from "./ComposerDetailsActions";
-import { UseQueryResult, UseMutationResult } from "@tanstack/react-query";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface ComposerDetailsContextValue {
-  composerDetails?: ComposerDetails[];
-  loading: boolean;
-  error: unknown;
-  refetch: () => void;
   addComposer: (params: AddComposerParams) => Promise<ComposerDetails>;
   fetchComposer: (roleId: string) => UseQueryResult<ComposerDetails[], Error>;
   fetchComposerById: (id: string) => UseQueryResult<ComposerDetails, Error>;
@@ -27,19 +23,12 @@ interface ComposerDetailsContextValue {
 const ComposerDetailsContext = createContext<ComposerDetailsContextValue | undefined>(undefined);
 ComposerDetailsContext.displayName = "ComposerDetailsContext";
 
-export const ComposerDetailsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // NOTE: You must pass a roleId to useFetchComposersQuery, so this context should be refactored to accept it as a prop or from a parent context
-  // For now, we'll use an empty string as a placeholder
-  const { data: composerDetails, isLoading: loading, error, refetch } = useFetchComposersQuery("");
+export const ComposerDetailsProvider = ({ children }: { children: ReactNode }) => {
   const addComposer = useAddComposerMutation();
   const updateComposer = useUpdateComposerMutation();
   const deleteComposer = useDeleteComposerMutation();
 
   const value: ComposerDetailsContextValue = {
-    composerDetails,
-    loading,
-    error,
-    refetch,
     addComposer: addComposer.mutateAsync,
     fetchComposer: useFetchComposersQuery,
     fetchComposerById: useFetchComposerById,

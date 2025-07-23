@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useUserNotificationsQuery,
   useInsertNotificationMutation,
@@ -20,16 +20,16 @@ export interface NotificationsProviderProps {
   children: ReactNode;
 }
 
-export const NotificationsProvider: React.FC<NotificationsProviderProps> = ({ children }) => {
+export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
   const insertNotification = useInsertNotificationMutation().mutateAsync;
   const updateNotification = useUpdateNotificationMutation().mutateAsync;
 
-  const value = useMemo<NotificationsContextValue>(() => ({
+  const value: NotificationsContextValue = {
     userNotifications: useUserNotificationsQuery,
     notificationsRealtime: useNotificationsRealtime,
     insertNotification,
     updateNotification,
-  }), [insertNotification, updateNotification]);
+  };
 
   return (
     <NotificationsContext.Provider value={value}>

@@ -1,10 +1,3 @@
-// Helper to adapt messageKeyFactory for cache helpers
-const messageEntityKeyFactory = (entity: Message) => {
-  return messageKeyFactory({
-    conversationId: entity.conversation_id,
-    profileId: entity.sender_profile_id,
-  });
-};
 import { useQuery, useMutation, useQueryClient, UseQueryResult, UseMutationResult } from "@tanstack/react-query";
 import { supabase } from "../../../supabase";
 import { useEffect } from "react";
@@ -20,9 +13,11 @@ export interface Message {
   id: string;
   conversation_id: string;
   sender_profile_id: string;
+  content: string;
   read_by?: string[];
+  delivered_to?: string[];
   deleted_at?: string | null;
-  created_at?: string;
+  updated_at?: string | null;
   [key: string]: any;
 }
 
@@ -76,7 +71,7 @@ export interface UnreadMessagesParams {
 
 export const useUnreadMessages = ({ conversationId, profileId }: UnreadMessagesParams): UseQueryResult<Message[], Error> => {
   return useQuery<Message[], Error>({
-    queryKey: messageKeyFactory({ conversationId, profileId }).unread ?? ["messages-unread", conversationId ?? "", profileId ?? ""],
+    queryKey: messageKeyFactory({ conversationId, profileId }).unread ?? ["messages-unread", conversationId, profileId],
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -104,8 +99,8 @@ export interface MarkMessagesAsReadParams {
 
 export const useMarkMessagesAsReadMutation = (): UseMutationResult<any, Error, MarkMessagesAsReadParams> => {
   const queryClient = useQueryClient();
-  return useMutation<any, Error, MarkMessagesAsReadParams>({
-    mutationFn: async ({ messageIds, profileId, conversationId }) => {
+  return useMutation({
+    mutationFn: async ({ messageIds, profileId }) => {
       const updates = messageIds.map(async (id) => {
         const { data: existingData, error: fetchError } = await supabase
           .schema("social")
@@ -115,18 +110,14 @@ export const useMarkMessagesAsReadMutation = (): UseMutationResult<any, Error, M
           .single();
         if (fetchError) throw new Error(fetchError.message);
         const currentReadBy = existingData?.read_by || [];
-        if (currentReadBy.includes(profileId)) {
-          return;
-        }
+        if (currentReadBy.includes(profileId)) return;
         const updatedReadBy = [...currentReadBy, profileId];
-        const { data, error } = await supabase
+        const { error } = await supabase
           .schema("social")
           .from("messages")
           .update({ read_by: updatedReadBy })
-          .eq("id", id)
-          .select();
+          .eq("id", id);
         if (error) throw new Error(error.message);
-        return data;
       });
       return Promise.all(updates);
     },
@@ -135,11 +126,6 @@ export const useMarkMessagesAsReadMutation = (): UseMutationResult<any, Error, M
         queryClient,
         keyFactory: messageKeyFactory,
         entity: { conversationId, profileId },
-      });
-      invalidateKeys({
-        queryClient,
-        keyFactory: messageKeyFactory,
-        entity: { conversationId },
       });
     },
   });
@@ -176,7 +162,7 @@ export const useMessagesRealtime = (conversation_id: string): void => {
 
 export const useFetchMessagesQuery = (conversationId: string): UseQueryResult<Message[], Error> => {
   return useQuery<Message[], Error>({
-    queryKey: messageKeyFactory({ conversationId }).all ?? ["messages", conversationId ?? ""],
+    queryKey: messageKeyFactory({ conversationId }).all ?? ["messages", conversationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .schema("social")
@@ -194,7 +180,7 @@ export const useFetchMessagesQuery = (conversationId: string): UseQueryResult<Me
 
 export const useInsertMessageMutation = (): UseMutationResult<Message, Error, Partial<Message>> => {
   const queryClient = useQueryClient();
-  return useMutation<Message, Error, Partial<Message>>({
+  return useMutation({
     mutationFn: async (message) => {
       const { data, error } = await supabase
         .schema("social")
@@ -209,35 +195,24 @@ export const useInsertMessageMutation = (): UseMutationResult<Message, Error, Pa
         id: message.id || `temp-${Date.now()}`,
         conversation_id: message.conversation_id ?? "",
         sender_profile_id: message.sender_profile_id ?? "",
-        ...message,
+        content: message.content ?? "",
         created_at: new Date().toISOString(),
       };
       return optimisticUpdate({
         queryClient,
-        keyFactory: messageEntityKeyFactory,
-        entity: {
-          id: optimisticMsg.id,
-          conversation_id: optimisticMsg.conversation_id,
-          sender_profile_id: optimisticMsg.sender_profile_id
-        },
+        keyFactory: () => messageKeyFactory({ conversationId: optimisticMsg.conversation_id }).all!,
+        entity: optimisticMsg,
         type: "add",
       });
     },
-    onError: (_err, variables, context) => {
-      rollbackCache({
-        queryClient,
-        previousData: context as Record<string, unknown> | undefined,
-      });
+    onError: (_err, _vars, context) => {
+      rollbackCache({ queryClient, previousData: context });
     },
-    onSuccess: (newMessage, variables) => {
+    onSuccess: (newMessage) => {
       replaceOptimisticItem({
         queryClient,
-        keyFactory: messageEntityKeyFactory,
-        entity: {
-          id: variables.id || variables.tempId || `temp-${Date.now()}`,
-          conversation_id: variables.conversation_id ?? "",
-          sender_profile_id: variables.sender_profile_id ?? ""
-        },
+        keyFactory: () => messageKeyFactory({ conversationId: newMessage.conversation_id }).all!,
+        entity: newMessage,
         newEntity: newMessage,
       });
     },
@@ -259,8 +234,8 @@ export interface UpdateMessageParams {
 
 export const useUpdateMessageMutation = (): UseMutationResult<Message, Error, UpdateMessageParams> => {
   const queryClient = useQueryClient();
-  return useMutation<Message, Error, UpdateMessageParams>({
-    mutationFn: async ({ id, updatedFields, conversation_id }) => {
+  return useMutation({
+    mutationFn: async ({ id, updatedFields }) => {
       const { data, error } = await supabase
         .schema("social")
         .from("messages")
@@ -271,43 +246,28 @@ export const useUpdateMessageMutation = (): UseMutationResult<Message, Error, Up
       return data[0] as Message;
     },
     onMutate: async ({ id, updatedFields, conversation_id }) => {
-      const key = messageKeyFactory({ conversationId: conversation_id }).all ?? ["messages", conversation_id ?? ""];
-      const prev = queryClient.getQueryData(key);
-      const original = Array.isArray(prev) ? (prev as Message[]).find(m => m.id === id) : undefined;
-      const optimisticEntity: Message = original
-        ? { ...original, ...updatedFields }
-        : {
-            id,
-            conversation_id,
-            sender_profile_id: updatedFields.sender_profile_id ?? "",
-            ...updatedFields
-          };
+      const optimisticEntity: Message = {
+        id,
+        conversation_id,
+        sender_profile_id: updatedFields.sender_profile_id ?? "",
+        content: updatedFields.content ?? "",
+        created_at: new Date().toISOString(),
+      };
       return optimisticUpdate({
         queryClient,
-        keyFactory: messageEntityKeyFactory,
-        entity: {
-          id: optimisticEntity.id,
-          conversation_id: optimisticEntity.conversation_id,
-          sender_profile_id: optimisticEntity.sender_profile_id
-        },
+        keyFactory: () => messageKeyFactory({ conversationId: conversation_id }).all!,
+        entity: optimisticEntity,
         type: "update",
       });
     },
-    onError: (_err, variables, context) => {
-      rollbackCache({
-        queryClient,
-        previousData: context as Record<string, unknown> | undefined,
-      });
+    onError: (_err, _vars, context) => {
+      rollbackCache({ queryClient, previousData: context });
     },
-    onSuccess: (newMessage, variables) => {
+    onSuccess: (newMessage) => {
       replaceOptimisticItem({
         queryClient,
-        keyFactory: messageEntityKeyFactory,
-        entity: {
-          id: variables.id,
-          conversation_id: variables.conversation_id,
-          sender_profile_id: newMessage.sender_profile_id
-        },
+        keyFactory: () => messageKeyFactory({ conversationId: newMessage.conversation_id }).all!,
+        entity: newMessage,
         newEntity: newMessage,
       });
     },
@@ -328,8 +288,8 @@ export interface DeleteMessageParams {
 
 export const useDeleteMessageMutation = (): UseMutationResult<void, Error, DeleteMessageParams> => {
   const queryClient = useQueryClient();
-  return useMutation<void, Error, DeleteMessageParams>({
-    mutationFn: async ({ id, conversation_id }) => {
+  return useMutation({
+    mutationFn: async ({ id }) => {
       const { error } = await supabase
         .schema("social")
         .from("messages")
@@ -338,18 +298,22 @@ export const useDeleteMessageMutation = (): UseMutationResult<void, Error, Delet
       if (error) throw new Error(error.message);
     },
     onMutate: async ({ id, conversation_id }) => {
+      const optimisticEntity: Message = {
+        id,
+        conversation_id,
+        sender_profile_id: "",
+        content: "",
+        created_at: new Date().toISOString(),
+      };
       return optimisticUpdate({
         queryClient,
-        keyFactory: messageEntityKeyFactory,
-        entity: { id, conversation_id, sender_profile_id: "" },
+        keyFactory: () => messageKeyFactory({ conversationId: conversation_id }).all!,
+        entity: optimisticEntity,
         type: "remove",
       });
     },
-    onError: (_err, variables, context) => {
-      rollbackCache({
-        queryClient,
-        previousData: context as Record<string, unknown> | undefined,
-      });
+    onError: (_err, _vars, context) => {
+      rollbackCache({ queryClient, previousData: context });
     },
     onSettled: (_data, _error, variables) => {
       invalidateKeys({

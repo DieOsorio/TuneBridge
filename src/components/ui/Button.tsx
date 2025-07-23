@@ -1,4 +1,4 @@
-import './ButtonGlow.css';
+import './styles/ButtonGlow.css';
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

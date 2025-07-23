@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useAuth } from "../AuthContext";
 import {
   useFollowersOfGroupQuery,
@@ -11,7 +11,7 @@ import {
 
 interface ProfileGroupFollowsContextValue {
   followersOfGroup: typeof useFollowersOfGroupQuery;
-  checkFollowStatus: (groupId: string) => ReturnType<typeof useFollowRowQuery>;
+  checkFollowStatus: typeof useFollowRowQuery;
   followGroup: ReturnType<typeof useFollowGroupMutation>["mutateAsync"];
   unfollowGroup: ReturnType<typeof useUnfollowGroupMutation>["mutateAsync"];
   countFollowers: typeof useCountFollowers;
@@ -28,14 +28,14 @@ export const ProfileGroupFollowsProvider = ({ children }: { children: ReactNode 
   const followGroup = useFollowGroupMutation().mutateAsync;
   const unfollowGroup = useUnfollowGroupMutation().mutateAsync;
 
-  const value = useMemo(() => ({
+  const value: ProfileGroupFollowsContextValue = {
     followersOfGroup: useFollowersOfGroupQuery,
-    checkFollowStatus: (groupId: string) => useFollowRowQuery(groupId, authId ?? ""),
+    checkFollowStatus: useFollowRowQuery,
     followGroup,
     unfollowGroup,
     countFollowers: useCountFollowers,
     followersInfiniteQuery: useGroupFollowersInfiniteQuery,
-  }), [authId, followGroup, unfollowGroup]);
+  };
 
   return <ProfileGroupFollowsContext.Provider value={value}>{children}</ProfileGroupFollowsContext.Provider>;
 };

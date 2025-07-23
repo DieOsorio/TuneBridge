@@ -120,18 +120,20 @@ export const participantKeyFactory = ({ conversationId }: ParticipantKeyFactoryP
 });
 
 // --- MESSAGES KEY FACTORY ---
-export type MessageKeyFactoryParams = { conversationId?: string; profileId?: string };
+export type MessageKeyFactoryParams = { conversationId?: string; profileId?: string; id?: string };
+
 export const MESSAGES_KEY = (conversationId: string): ["messages", string] => ["messages", conversationId];
 export const TOTAL_UNREAD_MESSAGES_KEY = (profileId: string): ["total-unread-messages", string] => ["total-unread-messages", profileId];
-export const UNREAD_MESSAGES_KEY = (conversationId: string, profileId: string): ["unread-messages", string, string] => ["unread-messages", conversationId, profileId];
-export const messageKeyFactory = ({ conversationId, profileId }: MessageKeyFactoryParams = {}): {
-  all?: ["messages", string];
-  totalUnread?: ["total-unread-messages", string];
-  unread?: ["unread-messages", string, string];
-} => ({
+export const UNREAD_MESSAGES_KEY = (conversationId: string, profileId: string): ["unread-messages", string, string] =>
+  ["unread-messages", conversationId, profileId];
+export const SINGLE_MESSAGE_KEY = (conversationId: string, id: string): ["message", string, string] =>
+  ["message", conversationId, id];
+
+export const messageKeyFactory = ({ conversationId, profileId, id }: MessageKeyFactoryParams = {}) => ({
   all: conversationId ? MESSAGES_KEY(conversationId) : undefined,
   totalUnread: profileId ? TOTAL_UNREAD_MESSAGES_KEY(profileId) : undefined,
   unread: conversationId && profileId ? UNREAD_MESSAGES_KEY(conversationId, profileId) : undefined,
+  single: conversationId && id ? SINGLE_MESSAGE_KEY(conversationId, id) : undefined,
 });
 
 // --- CONVERSATIONS KEY FACTORY ---

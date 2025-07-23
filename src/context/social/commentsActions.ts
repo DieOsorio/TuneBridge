@@ -12,8 +12,10 @@ import {
 export interface Comment {
   id: string;
   post_id: string;
-  parent_id?: string;
-  created_at: string;
+  profile_id: string;
+  parent_id?: string | null;
+  content: string;
+  updated_at?: string | null;
   [key: string]: any;
 }
 
@@ -52,29 +54,27 @@ export const useInsertCommentMutation = (): UseMutationResult<Comment, Error, Pa
     },
     onMutate: async (comment) => {
       const optimisticComment: Comment = {
-        ...comment,
         id: comment.id ?? `temp-${Date.now()}`,
+        post_id: comment.post_id!,
+        profile_id: comment.profile_id!,
+        content: comment.content ?? "",
+        parent_id: comment.parent_id ?? null,
+        updated_at: comment.updated_at ?? null,
         created_at: new Date().toISOString(),
-        post_id: comment.post_id,
-      } as Comment;
+      };
       return optimisticUpdate({
         queryClient,
         entity: optimisticComment,
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
         type: "add",
       });
     },
-    onSuccess: (newComment, variables) => {
+    onSuccess: (newComment, _variables) => {
       replaceOptimisticItem({
         queryClient,
-        entity: {
-          ...variables,
-          post_id: variables.post_id ?? "",
-          id: variables.id ?? "",
-          created_at: variables.created_at ?? "",
-        },
+        entity: newComment,
         newEntity: newComment,
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
       });
     },
     onError: (_err, _variables, context) => {
@@ -84,15 +84,20 @@ export const useInsertCommentMutation = (): UseMutationResult<Comment, Error, Pa
       });
     },
     onSettled: (_data, _error, variables) => {
+      if (!variables.post_id || !variables.profile_id) return;
+      const fallback: Comment = {
+        id: variables.id ?? "",
+        post_id: variables.post_id,
+        profile_id: variables.profile_id,
+        content: variables.content ?? "",
+        parent_id: variables.parent_id ?? null,
+        updated_at: variables.updated_at ?? null,
+        created_at: variables.created_at ?? new Date().toISOString(),
+      };
       invalidateKeys({
         queryClient,
-        entity: {
-          ...variables,
-          post_id: variables.post_id ?? "",
-          id: variables.id ?? "",
-          created_at: variables.created_at ?? "",
-        },
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        entity: fallback,
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
       });
     },
   });
@@ -116,28 +121,26 @@ export const useUpdateCommentMutation = (): UseMutationResult<Comment, Error, { 
     onMutate: async ({ id, updatedComment, post_id }) => {
       const optimisticComment: Comment = {
         id,
-        ...updatedComment,
         post_id,
-      } as Comment;
+        profile_id: updatedComment.profile_id ?? "",
+        content: updatedComment.content ?? "",
+        parent_id: updatedComment.parent_id ?? null,
+        updated_at: updatedComment.updated_at ?? null,
+        created_at: updatedComment.created_at ?? new Date().toISOString(),
+      };
       return optimisticUpdate({
         queryClient,
         entity: optimisticComment,
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
         type: "update",
       });
     },
-    onSuccess: (newComment, variables) => {
+    onSuccess: (newComment) => {
       replaceOptimisticItem({
         queryClient,
-        entity: {
-          id: variables.id,
-          post_id: variables.post_id ?? "",
-          created_at: variables.updatedComment.created_at ?? "",
-          parent_id: variables.updatedComment.parent_id,
-          ...variables.updatedComment,
-        },
+        entity: newComment,
         newEntity: newComment,
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
       });
     },
     onError: (_err, _variables, context) => {
@@ -147,16 +150,20 @@ export const useUpdateCommentMutation = (): UseMutationResult<Comment, Error, { 
       });
     },
     onSettled: (_data, _error, variables) => {
+      const { id, post_id, updatedComment } = variables;
+      const fallback: Comment = {
+        id,
+        post_id,
+        profile_id: updatedComment.profile_id ?? "",
+        content: updatedComment.content ?? "",
+        parent_id: updatedComment.parent_id ?? null,
+        updated_at: updatedComment.updated_at ?? null,
+        created_at: updatedComment.created_at ?? new Date().toISOString(),
+      };
       invalidateKeys({
         queryClient,
-        entity: {
-          id: variables.id,
-          post_id: variables.post_id ?? "",
-          created_at: variables.updatedComment.created_at ?? "",
-          parent_id: variables.updatedComment.parent_id,
-          ...variables.updatedComment,
-        },
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        entity: fallback,
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
       });
     },
   });
@@ -177,8 +184,8 @@ export const useDeleteCommentMutation = (): UseMutationResult<void, Error, Comme
     onMutate: async (comment) => {
       return optimisticUpdate({
         queryClient,
-        entity: { id: comment.id, post_id: comment.post_id } as Comment,
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        entity: comment,
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
         type: "remove",
       });
     },
@@ -188,11 +195,11 @@ export const useDeleteCommentMutation = (): UseMutationResult<void, Error, Comme
         previousData: context as Record<string, unknown>,
       });
     },
-    onSettled: (_data, _error, variables) => {
+    onSettled: (_data, _error, comment) => {
       invalidateKeys({
         queryClient,
-        entity: { id: variables.id, post_id: variables.post_id } as Comment,
-        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all ?? ["comments", entity.post_id ?? ""],
+        entity: comment,
+        keyFactory: (entity: Comment) => commentKeyFactory({ postId: entity.post_id }).all!,
       });
     },
   });

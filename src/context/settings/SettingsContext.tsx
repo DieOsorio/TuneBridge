@@ -23,11 +23,7 @@ export interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 SettingsContext.displayName = "SettingsContext";
 
-interface SettingsProviderProps {
-  children: ReactNode;
-}
-
-export const SettingsProvider = ({ children }: SettingsProviderProps) => {
+export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const profileId = user?.id;
 

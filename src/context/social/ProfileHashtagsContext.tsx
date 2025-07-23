@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchProfileHashtagsQuery,
   useUpsertProfileHashtagMutation,
@@ -14,19 +14,15 @@ export interface ProfileHashtagsContextValue {
 const ProfileHashtagsContext = createContext<ProfileHashtagsContextValue | undefined>(undefined);
 ProfileHashtagsContext.displayName = "ProfileHashtagsContext";
 
-export interface ProfileHashtagsProviderProps {
-  children: ReactNode;
-}
-
-export const ProfileHashtagsProvider: React.FC<ProfileHashtagsProviderProps> = ({ children }) => {
+export const ProfileHashtagsProvider = ({ children }: { children: ReactNode }) => {
   const upsertProfileHashtag = useUpsertProfileHashtagMutation().mutateAsync;
   const deleteProfileHashtag = useDeleteProfileHashtagMutation().mutateAsync;
 
-  const value = useMemo<ProfileHashtagsContextValue>(() => ({
+  const value: ProfileHashtagsContextValue = {
     getHashtagsByProfileId: useFetchProfileHashtagsQuery,
     upsertProfileHashtag,
     deleteProfileHashtag,
-  }), [upsertProfileHashtag, deleteProfileHashtag]);
+  };
 
   return (
     <ProfileHashtagsContext.Provider value={value}>

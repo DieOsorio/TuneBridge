@@ -15,9 +15,9 @@ export interface ProfileGroup {
   avatar_url: string | null;
   country: string | null;
   city: string | null;
-  genre: string | null;
-  created_by: string; 
-  created_at: string; 
+  state: string | null;
+  genres: string[] | null;
+  created_by: string | null;
   client_id?: string; 
 }
 
@@ -77,8 +77,7 @@ export const useCreateProfileGroupMutation = (): UseMutationResult<ProfileGroup,
           ? crypto.randomUUID()
           : `temp-${Date.now()}`;
       const optimisticGroup: ProfileGroup = {
-        ...(group as ProfileGroup),
-        created_at: new Date().toISOString(),
+        ...(group as ProfileGroup)
       };
       const previousData = optimisticUpdate({
         queryClient,

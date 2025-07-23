@@ -6,7 +6,6 @@ import {
   useUpdateMediaLinkMutation,
   useDeleteMediaLinkMutation,
 } from "./mediaLinksActions";
-import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { MediaLink, AddMediaLinkParams, UpdateMediaLinkParams, DeleteMediaLinkParams } from "./mediaLinksActions";
 
 export interface MediaLinksContextValue {

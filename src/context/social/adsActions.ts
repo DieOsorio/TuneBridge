@@ -10,16 +10,23 @@ import { musicianAdKeyFactory } from "../helpers/social/socialKeys";
 
 export interface MusicianAd {
   id: string;
-  profile_id: string;
-  group_id?: string;
+  profile_id?: string | null;
+  group_id?: string | null;
   ad_type: "looking" | "offering";
   genres: string[] | null;
   looking_for: string[] | null;
   location: string | null;
   description: string;
-  created_at: string;
   [key: string]: any;
 }
+export interface Filters {
+  adType: string | null;
+  lookingFor: string[];
+  genres: string[];
+  locations: string | null;
+  search: string;
+}
+
 
 export const useSearchMusicianAdsQuery = (searchTerm: string): UseQueryResult<MusicianAd[], Error> =>
   useQuery<MusicianAd[], Error>({

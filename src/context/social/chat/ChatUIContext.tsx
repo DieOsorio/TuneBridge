@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
 
 interface ChatUIContextValue {
   isConversationListVisible: boolean;
@@ -8,7 +8,7 @@ interface ChatUIContextValue {
 
 const ChatUIContext = createContext<ChatUIContextValue | undefined>(undefined);
 
-export const ChatUIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ChatUIProvider = ({ children }: { children: ReactNode }) => {
   const [isConversationListVisible, setIsConversationListVisible] = useState<boolean>(false);
 
   const toggleConversationList = () => {

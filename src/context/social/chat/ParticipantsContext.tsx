@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchParticipantsQuery,
   useAddParticipantMutation,
@@ -18,7 +18,7 @@ interface ParticipantsContextValue {
 const ParticipantsContext = createContext<ParticipantsContextValue | undefined>(undefined);
 ParticipantsContext.displayName = "ParticipantsContext";
 
-export const ParticipantsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ParticipantsProvider = ({ children }: { children: ReactNode }) => {
   const addParticipant = useAddParticipantMutation().mutateAsync;
   const removeParticipant = useRemoveParticipantMutation().mutateAsync;
   const updateParticipantRole = useUpdateParticipantRoleMutation().mutateAsync;

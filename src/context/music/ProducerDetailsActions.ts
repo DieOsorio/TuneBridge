@@ -11,10 +11,9 @@ import {
 export interface ProducerDetail {
   id: string;
   role_id: string;
-  created_at: string;
-  preferred_genres: string;
-  events_played: string;
-  level: string;
+  production_type: string | null;
+  years_of_experience: number | null;
+  level: string | null;
   profile_id: string;
   [key: string]: any;
 }
@@ -108,15 +107,7 @@ export const useAddProducerMutation = (): UseMutationResult<ProducerDetail, Erro
       replaceOptimisticItem({
         queryClient,
         keyFactory: producerDetailsKeyFactory,
-        entity: {
-          id: newProducer.id,
-          role_id: newProducer.role_id ?? "",
-          created_at: newProducer.created_at ?? "",
-          preferred_genres: newProducer.preferred_genres ?? "",
-          events_played: newProducer.events_played ?? "",
-          level: newProducer.level ?? "",
-          profile_id: newProducer.profile_id ?? "",
-        },
+        entity: newProducer,
         newEntity: newProducer,
       });
     },
@@ -177,15 +168,7 @@ export const useUpdateProducerMutation = (): UseMutationResult<ProducerDetail, E
       replaceOptimisticItem({
         queryClient,
         keyFactory: producerDetailsKeyFactory,
-        entity: {
-          id: newProducer.id,
-          role_id: newProducer.role_id ?? "",
-          created_at: newProducer.created_at ?? "",
-          preferred_genres: newProducer.preferred_genres ?? "",
-          events_played: newProducer.events_played ?? "",
-          level: newProducer.level ?? "",
-          profile_id: newProducer.profile_id ?? "",
-        },
+        entity: newProducer,
         newEntity: newProducer,
       });
     },

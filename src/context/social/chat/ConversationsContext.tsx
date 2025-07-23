@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchConversationsQuery,
   useCreateConversationMutation,
@@ -22,7 +22,7 @@ interface ConversationsContextValue {
 const ConversationsContext = createContext<ConversationsContextValue | undefined>(undefined);
 ConversationsContext.displayName = "ConversationsContext";
 
-export const ConversationsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ConversationsProvider= ({ children }: { children: ReactNode }) => {
   const createConversation = useCreateConversationMutation().mutateAsync;
   const updateConversation = useUpdateConversationMutation().mutateAsync;
   const deleteConversation = useDeleteConversationMutation().mutateAsync;

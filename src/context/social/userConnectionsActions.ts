@@ -12,6 +12,8 @@ export interface UserConnection {
   id: string;
   follower_profile_id: string;
   following_profile_id: string;
+  status: string;
+  updated_at?: string;
   [key: string]: any;
 }
 

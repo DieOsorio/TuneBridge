@@ -9,6 +9,7 @@ interface ConfirmDialogProps {
   confirmLabel: string;
   cancelLabel: string;
   color?: "error" | "primary";
+  className?: string;
 }
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -20,6 +21,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   confirmLabel,
   cancelLabel,
   color = "primary",
+  className = "",
 }) => {
   if (!isOpen) return null;
   return (

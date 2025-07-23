@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, FC } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchMusicianAdsQuery,
   useFetchMusicianAdQuery,
@@ -27,11 +27,7 @@ export interface AdsContextValue {
 const AdsContext = createContext<AdsContextValue | undefined>(undefined);
 AdsContext.displayName = "AdsContext";
 
-export interface AdsProviderProps {
-  children: ReactNode;
-}
-
-export const AdsProvider: FC<AdsProviderProps> = ({ children }) => {
+export const AdsProvider = ({ children }: { children: ReactNode }) => {
   const createAd = useCreateMusicianAdMutation().mutateAsync;
   const updateAd = useUpdateMusicianAdMutation().mutateAsync;
   const deleteAd = useDeleteMusicianAdMutation().mutateAsync;

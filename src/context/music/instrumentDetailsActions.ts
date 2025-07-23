@@ -10,8 +10,11 @@ import {
 
 export interface InstrumentDetails {
   id: string;
+  profile_id: string;
   role_id: string;
-  created_at?: string;
+  instrument: string;
+  years_of_experience: number | null;
+  level: string | null;
   [key: string]: any;
 }
 
@@ -97,10 +100,7 @@ export const useAddInstrumentMutation = (): UseMutationResult<InstrumentDetails,
       replaceOptimisticItem({
         queryClient,
         keyFactory: instrumentDetailsKeyFactory,
-        entity: {
-          id: newInstrument.id,
-          role_id: newInstrument.role_id ?? "",
-        },
+        entity: newInstrument,
         newEntity: newInstrument,
       });
     },
@@ -145,7 +145,7 @@ export const useUpdateInstrumentMutation = (): UseMutationResult<InstrumentDetai
       replaceOptimisticItem({
         queryClient,
         keyFactory: instrumentDetailsKeyFactory,
-        entity: { id: newInstrument.id, role_id: newInstrument.role_id ?? "" },
+        entity: newInstrument,
         newEntity: newInstrument,
       });
     },

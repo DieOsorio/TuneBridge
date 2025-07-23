@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Loading from "../../utils/Loading";
-import { useForm, FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 interface LoginFormInputs {
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
             type="email"
             placeholder={t("common:form.placeholders.email")}
             autoComplete="email"
-            register={register("email")}
+            register={register}
             validation={{ required: t("auth:login.errors.emailRequired") }}
             error={errors.email}
           />
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
             type="password"
             placeholder={t("common:form.placeholders.password")}
             autoComplete="current-password"
-            register={register("password")}
+            register={register}
             validation={{ required: t("auth:login.errors.passwordRequired") }}
             error={errors.password}
           />

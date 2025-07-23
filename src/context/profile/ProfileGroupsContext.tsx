@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchProfileGroupsQuery,
   useFetchProfileGroupQuery,
@@ -23,11 +23,7 @@ export interface ProfileGroupsContextType {
 const ProfileGroupsContext = createContext<ProfileGroupsContextType | undefined>(undefined);
 ProfileGroupsContext.displayName = "ProfileGroupsContext";
 
-interface ProfileGroupsProviderProps {
-  children: ReactNode;
-}
-
-export const ProfileGroupsProvider: React.FC<ProfileGroupsProviderProps> = ({ children }) => {
+export const ProfileGroupsProvider = ({ children }: { children: ReactNode }) => {
   const { data: profileGroups, isLoading: loading, error, refetch } = useFetchProfileGroupsQuery();
   const createProfileGroup = useCreateProfileGroupMutation().mutateAsync;
   const updateProfileGroup = useUpdateProfileGroupMutation().mutateAsync;
@@ -36,7 +32,7 @@ export const ProfileGroupsProvider: React.FC<ProfileGroupsProviderProps> = ({ ch
   const value: ProfileGroupsContextType = {
     profileGroups,
     loading,
-    error: error ?? null,
+    error,
     refetch,
     fetchProfileGroup: useFetchProfileGroupQuery,
     createProfileGroup,

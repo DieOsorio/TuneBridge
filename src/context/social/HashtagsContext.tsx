@@ -1,11 +1,10 @@
-import { createContext, useContext, ReactNode, FC } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchHashtagsQuery,
   useUpsertHashtagMutation,
   useDeleteHashtagMutation,
 } from "./hashtagsActions";
 import type { Hashtag } from "./hashtagsActions";
-import { UseQueryResult } from "@tanstack/react-query";
 
 export interface HashtagsContextValue {
   hashtags: Hashtag[] | undefined;
@@ -19,11 +18,7 @@ export interface HashtagsContextValue {
 const HashtagsContext = createContext<HashtagsContextValue | undefined>(undefined);
 HashtagsContext.displayName = "HashtagsContext";
 
-export interface HashtagsProviderProps {
-  children: ReactNode;
-}
-
-export const HashtagsProvider: FC<HashtagsProviderProps> = ({ children }) => {
+export const HashtagsProvider = ({ children }: { children: ReactNode }) => {
   const { data: hashtags, isLoading: loading, error, refetch } = useFetchHashtagsQuery();
   const upsertHashtag = useUpsertHashtagMutation().mutateAsync;
   const deleteHashtag = useDeleteHashtagMutation().mutateAsync;

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchConnectionsQuery,
   useAddConnectionMutation,
@@ -7,7 +7,7 @@ import {
   useConnectionBetweenProfiles,
 } from "./userConnectionsActions";
 import { UserConnection } from "./userConnectionsActions";
-import { UseQueryResult, UseMutationResult } from "@tanstack/react-query";
+import { useAuth } from "../AuthContext";
 
 interface UserConnectionsContextValue {
   connections: UserConnection[] | undefined;
@@ -24,9 +24,9 @@ interface UserConnectionsContextValue {
 const UserConnectionsContext = createContext<UserConnectionsContextValue | undefined>(undefined);
 UserConnectionsContext.displayName = "UserConnectionsContext";
 
-export const UserConnectionsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // TODO: Replace with actual profileId from context or props
-  const profileId = ""; // You should inject the real profileId here
+export const UserConnectionsProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
+  const profileId = user?.id ?? "";
   const { data: connections, isLoading: loading, error, refetch } = useFetchConnectionsQuery(profileId);
   const addConnection = useAddConnectionMutation().mutateAsync;
   const updateConnection = useUpdateConnectionMutation().mutateAsync;

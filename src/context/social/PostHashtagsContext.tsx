@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchPostHashtagsQuery,
   useUpsertPostHashtagMutation,
@@ -18,15 +18,15 @@ export interface PostHashtagsProviderProps {
   children: ReactNode;
 }
 
-export const PostHashtagsProvider: React.FC<PostHashtagsProviderProps> = ({ children }) => {
+export const PostHashtagsProvider = ({ children }: { children: ReactNode }) => {
   const upsertPostHashtag = useUpsertPostHashtagMutation().mutateAsync;
   const deletePostHashtags = useDeletePostHashtagMutation().mutateAsync;
 
-  const value = useMemo<PostHashtagsContextValue>(() => ({
+  const value: PostHashtagsContextValue = {
     getHashtagsByPostId: useFetchPostHashtagsQuery,
     upsertPostHashtag,
     deletePostHashtags,
-  }), [upsertPostHashtag, deletePostHashtags]);
+  };
 
   return (
     <PostHashtagsContext.Provider value={value}>

@@ -1,16 +1,14 @@
-import { createContext, useContext, ReactNode, FC } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchLikesQuery,
   useUserLikesQuery,
   useInsertLikeMutation,
-  useUpdateLikeMutation,
   useDeleteLikeMutation,
   useCommentLikesQuery,
   usePostLikesQuery,
   useUserLikedPostQuery
 } from "./likesActions";
 import type { Like } from "./likesActions";
-import { UseQueryResult } from "@tanstack/react-query";
 
 export interface LikesContextValue {
   likes: Like[] | undefined;
@@ -19,7 +17,6 @@ export interface LikesContextValue {
   refetch: () => void;
   userLikes: typeof useUserLikesQuery;
   insertLike: (like: Partial<Like>) => Promise<Like>;
-  updateLike: (params: { id: string; updatedLike: Partial<Like> }) => Promise<Like>;
   deleteLike: (like: Like) => Promise<void>;
   commentLikesQuery: typeof useCommentLikesQuery;
   postLikesQuery: typeof usePostLikesQuery;
@@ -33,10 +30,9 @@ export interface LikesProviderProps {
   children: ReactNode;
 }
 
-export const LikesProvider: FC<LikesProviderProps> = ({ children }) => {
+export const LikesProvider = ({ children }: { children: ReactNode }) => {
   const { data: likes, isLoading: loading, error, refetch } = useFetchLikesQuery();
   const insertLike = useInsertLikeMutation().mutateAsync;
-  const updateLike = useUpdateLikeMutation().mutateAsync;
   const deleteLike = useDeleteLikeMutation().mutateAsync;
 
   const value: LikesContextValue = {
@@ -46,7 +42,6 @@ export const LikesProvider: FC<LikesProviderProps> = ({ children }) => {
     refetch,
     userLikes: useUserLikesQuery,
     insertLike,
-    updateLike,
     deleteLike,
     commentLikesQuery: useCommentLikesQuery,
     postLikesQuery: usePostLikesQuery,

@@ -9,10 +9,10 @@ import {
 import { groupEventRsvpsKeyFactory } from "../helpers/groups/groupsKeys";
 
 export interface EventRsvp {
-  event_id: string; // UUID, references groups.group_events(id)
-  profile_id: string; // UUID, references users.profiles(id)
+  event_id: string; 
+  profile_id: string; 
   status: "attending" | "not_attending" | "pending";
-  updated_at: string | null; // timestamptz
+  updated_at: string | null;
 }
 
 // --- FETCH ALL RSVPs FOR EVENT ---

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchSingersQuery,
   useFetchSingerById,
@@ -9,10 +9,6 @@ import {
 
 // Context value type
 interface SingerDetailsContextValue {
-  singerDetails: any;
-  loading: boolean;
-  error: any;
-  refetch: () => void;
   fetchSinger: typeof useFetchSingersQuery;
   fetchSingerById: typeof useFetchSingerById;
   addSinger: ReturnType<typeof useAddSingerMutation>["mutateAsync"];
@@ -24,16 +20,11 @@ const SingerDetailsContext = createContext<SingerDetailsContextValue | undefined
 SingerDetailsContext.displayName = "SingerDetailsContext";
 
 export const SingerDetailsProvider = ({ children }: { children: ReactNode }) => {
-  const { data: singerDetails, isLoading: loading, error, refetch } = useFetchSingersQuery("");
   const addSinger = useAddSingerMutation();
   const updateSinger = useUpdateSingerMutation();
   const deleteSinger = useDeleteSingerMutation();
 
   const value: SingerDetailsContextValue = {
-    singerDetails,
-    loading,
-    error,
-    refetch,
     fetchSinger: useFetchSingersQuery,
     fetchSingerById: useFetchSingerById,
     addSinger: addSinger.mutateAsync,

@@ -1,5 +1,3 @@
-// src/components/social/ads/AdForm.tsx
-
 import { useForm, useWatch } from "react-hook-form";
 import Button from "../../ui/Button";
 import { useAuth } from "../../../context/AuthContext";
@@ -16,7 +14,7 @@ import type { MusicianAd } from "../../../context/social/adsActions";
 interface AdFormProps {
   defaultValues?: Partial<MusicianAd>;
   onSubmit: (data: MusicianAd) => void;
-  publisherId?: string | null; // si lo usas, sino omitir
+  publisherId?: string | null;
 }
 
 const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisherId }) => {
@@ -32,7 +30,7 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
     formState: { errors },
   } = useForm<MusicianAd>({
     defaultValues: {
-      ad_type: defaultValues.ad_type ?? "",
+      ad_type: defaultValues.ad_type,
       title: defaultValues.title ?? "",
       looking_for: defaultValues.looking_for ?? [],
       genres: defaultValues.genres ?? [],
@@ -84,15 +82,12 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
     <form onSubmit={handleSubmit(internalSubmit)} className="space-y-4">
       <Select
         id="ad_type"
-        name="ad_type"
         label={t("adForm.labels.typeOfAd")}
-        defaultOption={t("adForm.labels.default")}
         options={[
           { value: "looking", label: t("adForm.labels.looking") },
           { value: "offering", label: t("adForm.labels.offering") },
         ]}
         control={control}
-        register={register}
         classForLabel="text-gray-400"
         error={errors.ad_type}
       />

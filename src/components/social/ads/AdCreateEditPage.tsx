@@ -1,5 +1,3 @@
-// src/components/social/ads/AdCreateEditPage.tsx
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useAds } from "../../../context/social/adsContext";
 import AdForm from "./AdForm";
@@ -14,7 +12,9 @@ export default function AdCreateEditPage() {
   const isEditing = Boolean(id);
 
   const { fetchAd, createAd, updateAd } = useAds();
-  const { data: adData, isLoading } = isEditing ? fetchAd(id) : { data: undefined, isLoading: false };
+  const { data: adData, isLoading } = id
+  ? fetchAd(id)
+  : { data: undefined, isLoading: false };
 
 
   const navigate = useNavigate();
@@ -25,10 +25,10 @@ export default function AdCreateEditPage() {
       const formattedData = {
         ...formData,
         genres: typeof formData.genres === "string"
-          ? formData.genres.split(",").map(g => g.trim())
+          ? (formData.genres as string).split(",").map((g: string) => g.trim())
           : formData.genres,
         looking_for: typeof formData.looking_for === "string"
-          ? formData.looking_for.split(",").map(l => l.trim())
+          ? (formData.looking_for as string).split(",").map((l: string) => l.trim())
           : formData.looking_for,
       };
 

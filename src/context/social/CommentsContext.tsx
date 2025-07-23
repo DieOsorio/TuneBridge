@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, FC } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import {
   useFetchCommentsQuery,
   useInsertCommentMutation,
@@ -17,11 +17,7 @@ export interface CommentsContextValue {
 const CommentsContext = createContext<CommentsContextValue | undefined>(undefined);
 CommentsContext.displayName = "CommentsContext";
 
-export interface CommentsProviderProps {
-  children: ReactNode;
-}
-
-export const CommentsProvider: FC<CommentsProviderProps> = ({ children }) => {
+export const CommentsProvider = ({ children }: { children: ReactNode }) => {
   const insertComment = useInsertCommentMutation().mutateAsync;
   const updateComment = useUpdateCommentMutation().mutateAsync;
   const deleteComment = useDeleteCommentMutation().mutateAsync;
