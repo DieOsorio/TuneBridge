@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { ControllerRenderProps, UseFormRegister, RegisterOptions } from "react-hook-form";
+import {
+  ControllerRenderProps,
+  UseFormRegister,
+  RegisterOptions,
+} from "react-hook-form";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 interface InputProps {
@@ -15,7 +19,7 @@ interface InputProps {
   register?: UseFormRegister<any>;
   validation?: RegisterOptions;
   field?: ControllerRenderProps<any, string>;
-  showToggle?: boolean; 
+  showToggle?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -34,9 +38,7 @@ const Input: React.FC<InputProps> = ({
   showToggle = true,
 }) => {
   const [visible, setVisible] = useState(false);
-  const [charCount, setCharCount] = useState(
-    field?.value?.length || 0
-  );
+  const [charCount, setCharCount] = useState(field?.value?.length || 0);
   const isPassword = type === "password";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +53,10 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
-        <label htmlFor={id} className={`font-semibold text-sm mb-1 ${classForLabel}`}>
+        <label
+          htmlFor={id}
+          className={`font-semibold text-sm mb-1 text-white ${classForLabel}`}
+        >
           {label}
         </label>
       )}
@@ -63,9 +68,9 @@ const Input: React.FC<InputProps> = ({
           placeholder={placeholder}
           maxLength={maxLength}
           autoComplete={autoComplete}
-          className={`rounded-md px-3 py-2 border ${
-            error ? "border-red-500" : "border-gray-300"
-          } focus:outline-none focus:ring-2 focus:ring-sky-500 w-full`}
+          className={`w-full rounded-md px-3 py-2 border bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+            error ? "border-red-500" : "border-gray-600"
+          }`}
           {...(field ?? registerProps)}
           value={field?.value ?? undefined}
           onChange={handleChange}
@@ -75,8 +80,8 @@ const Input: React.FC<InputProps> = ({
           <button
             type="button"
             onClick={() => setVisible((v) => !v)}
-            className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-300 focus:outline-none"
-            tabIndex={-1} 
+            className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-white focus:outline-none"
+            tabIndex={-1}
           >
             {visible ? <FiEyeOff /> : <FiEye />}
           </button>

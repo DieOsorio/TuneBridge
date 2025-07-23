@@ -46,23 +46,29 @@ export interface NotificationPrefs {
 /* ------------------------------------------------------------------
  * SELECT  – get UI preferences 
  * -----------------------------------------------------------------*/
-export const useUiPreferencesQuery = (profileId: string): UseQueryResult<UiPreferences, Error> => {
+export const useUiPreferencesQuery = (profileId?: string): UseQueryResult<UiPreferences, Error> => {
+  const queryKey = profileId ? uiPrefKeyFactory({ profileId }).single : undefined;
+
   return useQuery<UiPreferences, Error>({
-    queryKey: uiPrefKeyFactory({ profileId: profileId ?? "__empty__" }).single,
+    queryKey: queryKey!,
     enabled: !!profileId,
     queryFn: async () => {
+      if (!profileId) throw new Error("No profileId provided");
+
       const { data, error } = await supabase
         .schema("users")
         .from("ui_preferences")
         .select("*")
         .eq("profile_id", profileId)
         .single();
+
       if (error && error.code !== "PGRST116") throw new Error(error.message);
       return data ?? { profile_id: profileId, lang: "en", theme: "dark" };
     },
     retry: false,
   });
 };
+
 
 /* ------------------------------------------------------------------
  * UPSERT – create or update (lang, theme, …)
@@ -117,18 +123,26 @@ export const useUpsertUiPreferences = (): UseMutationResult<UiPreferences, Error
 /* ------------------------------------------------------------------
  * SELECT – get privacy preferences
  * -----------------------------------------------------------------*/
-export const usePrivacySettingsQuery = (profileId: string): UseQueryResult<PrivacyPrefs["prefs"], Error> =>
-  useQuery<PrivacyPrefs["prefs"], Error>({
-    queryKey: privacyKeyFactory({ profileId: profileId ?? "__empty__" }).single,
+export const usePrivacySettingsQuery = (
+  profileId?: string
+): UseQueryResult<PrivacyPrefs["prefs"], Error> => {
+  const queryKey = profileId ? privacyKeyFactory({ profileId }).single : undefined;
+
+  return useQuery<PrivacyPrefs["prefs"], Error>({
+    queryKey: queryKey!,
     enabled : !!profileId,
     queryFn : async () => {
+      if (!profileId) throw new Error("No profileId provided");
+
       const { data, error } = await supabase
         .schema("users")
         .from("privacy_settings")
         .select("prefs")
         .eq("profile_id", profileId)
         .maybeSingle();
+
       if (error && error.code !== "PGRST116") throw new Error(error.message);
+
       return (
         data?.prefs ?? {
           show_email: false,
@@ -140,6 +154,8 @@ export const usePrivacySettingsQuery = (profileId: string): UseQueryResult<Priva
     },
     retry: false,
   });
+};
+
 
 /* ------------------------------------------------------------------
  * UPSERT – create or update preferences
@@ -188,21 +204,29 @@ export const useUpsertPrivacySettings = (): UseMutationResult<PrivacySettings, E
 /* ------------------------------------------------------------------
  * SELECT – obtain notification prefs for a profile
  * -----------------------------------------------------------------*/
-export const useNotificationPrefsQuery = (profileId: string): UseQueryResult<NotificationPrefs, Error> =>
-  useQuery<NotificationPrefs, Error>({
-    queryKey: notifPrefKeyFactory({ profileId: profileId ?? "__empty__" }).single,
+export const useNotificationPrefsQuery = (
+  profileId?: string
+): UseQueryResult<NotificationPrefs, Error> => {
+  const queryKey = profileId ? notifPrefKeyFactory({ profileId }).single : undefined;
+
+  return useQuery<NotificationPrefs, Error>({
+    queryKey: queryKey!,
     enabled : !!profileId,
     queryFn : async () => {
+      if (!profileId) throw new Error("No profileId provided");
+
       const { data, error, status } = await supabase
         .schema("social")
         .from("notification_prefs")
         .select("*")
         .eq("profile_id", profileId)
         .maybeSingle();
+
       if (error && status !== 406) throw new Error(error.message);
+
       return (
         data ?? {
-          profile_id: profileId,
+          profile_id : profileId,
           likes: true,
           comments: true,
           connections: true,
@@ -213,6 +237,8 @@ export const useNotificationPrefsQuery = (profileId: string): UseQueryResult<Not
     },
     retry: false,
   });
+};
+
 
 /* ------------------------------------------------------------------
  * UPSERT – create / update prefs

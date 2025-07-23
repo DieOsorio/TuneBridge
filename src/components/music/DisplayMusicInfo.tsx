@@ -25,19 +25,19 @@ interface DisplayMusicInfoProps {
 const DisplayMusicInfo: React.FC<DisplayMusicInfoProps> = ({ profileId }) => {
   const { t } = useTranslation("music");
   const { user } = useAuth();
-  const [roleId, setRoleId] = useState<string | undefined>();
+  const [roleId, setRoleId] = useState<string>();
   const { fetchRoles } = useRoles();
   const { data: roles, isLoading: loadingRoles, error } = fetchRoles(profileId);
   const { fetchInstruments } = useInstrumentsDetails();
-  const { data: instruments, isLoading: loadingInstrument } = roleId ? fetchInstruments(roleId) : { data: undefined, isLoading: false };
+  const { data: instruments, isLoading: loadingInstrument } = fetchInstruments(roleId ?? "");
   const { fetchSinger } = useSingerDetails();
-  const { data: singerDetails, isLoading: loadingSinger } = roleId ? fetchSinger(roleId) : { data: undefined, isLoading: false };
+  const { data: singerDetails, isLoading: loadingSinger } = fetchSinger(roleId ?? "");
   const { fetchComposer } = useComposerDetails();
-  const { data: composerDetails, isLoading: loadingComposer } = roleId ? fetchComposer(roleId) : { data: undefined, isLoading: false };
-  const producerDetailsContext = useProducerDetails();
-  const { data: producerDetails, isLoading: loadingProducer } = roleId ? producerDetailsContext.fetchProducerById(roleId) : { data: undefined, isLoading: false };
+  const { data: composerDetails, isLoading: loadingComposer } = fetchComposer(roleId ?? "");
+  const { fetchProducers } = useProducerDetails();
+  const { data: producerDetails, isLoading: loadingProducer } = fetchProducers(roleId ?? "");
   const { fetchDj } = useDjDetails();
-  const { data: djDetails, isLoading: loadingDj } = roleId ? fetchDj(roleId) : { data: undefined, isLoading: false };
+  const { data: djDetails, isLoading: loadingDj } = fetchDj(roleId ?? "");
   const [expandedRole, setExpandedRole] = useState<string | number | undefined>(undefined);
 
   const ownProfile = user && user.id === profileId;

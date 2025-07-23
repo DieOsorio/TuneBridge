@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import i18n from '../../i18n';
+import i18n from "../../i18n";
 import {
   useUiPreferencesQuery,
   useUpsertUiPreferences,
   usePrivacySettingsQuery,
   useUpsertPrivacySettings,
   useNotificationPrefsQuery,
-  useUpsertNotificationPrefs
+  useUpsertNotificationPrefs,
 } from "./settingsActions";
 import { useAuth } from "../AuthContext";
 
@@ -28,57 +28,52 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const profileId = user?.id;
 
   /* ---------- UI SETTINGS ---------- */
-  const [prefs, setPrefs] = useState<{ lang: string; theme: string }>(
-    {
-      lang: localStorage.getItem("lang") || "en",
-      theme: localStorage.getItem("theme") || "dark",
-    }
-  );
+  const [prefs, setPrefs] = useState<{ lang: string; theme: string }>({
+    lang: localStorage.getItem("lang") || "en",
+    theme: localStorage.getItem("theme") || "dark",
+  });
 
-  // React-Query hooks
-  const { data: dbPrefs } = useUiPreferencesQuery(profileId ?? "__empty__");
+  const { data: dbPrefs } = useUiPreferencesQuery(profileId);
   const upsertUiPreferences = useUpsertUiPreferences().mutateAsync;
 
-  // Theme
   useEffect(() => {
-    if (dbPrefs) setPrefs({ 
-      lang: dbPrefs.lang, 
-      theme: dbPrefs.theme 
-    });
-  }, [dbPrefs])
+    if (dbPrefs) {
+      setPrefs({
+        lang: dbPrefs.lang,
+        theme: dbPrefs.theme,
+      });
+    }
+  }, [dbPrefs]);
 
   useEffect(() => {
-    // Theme
     if (prefs.theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
 
-    // Lang
     i18n.changeLanguage(prefs.lang);
-
     localStorage.setItem("lang", prefs.lang);
     localStorage.setItem("theme", prefs.theme);
-  }, [prefs])
+  }, [prefs]);
 
   const saveUiPreferences = async ({ lang, theme }: { lang: string; theme: string }) => {
-    if (!profileId) return; // guest
+    if (!profileId) return;
     await upsertUiPreferences({ profile_id: profileId, lang, theme });
     setPrefs({ lang, theme });
   };
 
   /* ---------- PRIVACY SETTINGS ---------- */
-  const { data: privacyPrefs = {} } = usePrivacySettingsQuery(profileId ?? "__empty__");
+  const { data: privacyPrefs = {} } = usePrivacySettingsQuery(profileId);
   const upsertPrivacy = useUpsertPrivacySettings().mutateAsync;
 
   const savePrivacySettings = async (newPrefs: any) => {
     if (!profileId) return;
     await upsertPrivacy({ profile_id: profileId, prefs: newPrefs });
-  }
+  };
 
   /* ---------- NOTIFICATION SETTINGS ---------- */
-  const { data: notifPrefs = null } = useNotificationPrefsQuery(profileId ?? "__empty__");
+  const { data: notifPrefs = null } = useNotificationPrefsQuery(profileId);
   const upsertNotificationPrefs = useUpsertNotificationPrefs().mutateAsync;
 
   const saveNotificationPrefs = async (prefsObj: any) => {
@@ -87,18 +82,13 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value: SettingsContextValue = {
-    //ui settings
     prefs,
     saveUiPreferences,
-
-    //privacy settings
     privacyPrefs,
     privacyOthers: usePrivacySettingsQuery,
     savePrivacySettings,
-
-    //notification settings
     notifPrefs,
-    saveNotificationPrefs
+    saveNotificationPrefs,
   };
 
   return (

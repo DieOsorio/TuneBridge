@@ -1,6 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { FieldError, UseFormRegister, ValidationRule, FieldErrors } from "react-hook-form";
+import {
+  FieldError,
+  UseFormRegister,
+  ValidationRule,
+  FieldErrors,
+} from "react-hook-form";
 
 interface TextareaProps {
   id: string;
@@ -30,11 +35,11 @@ const Textarea: React.FC<TextareaProps> = ({
   const { t } = useTranslation("ui");
 
   return (
-    <div className="sm:col-span-2">
+    <div className="sm:col-span-2 flex flex-col gap-2">
       {label && (
         <label
           htmlFor={id}
-          className={`block text-sm font-bold mb-2 text-gray-200 ${classForLabel}`}
+          className={`font-semibold text-sm text-gray-200 ${classForLabel}`}
         >
           {label}
         </label>
@@ -45,16 +50,16 @@ const Textarea: React.FC<TextareaProps> = ({
         {...register(id, validation)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`mt-1 block w-full rounded-md border shadow-sm !border-gray-400 h-24 resize-none p-2 ${className}`}
+        className={`w-full bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 p-2 resize-none h-24 ${className}`}
       />
 
       {(error as FieldError)?.message && (
-        <p className="text-sm text-red-500 mt-1">{(error as FieldError).message}</p>
+        <span className="text-red-500 text-xs">{(error as FieldError).message}</span>
       )}
 
       {maxLength && (
         <p
-          className={`text-sm mt-1 ${
+          className={`text-sm ${
             (watchValue?.length ?? 0) >= maxLength ? "text-red-400" : "text-gray-400"
           }`}
         >

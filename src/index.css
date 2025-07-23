@@ -54,62 +54,42 @@ body {
 }
 
 /* Custom styles for the DatePicker component */
+/* DatePicker wrapper */
 :not(.MuiCustomDateTimePicker) .MuiPickersInputBase-root {
-  background-color: transparent !important;
-  border-radius: 0.375rem !important;
-  border: 1px solid #9CA3AF !important;
-  color: #D1D5DB !important;
+  @apply bg-gray-800 rounded-md border border-gray-600 text-white;
 }
 
-:not(.MuiCustomDateTimePicker) .MuiButtonBase-root {
-  color: #D1D5DB !important;
+/* Input text */
+:not(.MuiCustomDateTimePicker) input.MuiInputBase-input {
+  @apply bg-gray-800 text-white placeholder-gray-400 focus:!outline-none;
 }
 
+/* Input focus ring */
+:not(.MuiCustomDateTimePicker) .Mui-focused .MuiOutlinedInput-notchedOutline {
+  @apply !border-sky-500 !ring-2 !ring-sky-500;
+}
+
+/* Helper/Error text color */
+:not(.MuiCustomDateTimePicker) .MuiFormHelperText-root {
+  @apply !text-red-500;
+}
+
+/* Icon color */
+:not(.MuiCustomDateTimePicker) .MuiSvgIcon-root {
+  @apply !text-gray-400;
+}
+
+/* Day button colors */
 :not(.MuiCustomDateTimePicker) .MuiPickersDay-root {
-  color: #66686b !important;
+  @apply !text-gray-400;
 }
 
 :not(.MuiCustomDateTimePicker) .MuiPickersDay-root.Mui-selected {
-  color: #E5E7EB !important;
-  background-color: #0369A1 !important;
+  @apply !bg-sky-500 !text-white ring-2 !ring-sky-500;
 }
 
 :not(.MuiCustomDateTimePicker) .MuiPickersDay-root.Mui-selected:hover {
-  background-color: #075985 !important;
-}
-
-:not(.MuiCustomDateTimePicker) .MuiTypography-root {
-  color: #373839 !important;
-  font-weight: 600 !important;
-}
-
-.custom-datetime input.MuiInputBase-input:focus {
-  background-color: #111827 !important; /* bg-gray-900 */
-  color: #d1d5db !important; /* text-gray-300 */
-}
-
-.MuiCustomDateTimePicker input::placeholder {
-  color: #374151 !important; /* text-gray-700 */
-}
-
-.MuiCustomDateTimePicker input {
-  color: #111827 !important; /* text-gray-900 */
-}
-
-.MuiCustomDateTimePicker .MuiSvgIcon-root {
-  color: #4B5563 !important; /* text-gray-600 */
-}
-
-.MuiCustomDateTimePicker .MuiPickersInputBase-sectionContent {
-  color: #111827 !important; /* text-gray-900 */
-}
-
-.MuiCustomDateTimePicker .MuiPickersOutlinedInput-notchedOutline {
-  border-color: #9CA3AF !important; 
-}
-
-.MuiCustomDateTimePicker .Mui-focused .MuiPickersOutlinedInput-notchedOutline {
-  border-color: #111827 !important;
+  @apply !bg-sky-500;
 }
 
 /* Custom pulse animation */

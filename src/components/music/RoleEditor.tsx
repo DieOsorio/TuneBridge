@@ -305,8 +305,8 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
         ))}
       </ul>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 bg-gray-100 p-6 rounded-2xl shadow-inner border border-white">
-        <h5 className="text-md font-medium mb-4 text-gray-700">{t("addNew", { item: title.toLowerCase() })}</h5>
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 bg-gray-900 p-6 rounded-2xl shadow-inner border border-gray-600">
+        <h5 className="text-lg font-medium mb-4 text-center text-white">{t("addNew", { item: title.toLowerCase() })}</h5>
         <div className="grid sm:grid-cols-2 gap-4">
           {fields.map((field) => (
             <div key={field.name}>
@@ -320,7 +320,6 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
                       id={field.name}
                       label={field.label}
                       options={field.options || []}
-                      className="bg-white focus:bg-white"
                       {...controllerField}
                     />
                   )}
@@ -332,10 +331,7 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
                   placeholder={field.placeholder}
                   type={field.type || "text"}
                   error={errors[field.name]?.message}
-                  className="bg-white"
-                  register={register(field.name, {
-                    required: field.required ? `${field.label} is required` : false,
-                  })}
+                  register={register}
                   validation={{
                     required: field.required ? `${field.label} is required` : false,
                   }}

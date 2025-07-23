@@ -84,7 +84,6 @@ const MusicSettings: React.FC<MusicSettingsProps> = ({ profileId }) => {
         <div className="grid md:grid-cols-2 gap-4 items-center">
           <Select
             id="selectedRole"
-            label={t("edit.selectLabel")}
             options={[
               { value: "Composer", label: t("roles.composer") },
               { value: "DJ", label: t("roles.dj") },
@@ -92,9 +91,8 @@ const MusicSettings: React.FC<MusicSettingsProps> = ({ profileId }) => {
               { value: "Producer", label: t("roles.producer") },
               { value: "Singer", label: t("roles.singer") },
             ]}
-            className=""
-            control={undefined as any}
-            // The Select component should be refactored to support register for non-form controlled usage
+            defaultOption={t("edit.selectLabel")}
+            register={register}
           />
           <div className={`${selectedRole === "Other" ? "md:col-span-2" : ""}`}>
             <Button type="submit" className="w-full md:w-auto md:mt-3 !bg-emerald-600 hover:!bg-emerald-700">

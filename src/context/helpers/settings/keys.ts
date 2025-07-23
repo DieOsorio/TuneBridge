@@ -9,10 +9,10 @@ export const UI_PREFERENCE_KEY = (profileId: string): ["uiPreference", string] =
 
 export const uiPrefKeyFactory = ({ profileId }: UiPrefKeyFactoryParams = {}): {
   all: ["uiPreferences"];
-  single: ["uiPreference", string];
+  single?: ["uiPreference", string];
 } => ({
   all: UI_PREFERENCES_KEY(),
-  single: UI_PREFERENCE_KEY(profileId ?? "__empty__"),
+  single: profileId ? UI_PREFERENCE_KEY(profileId) : undefined,
 });
 
 
@@ -27,10 +27,10 @@ export const PRIVACY_SETTING_KEY   = (profileId: string): ["privacySetting", str
 
 export const privacyKeyFactory = ({ profileId }: PrivacyKeyFactoryParams = {}): {
   all: ["privacySettings"];
-  single: ["privacySetting", string];
+  single?: ["privacySetting", string];
 } => ({
-  all   : PRIVACY_SETTINGS_KEY(),
-  single: PRIVACY_SETTING_KEY(profileId ?? "__empty__"),
+  all: PRIVACY_SETTINGS_KEY(),
+  single: profileId ? PRIVACY_SETTING_KEY(profileId) : undefined,
 });
 
 
@@ -45,8 +45,8 @@ export const NOTIF_PREF_KEY = (profileId: string): ["notificationPref", string] 
 
 export const notifPrefKeyFactory = ({ profileId }: NotifPrefKeyFactoryParams = {}): {
   all: ["notificationPrefs"];
-  single: ["notificationPref", string];
+  single?: ["notificationPref", string];
 } => ({
   all: NOTIF_PREFS_KEY(),
-  single: NOTIF_PREF_KEY(profileId ?? "__empty__"),
+  single: profileId ? NOTIF_PREF_KEY(profileId) : undefined,
 });

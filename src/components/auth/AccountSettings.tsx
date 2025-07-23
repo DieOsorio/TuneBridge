@@ -96,14 +96,12 @@ const AccountSettings: React.FC = () => {
             label={t("labels.language")}
             control={prefCtrl}
             options={LANGS}
-            className="bg-gray-800 text-white light:bg-gray-200 light:text-gray-900"
           />
           <Select
             id="theme"
             label={t("labels.theme")}
             control={prefCtrl}
             options={THEMES}
-            className="bg-gray-800 text-white light:bg-gray-200 light:text-gray-900"
           />
           <div className="sm:col-span-2 flex justify-center gap-4">
             <Button 
@@ -131,7 +129,7 @@ const AccountSettings: React.FC = () => {
             type="password"
             label={t("labels.new")}
             placeholder={t("placeholders.new")}
-            register={register("newPassword")}
+            register={register}
             validation={{
               required: t("validations.required"),
               minLength: { value: 6, message: t("validations.min") }
@@ -143,7 +141,7 @@ const AccountSettings: React.FC = () => {
             type="password"
             label={t("labels.confirm")}
             placeholder={t("placeholders.confirm")}
-            register={register("confirmPassword")}
+            register={register}
             validation={{
               validate: (v: string) => v === watch("newPassword") || t("validations.mismatch")
             }}

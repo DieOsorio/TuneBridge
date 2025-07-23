@@ -33,9 +33,8 @@ export interface DeleteInstrumentParams {
 
 export const useFetchInstrumentsQuery = (roleId: string): UseQueryResult<InstrumentDetails[], Error> => {
   return useQuery<InstrumentDetails[], Error>({
-    queryKey: instrumentDetailsKeyFactory({ role_id: roleId }).all ?? ["instrumentDetailsList", roleId ?? ""],
+    queryKey: instrumentDetailsKeyFactory({ role_id: roleId }).all,
     queryFn: async () => {
-      if (!roleId) return [];
       const { data, error } = await supabase
         .schema("music")
         .from("instrument_details")

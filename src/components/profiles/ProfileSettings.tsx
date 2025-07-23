@@ -8,12 +8,15 @@ import Select from "../ui/Select";
 import { uploadFileToBucket } from "../../utils/avatarUtils";
 import ImageUploader from "../../utils/ImageUploader";
 import { IoIosCamera } from "react-icons/io";
-import { useForm, FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch, UseFormHandleSubmit, Control } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useTranslation } from "react-i18next";
 import Textarea from "../ui/Textarea";
 import { useCities, useCountries, useStates } from "../../context/helpers/useCountryCity";
 import { Country, State, City } from "country-state-city";
+import { ActualFileObject } from "filepond";
+
+import type { Profile } from "@/context/profile/profileActions";
 
 interface ProfileSettingsForm {
   bio: string;
@@ -106,10 +109,11 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
   const selectedState = watch("state");
   const { data: cities = [] } = useCities(selectedCountry, selectedState);
 
-  const handleAvatarUpdate = (file: File[]) => {
-    if (file.length > 0) {
-      setSelectedFile(file[0]);
-      setPreview(URL.createObjectURL(file[0]));
+  const handleAvatarUpdate = (files: ActualFileObject[]) => {
+    if (files.length > 0) {
+      const file = files[0] as File;
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
     } else {
       setSelectedFile(null);
       setPreview(null);
@@ -133,16 +137,21 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
       }
       const countryObj = Country.getCountryByCode(data.country);
       const stateObj = State.getStateByCodeAndCountry(data.state, data.country);
-      await updateProfile({
+      const updatedProfile: Profile = {
         ...data,
         country: countryObj?.name || data.country,
         state: cleanStateName(stateObj?.name || data.state),
         neighborhood: data.neighborhood,
         avatar_url: avatar,
-        id: user?.id || profile?.id,
+        id: user?.id || profile?.id!,
         email: user?.email || profile?.email || "",
-        birthdate: data.birthdate instanceof Date ? data.birthdate.toISOString() : (typeof data.birthdate === "string" ? data.birthdate : null),
-      });
+        birthdate:
+          data.birthdate instanceof Date
+            ? data.birthdate.toISOString()
+            : (typeof data.birthdate === "string" ? data.birthdate : null),
+        last_seen: profile?.last_seen ?? new Date().toISOString(),
+      };
+      await updateProfile(updatedProfile);
       if (onSave) onSave();
       setSaved(true);
       setTimeout(() => {
@@ -191,7 +200,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           id="bio"
           label={t("edit.labels.bio")}
           placeholder={t("edit.placeholders.bio")}
-          register={register("bio")}
+          register={register}
           validation={{
             maxLength: {
               value: 100,
@@ -206,14 +215,14 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           id="firstname"
           label={t("edit.labels.firstname")}
           placeholder={t("edit.placeholders.firstname")}
-          register={register("firstname")}
+          register={register}
           error={errors.firstname}
         />
         <Input
           id="lastname"
           label={t("edit.labels.lastname")}
           placeholder={t("edit.placeholders.lastname")}
-          register={register("lastname")}
+          register={register}
           error={errors.lastname}
         />
         <Select
@@ -241,7 +250,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           id="username"
           label={t("edit.labels.username")}
           placeholder={t("edit.placeholders.username")}
-          register={register("username")}
+          register={register}
           maxLength={12}
           validation={{
             required: t("edit.validation.usernameRequired"),
@@ -268,7 +277,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
         />
         {errors.gender && <p className="text-red-500 text-xs">{errors.gender.message}</p>}
         <div className="sm:col-span-1">
-          <label htmlFor="birthdate" className="block text-sm font-medium mb-2 text-gray-200">
+          <label htmlFor="birthdate" className="block text-sm font-semibold mb-3 text-white">
             {t("edit.labels.birthdate")}
           </label>
           <DatePicker

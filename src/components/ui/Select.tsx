@@ -4,7 +4,8 @@ import {
   UseFormRegister,
   RegisterOptions,
 } from "react-hook-form";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { FaChevronDown } from "react-icons/fa";
 
 export type Option = {
   value: string;
@@ -13,8 +14,9 @@ export type Option = {
 
 interface SelectProps {
   id: string;
-  label: string;
+  label?: string;
   options: Option[];
+  defaultOption?: string;
   className?: string;
   classForLabel?: string;
   error?: any;
@@ -24,7 +26,7 @@ interface SelectProps {
   validation?: RegisterOptions;
 
   disabled?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement> | string) => void;
 }
 
 const Select = ({
@@ -33,6 +35,7 @@ const Select = ({
   options,
   className,
   classForLabel,
+  defaultOption,
   error,
   control,
   register,
@@ -40,8 +43,60 @@ const Select = ({
   disabled = false,
   onChange,
 }: SelectProps) => {
-  const baseClasses =
-    "rounded-md px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500";
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const renderDropdown = (
+    value: string,
+    onChangeFn: (value: string) => void
+  ) => {
+    const selectedLabel = options.find((o) => o.value === value)?.label || defaultOption;
+
+    return (
+      <div className="relative" ref={dropdownRef}>
+        <button
+          type="button"
+          className={`w-full flex justify-between items-center bg-gray-800 text-white border border-gray-600 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+            disabled ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          onClick={() => !disabled && setIsOpen((prev) => !prev)}
+        >
+          <span>{selectedLabel}</span>
+          <FaChevronDown className="w-4 h-4 ml-2" />
+        </button>
+        {isOpen && (
+          <ul className="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
+            {options.map((option) => (
+              <li
+                key={option.value}
+                className={`px-3 py-2 text-white hover:bg-gray-700 cursor-pointer ${
+                  value === option.value ? "bg-gray-700" : ""
+                }`}
+                onClick={() => {
+                  onChangeFn(option.value);
+                  onChange?.(option.value); // notify external
+                  setIsOpen(false);
+                }}
+              >
+                {option.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
 
   if (control) {
     return (
@@ -56,22 +111,7 @@ const Select = ({
             >
               {label}
             </label>
-            <select
-              id={id}
-              {...field}
-              className={baseClasses}
-              disabled={disabled}
-              onChange={(e) => {
-                field.onChange(e);
-                onChange?.(e);
-              }}
-            >
-              {options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            {renderDropdown(field.value, field.onChange)}
             {error && (
               <span className="text-red-500 text-xs">{error.message}</span>
             )}
@@ -82,6 +122,9 @@ const Select = ({
   }
 
   if (register) {
+    const { onChange: validationOnChange, ...restValidation } = validation ?? {};
+    const [value, setValue] = useState<string>("");
+
     return (
       <div className={`flex flex-col gap-2 ${className ?? ""}`}>
         <label
@@ -90,24 +133,13 @@ const Select = ({
         >
           {label}
         </label>
-        <select
-          id={id}
-          {...register(id, {
-            ...validation,
-            onChange: (e) => {
-              validation?.onChange?.(e);
-              onChange?.(e);
-            },
-          })}
-          className={baseClasses}
-          disabled={disabled}
-        >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        {renderDropdown(value, (val) => {
+          setValue(val);
+          register(id, validation);
+          validationOnChange?.(val);
+          onChange?.(val);
+        })}
+        <input type="hidden" value={value} {...register(id, validation)} />
         {error && (
           <span className="text-red-500 text-xs">{error.message}</span>
         )}

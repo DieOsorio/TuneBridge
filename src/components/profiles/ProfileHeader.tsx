@@ -234,9 +234,9 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                   onClick={() => navigate("/chat")}
                   title={t("profile.titles.chat")}
                 />
-                {!loadingUnreadMessages && unreadMessagesCount && unreadMessagesCount.total && unreadMessagesCount.total > 0 && (
+                {!loadingUnreadMessages && (unreadMessagesCount?.total ?? 0) > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
-                    {unreadMessagesCount.total}
+                    {unreadMessagesCount?.total}
                   </span>
                 )}
               </div>
