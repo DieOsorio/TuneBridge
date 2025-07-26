@@ -1,22 +1,39 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useGroupEvents } from "../../../../context/groups/GroupEventsContext";
-import { useAuth } from "../../../../context/AuthContext";
+import { useGroupEvents } from "@/context/groups/GroupEventsContext";
+import type { GroupEvent } from "@/context/groups/groupEventsActions";
+import { useAuth } from "@/context/AuthContext";
 
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/es";
 import "dayjs/locale/en";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-import Input from "../../../ui/Input";
-import Textarea from "../../../ui/Textarea";
-import Select from "../../../ui/Select";
-import Button from "../../../ui/Button";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+import Select from "@/components/ui/Select";
+import Button from "@/components/ui/Button";
 
-const defaultValues = {
+type FormValues = {
+  title: string;
+  type: "rehearsal" | "gig" | "meeting";
+  start_time: Dayjs | null;
+  end_time: Dayjs | null;
+  location: string;
+  description: string;
+};
+
+type Props = {
+  groupId: string;
+  onClose: () => void;
+  initialEvent?: Partial<GroupEvent> | null;
+  mode?: "create" | "edit";
+};
+
+const defaultValues: FormValues = {
   title: "",
   type: "rehearsal",
   start_time: null,
@@ -25,7 +42,12 @@ const defaultValues = {
   description: "",
 };
 
-const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "create" }) => {
+const GroupEventFormModal = ({
+  groupId,
+  onClose,
+  initialEvent = null,
+  mode = "create",
+}: Props) => {
   const { user } = useAuth();
   const isEdit = mode === "edit";
   const { t, i18n } = useTranslation("groupEvents", { keyPrefix: "form" });
@@ -40,7 +62,7 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
     watch,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues });
+  } = useForm<FormValues>({ defaultValues });
 
   const watchStart = watch("start_time");
   const watchEnd = watch("end_time");
@@ -49,7 +71,7 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
     if (initialEvent) {
       reset({
         title: initialEvent.title || "",
-        type: initialEvent.type || "rehearsal",
+        type: (initialEvent.type as FormValues["type"]) || "rehearsal",
         start_time: dayjs(initialEvent.start_time),
         end_time: dayjs(initialEvent.end_time),
         location: initialEvent.location || "",
@@ -60,18 +82,24 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
     }
   }, [initialEvent, reset]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormValues) => {
     try {
       const payload = {
         ...data,
         start_time: data.start_time?.toISOString(),
         end_time: data.end_time?.toISOString(),
-        created_by: user.id,
+        created_by: user!.id,
       };
-      if (isEdit) {
-        await updateEvent({ id: initialEvent.id, ...payload });
+      if (isEdit && initialEvent?.id) {
+        await updateEvent({
+          eventId: initialEvent.id,
+          updates: payload,
+        });
       } else {
-        await createEvent({ profile_group_id: groupId, ...payload });
+        await createEvent({ 
+          profile_group_id: groupId, 
+          ...payload 
+        });
       }
       onClose();
     } catch (error) {
@@ -136,9 +164,13 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
                   {t("labels.start_time")}
                 </label>
                 <DateTimePicker
-                className="MuiCustomDateTimePicker"
+                  className="MuiCustomDateTimePicker"
                   value={watchStart}
-                  onChange={(value) => setValue("start_time", value)}
+                  onChange={(value, _context) => {
+                    if (value === null || dayjs.isDayjs(value)) {
+                      setValue("start_time", value);
+                    }
+                  }}
                   slotProps={{
                     textField: {
                       id: "start_time",
@@ -157,9 +189,13 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
                   {t("labels.end_time")}
                 </label>
                 <DateTimePicker
-                className="MuiCustomDateTimePicker"
+                  className="MuiCustomDateTimePicker"
                   value={watchEnd}
-                  onChange={(value) => setValue("end_time", value)}
+                  onChange={(value, _context) => {
+                    if (value === null || dayjs.isDayjs(value)) {
+                      setValue("end_time", value);
+                    }
+                  }}
                   slotProps={{
                     textField: {
                       id: "end_time",
@@ -191,7 +227,7 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
             placeholder={t("placeholders.description")}
             maxLength={200}
             register={register}
-            error={errors.description?.message}
+            error={errors.description}
             watchValue={""}
             className="text-gray-900"
             classForLabel="!text-gray-700"
@@ -199,14 +235,14 @@ const GroupEventFormModal = ({ groupId, onClose, initialEvent = null, mode = "cr
 
           <div className="pt-4 flex justify-end space-x-4">
             <Button
-              className="!bg-gray-600 hover:!bg-gray-700 text-white" 
-              type="button" 
+              className="!bg-gray-600 hover:!bg-gray-700 text-white"
+              type="button"
               onClick={onClose}
             >
               {t("buttons.cancel")}
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isSubmitting}
               className="!bg-emerald-600 hover:!bg-emerald-700 text-white"
             >

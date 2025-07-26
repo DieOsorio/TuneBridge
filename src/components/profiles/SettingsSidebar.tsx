@@ -15,7 +15,7 @@ export interface SettingsSidebarProps {
   options: SettingsSidebarOption[];
 }
 
-const SettingsSidebar: React.FC<SettingsSidebarProps> = ({ options }) => {
+const SettingsSidebar = ({ options }: SettingsSidebarProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();

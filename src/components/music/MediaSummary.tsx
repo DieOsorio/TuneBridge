@@ -36,13 +36,16 @@ const MediaSummary: React.FC<MediaSummaryProps> = ({ profileId }) => {
   return (
     <section className="mb-10">
       {ownProfile && (
-        <PlusButton label={t("media.actions.add")} to="/media/create" onClick={() => {}} />
+        <PlusButton 
+          label={t("media.actions.add")} 
+          to="/media/create" 
+        />
       )}
       <ul className="space-y-4 text-center">
         {displayedMedia.map((media) => (
           <li key={media.id} className="shadow-sm p-4 rounded-lg bg-gradient-to-l to-gray-800">
             <p className="font-medium mb-2 text-center">{media.title}</p>
-            {media.media_type === "spotify" ? (
+            {media.media_type === "spotify" && media.url ? (
               <iframe
                 src={getSpotifyEmbedUrl(media.url) || undefined}
                 width="100%"
@@ -51,7 +54,7 @@ const MediaSummary: React.FC<MediaSummaryProps> = ({ profileId }) => {
                 loading="lazy"
                 className="rounded w-full max-w-full"
               />
-            ) : (
+            ) : media.url ? (
               <div className="aspect-video bg-black rounded overflow-hidden">
                 <ReactPlayer
                   url={media.url}
@@ -61,7 +64,7 @@ const MediaSummary: React.FC<MediaSummaryProps> = ({ profileId }) => {
                   style={{ maxWidth: "100%" }}
                 />
               </div>
-            )}
+            ): null}
           </li>
         ))}
       </ul>

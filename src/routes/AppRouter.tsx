@@ -34,11 +34,11 @@ const AccountConfirmed     = lazy(() => import("../components/auth/AccountConfir
 const Profile              = lazy(() => import("../pages/Profile"));
 const Hashtag              = lazy(() => import("../pages/Hashtag"));
 
-function PageLoader(): JSX.Element {
+function PageLoader() {
   return <Loading />;
 }
 
-export default function AppRouter(): JSX.Element {
+export default function AppRouter() {
   return (
     <Router>
       <Navbar />

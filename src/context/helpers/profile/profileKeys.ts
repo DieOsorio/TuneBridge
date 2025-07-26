@@ -9,15 +9,10 @@ interface ProfileKeyFactoryParams {
 }
 
 export const PROFILES_KEY = (): readonly ["allProfiles"] => ["allProfiles"];
-
 export const PROFILE_LAST_SEEN_KEY = (id: string): readonly ["profileLastSeen", string] => ["profileLastSeen", id];
-
 export const PROFILE_KEY = (idOrUsername: string): readonly ["profile", string] => ["profile", idOrUsername];
-
 export const PROFILES_MAP_KEY = (profileIds: readonly string[]): [string, readonly string[]] => ["profilesMap", profileIds];
-
 export const PROFILES_INFINITE_KEY = (): readonly ["profilesInfinite"] => ["profilesInfinite"];
-
 export const SEARCH_PROFILES_KEY = (searchTerm: string): readonly ["searchProfiles", string] => [
   "searchProfiles",
   searchTerm,
@@ -75,10 +70,12 @@ export const profileGroupMembersKeyFactory = ({
   profile_group_id,
 }: ProfileGroupMembersKeyFactoryParams = {}) => {
   const id = profileGroupId || profile_group_id;
+
   return {
-    all: id ? PROFILE_GROUP_MEMBERS_KEY(id) : undefined,
+    all: id ? PROFILE_GROUP_MEMBERS_KEY(id) : ["profileGroupMembers", "unknown"],
   };
 };
+
 
 // --- USER GROUPS KEY FACTORY ---
 

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 import ConnectionCard from './ConnectionCard';
 import { UserConnection } from '../../context/social/userConnectionsActions';
-import { FC } from 'react';
 
 interface ConnectionsListProps {
   checkStatus: 'accepted' | 'pending' | 'blocked';

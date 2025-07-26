@@ -1,10 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useAds } from "../../../context/social/adsContext";
-import AdForm from "./AdForm";
-import Loading from "../../../utils/Loading";
+import { useAds } from "@/context/social/adsContext";
+import type { MusicianAd } from "@/context/social/adsActions";
 import { useTranslation } from "react-i18next";
 
-import type { MusicianAd } from "../../../context/social/adsActions";
+import AdForm from "./AdForm";
+import Loading from "@/utils/Loading";
+
 
 export default function AdCreateEditPage() {
   const { t } = useTranslation("ads");
@@ -19,7 +20,6 @@ export default function AdCreateEditPage() {
 
   const navigate = useNavigate();
 
-  // Handler para submit del formulario, recibe datos tipados con AdFormValues
   const handleSubmit = async (formData: MusicianAd) => {
     try {
       const formattedData = {
@@ -56,7 +56,6 @@ export default function AdCreateEditPage() {
           ? t("adCreateEditPage.title.edit")
           : t("adCreateEditPage.title.create")}
       </h1>
-      {/* ! Importante: adData puede ser undefined, si quieres forzar, asegúrate antes */}
       <AdForm defaultValues={adData ?? undefined} onSubmit={handleSubmit} />
     </div>
   );

@@ -1,5 +1,6 @@
 import { useMemo, useState, useRef } from "react";
-import { useGroupEvents } from "../../../../context/groups/GroupEventsContext";
+import { useGroupEvents } from "@/context/groups/GroupEventsContext";
+import type { GroupEvent } from "@/context/groups/groupEventsActions";
 import { useTranslation } from "react-i18next";
 import { applyDayCellStyle } from "./custom-calendar-components/CustomCellStyler";
 import { applyListEventStyle } from "./custom-calendar-components/CustomListCellStyler";
@@ -12,8 +13,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import "./styles/full-calendar-custom.css";
 
-import Loading from "../../../../utils/Loading";
-import ErrorMessage from "../../../../utils/ErrorMessage";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
 import GroupEventCard from "./GroupEventCard";
 import GroupEventFormModal from "./GroupEventFormModal";
 import GroupEventDetails from "./GroupEventDetails";
@@ -22,27 +23,38 @@ import CalendarHeader from "./custom-calendar-components/CalendarHeader";
 import CalendarViewSelector from "./custom-calendar-components/CalendarViewSelector";
 import CustomEventContent from "./custom-calendar-components/CustomEventContent";
 
+type Props = {
+  groupId: string;
+  isAdminOrManager?: boolean;
+  isMember: boolean;
+};
+
 const GroupCalendarScreen = ({
   groupId,
   isAdminOrManager = false,
-}) => {
+  isMember,
+}: Props) => {
   const { t, i18n } = useTranslation("groupEvents");
   const { fetchGroupEvents } = useGroupEvents();
 
-  const { data: events, isLoading, error, refetch: refetchEvents } =
-    fetchGroupEvents(groupId);
+  const {
+    data: events,
+    isLoading,
+    error,
+    refetch: refetchEvents,
+  } = fetchGroupEvents(groupId);
 
   const [showFormModal, setShowFormModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<GroupEvent | null>(null);
   const [currentView, setCurrentView] = useState("dayGridMonth");
 
-  const calendarRef = useRef(null);
+  const calendarRef = useRef<any>(null);
   const [calendarTitle, setCalendarTitle] = useState("");
 
   const calendarEvents = useMemo(() => {
     if (!events) return [];
-    return events.map((event) => ({
+    return events.map((event: GroupEvent) => ({
       id: event.id,
       title: event.title,
       start: event.start_time,
@@ -59,18 +71,19 @@ const GroupCalendarScreen = ({
   const sortedEvents = useMemo(() => {
     if (!events) return [];
     return [...events].sort(
-      (a, b) => new Date(a.start_time) - new Date(b.start_time)
+      (a, b) =>
+        new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
     );
   }, [events]);
 
-  const handleDateClick = (info) => {
+  const handleDateClick = (info: any) => {
     if (!isAdminOrManager) return;
     setSelectedDate(info.dateStr);
     setSelectedEvent(null);
     setShowFormModal(true);
   };
 
-  const handleEventClick = (info) => {
+  const handleEventClick = (info: any) => {
     setSelectedEvent(info.event.extendedProps.fullEvent);
     setSelectedDate(null);
     setShowFormModal(false);

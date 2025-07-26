@@ -15,7 +15,7 @@ import type { UseQueryResult } from "@tanstack/react-query";
 type AdType = "all" | "looking" | "offering";
 
 
-const AdsPage: React.FC = () => {
+const AdsPage = () => {
   const { t } = useTranslation("ads");
 
   const [selectedTab, setSelectedTab] = useState<AdType>("all");

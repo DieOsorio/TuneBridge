@@ -9,9 +9,9 @@ interface ConversationItemSkeletonProps {
  * Skeleton loader for a conversation item.
  * Highlights the background if the item is selected.
  */
-const ConversationItemSkeleton: React.FC<ConversationItemSkeletonProps> = ({
+const ConversationItemSkeleton = ({
   isSelected = false,
-}) => {
+}: ConversationItemSkeletonProps) => {
   const baseColor = "#a1a1aa";
   const highlightColor = "#e4e4e7";
 

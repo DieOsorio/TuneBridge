@@ -1,15 +1,17 @@
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import type { MusicianAd } from "@/context/social/adsActions";
+
+import { FiPlus } from "react-icons/fi";
+
 import Button from "../../ui/Button";
-import { useAuth } from "../../../context/AuthContext";
 import Select from "../../ui/Select";
 import Input from "../../ui/Input";
 import Textarea from "../../ui/Textarea";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { FiPlus } from "react-icons/fi";
 
-import type { MusicianAd } from "../../../context/social/adsActions";
 
 interface AdFormProps {
   defaultValues?: Partial<MusicianAd>;
@@ -90,6 +92,7 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
         control={control}
         classForLabel="text-gray-400"
         error={errors.ad_type}
+        search={false}
       />
 
       <Input

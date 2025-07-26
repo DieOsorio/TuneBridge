@@ -1,4 +1,11 @@
-const CalendarHeader = ({ calendarApi, title }) => {
+import { CalendarApi } from "@fullcalendar/core";
+
+type Props = {
+  calendarApi: CalendarApi | null;
+  title: string;
+};
+
+const CalendarHeader = ({ calendarApi, title }: Props) => {
   if (!calendarApi) return null;
 
   return (
@@ -25,7 +32,6 @@ const CalendarHeader = ({ calendarApi, title }) => {
         </button>
       </div>
 
-      {/* Second row: Today centered */}
       <div className="flex justify-center">
         <button
           onClick={() => calendarApi.today()}
@@ -40,4 +46,4 @@ const CalendarHeader = ({ calendarApi, title }) => {
   );
 };
 
-export default CalendarHeader
+export default CalendarHeader;

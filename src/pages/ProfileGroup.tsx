@@ -22,9 +22,6 @@ import GroupCalendarScreen from "../components/profiles/group/group-events/Group
 import GroupForm from "../components/profiles/group/GroupForm";
 import FollowersList from "../components/profiles/group/FollowersList";
 
-type User = {
-  id: string;
-};
 
 export default function ProfileGroup() {
   const groupId = useParams<{ groupId: string }>().groupId!;
@@ -46,7 +43,6 @@ export default function ProfileGroup() {
   if (error || mError) return <ErrorMessage error={error?.message || mError?.message} />;
   if (!group) return <Navigate to="/" replace />;
 
-  // Aquí hay que tener cuidado con user que puede ser null
   const me = user && members?.find((m: ProfileGroupMember) => m.profile_id === user.id);
   const isAdmin = me?.role === "admin";
   const CanManageGroup = isAdmin || me?.role === "manager";

@@ -22,6 +22,7 @@ import ProviderSettings from "../components/settings/ProviderSettings";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/profile/ProfileContext";
 import type { Profile } from "../context/profile/profileActions";
+import ProfileAvatar from "@/components/profiles/ProfileAvatar";
 
 type Option = {
   to: string;
@@ -45,16 +46,18 @@ const Settings = () => {
       label: t("profileSettings"),
       icon: (active) =>
         active ? (
-          <img
-            src={profile?.avatar_url ?? undefined}
+          <ProfileAvatar
+            avatar_url={profile?.avatar_url ?? undefined}
             alt="Avatar"
-            className="w-5 h-5 rounded-full object-cover ring-2 ring-yellow-600"
+            className="!w-6 !h-6 !ring-2 !ring-yellow-600"
+            gender={profile?.gender}
           />
         ) : (
-          <img
-            src={profile?.avatar_url ?? undefined}
+          <ProfileAvatar
+            avatar_url={profile?.avatar_url ?? undefined}
             alt="Avatar"
-            className="w-5 h-5 rounded-full object-cover"
+            className="!w-6 !h-6"
+            gender={profile?.gender}
           />
         ),
     },

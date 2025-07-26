@@ -72,8 +72,10 @@ const Input: React.FC<InputProps> = ({
             error ? "border-red-500" : "border-gray-600"
           }`}
           {...(field ?? registerProps)}
-          value={field?.value ?? undefined}
-          onChange={handleChange}
+          {...(field && {
+            value: field.value,
+            onChange: handleChange,
+          })}
         />
 
         {isPassword && showToggle && (

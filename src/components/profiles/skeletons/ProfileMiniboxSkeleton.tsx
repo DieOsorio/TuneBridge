@@ -1,9 +1,8 @@
-import React from "react";
 import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const ProfileMiniboxSkeleton: React.FC = () => {
+const ProfileMiniboxSkeleton = () => {
   const baseColor = "#a1a1aa";
   const highlightColor = "#e4e4e7";
 

@@ -4,13 +4,12 @@ import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaBolt, FaCompass, FaUser } from "react-icons/fa";
 import { MdCampaign, MdLogin, MdPersonAdd, MdLogout } from "react-icons/md";
-import React from "react";
-
+import { HiBars3, HiXMark } from "react-icons/hi2";
 export interface HamburgerMenuProps {
   id?: string;
 }
 
-const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ id }) => {
+const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
   const { t } = useTranslation("ui");
   const [isOpen, setOpen] = useState(false);
   const { signOut } = useAuth();
@@ -21,19 +20,25 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ id }) => {
     <div className="relative">
       {/* burger */}
       <button
-        className="p-3 text-white"
+        className="p-3 text-white relative w-10 h-10 cursor-pointer"
         onClick={toggle}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
       >
-        <svg
-          className="w-8 h-8 text-white transition-transform hover:scale-110"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <span
+          className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
+            isOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"
+          } text-[35px]`}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+          <HiBars3 />
+        </span>
+        <span
+          className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
+            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          } text-[35px]`}
+        >
+          <HiXMark />
+        </span>
       </button>
       {/* dropdown */}
       {isOpen && (

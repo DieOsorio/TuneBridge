@@ -63,8 +63,8 @@ export default function Profile() {
   const CreatePost = () => <PostForm />;
 
   const Groups = () => (
-    // <UserGroups profileId={profile.id} isOwnProfile={isOwn} />
-    <p className="text-center text-gray-400">{t("userGroupsComing")}</p>
+    <UserGroups profileId={profile.id} isOwnProfile={isOwn} />
+    // <p className="text-center text-gray-400">{t("userGroupsComing")}</p>
   );
 
   const Ads = () => <ProfileAds profileId={profile.id} />;
@@ -86,7 +86,6 @@ export default function Profile() {
               <ConnectionsList 
                 profileId={profile.id} 
                 checkStatus="accepted" 
-                maxVisible={4} 
               />
             }
           />

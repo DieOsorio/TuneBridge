@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
@@ -15,7 +15,7 @@ interface SignUpFormInputs {
   confirmPassword: string;
 }
 
-const SignUp: React.FC = () => {
+const SignUp = () => {
   const { t } = useTranslation(["auth", "common"]);
   const { signUp, loading: authLoading, error: authError } = useAuth();
   const [success, setSuccess] = useState<boolean>(false);
@@ -41,8 +41,8 @@ const SignUp: React.FC = () => {
   if (success) return <SignUpSuccess />;
 
   return (
-    <div className="text-gray-950 flex justify-center items-center h-screen">
-      <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
+    <div className="text-white flex justify-center items-center h-screen">
+      <div className="border p-6 rounded-lg shadow-lg w-96 bg-gray-600">
         <h2 className="text-2xl font-semibold mb-4 text-center">
           {t("auth:signup.title")}
         </h2>
@@ -54,7 +54,7 @@ const SignUp: React.FC = () => {
             id="username"
             label={t("common:form.username")}
             placeholder={t("common:form.placeholders.username")}
-            register={register("username")}
+            register={register}
             maxLength={12}
             validation={{
               required: t("signup.errors.usernameRequired"),
@@ -74,7 +74,7 @@ const SignUp: React.FC = () => {
             label={t("common:form.email")}
             type="email"
             placeholder={t("common:form.placeholders.email")}
-            register={register("email")}
+            register={register}
             validation={{
               required: t("signup.errors.emailRequired"),
               pattern: {
@@ -89,7 +89,7 @@ const SignUp: React.FC = () => {
             label={t("common:form.password")}
             type="password"
             placeholder={t("common:form.placeholders.password")}
-            register={register("password")}
+            register={register}
             validation={{
               required: t("signup.errors.passwordRequired"),
               minLength: {
@@ -104,7 +104,7 @@ const SignUp: React.FC = () => {
             label={t("common:form.confirmPassword")}
             type="password"
             placeholder={t("common:form.placeholders.confirmPassword")}
-            register={register("confirmPassword")}
+            register={register}
             validation={{
               required: t("signup.errors.confirmRequired"),
               validate: (value: string) =>
@@ -118,16 +118,16 @@ const SignUp: React.FC = () => {
         </form>
         <p className="text-sm text-center mt-4">
           {t("auth:signup.alreadyHaveAccount")} {" "}
-          <Link to="/login" className="text-sky-600 hover:underline">
+          <Link to="/login" className="text-sky-500 hover:underline">
             {t("auth:signup.loginHere")}
           </Link>
         </p>
-        <p className="text-xs text-center mt-2 text-gray-600">
+        <p className="text-xs text-center mt-2 text-gray-300">
           {t("auth:signup.agreeTo")} {" "}
           <Link
             to="/terms"
             target="_blank"
-            className="text-sky-600 hover:underline"
+            className="text-slate-400 hover:underline"
             rel="noopener noreferrer"
           >
             {t("auth:signup.termsAndConditions")}

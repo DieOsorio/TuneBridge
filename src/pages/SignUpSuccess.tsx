@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
-import type { FC } from "react";
 
-const SignUpSuccess: FC = () => {
+const SignUpSuccess = () => {
   const { t } = useTranslation("auth");
 
   return (

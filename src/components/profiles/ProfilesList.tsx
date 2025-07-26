@@ -20,7 +20,7 @@ export interface ProfilesListProps {
   error?: { message: string } | null;
 }
 
-const ProfilesList: React.FC<ProfilesListProps> = ({ profiles, isSearching = false, isLoading = false, error }) => {
+const ProfilesList = ({ profiles, isSearching = false, isLoading = false, error }: ProfilesListProps) => {
   const loading = isSearching || isLoading;
 
   if (error) {

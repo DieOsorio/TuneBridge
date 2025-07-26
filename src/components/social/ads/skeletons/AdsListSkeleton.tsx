@@ -10,7 +10,7 @@ interface AdsListSkeletonProps {
  * Skeleton loader for AdsList.
  * Optionally shows a header skeleton when in profile view.
  */
-const AdsListSkeleton: React.FC<AdsListSkeletonProps> = ({ isProfileView = false }) => {
+const AdsListSkeleton = ({ isProfileView = false }: AdsListSkeletonProps) => {
   return (
     <div className="w-full flex flex-col items-center">
       {isProfileView && (

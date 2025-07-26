@@ -5,7 +5,7 @@ import "react-loading-skeleton/dist/skeleton.css";
  * Skeleton loader component for AdCard.
  * Displays placeholder elements simulating the layout of an AdCard while content is loading.
  */
-const AdCardSkeleton: React.FC = () => {
+const AdCardSkeleton = () => {
   // Colors matching Tailwind CSS gray tones
   const baseColor = "#4b5563"; // Tailwind gray-700
   const highlightColor = "#9ca3af"; // Tailwind gray-400

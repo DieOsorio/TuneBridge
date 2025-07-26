@@ -1,5 +1,4 @@
 import { FaBolt } from "react-icons/fa";
-import LoadingBadge from "../ui/LoadingBadge";
 import { Link, useNavigate } from "react-router-dom";
 import { memo, useState } from "react";
 import { useUserConnections } from "../../context/social/UserConnectionsContext";
@@ -12,6 +11,7 @@ import { useConversations } from "../../context/social/chat/ConversationsContext
 import { useParticipants } from "../../context/social/chat/ParticipantsContext";
 import ProfileAvatar from "./ProfileAvatar";
 import { useCanSendDM } from "../../utils/useCanSendDM";
+import MatchCardSkeleton from "./skeletons/MatchCardSkeleton";
 
 export interface MatchCardProfile {
   profile_id: string;
@@ -28,7 +28,7 @@ export interface MatchCardProps {
   loading?: boolean;
 }
 
-const MatchCard: React.FC<MatchCardProps> = memo(({ profile, loading }) => {
+const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) => {
   const { t } = useTranslation("profile");
   const { user } = useAuth();
   const {
@@ -55,7 +55,15 @@ const MatchCard: React.FC<MatchCardProps> = memo(({ profile, loading }) => {
       (user && c.follower_profile_id === profile.profile_id && c.following_profile_id === user.id)
   );
 
-  const status: "connect" | "pending" | "accepted" | "blocked" = connection?.status ?? "connect";
+  const validStatuses = ["connect", "pending", "accepted", "blocked"] as const;
+  type StatusType = typeof validStatuses[number];
+
+  function isValidStatus(value: any): value is StatusType {
+    return validStatuses.includes(value);
+  }
+
+  const rawStatus = connection?.status;
+  const status: StatusType = isValidStatus(rawStatus) ? rawStatus : "connect";
 
   const handleConnect = async () => {
     if (!user) return;
@@ -83,6 +91,7 @@ const MatchCard: React.FC<MatchCardProps> = memo(({ profile, loading }) => {
         id: profile.profile_id,
         username: profile.username,
         avatar_url: profile.avatar_url,
+        last_seen: profile.last_seen
       },
       findConversation,
       createConversation,
@@ -94,7 +103,9 @@ const MatchCard: React.FC<MatchCardProps> = memo(({ profile, loading }) => {
 
   const percentage = Math.round(profile.match_score * 100);
 
-  if (!profile || loading || loadingCanSend) return <LoadingBadge color="amber" />;
+  const loading = loadingProfile || !profile || loadingCanSend;
+
+  if (loading) return <MatchCardSkeleton />;
 
   const badgeClasses =
     percentage >= 70

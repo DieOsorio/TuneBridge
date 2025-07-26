@@ -1,8 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import React from "react";
 
-const DisplayRoleInfoSkeleton: React.FC = () => {
+const DisplayRoleInfoSkeleton = () => {
   const baseColor = "#a1a1aa";
   const highlightColor = "#e4e4e7";
 

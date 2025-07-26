@@ -166,9 +166,9 @@
     "placeholders": {
       "name": "Ingrese el nombre del grupo",
       "bio": "ingrese una breve biografía",
-      "country": "Ingrese el país",
-      "state": "Ingrese el estado",
-      "city": "Ingrese la ciudad",
+      "country": "Elige un país",
+      "state": "Elige un estado",
+      "city": "Elige una ciudad",
       "genres": "Ingrese el género musical"
     },
     "validations": {

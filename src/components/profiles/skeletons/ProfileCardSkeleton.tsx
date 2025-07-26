@@ -1,8 +1,7 @@
-import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const ProfileCardSkeleton: React.FC = () => {
+const ProfileCardSkeleton = () => {
   const baseColor = "#a1a1aa";
   const highlightColor = "#e4e4e7";
 

@@ -38,7 +38,7 @@
     }
   },
 
-    "privacy": {
+  "privacy": {
     "title": "Privacy settings",
     "toggles": {
       "showEmail": "Show my email",

@@ -6,7 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
 import { useProfile } from "../../../context/profile/ProfileContext";
 import { useForm } from "react-hook-form";
-import { HiInformationCircle, HiEllipsisVertical, HiBars3 } from "react-icons/hi2";
+import { HiInformationCircle, HiEllipsisVertical, HiBars3, HiXMark } from "react-icons/hi2";
 import { useEffect, useRef, useState } from "react";
 import { uploadFileToBucket } from "../../../utils/avatarUtils";
 import { useChatUI } from "../../../context/social/chat/ChatUIContext";
@@ -25,11 +25,7 @@ interface PaginatedParticipants {
   pageParams?: unknown[];
 }
 
-/**
- * ChatHeader component migrated to TS with minimal logic changes,
- * fixing typing errors.
- */
-const ChatHeader: React.FC<ChatHeaderProps> = ({ conversationId }) => {
+const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
   const { user } = useAuth();
   const userId = user?.id ?? "";
 
@@ -198,33 +194,31 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ conversationId }) => {
     }
   };
 
-  const avatarUrl = isGroup ? conversation?.avatar_url : undefined; // keep original logic
-  const title = isGroup ? conversation?.title : undefined;
 
   return (
     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 bg-gradient-to-l from-gray-900 px-4 py-2 border-b-2 border-sky-600">
       <div className="flex items-center gap-4 w-full relative">
         {/* Avatar and Title */}
-        {avatarUrl ? (
+        {conversation?.avatar_url ? (
           <div className="relative">
             <img
-              src={avatarUrl}
+              src={conversation?.avatar_url}
               alt="Group Avatar"
               className="w-10 h-10 bg-amber-600 rounded-full object-cover"
             />
           </div>
         ) : (
           <div className="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-white text-sm">
-            {title?.charAt(0).toUpperCase() ?? "?"}
+            {conversation?.title?.charAt(0).toUpperCase() ?? "?"}
           </div>
         )}
-        <h2 className="text-lg font-semibold text-white">{title ?? t("header.group.untitled")}</h2>
+        <h2 className="text-lg font-semibold text-white">{conversation?.title ?? t("header.group.untitled")}</h2>
 
         {/* Group Overview Button for md+ */}
         {isGroup && (
           <button
             onClick={() => setIsGroupOverviewOpen(true)}
-            className="ml-auto px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold items-center gap-1 hidden md:flex"
+            className="ml-auto px-2 py-1 cursor-pointer bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold items-center gap-1 hidden md:flex"
             title={t("header.group.info")}
           >
             <HiInformationCircle size={18} className="inline-block text-base text-gray-300" />
@@ -236,11 +230,24 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ conversationId }) => {
         {!isGroup && (
           <div className="ml-auto relative flex items-center">
             <button
-              className="p-1 rounded-full hover:bg-gray-800 text-gray-300"
+              className="p-1 w-[32px] h-[32px] rounded-full hover:bg-gray-800 cursor-pointer text-gray-300 relative"
               onClick={() => setMenuOpen((open) => !open)}
               aria-label={t("header.menu.open")}
             >
-              <HiEllipsisVertical size={22} />
+              <span
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
+                  menuOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"
+                }`}
+              >
+                <HiEllipsisVertical size={22} />
+              </span>
+              <span
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
+                  menuOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
+                }`}
+              >
+                <HiXMark size={22} />
+              </span>
             </button>
             {menuOpen && (
               <div className="absolute right-7 mt-28 w-48 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
@@ -334,7 +341,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ conversationId }) => {
       )}
 
       {/* GroupOverview modal */}
-      {isGroupOverviewOpen && (
+      {isGroupOverviewOpen && conversation && (
         <GroupOverview conversation={conversation} onClose={() => setIsGroupOverviewOpen(false)} />
       )}
     </div>

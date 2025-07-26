@@ -70,6 +70,7 @@ const PrivacySettings: React.FC = () => {
           { value: "none",             label: t("allowMessages.options.none") },
         ]}
         register={register}
+        search={false}
       />
 
       <div className="pt-4 flex justify-center">

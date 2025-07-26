@@ -6,6 +6,7 @@ import {
 } from "react-hook-form";
 import React, { useState, useRef, useEffect } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export type Option = {
   value: string;
@@ -26,6 +27,7 @@ interface SelectProps {
   validation?: RegisterOptions;
 
   disabled?: boolean;
+  search?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement> | string) => void;
 }
 
@@ -37,6 +39,7 @@ const Select = ({
   classForLabel,
   defaultOption,
   error,
+  search = true,
   control,
   register,
   validation,
@@ -44,7 +47,11 @@ const Select = ({
   onChange,
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation("common", {keyPrefix: "generic"})
+
+  const effectiveDefaultOption = defaultOption ?? t("default");
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -61,7 +68,11 @@ const Select = ({
     value: string,
     onChangeFn: (value: string) => void
   ) => {
-    const selectedLabel = options.find((o) => o.value === value)?.label || defaultOption;
+    const selectedLabel = options.find((o) => o.value === value)?.label || effectiveDefaultOption;
+
+    const filteredOptions = options.filter(option =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
       <div className="relative" ref={dropdownRef}>
@@ -75,24 +86,37 @@ const Select = ({
           <span>{selectedLabel}</span>
           <FaChevronDown className="w-4 h-4 ml-2" />
         </button>
+
         {isOpen && (
-          <ul className="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
-            {options.map((option) => (
-              <li
-                key={option.value}
-                className={`px-3 py-2 text-white hover:bg-gray-700 cursor-pointer ${
-                  value === option.value ? "bg-gray-700" : ""
-                }`}
-                onClick={() => {
-                  onChangeFn(option.value);
-                  onChange?.(option.value); // notify external
-                  setIsOpen(false);
-                }}
-              >
-                {option.label}
-              </li>
-            ))}
-          </ul>
+          <div className="absolute z-10 mt-1 w-full bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
+            {search &&(
+              <input
+                type="text"
+                placeholder={t("search")}
+                className="w-full px-3 py-2 bg-gray-700 text-white border-b border-gray-600 focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            )}
+            <ul>
+              {filteredOptions.map((option) => (
+                <li
+                  key={option.value}
+                  className={`px-3 py-2 text-white hover:bg-gray-700 cursor-pointer ${
+                    value === option.value ? "bg-gray-700" : ""
+                  }`}
+                  onClick={() => {
+                    onChangeFn(option.value);
+                    onChange?.(option.value);
+                    setIsOpen(false);
+                    setSearchTerm("");
+                  }}
+                >
+                  {option.label}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     );

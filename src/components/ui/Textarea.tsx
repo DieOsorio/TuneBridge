@@ -12,7 +12,7 @@ interface TextareaProps {
   label?: string;
   register: UseFormRegister<any>;
   validation?: Record<string, ValidationRule>;
-  error?: FieldError | FieldErrors | undefined;
+  error?: { message?: string } | FieldError | FieldErrors | undefined;
   placeholder?: string;
   maxLength?: number;
   watchValue?: string;

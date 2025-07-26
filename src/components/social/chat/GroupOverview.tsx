@@ -18,6 +18,7 @@ import { Profile } from "../../../context/profile/profileActions";
 import { Participant } from "../../../context/social/chat/participantsActions";
 import { Conversation } from "@/context/social/chat/conversationsActions";
 import { ActualFileObject } from "filepond";
+import { HiEllipsisVertical, HiXMark } from "react-icons/hi2";
 
 interface ParticipantRowProps {
   participant: Participant;
@@ -92,11 +93,11 @@ function ParticipantRow({
             }
             aria-label={t("groupOverview.menu.open")}
           >
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-              <circle cx="4" cy="10" r="2" />
-              <circle cx="10" cy="10" r="2" />
-              <circle cx="16" cy="10" r="2" />
-            </svg>
+            {menuOpen === participant.profile_id ? (
+              <HiXMark size={20} />
+            ) : (
+              <HiEllipsisVertical size={20} />
+            )}
           </button>
           {menuOpen === participant.profile_id && (
             <div
@@ -246,7 +247,7 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
       <div className="bg-gray-900 rounded-lg shadow-lg p-6 w-full max-w-md relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-3xl text-white"
+          className="absolute cursor-pointer top-2 right-2 text-3xl text-white"
           aria-label="Close group overview"
         >
           ✕
@@ -256,7 +257,7 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
         <div className="flex justify-start mb-4">
           <button
             onClick={() => setIsLeaveConfirmOpen(true)}
-            className="text-red-400 hover:text-red-600 transition text-sm font-semibold flex items-center gap-1"
+            className="text-red-400 cursor-pointer hover:text-red-600 transition text-sm font-semibold flex items-center gap-1"
             title={t("header.buttons.leaveGroup")}
           >
             <HiOutlineUserRemove size={18} />

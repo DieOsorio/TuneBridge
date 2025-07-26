@@ -7,7 +7,7 @@ import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 
-const ChatWindow: React.FC = () => {
+const ChatWindow = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
   const { user } = useAuth();
 
@@ -20,17 +20,14 @@ const ChatWindow: React.FC = () => {
     messagesRealtime,
   } = useMessages();
 
-  const { data: messages } = shouldFetch
-    ? fetchMessages(conversationId)
-    : { data: [] };
+  messagesRealtime(conversationId ?? "");
 
-  if (shouldFetch) {
-    messagesRealtime(conversationId);
-  }
+  const { data: messages = [] } = fetchMessages(conversationId ?? "");
 
-  const { data: unreadMessagesData } = shouldFetch
-    ? unreadMessages({ conversationId, profileId: user.id })
-    : { data: [] };
+  const { data: unreadMessagesData = [] } = unreadMessages({
+    conversationId: conversationId ?? "",
+    profileId: user?.id ?? "",
+  });
 
   useEffect(() => {
     if (
@@ -40,7 +37,11 @@ const ChatWindow: React.FC = () => {
       markMessagesAsRead
     ) {
       const messageIds = unreadMessagesData.map((msg) => msg.id);
-      markMessagesAsRead({ messageIds, profileId: user.id, conversationId });
+      markMessagesAsRead({ 
+        messageIds, 
+        profileId: user.id, 
+        conversationId 
+      });
     }
   }, [shouldFetch, unreadMessagesData, markMessagesAsRead, user?.id, conversationId]);
 

@@ -148,7 +148,7 @@ export default function ProfilesSearch() {
           <div className="flex flex-wrap justify-center gap-4 mt-4 animate-fade-in">
             <Select
               id="country"
-              label={t("country.defaultOption")}
+              defaultOption={t("country.defaultOption")}
               options={countries.map((c: any) => ({
                 value: c.isoCode,
                 label: c.name,
@@ -159,7 +159,7 @@ export default function ProfilesSearch() {
 
             <Select
               id="state"
-              label={t("state.defaultOption")}
+              defaultOption={t("state.defaultOption")}
               options={states.map((s: any) => ({
                 value: s.isoCode,
                 label: cleanStateName(s.name),
@@ -170,7 +170,7 @@ export default function ProfilesSearch() {
 
             <Select
               id="neighborhood"
-              label={t("neighborhood.defaultOption")}
+              defaultOption={t("neighborhood.defaultOption")}
               options={cities.map((c: any) => ({
                 value: c.name,
                 label: c.name,
@@ -181,25 +181,32 @@ export default function ProfilesSearch() {
 
             <Select
               id="role"
-              label={t("role.defaultOption")}
+              defaultOption={t("role.defaultOption")}
               options={roleOptions}
               control={control}
               className="!w-[210px]"
             />
 
-            <Select
+            {/* <Select
               id="instrument"
-              label={t("instrument.defaultOption")}
+              defaultOption={t("instrument.defaultOption")}
               options={instrumentOptions}
               control={control}
               className="!w-[210px]"
-            />
+            /> */}
           </div>
         )}
       </form>
 
       <ProfilesList 
-        profiles={(profilesToShow || []).map((p: Profile) => ({ ...p, username: p.username ?? "" }))} 
+        profiles={(profilesToShow || []).map((p: Profile) => ({ 
+          ...p, 
+          username: p.username ?? undefined,
+          avatar_url: p.avatar_url ?? undefined,
+          country: p.country ?? undefined,
+          state: p.state ?? undefined, 
+          gender: p.gender?? undefined
+        }))} 
         isSearching={isSearching} 
         isLoading={profileLoading}
         error={profileError} 

@@ -24,6 +24,7 @@ export interface UpdateParticipantRoleParams {
 export interface RemoveParticipantParams {
   conversation_id: string;
   profile_id: string;
+  role?: string;
 }
 
 

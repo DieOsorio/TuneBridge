@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useForm, FieldErrors } from "react-hook-form";
+import { useForm, FieldErrors, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FiPlus } from "react-icons/fi";
@@ -299,43 +299,66 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
           )}
         </div>
 
-        <Select
-          id="country"
-          label={t("form.labels.country")}
-          options={countries.map((c) => ({ value: c.isoCode, label: c.name }))}
-          register={register}
-          error={errors.country}
-          onChange={(e) => {
-            setValue("country", e.target.value);
-            setValue("state", "");
-            setValue("city", "");
-          }}
+        <Controller
+          name="country"
+          control={control}
+          render={({ field }) => (
+            <Select
+              id="country"
+              defaultOption={t("form.placeholders.country")}
+              label={t("form.labels.country")}
+              options={countries.map((c) => ({ value: c.isoCode, label: c.name }))}
+              register={register}
+              onChange={(val) => {
+                field.onChange(val);
+                setValue("state", ""); 
+                setValue("city", "");
+              }}
+              error={errors.country}
+              disabled={false}
+            />
+          )}
         />
 
-        <Select
-          id="state"
-          label={t("form.labels.state")}
-          options={states.map((s) => ({
-            value: s.isoCode,
-            label: cleanStateName(s.name) || "",
-          }))}
-          register={register}
-          error={errors.state}
-          disabled={!countryIso}
-          onChange={(e) => {
-            setValue("state", e.target.value);
-            setValue("city", "");
-          }}
-        />
+        <Controller
+          name="state"
+          control={control}
+          render={({ field }) => (
+            <Select
+              id="state"
+              defaultOption={t("form.placeholders.state")}
+              label={t("form.labels.state")}
+              options={states.map((s) => ({
+                value: s.isoCode,
+                label: cleanStateName(s.name) || "",
+              }))}
+              register={register}
+              onChange={(val) => {
+                field.onChange(val);
+                setValue("city", "");
+              }}
+              error={errors.state}
+              disabled={!countryIso}
+            />
+          )}
+      />
 
-        <Select
-          id="city"
-          label={t("form.labels.city")}
-          options={cities.map((c) => ({ value: c.name, label: c.name }))}
-          register={register}
-          error={errors.city}
-          disabled={!stateIso}
-        />
+      <Controller
+        name="city"
+        control={control}
+        render={({ field }) => (
+          <Select
+            id="city"
+            defaultOption={t("form.placeholders.city")}
+            label={t("form.labels.city")}
+            options={cities.map((c) => ({ value: c.name, label: c.name }))}
+            register={register}
+            onChange={field.onChange}
+            error={errors.city}
+            disabled={!stateIso}   
+          />
+        )}
+      />
 
         {/* action button */}
         <div className="sm:col-span-2 flex justify-center gap-4 pt-4">

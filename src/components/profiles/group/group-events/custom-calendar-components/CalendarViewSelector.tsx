@@ -1,10 +1,19 @@
-const CalendarViewSelector = ({ calendarApi, currentView, setCurrentView }) => {
+import { CalendarApi } from "@fullcalendar/core";
+
+type CalendarView = "dayGridMonth" | "listWeek";
+
+type Props = {
+  calendarApi: CalendarApi | null;
+  currentView: CalendarView;
+  setCurrentView: (view: CalendarView) => void;
+};
+
+const CalendarViewSelector = ({ calendarApi, currentView, setCurrentView }: Props) => {
   if (!calendarApi) return null;
 
-  const handleChangeView = (view) => {
-    if (!calendarApi) return;
+  const handleChangeView = (view: CalendarView) => {
     calendarApi.changeView(view);
-    setCurrentView(view); 
+    setCurrentView(view);
   };
 
   return (

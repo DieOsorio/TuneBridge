@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, es } from "date-fns/locale";
@@ -6,14 +5,13 @@ import { enUS, es } from "date-fns/locale";
 import ProfileAvatar from "../ProfileAvatar";
 import type { ProfileGroup } from "@/context/profile/profileGroupsActions";
 
-// Definimos tipo para el miembro del grupo según los campos usados
 interface Member {
   profile_id: string;
   profiles?: {
     avatar_url?: string | null;
     username?: string | null;
   };
-  role: string;
+  role?: string | null;
   roles_in_group?: string[] | null;
   joined_at?: string | null;
 }
@@ -79,7 +77,9 @@ const GroupAbout = ({ group, members }: GroupAboutProps) => {
                       {member.profiles?.username || "Unknown"}
                     </span>
                     <p className="text-sm truncate">
-                      {t(`groupMembersList.role.${member.role.toLowerCase()}`, member.role)}
+                      {member.role
+                        ? t(`groupMembersList.role.${member.role.toLowerCase()}`, { defaultValue: member.role })
+                        : member.role}
                     </p>
                     {member.roles_in_group && member.roles_in_group.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1">

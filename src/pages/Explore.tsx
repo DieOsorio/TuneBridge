@@ -64,20 +64,20 @@ export default function Explore() {
             {t("explore.tabs.profiles")}
           </NavLink>
 
-          {/* <NavLink    to="/explore/groups"   className={({ isActive }) => (isActive ? active : inactive)}>
+          <NavLink    to="/explore/groups"   className={({ isActive }) => (isActive ? active : inactive)}>
             {t("explore.tabs.groups")}
-          </NavLink> */}
+          </NavLink>
         </div>
       </nav>
 
       {/* internal routes */}
       <Routes>
         {/* default -> posts */}
-        <Route index element={<PostsList profileId={null} posts={[]} disableSearch={false} isOwnProfile={false} />} />
+        <Route index element={<PostsList disableSearch={false} isOwnProfile={false} />} />
 
         {/* profiles search */}
         <Route path="profiles" element={<ProfilesSearch />} />
-        {/* <Route path="groups" element={<GroupList />} /> */}
+        <Route path="groups" element={<GroupList />} />
       </Routes>
     </div>
   );

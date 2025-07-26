@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
           </Link>
         )}
 
-        {/* {user && (
+        {user && (
           <Link
             to={`/profile/${user.id}/groups`}
             className={`font-medium ${
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
           >
             {t("nav.links.groups")}
           </Link>
-        )} */}
+        )}
       </div>
 
       {/* right‑side controls */}

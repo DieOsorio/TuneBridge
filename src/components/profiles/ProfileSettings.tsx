@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useProfile } from "../../context/profile/ProfileContext";
+import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { useCities, useCountries, useStates } from "@/context/helpers/useCountryCity";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
-import { uploadFileToBucket } from "../../utils/avatarUtils";
-import ImageUploader from "../../utils/ImageUploader";
+import { uploadFileToBucket } from "@/utils/avatarUtils";
+import ImageUploader from "@/utils/ImageUploader";
 import { IoIosCamera } from "react-icons/io";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useTranslation } from "react-i18next";
 import Textarea from "../ui/Textarea";
-import { useCities, useCountries, useStates } from "../../context/helpers/useCountryCity";
 import { Country, State, City } from "country-state-city";
 import { ActualFileObject } from "filepond";
 
@@ -74,9 +74,21 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
   const [saved, setSaved] = useState<boolean>(false);
 
   const avatarClickRef = useRef<HTMLDivElement>(null);
+  
+  // fetch lists country, state, neighborhood
+  const { data: countries = [] } = useCountries();
+  const selectedCountry = watch("country");
+  const { data: states = [] } = useStates(selectedCountry);
+  const selectedState = watch("state");
+  const { data: cities = [] } = useCities(selectedCountry, selectedState);
 
   useEffect(() => {
-    if (profile) {
+    if (
+      profile &&
+      countries.length > 0 &&
+      states.length >= 0 && 
+      cities.length >= 0
+    ) {
       const countryCode = Country.getAllCountries()
         .find(c => c.name === profile.country)?.isoCode || profile.country || "";
       const stateCode = State.getStatesOfCountry(countryCode)
@@ -100,14 +112,8 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           : String(profile.avatar_url)
       );
     }
-  }, [profile, reset]);
+  }, [profile, countries, states, cities, reset]);
 
-  // fetch lists country, state, neighborhood
-  const { data: countries = [] } = useCountries();
-  const selectedCountry = watch("country");
-  const { data: states = [] } = useStates(selectedCountry);
-  const selectedState = watch("state");
-  const { data: cities = [] } = useCities(selectedCountry, selectedState);
 
   const handleAvatarUpdate = (files: ActualFileObject[]) => {
     if (files.length > 0) {
@@ -225,27 +231,66 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           register={register}
           error={errors.lastname}
         />
-        <Select
-          id="country"
-          label={t("edit.labels.country")}
-          options={countries.map((c: any) => ({ value: c.isoCode, label: c.name }))}
+        <Controller
+          name="country"
           control={control}
+          render={({ field }) => (
+            <Select
+              id="country"
+              control={control}
+              defaultOption={t("edit.placeholders.country")}
+              label={t("edit.labels.country")}
+              options={countries.map((c) => ({ value: c.isoCode, label: c.name }))}
+              onChange={(val) => {
+                field.onChange(val);
+                setValue("state", ""); 
+                setValue("neighborhood", ""); 
+              }}
+              error={errors.country}
+            />
+          )}
         />
-        {errors.country && <p className="text-red-500 text-xs">{errors.country.message}</p>}
-        <Select
-          id="state"
-          label={t("edit.labels.state")}
-          options={states.map((s: any) => ({ value: s.isoCode, label: cleanStateName(s.name) }))}
+
+        <Controller
+          name="state"
           control={control}
+          render={({ field }) => (
+            <Select
+              id="state"
+              control={control}
+              defaultOption={t("edit.placeholders.state")}
+              label={t("edit.labels.state")}
+              options={states.map((s) => ({
+                value: s.isoCode,
+                label: cleanStateName(s.name) || "",
+              }))}
+              onChange={(val) => {
+                field.onChange(val);
+                setValue("neighborhood", ""); 
+              }}
+              disabled={!selectedCountry}
+              error={errors.state} 
+            />
+          )}
         />
-        {errors.state && <p className="text-red-500 text-xs">{errors.state.message}</p>}
-        <Select
-          id="neighborhood"
-          label={t("edit.labels.neighborhood")}
-          options={cities.map((c: any) => ({ value: c.name, label: c.name }))}
+        
+        <Controller
+          name="neighborhood"
           control={control}
+          render={({ field }) => (
+            <Select
+              id="neighborhood"
+              control={control}
+              defaultOption={t("edit.placeholders.neighborhood")}
+              label={t("edit.labels.neighborhood")}
+              options={cities.map((c) => ({ value: c.name, label: c.name }))}
+              onChange={field.onChange}
+              disabled={!selectedState}
+              error={errors.neighborhood}
+            />
+          )}
         />
-        {errors.neighborhood && <p className="text-red-500 text-xs">{errors.neighborhood.message}</p>}
+        
         <Input
           id="username"
           label={t("edit.labels.username")}
@@ -274,8 +319,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
             { value: "other", label: t("edit.placeholders.genderOptions.other") },
           ]}
           control={control}
+          search={false}
+          error={errors.gender}
         />
-        {errors.gender && <p className="text-red-500 text-xs">{errors.gender.message}</p>}
+        
         <div className="sm:col-span-1">
           <label htmlFor="birthdate" className="block text-sm font-semibold mb-3 text-white">
             {t("edit.labels.birthdate")}

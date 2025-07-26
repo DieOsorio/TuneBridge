@@ -1,19 +1,27 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { es, enUS } from "date-fns/locale";
-import { useGroupEventRsvps } from "../../../../context/groups/GroupEventRsvpsContext";
-import { useAuth } from "../../../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { useGroupEventRsvps } from "@/context/groups/GroupEventRsvpsContext";
+import { useGroupEvents } from "@/context/groups/GroupEventsContext";
+import type { GroupEvent } from "@/context/groups/groupEventsActions";
+import { useAuth } from "@/context/AuthContext";
 
-import Loading from "../../../../utils/Loading";
-import ErrorMessage from "../../../../utils/ErrorMessage";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
 import RsvpSelector from "./RsvpSelector";
 import AttendeesList from "./AttendeesList";
 import GroupEventFormModal from "./GroupEventFormModal";
-import Button from "../../../ui/Button";
-import { useGroupEvents } from "../../../../context/groups/GroupEventsContext";
+import Button from "@/components/ui/Button";
 
-const GroupEventDetails = ({ event, onClose, isAdminOrManager }) => {
+
+type Props = {
+  event: GroupEvent;
+  onClose: () => void;
+  isAdminOrManager: boolean;
+};
+
+const GroupEventDetails = ({ event, onClose, isAdminOrManager }: Props) => {
   const { t, i18n } = useTranslation("groupEvents");
   const { user } = useAuth();
   const { fetchEventRsvps } = useGroupEventRsvps();
@@ -21,9 +29,6 @@ const GroupEventDetails = ({ event, onClose, isAdminOrManager }) => {
   const { deleteEvent } = useGroupEvents();
 
   const [showEditModal, setShowEditModal] = useState(false);
-
-  console.log(event.id);
-  
 
   if (!event) return null;
 
@@ -36,6 +41,7 @@ const GroupEventDetails = ({ event, onClose, isAdminOrManager }) => {
       console.error(err);
     }
   };
+
   const locale = i18n.language === "es" ? es : enUS;
 
   const formattedStart = format(new Date(event.start_time), "PPPPp", { locale });
@@ -100,8 +106,8 @@ const GroupEventDetails = ({ event, onClose, isAdminOrManager }) => {
           <div className="space-y-6 mt-10">
             <RsvpSelector
               eventId={event.id}
-              userId={user.id}
-              currentStatus={rsvps.find((r) => r.profile_id === user.id)?.status}
+              userId={user!.id}
+              currentStatus={rsvps.find((r) => r.profile_id === user!.id)?.status}
             />
             <AttendeesList rsvps={rsvps} />
           </div>
@@ -127,13 +133,10 @@ const GroupEventDetails = ({ event, onClose, isAdminOrManager }) => {
 
       {showEditModal && (
         <GroupEventFormModal
-          groupId={event.group_id}
+          groupId={event.profile_group_id}
           initialEvent={event}
           mode="edit"
           onClose={() => setShowEditModal(false)}
-          onSave={() => {
-            setShowEditModal(false);
-          }}
         />
       )}
     </div>

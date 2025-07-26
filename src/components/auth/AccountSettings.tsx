@@ -96,12 +96,14 @@ const AccountSettings: React.FC = () => {
             label={t("labels.language")}
             control={prefCtrl}
             options={LANGS}
+            search={false}
           />
           <Select
             id="theme"
             label={t("labels.theme")}
             control={prefCtrl}
             options={THEMES}
+            search={false}
           />
           <div className="sm:col-span-2 flex justify-center gap-4">
             <Button 

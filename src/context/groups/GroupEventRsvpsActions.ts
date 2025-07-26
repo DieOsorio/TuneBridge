@@ -1,18 +1,24 @@
-import { useQuery, useMutation, useQueryClient, UseQueryResult, UseMutationResult } from "@tanstack/react-query";
-import { supabase } from "../../supabase";
+import { 
+  useQuery, 
+  useMutation, 
+  useQueryClient, 
+  UseQueryResult, 
+  UseMutationResult 
+} from "@tanstack/react-query";
+import { supabase } from "@/supabase";
 import {
   optimisticUpdate,
   rollbackCache,
   invalidateKeys,
   replaceOptimisticItem,
-} from "../../context/helpers/cacheHandler";
+} from "@/context/helpers/cacheHandler";
 import { groupEventRsvpsKeyFactory } from "../helpers/groups/groupsKeys";
 
 export interface EventRsvp {
   event_id: string; 
   profile_id: string; 
   status: "attending" | "not_attending" | "pending";
-  updated_at: string | null;
+  updated_at?: string | null;
 }
 
 // --- FETCH ALL RSVPs FOR EVENT ---

@@ -61,7 +61,10 @@ const DisplayMusicInfo: React.FC<DisplayMusicInfoProps> = ({ profileId }) => {
       </div>
       <MediaSummary profileId={profileId} />
       {ownProfile && (
-        <PlusButton label={t("roles.addRole")} to="/settings/music" onClick={() => {}} />
+        <PlusButton 
+          label={t("roles.addRole")} 
+          to="/settings/music" 
+        />
       )}
       {roles && roles.length === 0 ? (
         <p className="text-gray-400 text-center">{t("roles.none")}</p>

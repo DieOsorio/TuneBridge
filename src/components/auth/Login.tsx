@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Loading from "../../utils/Loading";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 
 interface LoginFormInputs {
   email: string;
   password: string;
 }
 
-const Login: React.FC = () => {
+const Login = () => {
   const { t } = useTranslation(["auth", "common"]);
   const { user, loading, signIn, error: authError } = useAuth();
   const navigate = useNavigate();
@@ -44,8 +45,8 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="text-gray-950 flex justify-center items-center h-screen">
-      <div className="border p-6 rounded-lg shadow-lg w-96 bg-white">
+    <div className="text-white flex justify-center items-center h-screen">
+      <div className="border p-6 rounded-lg shadow-lg w-96 bg-gray-600">
         <h2 className="text-2xl font-semibold mb-4 text-center">
           {t("auth:login.title")}
         </h2>
@@ -79,11 +80,11 @@ const Login: React.FC = () => {
         <p className="mt-4 text-sm flex flex-col gap-2 text-center">
           <div>
             {t("auth:login.noAccount")} {" "}
-            <Link to="/signup" className="text-blue-500 hover:underline">
+            <Link to="/signup" className="text-sky-500 hover:underline">
               {t("auth:login.signupHere")}
             </Link>
           </div>
-          <Link to="/forgot-password" className="text-sm mx-auto text-blue-500 hover:underline">
+          <Link to="/forgot-password" className="text-sm mx-auto text-sky-500 hover:underline">
             {t("auth:login.forgot")}
           </Link>
         </p>

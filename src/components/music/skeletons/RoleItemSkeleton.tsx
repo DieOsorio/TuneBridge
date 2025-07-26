@@ -1,9 +1,8 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import React from "react";
 import { FaChevronDown } from "react-icons/fa";
 
-const RoleItemSkeleton: React.FC = () => {
+const RoleItemSkeleton = () => {
   const baseColor = "#a1a1aa";
   const highlightColor = "#e4e4e7";
 

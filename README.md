@@ -9,11 +9,11 @@ TuneBridge is a music-centered social network designed to connect musicians, art
 TuneBridge is built with a modern tech stack that enables rich interactivity, real-time collaboration, and strong scalability:
 
 - **Frontend:**  
-  React 19, Vite, React Router v7  
-  React Context API for global state  
-  TanStack React Query for async state and caching  
-  Framer Motion and GSAP for animations  
-  MUI (Material UI) for date pickers and select UI components  
+  React 19 + TypeScript, Vite, React Router v7
+  React Context API for global state
+  TanStack React Query for async state and caching
+  Framer Motion and GSAP for animations
+  MUI (Material UI) for date pickers and select UI components
   Filepond for file uploads
 
 - **Styling:**  

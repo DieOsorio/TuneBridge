@@ -54,9 +54,9 @@ const MediaSettings: React.FC = () => {
 
   useEffect(() => {
     if (isEditing && media) {
-      setValue("url", media.url);
-      setValue("title", media.title);
-      setValue("media_type", media.media_type);
+      setValue("url", media.url ?? "");
+      setValue("title", media.title ?? "");
+      setValue("media_type", media.media_type ?? "");
     } else {
       reset();
     }
@@ -97,7 +97,7 @@ const MediaSettings: React.FC = () => {
           id="url"
           label={t("media.form.url")}
           placeholder={t("media.form.urlPlaceholder")}
-          register={register("url")}
+          register={register}
           error={errors.url}
         />
         <Input
@@ -105,12 +105,7 @@ const MediaSettings: React.FC = () => {
           label={t("media.form.title")}
           placeholder={t("media.form.titlePlaceholder")}
           maxLength={30}
-          validation={{
-            maxLength: {
-              value: 30,
-            },
-          }}
-          register={register("title")}
+          register={register}
           error={errors.title}
         />
         <Select
@@ -119,7 +114,7 @@ const MediaSettings: React.FC = () => {
           options={mediaTypeOptions}
           className=""
           control={undefined as any}
-          // The Select component should be refactored to support register for non-form controlled usage
+          register={register}
         />
         <div className="flex justify-center mt-16 gap-4">
           <Button type="submit" className="!bg-emerald-600 hover:!bg-emerald-700">

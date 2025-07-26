@@ -7,12 +7,10 @@ import { useAuth } from "../../context/AuthContext";
 import Loading from "../../utils/Loading";
 import ErrorMessage from "../../utils/ErrorMessage";
 import PlusButton from "../ui/PlusButton";
-import React from "react";
 import type { MediaLink } from "../../context/music/mediaLinksActions";
 
-interface MediaSectionProps {}
 
-const MediaSection: React.FC<MediaSectionProps> = () => {
+const MediaSection = () => {
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation("music");
@@ -54,7 +52,10 @@ const MediaSection: React.FC<MediaSectionProps> = () => {
         <ShinyText text={t("media.title")} className="text-3xl font-semibold tracking-wide mb-12" />
       </div>
       {isOwnProfile && (
-        <PlusButton label={t("media.actions.add")} to="/media/create" onClick={() => {}} />
+        <PlusButton 
+          label={t("media.actions.add")} 
+          to="/media/create" 
+        />
       )}
       {/* Media List */}
       <ul className="space-y-4 text-center">
@@ -65,7 +66,7 @@ const MediaSection: React.FC<MediaSectionProps> = () => {
             </div>
             <div className="mb-6">
               {/* Use ReactPlayer for all supported types except Spotify */}
-              {media.media_type === "spotify" ? (
+              {media.media_type === "spotify" && media.url ? (
                 <div className="rounded-lg bg-[#1db954] p-1">
                   <iframe
                     src={getSpotifyEmbedUrl(media.url) || undefined}
@@ -75,11 +76,11 @@ const MediaSection: React.FC<MediaSectionProps> = () => {
                     loading="lazy"
                   />
                 </div>
-              ) : (
-                <div className="aspect-video max-w-full bg-gray-900 p-1 rounded-lg">
-                  <ReactPlayer url={media.url} controls width="100%" height="100%" />
-                </div>
-              )}
+              ) : media.url ? (
+                  <div className="aspect-video max-w-full bg-gray-900 p-1 rounded-lg">
+                    <ReactPlayer url={media.url} controls width="100%" height="100%" />
+                  </div>
+                ) : null}
             </div>
             {isOwnProfile && (
               <div className="flex gap-4 justify-center">

@@ -1,9 +1,16 @@
 import { format } from "date-fns";
+import { EventContentArg, ViewApi } from "@fullcalendar/core";
 
-const CustomEventContent = ({ event, view }) => {
-  const startDate = event.start;
+type Props = {
+  event: EventContentArg["event"];
+  view: ViewApi;
+};
+
+const CustomEventContent = ({ event, view }: Props) => {
+  const startDate = event.start!;
   const endDate = event.end;
-  const formatTime = (date) => format(date, "HH:mm");
+  const formatTime = (date: Date) => format(date, "HH:mm");
+
   const timeRange = endDate
     ? `${formatTime(startDate)} - ${formatTime(endDate)}`
     : formatTime(startDate);

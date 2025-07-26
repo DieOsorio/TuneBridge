@@ -89,9 +89,9 @@
         "bio": "Bio",
         "firstname": "First name",
         "lastname": "Last name",
-        "country": "Country",
-        "state": "State",
-        "neighborhood": "City",
+        "country": "Choose a country",
+        "state": "Choose a state",
+        "neighborhood": "Choose a city",
         "username": "Username",
         "genderDefault": "Choose your gender",
         "genderOptions": {
