@@ -166,9 +166,9 @@
     "placeholders": {
       "name": "Enter group name",
       "bio": "Enter a short bio",
-      "country": "Enter country",
-      "state": "Enter state",
-      "city": "Enter city",
+      "country": "Choose a country",
+      "state": "Choose a state",
+      "city": "Choose a city",
       "genres": "Enter music genre"
     },
     "validations": {

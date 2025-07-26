@@ -6,7 +6,6 @@ export const applyDayCellStyle = (info, calendarEvents) => {
     event.start.startsWith(dateStr)
   );
 
-  // Quitamos todas las clases custom posibles
   info.el.classList.remove(
     "event-gig",
     "event-rehearsal",
