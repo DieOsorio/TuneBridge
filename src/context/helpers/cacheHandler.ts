@@ -88,35 +88,50 @@ export function optimisticUpdate<T extends Record<string, any>>({
   const previousData: Record<string, unknown> = {};
 
   keys.forEach((key) => {
-    // Get previous cached data for this key
-    const prev = queryClient.getQueryData<T | T[]>(key);
-    // Store it in previousData for rollback purposes (key joined to string)
+    const prev = queryClient.getQueryData<any>(key);
     previousData[key.join(",")] = prev;
 
+    if (prev && typeof prev === 'object' && Array.isArray(prev.pages)) {
+      
+      let newPages = prev.pages.slice();
+      if (type === 'add') {
+        newPages[0] = [entity, ...(newPages[0] || [])];
+      } else if (type === 'update') {
+        newPages = newPages.map((page: T[] | unknown) =>
+          Array.isArray(page)
+            ? page.map((item: T) => (isMatch(item, entity) ? { ...item, ...entity } : item))
+            : page
+        );
+      } else if (type === 'remove') {
+        newPages = newPages.map((page: T[] | unknown) =>
+          Array.isArray(page)
+            ? page.filter((item: T) => !isMatch(item, entity))
+            : page
+        );
+      }
+      queryClient.setQueryData(key, { ...prev, pages: newPages });
+      return;
+    }
+    
     if (type === "add") {
-      // Add entity to array or create new array with entity
       const newValue = Array.isArray(prev) ? [...prev, entity] : [entity];
       queryClient.setQueryData(key, newValue);
     } else if (type === "update") {
       if (Array.isArray(prev)) {
-        // Update entity inside array if matches by idKey
         queryClient.setQueryData(
           key,
           prev.map((item) => (isMatch(item, entity) ? { ...item, ...entity } : item))
         );
       } else if (prev && isMatch(prev, entity)) {
-        // Update single object cached
         queryClient.setQueryData(key, { ...prev, ...entity });
       }
     } else if (type === "remove") {
       if (Array.isArray(prev)) {
-        // Remove matching entity from array
         queryClient.setQueryData(
           key,
           prev.filter((item) => !isMatch(item, entity))
         );
       } else if (prev && isMatch(prev, entity)) {
-        // Remove cached single object
         queryClient.setQueryData(key, undefined);
       }
     }
@@ -170,15 +185,24 @@ export function replaceOptimisticItem<T extends Record<string, any>>({
   const isMatch = getIsMatch<T>(idKey);
 
   keys.forEach((key) => {
-    const prev = queryClient.getQueryData<T | T[]>(key);
+    const prev = queryClient.getQueryData<any>(key);
+    // Soporte para infinite queries
+    if (prev && typeof prev === 'object' && Array.isArray(prev.pages)) {
+      const newPages = prev.pages.map((page: T[] | unknown) =>
+        Array.isArray(page)
+          ? page.map((item: T) => (isMatch(item, entity) ? newEntity : item))
+          : page
+      );
+      queryClient.setQueryData(key, { ...prev, pages: newPages });
+      return;
+    }
+    // Fallback: array plano o objeto
     if (Array.isArray(prev)) {
-      // Replace entity inside array
       queryClient.setQueryData(
         key,
         prev.map((item) => (isMatch(item, entity) ? newEntity : item))
       );
     } else if (prev && isMatch(prev, entity)) {
-      // Replace single cached object
       queryClient.setQueryData(key, newEntity);
     }
   });

@@ -20,7 +20,7 @@ interface GroupSettingsParams extends Record<string, string | undefined> {
   groupId?: string;
 }
 
-const GroupSettings: React.FC = () => {
+const GroupSettings = () => {
   const { groupId } = useParams<GroupSettingsParams>();
   const { user } = useAuth();
   const { t } = useTranslation("groupSettings");

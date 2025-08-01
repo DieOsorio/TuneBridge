@@ -5,16 +5,16 @@ import { useTranslation } from "react-i18next";
 import { FiPlus } from "react-icons/fi";
 import { IoIosCamera } from "react-icons/io";
 
-import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
-import { useAuth } from "../../../context/AuthContext";
+import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
+import { useAuth } from "@/context/AuthContext";
 
-import Input from "../../ui/Input";
-import Textarea from "../../ui/Textarea";
-import Button from "../../ui/Button";
-import Select from "../../ui/Select";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
 import ProfileAvatar from "../ProfileAvatar";
-import ImageUploader from "../../../utils/ImageUploader";
-import { uploadFileToBucket } from "../../../utils/avatarUtils";
+import ImageUploader from "@/utils/ImageUploader";
+import { uploadFileToBucket } from "@/utils/avatarUtils";
 
 import type { ProfileGroup as Group } from "@/context/profile/profileGroupsActions";
 
@@ -22,7 +22,7 @@ import {
   useCountries,
   useStates,
   useCities,
-} from "../../../context/helpers/useCountryCity";
+} from "@/context/helpers/useCountryCity";
 import { Country } from "country-state-city";
 import { ActualFileObject } from "filepond";
 
@@ -362,7 +362,11 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
 
         {/* action button */}
         <div className="sm:col-span-2 flex justify-center gap-4 pt-4">
-          <Button type="submit" disabled={isSubmitting}>
+          <Button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="!bg-emerald-600 hover:!bg-emerald-700"
+          >
             {isSubmitting ? t("form.buttons.saving") : submitLabel}
           </Button>
         </div>

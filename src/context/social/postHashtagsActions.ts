@@ -18,23 +18,18 @@ export interface PostHashtag {
 export const useFetchPostHashtagsQuery = (postId: string): UseQueryResult<PostHashtag[], Error> => {
   return useQuery<PostHashtag[], Error>({
     queryKey: postHashtagKeyFactory({ postId }).all ?? ["postHashtags", postId ?? ""],
-    queryFn: async () => {
+    queryFn: async (): Promise<PostHashtag[]> => {
       const { data, error } = await supabase
         .schema("social")
         .from("post_hashtags")
         .select("post_id, hashtag_id, hashtags(name)")
         .eq("post_id", postId);
       if (error) throw new Error(error.message);
-      // Map each item to ensure hashtags is { name: string }
-      return Array.isArray(data)
-        ? data.map((item: any) => ({
-            post_id: item.post_id ?? "",
-            hashtag_id: item.hashtag_id ?? "",
-            hashtags: item.hashtags && Array.isArray(item.hashtags) && item.hashtags[0]
-              ? { name: String(item.hashtags[0].name ?? "") }
-              : { name: "" },
-          }))
-        : [];
+
+      return (data ?? []).map((item) => ({
+        ...item,
+        hashtags: Array.isArray(item.hashtags) ? item.hashtags[0] : item.hashtags,
+      }));
     },
     enabled: !!postId,
   });

@@ -22,7 +22,7 @@ interface PasswordForm {
   confirmPassword: string;
 }
 
-const AccountSettings: React.FC = () => {
+const AccountSettings = () => {
   const { t } = useTranslation("settings", { keyPrefix: "account" });
   const { deleteProfile } = useProfile();
   const { user, updatePassword, deleteMyAccount, signOut } = useAuth();

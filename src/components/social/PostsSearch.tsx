@@ -107,7 +107,7 @@ const PostsSearch: React.FC = () => {
         <p className="col-span-full text-center text-gray-500">
           {t("posts:messages.noMatch")}
         </p>
-      ) : allPostsData && allPostsData.pages.length > 0 ? (
+      ) : Array.isArray(allPostsData?.pages) && allPostsData.pages.length > 0 ? (
         allPostsData.pages.map((page: Post[], pageIndex: number) => (
           <React.Fragment key={pageIndex}>
             {page.map((post: Post) => (

@@ -39,8 +39,6 @@ interface TooltipProps {
   children: ReactNode;
 }
 
-// --- Componentes auxiliares ---
-
 const Tooltip = ({ children }: TooltipProps) => (
   <div
     className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2
@@ -382,7 +380,7 @@ function PostCard({ post }: PostCardProps) {
               <Link
                 key={hashtag.hashtag_id}
                 to={`/hashtag/${tagName}`}
-                className="text-sm text-sky-500 hover:underline"
+                className="text-sm mx-1 text-sky-500 hover:underline"
               >
                 {name}
               </Link>

@@ -1,5 +1,8 @@
-import type { ProfileGroup } from "../context/profile/profileGroupsActions"
-import type { ProfileGroupMember } from "../context/profile/profileGroupMembersActions";
+import type { ProfileGroup } from "@/context/profile/profileGroupsActions"
+import type { ProfileGroupMember } from "@/context/profile/profileGroupMembersActions";
+import { useAuth } from "@/context/AuthContext";
+import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
+import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
 
 import {
   Routes,
@@ -8,19 +11,14 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { useAuth } from "../context/AuthContext";
-import { useProfileGroups } from "../context/profile/ProfileGroupsContext";
-import { useProfileGroupMembers } from "../context/profile/ProfileGroupMembersContext";
-
-import Loading from "../utils/Loading";
-import ErrorMessage from "../utils/ErrorMessage";
-import GroupHeader from "../components/profiles/group/GroupHeader";
-
-import GroupAbout from "../components/profiles/group/GroupAbout";
-import GroupPosts from "../components/profiles/group/GroupPosts";
-import GroupCalendarScreen from "../components/profiles/group/group-events/GroupCalendarScreen";
-import GroupForm from "../components/profiles/group/GroupForm";
-import FollowersList from "../components/profiles/group/FollowersList";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
+import GroupHeader from "@/components/profiles/group/GroupHeader";
+import GroupAbout from "@/components/profiles/group/GroupAbout";
+import GroupPosts from "@/components/profiles/group/GroupPosts";
+import GroupCalendarScreen from "@/components/profiles/group/group-events/GroupCalendarScreen";
+import GroupForm from "@/components/profiles/group/GroupForm";
+import FollowersList from "@/components/profiles/group/FollowersList";
 
 
 export default function ProfileGroup() {

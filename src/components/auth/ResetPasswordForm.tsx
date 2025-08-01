@@ -11,7 +11,7 @@ interface ResetPasswordFormInputs {
   password: string;
 }
 
-const ResetPasswordForm: React.FC = () => {
+const ResetPasswordForm = () => {
   const { t } = useTranslation("auth", { keyPrefix: "resetPassword" });
   const navigate = useNavigate();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -57,7 +57,7 @@ const ResetPasswordForm: React.FC = () => {
         label={t("password.label")}
         placeholder={t("password.placeholder")}
         autoComplete="new-password"
-        register={register("password")}
+        register={register}
         validation={{
           required: t("errors.passwordRequired"),
           minLength: {
