@@ -20,7 +20,7 @@ interface TextareaProps {
   classForLabel?: string;
 }
 
-const Textarea: React.FC<TextareaProps> = ({
+const Textarea = ({
   id,
   label,
   register,
@@ -31,7 +31,7 @@ const Textarea: React.FC<TextareaProps> = ({
   watchValue,
   className = "",
   classForLabel = "",
-}) => {
+}: TextareaProps) => {
   const { t } = useTranslation("ui");
 
   return (
@@ -50,11 +50,13 @@ const Textarea: React.FC<TextareaProps> = ({
         {...register(id, validation)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 p-2 resize-none h-24 ${className}`}
+        className={`w-full bg-gray-800 text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500 p-2 resize-none h-24 ${className} ${
+          error ? "border-rose-600" : "border-gray-600"
+        }`}
       />
 
       {(error as FieldError)?.message && (
-        <span className="text-red-500 text-xs">{(error as FieldError).message}</span>
+        <span className="text-rose-600 text-xs">{(error as FieldError).message}</span>
       )}
 
       {maxLength && (

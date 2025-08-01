@@ -7,10 +7,10 @@ import type { MusicianAd } from "@/context/social/adsActions";
 
 import { FiPlus } from "react-icons/fi";
 
-import Button from "../../ui/Button";
-import Select from "../../ui/Select";
-import Input from "../../ui/Input";
-import Textarea from "../../ui/Textarea";
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 
 
 interface AdFormProps {
@@ -19,7 +19,7 @@ interface AdFormProps {
   publisherId?: string | null;
 }
 
-const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisherId }) => {
+const AdForm = ({ defaultValues = {}, onSubmit, publisherId }: AdFormProps) => {
   const { t } = useTranslation("ads");
   const { user } = useAuth();
 
@@ -93,6 +93,7 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
         classForLabel="text-gray-400"
         error={errors.ad_type}
         search={false}
+        validation={{ required: t("adForm.validations.typeOfAd") }}
       />
 
       <Input
@@ -102,7 +103,9 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
         type="text"
         register={register}
         maxLength={30}
+        watchValue={watch("title")}
         validation={{
+          required: t("adForm.validations.titleRequired"),
           maxLength: {
             value: 30,
             message: t("adForm.validations.title"),
@@ -130,10 +133,13 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
             type="text"
             maxLength={12}
             register={register}
+            watchValue={watch("newLookingFor")}
             validation={{
               maxLength: {
                 value: 12,
-                message: t("adForm.validations.looking"),
+                message: adType === "offering"
+                ? t("adForm.validations.offering")
+                : t("adForm.validations.looking"),
               },
             }}
             classForLabel="!text-gray-400"
@@ -182,6 +188,7 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
             type="text"
             register={register}
             maxLength={12}
+            watchValue={watch("newGenre")}
             validation={{
               maxLength: {
                 value: 12,
@@ -228,6 +235,7 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
         placeholder={t("adForm.placeholders.location")}
         type="text"
         register={register}
+        validation={{ required: t("adForm.validations.locationRequired") }}
         classForLabel="!text-gray-400"
         error={errors.location}
       />
@@ -238,6 +246,7 @@ const AdForm: React.FC<AdFormProps> = ({ defaultValues = {}, onSubmit, publisher
         placeholder={t("adForm.placeholders.description")}
         register={register}
         validation={{
+          required: t("adForm.validations.descriptionRequired"),
           maxLength: {
             value: 200,
             message: t("adForm.validations.description"),

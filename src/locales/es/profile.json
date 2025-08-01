@@ -112,7 +112,7 @@
         "cancel": "Cancelar"
       },
       "errors": {
-        "updateFailed": "Error al actualizar el perfil."
+        "updateFailed": "No se pudo actualizar tu perfil. Intentá de nuevo más tarde."
       }
     },
     "matchScore": {

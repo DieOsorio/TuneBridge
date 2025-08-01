@@ -39,7 +39,7 @@ export interface ProfileSettingsProps {
 const cleanStateName = (name: string) =>
   name.endsWith(" Department") ? name.replace(/ Department$/, "") : name;
 
-const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCancel }) => {
+const ProfileSettings = ({ profile, onSave, onCancel }: ProfileSettingsProps) => {
   const { t } = useTranslation("profile");
   const { user } = useAuth();
   const { updateProfile } = useProfile();
@@ -72,6 +72,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
   const [preview, setPreview] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string>("");
   const [saved, setSaved] = useState<boolean>(false);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   const avatarClickRef = useRef<HTMLDivElement>(null);
   
@@ -84,6 +85,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
 
   useEffect(() => {
     if (
+      !initialized &&
       profile &&
       countries.length > 0 &&
       states.length >= 0 && 
@@ -111,8 +113,9 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           ? ""
           : String(profile.avatar_url)
       );
+      setInitialized(true);
     }
-  }, [profile, countries, states, cities, reset]);
+  }, [profile, countries, states, cities, reset, initialized]);
 
 
   const handleAvatarUpdate = (files: ActualFileObject[]) => {
@@ -150,11 +153,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
         neighborhood: data.neighborhood,
         avatar_url: avatar,
         id: user?.id || profile?.id!,
-        email: user?.email || profile?.email || "",
         birthdate:
-          data.birthdate instanceof Date
+          data.birthdate && data.birthdate instanceof Date
             ? data.birthdate.toISOString()
-            : (typeof data.birthdate === "string" ? data.birthdate : null),
+            : data.birthdate || null,
         last_seen: profile?.last_seen ?? new Date().toISOString(),
       };
       await updateProfile(updatedProfile);
@@ -164,7 +166,8 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
         setSaved(false);
       }, 2500);
     } catch (error: any) {
-      setLocalError(error.message || t("edit.errors.updateFailed"));
+      console.error("Profile update error:", error);
+      setLocalError(t("edit.errors.updateFailed"));
     }
   };
 
@@ -297,6 +300,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, onSave, onCa
           placeholder={t("edit.placeholders.username")}
           register={register}
           maxLength={12}
+          watchValue={watch("username")}
           validation={{
             required: t("edit.validation.usernameRequired"),
             maxLength: {

@@ -78,7 +78,14 @@
     },
     "validations": {
       "title": "El título no puede exeder los 30 caracteres",
-      "description": "La descripción no puede exeder los 200 caracteres"
+      "titleRequired": "El título es obligatorio",
+      "description": "La descripción no puede exeder los 200 caracteres",
+      "typeOfAd": "Por favor selecciona un tipo de anuncio",
+      "looking": "El campo 'Se busca' no puede exeder los 12 caracteres",
+      "offering": "El campo 'Se ofrece' no puede exeder los 12 caracteres",
+      "genres": "Los géneros no pueden exeder los 12 caracteres cada uno",
+      "locationRequired": "La ubicación es obligatoria",
+      "descriptionRequired": "La descripción es obligatoria"
     },
     "buttons": {
       "cancel": "Cancelar",

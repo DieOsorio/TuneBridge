@@ -36,6 +36,7 @@ const UserGroups= ({ profileId, isOwnProfile }:UserGroupsProps) => {
         <ShinyText
           text={t("userGroups.groups")}
           style={{ "--shiny-primary": "#d97706cc" } as React.CSSProperties}
+          className="!text-amber-600"
           speed={3}
         />
       </h2>

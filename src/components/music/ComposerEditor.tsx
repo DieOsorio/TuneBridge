@@ -1,14 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
 import RoleEditor from "./RoleEditor";
-import React from "react";
 
 interface ComposerEditorProps {
   role: any;
   profileId: string;
 }
 
-const ComposerEditor: React.FC<ComposerEditorProps> = ({ role, profileId }) => {
+const ComposerEditor = ({ role, profileId }: ComposerEditorProps) => {
   const { t } = useTranslation("music");
   const {
     fetchComposer,

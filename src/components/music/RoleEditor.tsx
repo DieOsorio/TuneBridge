@@ -49,7 +49,7 @@ const principalFields = new Set([
   "music_genre",
 ]);
 
-const RoleEditor: React.FC<RoleEditorProps> = ({
+const RoleEditor = ({
   role,
   profileId,
   details,
@@ -59,7 +59,7 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
   deleteDetails,
   fields,
   title,
-}) => {
+}: RoleEditorProps) => {
   const { t } = useTranslation("common");
 
   const [editingDetail, setEditingDetail] = useState<Record<string | number, Record<string, any>> | null>(null);
@@ -132,7 +132,7 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
       }
 
       reset();
-      setSuccessMessage(t("messages.success.add", { item: title }));
+      setSuccessMessage(t("messages.success.add", { item: title.toLowerCase() }));
       setTimeout(() => setSuccessMessage(""), 3000);
       refetch();
     } catch (err: any) {
@@ -193,7 +193,7 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
       );
 
       // Show success message and cleanup
-      setSuccessMessage(t("messages.success.update", { item: title }));
+      setSuccessMessage(t("messages.success.update", { item: title.toLowerCase() }));
       setTimeout(() => setSuccessMessage(""), 3000);
 
       setEditingDetail((prev) => {
@@ -205,7 +205,7 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
       refetch();
     } catch (err: any) {
       console.error(`Error updating ${title.toLowerCase()}:`, err);
-      setError("root", { message: t("messages.error.update", { title: title.toLowerCase() }) });
+      setError("root", { message: t("messages.error.update", { item: title.toLowerCase() }) });
     }
   };
 
@@ -214,7 +214,7 @@ const RoleEditor: React.FC<RoleEditorProps> = ({
 
     try {
       await deleteDetails(id);
-      setSuccessMessage(t("messages.success.delete", { item: title }));
+      setSuccessMessage(t("messages.success.delete", { item: title.toLowerCase() }));
       setTimeout(() => setSuccessMessage(""), 3000);
       refetch();
     } catch (err: any) {

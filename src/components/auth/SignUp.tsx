@@ -56,6 +56,7 @@ const SignUp = () => {
             placeholder={t("common:form.placeholders.username")}
             register={register}
             maxLength={12}
+            watchValue={watch("username")}
             validation={{
               required: t("signup.errors.usernameRequired"),
               maxLength: {

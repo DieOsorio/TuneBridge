@@ -32,7 +32,8 @@
     },
     "errors": {
       "title": "El título es obligatorio.",
-      "content": "El contenido no puede estar vacío."
+      "content": "El contenido no puede estar vacío.",
+      "contentRequired": "El contenido es obligatorio."
     }
   },
   "update": {
@@ -58,7 +59,8 @@
       "title": "El título es obligatorio.",
       "content": "El contenido no puede estar vacío.",
       "delete": "Error al eliminar la publicación. Por favor, intenta nuevamente.",
-      "confirmDelete": "¿Estás seguro de que deseas eliminar esta publicación?"
+      "confirmDelete": "¿Estás seguro de que deseas eliminar esta publicación?",
+      "contentRequired": "El contenido es obligatorio."
     }
   },
   "likes": {

@@ -12,6 +12,7 @@ interface InputProps {
   className?: string;
   classForLabel?: string;
   label?: string;
+  watchValue?: string;
   type?: React.HTMLInputTypeAttribute;
   maxLength?: number;
   autoComplete?: string;
@@ -22,7 +23,7 @@ interface InputProps {
   showToggle?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({
+const Input = ({
   id,
   placeholder,
   className = "",
@@ -30,13 +31,14 @@ const Input: React.FC<InputProps> = ({
   label,
   type = "text",
   maxLength,
+  watchValue,
   autoComplete,
   error,
   register,
   validation,
   field,
   showToggle = true,
-}) => {
+}: InputProps) => {
   const [visible, setVisible] = useState(false);
   const [charCount, setCharCount] = useState(field?.value?.length || 0);
   const isPassword = type === "password";
@@ -69,7 +71,7 @@ const Input: React.FC<InputProps> = ({
           maxLength={maxLength}
           autoComplete={autoComplete}
           className={`w-full rounded-md px-3 py-2 border bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-            error ? "border-red-500" : "border-gray-600"
+            error ? "border-rose-600" : "border-gray-600"
           }`}
           {...(field ?? registerProps)}
           {...(field && {
@@ -89,22 +91,24 @@ const Input: React.FC<InputProps> = ({
           </button>
         )}
       </div>
-
-      {maxLength !== undefined && (
-        <div
-          className={`text-right text-xs mt-1 ${
-            charCount >= maxLength ? "text-red-400" : "text-gray-400"
-          }`}
-        >
-          {charCount}/{maxLength}
-        </div>
-      )}
-
-      {error && (
-        <p className="text-red-500 text-sm mt-1">
+      <div className="flex justify-between items-center">
+        {error && (
+        <span className="text-rose-600 text-xs">
           {typeof error === "string" ? error : error?.message}
-        </p>
-      )}
+        </span>
+        )}
+
+        {maxLength !== undefined && (
+          <div
+            className={`text-right text-xs mt-1 ${
+              (watchValue?.length ?? 0) >= maxLength ? "text-red-400" : "text-gray-400"
+            }`}
+          >
+            {watchValue?.length ?? 0}/{maxLength}
+          </div>
+        )}
+      </div>
+
     </div>
   );
 };

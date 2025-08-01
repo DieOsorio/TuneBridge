@@ -175,10 +175,14 @@ export const useCreateMusicianAdMutation = (): UseMutationResult<MusicianAd, Err
       });
     },
     onSettled: (_data, _error, variables) => {
-      invalidateKeys({
-        queryClient,
-        keyFactory: (entity: MusicianAd) => musicianAdKeyFactory({ adId: entity.id }).single ?? ["musicianAd", entity.id ?? ""],
-        entity: variables as MusicianAd,
+      const entity = variables as MusicianAd;
+      const keys = musicianAdKeyFactory({
+        adId: entity.id,
+        profileId: entity.profile_id ?? undefined,
+        groupId: entity.group_id ?? undefined,
+      });
+      [keys.single, keys.all, keys.user, keys.group].forEach((key) => {
+        if (key) queryClient.invalidateQueries({ queryKey: key });
       });
     },
   });
@@ -221,10 +225,13 @@ export const useUpdateMusicianAdMutation = (): UseMutationResult<MusicianAd, Err
       });
     },
     onSettled: (_data, _error, { ad }) => {
-      invalidateKeys({
-        queryClient,
-        keyFactory: (entity: MusicianAd) => musicianAdKeyFactory({ adId: entity.id }).single ?? ["musicianAd", entity.id ?? ""],
-        entity: ad,
+      const keys = musicianAdKeyFactory({
+        adId: ad.id,
+        profileId: ad.profile_id ?? undefined,
+        groupId: ad.group_id ?? undefined,
+      });
+      [keys.single, keys.all, keys.user, keys.group].forEach((key) => {
+        if (key) queryClient.invalidateQueries({ queryKey: key });
       });
     },
   });
@@ -256,10 +263,13 @@ export const useDeleteMusicianAdMutation = (): UseMutationResult<void, Error, Mu
       });
     },
     onSettled: (_data, _error, ad) => {
-      invalidateKeys({
-        queryClient,
-        keyFactory: (entity: MusicianAd) => musicianAdKeyFactory({ adId: entity.id }).single ?? ["musicianAd", entity.id ?? ""],
-        entity: ad,
+      const keys = musicianAdKeyFactory({
+        adId: ad.id,
+        profileId: ad.profile_id ?? undefined,
+        groupId: ad.group_id ?? undefined,
+      });
+      [keys.single, keys.all, keys.user, keys.group].forEach((key) => {
+        if (key) queryClient.invalidateQueries({ queryKey: key });
       });
     },
   });
