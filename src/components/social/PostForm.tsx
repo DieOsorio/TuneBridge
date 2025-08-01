@@ -229,6 +229,7 @@ const PostForm = () => {
           label={t(`${postId ? "update" : "create"}.labels.title`)}
           placeholder={t(`${postId ? "update" : "create"}.placeholders.title`)}
           maxLength={30}
+          watchValue={watch("title")}
           register={register}
           validation={{ required: t(`${postId ? "update" : "create"}.errors.title`) }}
           error={errors.title}
@@ -238,9 +239,10 @@ const PostForm = () => {
         <Textarea
           id="content"
           label={t(`${postId ? "update" : "create"}.labels.content`)}
-          placeholder={t(`${postId ? "update" : "create"}.placeholders.content`)}
+          placeholder={t(`${postId ? "update" : "create"}.placeholders.content`)}          
           register={register}
           validation={{
+            required: t(`${postId ? "update" : "create"}.errors.contentRequired`),
             maxLength: {
               value: 150,
               message: t(`${postId ? "update" : "create"}.errors.content`),
@@ -261,6 +263,7 @@ const PostForm = () => {
               type="text"
               register={register}
               maxLength={12}
+              watchValue={watch("newHashtag")}
               classForLabel="!text-gray-400"
               className="!flex-1"
             />

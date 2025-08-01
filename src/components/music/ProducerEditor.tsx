@@ -1,22 +1,21 @@
 import { useTranslation } from "react-i18next";
 import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
 import RoleEditor from "./RoleEditor";
-import React from "react";
 
 interface ProducerEditorProps {
   role: any;
   profileId: string;
 }
 
-const ProducerEditor: React.FC<ProducerEditorProps> = ({ role, profileId }) => {
+const ProducerEditor = ({ role, profileId }: ProducerEditorProps) => {
   const { t } = useTranslation("music");
   const {
-    fetchProducerById,
+    fetchProducers,
     addProducer,
     updateProducer,
     deleteProducer,
   } = useProducerDetails();
-  const { data: producerDetails, refetch } = fetchProducerById(role.id);
+  const { data: producerDetails, refetch } = fetchProducers(role.id);
 
   const sanitizeInput = (details: any) => {
     return {

@@ -8,7 +8,6 @@ import ErrorMessage from "../../utils/ErrorMessage";
 import Loading from "../../utils/Loading";
 import Select from "../ui/Select";
 import { useTranslation } from "react-i18next";
-import React from "react";
 
 interface MusicSettingsProps {
   profileId: string;
@@ -18,14 +17,14 @@ interface MusicSettingsForm {
   selectedRole: string;
 }
 
-const MusicSettings: React.FC<MusicSettingsProps> = ({ profileId }) => {
+const MusicSettings = ({ profileId }: MusicSettingsProps) => {
   const { t } = useTranslation("music");
   const { fetchRoles, addRole, deleteRole } = useRoles();
   const { data: roles = [], isLoading, isError, error } = fetchRoles(profileId);
   const [expandedRole, setExpandedRole] = useState<string | null>(null);
 
   const {
-    register,
+    control,
     handleSubmit,
     watch,
     reset,
@@ -92,7 +91,7 @@ const MusicSettings: React.FC<MusicSettingsProps> = ({ profileId }) => {
               { value: "Singer", label: t("roles.singer") },
             ]}
             defaultOption={t("edit.selectLabel")}
-            register={register}
+            control={control}
           />
           <div className={`${selectedRole === "Other" ? "md:col-span-2" : ""}`}>
             <Button type="submit" className="w-full md:w-auto md:mt-3 !bg-emerald-600 hover:!bg-emerald-700">

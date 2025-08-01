@@ -78,7 +78,14 @@
     },
     "validations": {
       "title": "Title cannot exceed 30 characters",
-      "description": "Description cannot exceed 200 characters"
+      "titleRequired": "Title is required",
+      "description": "Description cannot exceed 200 characters",
+      "typeOfAd": "Please select a type of ad",
+      "looking": "Looking field cannot exceed 12 characters",
+      "offering": "Offering field cannot exceed 12 characters",
+      "genres": "Genres cannot exceed 12 characters each",
+      "locationRequired": "Location is required",
+      "descriptionRequired": "Description is required"
     },
     "buttons": {
       "cancel": "Cancel",

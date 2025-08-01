@@ -3,14 +3,13 @@ import SingerEditor from "./SingerEditor";
 import DjEditor from "./DjEditor";
 import ProducerEditor from "./ProducerEditor";
 import ComposerEditor from "./ComposerEditor";
-import React from "react";
 
 interface RoleDataEditorProps {
   role: { id: string | number; role: string; [key: string]: any };
   profileId: string | number;
 }
 
-const RoleDataEditor: React.FC<RoleDataEditorProps> = ({ role, profileId }) => {
+const RoleDataEditor = ({ role, profileId }: RoleDataEditorProps) => {
   return (
     <div className="mt-4">
       {role.role === "Instrumentalist" && (
