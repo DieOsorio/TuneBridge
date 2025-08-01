@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useProfile } from "../../../../context/profile/ProfileContext";
+import { useProfile } from "@/context/profile/ProfileContext";
 import { FiPlus } from "react-icons/fi";
 
 import GroupMembersList from "../GroupMembersList";
 
-import Input from "../../../ui/Input";
-import Select from "../../../ui/Select";
-import Button from "../../../ui/Button";
-import Loading from "../../../../utils/Loading";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import Button from "@/components/ui/Button";
+import Loading from "@/utils/Loading";
 
 import type { ProfileGroupMember as GroupMember } from "@/context/profile/profileGroupMembersActions";
 
@@ -22,9 +22,15 @@ interface MembersSettingsProps {
     profile_id: string;
     role: string;
     roles_in_group: string[];
+  }) => Promise<GroupMember>;
+  removeGroupMember: (data: { 
+    profileGroupId: string; 
+    profileId: string 
   }) => Promise<void>;
-  removeGroupMember: (data: { profileGroupId: string; profileId: string }) => Promise<void>;
-  updateGroupMember: (data: { member: GroupMember; updates: Partial<GroupMember> }) => Promise<void>;
+  updateGroupMember: (data: { 
+    member: GroupMember; 
+    updates: Partial<GroupMember> 
+  }) => Promise<GroupMember>;
   refetch: () => void;
 }
 

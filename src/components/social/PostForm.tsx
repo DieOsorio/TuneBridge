@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { usePosts } from "../../context/social/PostsContext";
-import { useUploadPostImages } from "../../context/social/imagesActions";
-import { useHashtags } from "../../context/social/HashtagsContext";
-import { usePostHashtags } from "../../context/social/PostHashtagsContext";
+import { usePosts } from "@/context/social/PostsContext";
+import { useUploadPostImages } from "@/context/social/imagesActions";
+import { useHashtags } from "@/context/social/HashtagsContext";
+import { usePostHashtags } from "@/context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../context/AuthContext";
-import { supabase } from "../../supabase";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/supabase";
 
 import { FiPlus } from "react-icons/fi";
 import Button from "../ui/Button";
@@ -29,7 +29,7 @@ interface FormData extends Pick<Post, "title" | "content"> {
   newHashtag?: string;
 }
 
-const PostForm: React.FC = () => {
+const PostForm = () => {
   const { t } = useTranslation("posts");
   const location = useLocation();
   const state = location.state as LocationState | null;
@@ -75,8 +75,10 @@ const PostForm: React.FC = () => {
       setImages(postData.images_urls || []);
 
       if (hashtagsData) {
-        // hashtagsData type assumed array with property hashtags.name as string
-        const tags = hashtagsData.map((h: any) => h.hashtags.name);
+        // Extract hashtags from fetched data
+        const tags = hashtagsData.map((h: any) =>
+          h?.hashtags?.name || ""
+        );
         setHashtagItems(tags);
       }
     }
@@ -94,22 +96,14 @@ const PostForm: React.FC = () => {
   };
 
   const onFileUpdate = (files: ActualFileObject[]) => {
-  setImages((prev) => [...prev, ...files]);
-};
+    setImages(files);
+  };
 
   const handleDeleteImage = async (imageUrl: string) => {
     const fileName = imageUrl.split("/").pop();
     if (!fileName) return;
     await supabase.storage.from("post-media").remove([fileName]);
     const updatedImages = images.filter((img) => img !== imageUrl);
-    if (!postData) return;
-    await updatePost({
-      id: postData.id,
-      updatedPost: { 
-        ...postData, 
-        images_urls: updatedImages.filter((img): img is string => typeof img === "string")
-      },
-    });
     setImages(updatedImages);
   };
 
@@ -321,7 +315,11 @@ const PostForm: React.FC = () => {
                       className="w-32 h-32 object-cover rounded-lg"
                     />
                     <button
-                      onClick={() => handleDeleteImage(url)}
+                      type="button"
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleDeleteImage(url);
+                      }}
                       className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center"
                     >
                       ×

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { UserConnectionsProvider } from "./UserConnectionsContext";
 import { PostsProvider } from "./PostsContext";
 import { LikesProvider } from "./LikesContext";
@@ -14,7 +14,7 @@ interface SocialProviderProps {
   children: ReactNode;
 }
 
-export const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
+export const SocialProvider = ({ children }: SocialProviderProps) => {
   return (
     <UserConnectionsProvider>
       <HashtagsProvider>

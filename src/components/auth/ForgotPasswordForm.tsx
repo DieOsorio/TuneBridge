@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { supabase } from "../../supabase";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
@@ -10,7 +10,7 @@ interface ForgotPasswordFormInputs {
   email: string;
 }
 
-const ForgotPasswordForm: React.FC = () => {
+const ForgotPasswordForm = () => {
   const { t } = useTranslation("auth", { keyPrefix: "forgotPassword" });
   const [sent, setSent] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -61,7 +61,7 @@ const ForgotPasswordForm: React.FC = () => {
         type="email"
         label={t("email.label")}
         placeholder={t("email.placeholder")}
-        register={register("email")}
+        register={register}
         validation={{
           required: t("errors.emailRequired"),
           pattern: {

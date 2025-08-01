@@ -67,15 +67,16 @@ export const useInfiniteUserPostsQuery = (
   });
 };
 
-const PAGE_SIZE = 10;
-export const useInfinitePostsQuery = (): UseInfiniteQueryResult<InfiniteData<Post[]>, Error> => {
+
+
+export const useInfinitePostsQuery = (limit = 10): UseInfiniteQueryResult<InfiniteData<Post[]>, Error> => {
   return useInfiniteQuery<Post[], Error>({
     queryKey: postKeyFactory().infinite ?? ["infinitePosts"],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
       const page = typeof pageParam === "number" ? pageParam : Number(pageParam);
-      const from = page * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
+      const from = page * limit;
+      const to = from + limit - 1;
       const { data, error } = await supabase
         .schema("social")
         .from("posts")
@@ -86,8 +87,15 @@ export const useInfinitePostsQuery = (): UseInfiniteQueryResult<InfiniteData<Pos
       return Array.isArray(data) ? data.map(toPostEntity) : [];
     },
     getNextPageParam: (lastPage, allPages) => {
-      if (!Array.isArray(lastPage) || lastPage.length < PAGE_SIZE) return undefined;
-      return allPages.length;
+      if (!Array.isArray(lastPage)) {
+        console.warn("lastPage no es array", lastPage);
+        return undefined;
+      }
+      if (!Array.isArray(allPages)) {
+        console.warn("allPages no es array", allPages);
+        return undefined;
+      }
+      return lastPage.length === limit ? allPages.length : undefined;
     },
   });
 };
@@ -163,8 +171,8 @@ export const useUserPostsQuery = (profileId: string): UseQueryResult<Post[], Err
 export const useCreatePostMutation = (): UseMutationResult<Post, Error, Partial<Post>> => {
   const queryClient = useQueryClient();
   return useMutation<Post, Error, Partial<Post>>({
-    mutationFn: async(post) => {
-      const { data, error }= await supabase
+    mutationFn: async (post) => {
+      const { data, error } = await supabase
         .schema("social")
         .from("posts")
         .insert(post)
@@ -176,7 +184,7 @@ export const useCreatePostMutation = (): UseMutationResult<Post, Error, Partial<
     onMutate: async (post) =>
       optimisticUpdate({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ profileId: entity.profile_id }) ?? { user: ["userPosts", entity.profile_id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ profileId: entity.profile_id }),
         entity: toPostEntity(post),
         type: "add",
       }),
@@ -188,18 +196,19 @@ export const useCreatePostMutation = (): UseMutationResult<Post, Error, Partial<
     onSuccess: (newPost, variables) =>
       replaceOptimisticItem({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ profileId: entity.profile_id }) ?? { user: ["userPosts", entity.profile_id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ profileId: entity.profile_id }),
         entity: toPostEntity(variables),
         newEntity: newPost,
       }),
     onSettled: (_data, _error, variables) =>
       invalidateKeys({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ profileId: entity.profile_id }) ?? { user: ["userPosts", entity.profile_id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ profileId: entity.profile_id }),
         entity: toPostEntity(variables),
       }),
   });
 };
+
 
 export const useUpdatePostMutation = (): UseMutationResult<Post, Error, { id: string; updatedPost: Partial<Post> }> => {
   const queryClient = useQueryClient();
@@ -218,7 +227,7 @@ export const useUpdatePostMutation = (): UseMutationResult<Post, Error, { id: st
     onMutate: async ({ id, updatedPost }) =>
       optimisticUpdate({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }) ?? { single: ["post", entity.id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }),
         entity: toPostEntity({ ...updatedPost, id }),
         type: "update",
       }),
@@ -230,14 +239,14 @@ export const useUpdatePostMutation = (): UseMutationResult<Post, Error, { id: st
     onSuccess: (newPost, variables) =>
       replaceOptimisticItem({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }) ?? { single: ["post", entity.id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }),
         entity: toPostEntity({ ...variables.updatedPost, id: variables.id }),
         newEntity: newPost,
       }),
     onSettled: (_data, _error, variables) =>
       invalidateKeys({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }) ?? { single: ["post", entity.id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }),
         entity: toPostEntity({ ...variables.updatedPost, id: variables.id }),
       }),
   });
@@ -257,7 +266,7 @@ export const useDeletePostMutation = (): UseMutationResult<void, Error, string> 
     onMutate: async (id) =>
       optimisticUpdate({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }) ?? { single: ["post", entity.id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }),
         entity: toPostEntity({ id }),
         type: "remove",
       }),
@@ -269,7 +278,7 @@ export const useDeletePostMutation = (): UseMutationResult<void, Error, string> 
     onSettled: (_data, _error, variables) =>
       invalidateKeys({
         queryClient,
-        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }) ?? { single: ["post", entity.id ?? ""] },
+        keyFactory: (entity: Post) => postKeyFactory({ postId: entity.id }),
         entity: toPostEntity({ id: variables }),
       }),
   });

@@ -1,9 +1,18 @@
 import { FiPlus } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
-import Button from "../../ui/Button";
-import Select from "../../ui/Select";
-import Input from "../../ui/Input";
-import { FieldErrors, UseFormRegister, UseFormWatch, UseFormSetValue, SubmitHandler, UseFormHandleSubmit } from "react-hook-form";
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
+import Input from "@/components/ui/Input";
+import { 
+  FieldErrors, 
+  UseFormRegister, 
+  UseFormWatch, 
+  UseFormSetValue, 
+  SubmitHandler, 
+  UseFormHandleSubmit,
+  UseControllerProps,
+  Controller
+} from "react-hook-form";
 
 interface FormInputs {
   editMemberRole: string;
@@ -13,6 +22,7 @@ interface FormInputs {
 interface ManageMembersModalProps {
   manageMember: { profile_id: string };
   register: UseFormRegister<FormInputs>;
+  control: UseControllerProps<FormInputs>['control'];
   errors: FieldErrors<FormInputs>;
   currentUserId: string;
   handleSubmit: UseFormHandleSubmit<FormInputs>;
@@ -35,6 +45,7 @@ function ManageMembersModal({
   handleCloseManage,
   handleRemoveClick,
   watch,
+  control,
   setValue,
   customRoles,
   setCustomRoles,
@@ -42,27 +53,30 @@ function ManageMembersModal({
   const { t } = useTranslation("profileGroup");
   const newRole = watch("newBandRole")?.trim();
 
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
       <div className="bg-gray-900 gap-8 rounded-lg shadow-lg p-6 w-full max-w-md">
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Main Role */}
-          <div>
-            <Select
-              id="editMemberRole"
-              label={t("manageMembers.labels.role")}
-              options={[
+          <Controller
+            name="editMemberRole"
+            control={control}
+            render={({ field }) => (
+              <Select
+                id="editMemberRole"
+                control={control}
+                label={t("manageMembers.labels.role")}
+                options={[
                 { value: "member", label: t("manageMembers.labels.member") },
                 { value: "admin", label: t("manageMembers.labels.admin") },
                 { value: "musician", label: t("manageMembers.labels.musician") },
                 { value: "manager", label: t("manageMembers.labels.manager") },
               ]}
-              register={register}
-              validation={{ required: t("manageMembers.validations.role") }}
-              error={errors.editMemberRole}
-              classForLabel="text-gray-200"
-            />
-          </div>
+                error={errors.editMemberRole}
+              />
+            )}
+          />
 
           {/* Custom Roles */}
           <div className="flex flex-col gap-2 mb-4">

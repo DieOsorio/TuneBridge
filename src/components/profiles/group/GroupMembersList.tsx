@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import ProfileAvatar from "../ProfileAvatar";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
-import ConfirmDialog from "../../ui/ConfirmDialog";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import ManageMembersModal from "./ManageMembersModal";
 
 import type { ProfileGroupMember as Member } from "@/context/profile/profileGroupMembersActions";
@@ -50,6 +50,7 @@ const GroupMembersList = ({
     handleSubmit,
     setValue,
     reset,
+    control,
     watch,
     formState: { errors },
   } = useForm<FormInputs>();
@@ -166,6 +167,7 @@ const GroupMembersList = ({
           manageMember={manageMember}
           register={register}
           errors={errors}
+          control={control}
           currentUserId={currentUserId}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
