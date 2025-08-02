@@ -27,7 +27,7 @@ const getColorForProfile = (profileId: string): string => {
   return colors[index];
 };
 
-const MessageItem: React.FC<MessageItemProps> = ({ message, isMine }) => {
+const MessageItem = ({ message, isMine }: MessageItemProps) => {
   const { t } = useTranslation("chat");
   const { deleteMessage, updateMessage } = useMessages();
   const { fetchProfile } = useProfile();
@@ -97,7 +97,28 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isMine }) => {
             <Skeleton height={32} width={200} baseColor="#a1a1aa" highlightColor="#e4e4e7" />
           ) : (
             <div className={`${bubbleColor} p-2 rounded-lg min-w-[80px] text-center`}>
-              {message.content}
+              {message.attachment ? (
+                <>
+                  {message.attachment.mime_type?.startsWith("image/") && (
+                    <img
+                      src={message.attachment.url}
+                      alt="attachment"
+                      className="max-w-full max-h-60 rounded"
+                    />
+                  )}
+                  {message.attachment.mime_type?.startsWith("audio/") && (
+                    <audio controls className="w-full">
+                      <source src={message.attachment.url} type={message.attachment.mime_type} />
+                      {t("message.audioNotSupported")}
+                    </audio>
+                  )}
+                  {message.content && (
+                    message.content
+                  )}
+                </>
+              ) : (
+                message.content
+              )}
             </div>
           )}
         </div>
@@ -122,7 +143,29 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isMine }) => {
               />
             ) : (
               <>
-                <span className="mr-2">{message.content}</span>
+                {message.attachment ? (
+                  <>
+                    {message.attachment.mime_type?.startsWith("image/") && (
+                      <img
+                        src={message.attachment.url}
+                        alt="attachment"
+                        className="max-w-full max-h-60 rounded"
+                      />
+                    )}
+                    {message.attachment.mime_type?.startsWith("audio/") && (
+                      <audio controls className="w-75">
+                        <source src={message.attachment.url} type={message.attachment.mime_type} />
+                        {t("message.audioNotSupported")}
+                      </audio>
+                    )}
+                    {message.content && (
+                      <span className="mr-2">{message.content}</span>
+                    )}
+                  </>
+                ) : (
+                  <span className="mr-2">{message.content}</span>
+                )}
+
                 <span className="absolute bottom-1 right-1 text-xs text-white">
                   {wasRead ? (
                     <FaCheckDouble className="text-green-200" title="Read" />
@@ -130,6 +173,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isMine }) => {
                     <FaCheck className="text-blue-200" title="Delivered" />
                   ) : null}
                 </span>
+
                 <button
                   className="absolute top-1/2 -translate-y-1/2 right-1 text-white hover:text-sky-400 p-1"
                   onClick={() => setMenuOpen((v) => !v)}
@@ -137,6 +181,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, isMine }) => {
                 >
                   <FiMoreVertical size={18} />
                 </button>
+
                 {menuOpen && (
                   <div
                     ref={menuRef}

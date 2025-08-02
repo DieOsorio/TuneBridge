@@ -3,6 +3,7 @@ import { ConversationsProvider } from "./ConversationsContext";
 import { ParticipantsProvider } from "./ParticipantsContext";
 import { MessagesProvider } from "./MessagesContext";
 import { ChatUIProvider } from "./ChatUIContext";
+import { MessageAttachmentsProvider } from "./MessageAttachmentsContext";
 
 interface ChatProviderProps {
   children: ReactNode;
@@ -14,7 +15,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       <ConversationsProvider>
         <ParticipantsProvider>
           <MessagesProvider>
-            {children}
+            <MessageAttachmentsProvider>
+              {children}
+            </MessageAttachmentsProvider>
           </MessagesProvider>
         </ParticipantsProvider>
       </ConversationsProvider>

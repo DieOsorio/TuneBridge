@@ -50,7 +50,9 @@
   "list": "No se encontraron conversaciones.",
   "input": {
     "button": "Enviar",
-    "placeholder": "Escribe un mensaje..."
+    "placeholder": "Escribe un mensaje...",
+    "attachFile": "Adjuntar un archivo",
+    "uploading": "Subiendo..."
   },
   "message": {
     "deleted": "Este mensaje ha sido eliminado.",
@@ -64,7 +66,8 @@
     "reply": {
       "title": "Responder al mensaje",
       "placeholder": "Escribe tu respuesta..."
-    }
+    },
+    "audioNotSupported": "El audio no es compatible con tu navegador."
   },
   "groupOverview": {
     "participants": "Participantes",

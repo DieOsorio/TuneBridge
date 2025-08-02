@@ -1,9 +1,9 @@
 import { useMemo, useState, useRef } from "react";
 import { useGroupEvents } from "@/context/groups/GroupEventsContext";
-import type { GroupEvent } from "@/context/groups/groupEventsActions";
 import { useTranslation } from "react-i18next";
 import { applyDayCellStyle } from "./custom-calendar-components/CustomCellStyler";
 import { applyListEventStyle } from "./custom-calendar-components/CustomListCellStyler";
+import type { GroupEvent } from "@/context/groups/groupEventsActions";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -22,6 +22,8 @@ import GroupEventDetails from "./GroupEventDetails";
 import CalendarHeader from "./custom-calendar-components/CalendarHeader";
 import CalendarViewSelector from "./custom-calendar-components/CalendarViewSelector";
 import CustomEventContent from "./custom-calendar-components/CustomEventContent";
+
+type CalendarView = "dayGridMonth" | "listWeek";
 
 type Props = {
   groupId: string;
@@ -47,7 +49,7 @@ const GroupCalendarScreen = ({
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<GroupEvent | null>(null);
-  const [currentView, setCurrentView] = useState("dayGridMonth");
+  const [currentView, setCurrentView] = useState<CalendarView>("dayGridMonth");
 
   const calendarRef = useRef<any>(null);
   const [calendarTitle, setCalendarTitle] = useState("");
@@ -70,11 +72,17 @@ const GroupCalendarScreen = ({
 
   const sortedEvents = useMemo(() => {
     if (!events) return [];
-    return [...events].sort(
-      (a, b) =>
-        new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
-    );
+
+    const now = new Date();
+
+    return events
+      .filter((event) => new Date(event.start_time) >= now)
+      .sort(
+        (a, b) =>
+          new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+      );
   }, [events]);
+
 
   const handleDateClick = (info: any) => {
     if (!isAdminOrManager) return;

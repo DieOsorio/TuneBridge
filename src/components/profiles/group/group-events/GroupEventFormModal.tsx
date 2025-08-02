@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useGroupEvents } from "@/context/groups/GroupEventsContext";
 import type { GroupEvent } from "@/context/groups/groupEventsActions";
@@ -60,6 +60,7 @@ const GroupEventFormModal = ({
     handleSubmit,
     setValue,
     watch,
+    control,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ defaultValues });
@@ -134,6 +135,7 @@ const GroupEventFormModal = ({
             id="title"
             label={t("labels.title")}
             maxLength={12}
+            watchValue={watch("title")}
             placeholder={t("placeholders.title")}
             register={register}
             validation={{ required: t("validations.title") }}
@@ -142,19 +144,24 @@ const GroupEventFormModal = ({
             classForLabel="!text-gray-700"
           />
 
-          <Select
-            id="type"
-            label={t("labels.type")}
-            defaultOption={t("placeholders.type")}
-            options={[
-              { value: "rehearsal", label: t("types.rehearsal") },
-              { value: "gig", label: t("types.gig") },
-              { value: "meeting", label: t("types.meeting") },
-            ]}
-            register={register}
-            error={errors.type?.message}
-            className="bg-white text-gray-900 placeholder-gray-400 focus:bg-white focus:text-gray-900"
-            classForLabel="!text-gray-700"
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <Select
+                id="type"
+                label={t("labels.type")}
+                control={control}
+                search={false}
+                defaultOption={t("edit.placeholders.type")}
+                options={[
+                  { value: "rehearsal", label: t("types.rehearsal") },
+                  { value: "gig", label: t("types.gig") },
+                  { value: "meeting", label: t("types.meeting") },
+                ]}
+                error={errors.type}
+              />
+            )}
           />
 
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={currentLocale}>
@@ -226,9 +233,9 @@ const GroupEventFormModal = ({
             label={t("labels.description")}
             placeholder={t("placeholders.description")}
             maxLength={200}
+            watchValue={watch("description")}
             register={register}
             error={errors.description}
-            watchValue={""}
             className="text-gray-900"
             classForLabel="!text-gray-700"
           />

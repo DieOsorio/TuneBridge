@@ -168,3 +168,30 @@ export const musicianAdKeyFactory = ({ adId, profileId, groupId, searchTerm }: M
   group: groupId ? GROUP_MUSICIAN_ADS_KEY(groupId) : undefined,
   search: searchTerm ? MUSICIAN_ADS_SEARCH_KEY(searchTerm) : undefined,
 });
+
+// --- MESSAGE ATTACHMENTS KEY FACTORY ---
+export type MessageAttachmentKeyFactoryParams = {
+  messageId?: string;
+  conversationId?: string;
+};
+
+export const MESSAGE_ATTACHMENTS_KEY = (messageId: string): ["messageAttachments", string] => [
+  "messageAttachments",
+  messageId,
+];
+
+export const CONVERSATION_ATTACHMENTS_KEY = (conversationId: string): ["conversationAttachments", string] => [
+  "conversationAttachments",
+  conversationId,
+];
+
+export const messageAttachmentKeyFactory = ({
+  messageId,
+  conversationId,
+}: MessageAttachmentKeyFactoryParams = {}): {
+  all?: ["messageAttachments", string];
+  conversation?: ["conversationAttachments", string];
+} => ({
+  all: messageId ? MESSAGE_ATTACHMENTS_KEY(messageId) : undefined,
+  conversation: conversationId ? CONVERSATION_ATTACHMENTS_KEY(conversationId) : undefined,
+});
