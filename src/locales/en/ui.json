@@ -135,7 +135,8 @@
       "ads": "Musician Ads",
       "media": "Media",
       "matches": "Matches",
-      "groups": "Groups"
+      "groups": "Groups",
+      "settings": "Settings"
     },
     "auth": {
       "signIn": "Log In",

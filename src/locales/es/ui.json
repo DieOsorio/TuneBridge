@@ -135,7 +135,8 @@
       "ads": "Anuncios",
       "media": "Contenido",
       "matches": "Matches",
-      "groups": "Grupos"
+      "groups": "Grupos",
+      "settings": "Configuración"
     },
     "auth": {
       "signIn": "Iniciar sesión",

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, UseQueryResult, UseMutationResult } from "@tanstack/react-query";
-import { supabase } from "../../../supabase";
+import { supabase } from "@/supabase";
 import { useEffect } from "react";
 import { messageKeyFactory } from "../../helpers/social/socialKeys";
 import {
@@ -8,6 +8,8 @@ import {
   invalidateKeys,
   replaceOptimisticItem,
 } from "../../helpers/cacheHandler";
+
+import { playBeep } from "@/utils/playBeep";
 
 export interface Message {
   id: string;
@@ -25,6 +27,50 @@ export interface UnreadMessagesResult {
   total: number;
   perConversation: Record<string, number>;
 }
+
+export const useGlobalMessageListener = (currentUserId?: string) => {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    const channel = supabase
+      .channel("global-message-listener")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "social",
+          table: "messages",
+        },
+        (payload) => {
+          const message = payload.new;
+
+          if (message.sender_profile_id === currentUserId) return;
+
+          // Play notification sound
+          playBeep();
+
+          // Show native browser notification
+          if (Notification.permission === "granted") {
+            new Notification("New message", {
+              body: message.content?.slice(0, 100) ?? "You have a new message",
+            });
+          }
+
+          // Invalidate unread messages query to trigger a refetch
+          queryClient.invalidateQueries({
+            queryKey: messageKeyFactory({ profileId: currentUserId }).totalUnread,
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUserId, queryClient]);
+};
 
 export const useTotalUnreadMessages = (profileId: string): UseQueryResult<UnreadMessagesResult, Error> => {
   return useQuery<UnreadMessagesResult, Error>({

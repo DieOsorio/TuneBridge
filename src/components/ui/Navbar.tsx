@@ -1,17 +1,23 @@
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import HamburgerMenu from "./HamburguerMenu";
-import { useTranslation } from "react-i18next";
-import i18n from "../../i18n";
-import Logo from "./Logo";
 import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import { useMessages } from "@/context/social/chat/MessagesContext";
+import i18n from "@/i18n";
 
-const Navbar: React.FC = () => {
+import HamburgerMenu from "./HamburguerMenu";
+import Logo from "./Logo";
+import { IoChatbubblesSharp } from "react-icons/io5";
+
+const Navbar = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
   const location = useLocation();
+  const { totalUnreadMessages } = useMessages();
+  const { data: unreadMessagesCount, isLoading: loadingUnreadMessages } = totalUnreadMessages(user?.id ?? "");
 
   const isActive = (path: string) => location.pathname === path;
+  const navigate = useNavigate();
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     i18n.changeLanguage(e.target.value);
@@ -81,6 +87,20 @@ const Navbar: React.FC = () => {
 
       {/* right‑side controls */}
       <div className="flex items-center gap-4">
+        {user && (
+          <div className="relative">
+            <IoChatbubblesSharp
+              className="w-8 h-8 text-white cursor-pointer"
+              onClick={() => navigate("/chat")}
+              title={t("profile.titles.chat")}
+            />
+            {!loadingUnreadMessages && (unreadMessagesCount?.total ?? 0) > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+                {unreadMessagesCount?.total}
+              </span>
+            )}
+          </div>
+        )}
         <select
           onChange={handleLanguageChange}
           value={i18n.language}

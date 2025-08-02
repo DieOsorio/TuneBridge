@@ -1,4 +1,3 @@
-import React from "react";
 import { usePosts } from '../../context/social/PostsContext';
 import { useTranslation } from 'react-i18next';
 
@@ -18,12 +17,12 @@ interface PostsListProps {
   isOwnProfile?: boolean;
 }
 
-const PostsList: React.FC<PostsListProps> = ({
+const PostsList = ({
   profileId,
   posts,
   disableSearch = false,
   isOwnProfile = false,
-}) => {
+}: PostsListProps) => {
   const { t } = useTranslation(["posts", "common"]);
   const { infiniteUserPosts } = usePosts();
 
@@ -35,8 +34,6 @@ const PostsList: React.FC<PostsListProps> = ({
     isLoading: isLoadingUserPosts,
     error: errorUserPosts,
   } = infiniteUserPosts(profileId ?? "", 10);
-
-  const ITEM_HEIGHT = 540;
 
   // Show search if no profileId and search not disabled
   if (!profileId && !disableSearch) return <PostsSearch />;
