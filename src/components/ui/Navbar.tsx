@@ -10,7 +10,7 @@ import Logo from "./Logo";
 import { IoChatbubblesSharp } from "react-icons/io5";
 
 const Navbar = () => {
-  const { t } = useTranslation("ui");
+  const { t } = useTranslation(["ui", "profile"]);
   const { user } = useAuth();
   const location = useLocation();
   const { totalUnreadMessages } = useMessages();
@@ -92,7 +92,7 @@ const Navbar = () => {
             <IoChatbubblesSharp
               className="w-8 h-8 text-white cursor-pointer"
               onClick={() => navigate("/chat")}
-              title={t("profile.titles.chat")}
+              title={t("profile:profile.titles.chat")}
             />
             {!loadingUnreadMessages && (unreadMessagesCount?.total ?? 0) > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">

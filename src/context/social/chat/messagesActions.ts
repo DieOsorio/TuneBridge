@@ -10,6 +10,7 @@ import {
 } from "../../helpers/cacheHandler";
 
 import { playBeep } from "@/utils/playBeep";
+import { MessageAttachment } from "./messageAttachmentsActions";
 
 export interface Message {
   id: string;
@@ -20,6 +21,8 @@ export interface Message {
   delivered_to?: string[];
   deleted_at?: string | null;
   updated_at?: string | null;
+  attachment_id?: string | null;
+  attachment?: MessageAttachment;
   [key: string]: any;
 }
 
@@ -27,6 +30,27 @@ export interface UnreadMessagesResult {
   total: number;
   perConversation: Record<string, number>;
 }
+
+export function mapMessageFromSupabase(raw: any): Message {
+  return {
+    id: raw.id,
+    content: raw.content,
+    sender_profile_id: raw.sender_profile_id,
+    conversation_id: raw.conversation_id,
+    created_at: raw.created_at,
+    attachment_id: raw.attachment_id ?? undefined,
+    attachment: raw.message_attachments
+      ? {
+          id: raw.message_attachments.id,
+          url: raw.message_attachments.url,
+          mime_type: raw.message_attachments.mime_type ?? undefined,
+          conversation_id: raw.message_attachments.conversation_id,
+          profile_id: raw.message_attachments.profile_id,
+        }
+      : undefined,
+  };
+}
+
 
 export const useGlobalMessageListener = (currentUserId?: string) => {
   const queryClient = useQueryClient();
@@ -213,12 +237,21 @@ export const useFetchMessagesQuery = (conversationId: string): UseQueryResult<Me
       const { data, error } = await supabase
         .schema("social")
         .from("messages")
-        .select("*")
+        .select(`
+          *,
+          message_attachments:attachment_id (
+            id,
+            url,
+            mime_type,
+            profile_id,
+            conversation_id
+          )
+        `)
         .eq("conversation_id", conversationId)
         .is("deleted_at", null)
         .order("created_at", { ascending: true });
       if (error) throw new Error(error.message);
-      return data as Message[];
+      return (data ?? []).map(mapMessageFromSupabase);
     },
     enabled: !!conversationId,
   });

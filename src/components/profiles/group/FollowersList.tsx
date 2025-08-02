@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { useAuth } from "../../../context/AuthContext";
-import { useProfileGroupFollows } from "../../../context/groups/ProfileGroupFollowsContext";
+import { useAuth } from "@/context/AuthContext";
+import { useProfileGroupFollows } from "@/context/groups/ProfileGroupFollowsContext";
 import { useTranslation } from "react-i18next";
 
-import ConnectionCard from "../../social/ConnectionCard";
-import ConnectionCardSkeleton from "../../social/skeletons/ConnectionCardSkeleton";
-import ErrorMessage from "../../../utils/ErrorMessage";
+import ConnectionCard from "@/components/social/ConnectionCard";
+import ConnectionCardSkeleton from "@/components/social/skeletons/ConnectionCardSkeleton";
+import ErrorMessage from "@/utils/ErrorMessage";
 
 import type { FollowerView as Follower} from "@/context/groups/profileGroupFollowsActions";
 
@@ -34,7 +34,7 @@ const FollowersList = ({ groupId }: FollowersListProps) => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 mx-auto sm:mx-0 sm:mr-auto gap-4">
         {Array.from({ length: 8 }).map((_, idx) => (
           <ConnectionCardSkeleton key={idx} />
         ))}

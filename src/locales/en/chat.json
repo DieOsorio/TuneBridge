@@ -44,7 +44,9 @@
   "list": "No conversations found.",
   "input": {
     "button": "Send",
-    "placeholder": "Write a message..."
+    "placeholder": "Write a message...",
+    "attachFile": "Attach a file",
+    "uploading": "Uploading..."
   },
   "message": {
     "deleted": "This message has been deleted.",
@@ -58,7 +60,8 @@
     "reply": {
       "title": "Reply to Message",
       "placeholder": "Type your reply..."
-    }
+    },
+    "audioNotSupported": "Audio is not supported by your browser."
   },
   "groupOverview": {
     "participants": "Participants",
