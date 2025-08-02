@@ -4,23 +4,23 @@ import {
   useParams,
 } from "react-router-dom";
 
-import { useAuth } from "../context/AuthContext";
-import { useProfile } from "../context/profile/ProfileContext";
-import type { Profile } from "../context/profile/profileActions";
+import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/profile/ProfileContext";
+import type { Profile } from "@/context/profile/profileActions";
 import { useTranslation } from "react-i18next";
 
-import Loading from "../utils/Loading";
-import ErrorMessage from "../utils/ErrorMessage";
-import ProfileHeader from "../components/profiles/ProfileHeader";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
+import ProfileHeader from "@/components/profiles/ProfileHeader";
 
-import ProfileData from "../components/profiles/ProfileData";
-import DisplayMusicInfo from "../components/music/DisplayMusicInfo";
-import ConnectionsList from "../components/social/ConnectionsList";
-import PostsList from "../components/social/PostsList";
-import PostForm from "../components/social/PostForm";
-import UserGroups from "../components/profiles/group/UserGroups";
-import ProfileAds from "../components/social/ads/ProfileAds";
-import Notifications from "../components/social/Notifications";
+import ProfileData from "@/components/profiles/ProfileData";
+import DisplayMusicInfo from "@/components/music/DisplayMusicInfo";
+import ConnectionsList from "@/components/social/ConnectionsList";
+import PostsList from "@/components/social/PostsList";
+import PostForm from "@/components/social/PostForm";
+import UserGroups from "@/components/profiles/group/UserGroups";
+import ProfileAds from "@/components/social/ads/ProfileAds";
+import Notifications from "@/components/social/Notifications";
 
 export default function Profile() {
   const { t } = useTranslation("profileGroup", { keyPrefix: "userGroups" });
@@ -57,7 +57,7 @@ export default function Profile() {
   );
 
   const Posts = () => (
-    <PostsList profileId={profile.id} posts={[]} disableSearch={false} isOwnProfile={isOwn} />
+    <PostsList profileId={profile.id} disableSearch={false} isOwnProfile={isOwn} />
   );
 
   const CreatePost = () => <PostForm />;

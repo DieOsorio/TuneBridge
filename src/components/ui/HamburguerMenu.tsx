@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { FaBolt, FaCompass, FaUser } from "react-icons/fa";
-import { MdCampaign, MdLogin, MdPersonAdd, MdLogout } from "react-icons/md";
+import { MdCampaign, MdLogin, MdPersonAdd, MdLogout, MdSettings } from "react-icons/md";
 import { HiBars3, HiXMark } from "react-icons/hi2";
 export interface HamburgerMenuProps {
   id?: string;
@@ -71,6 +71,13 @@ const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
                 <FaBolt size={24} className="text-sky-600" />
                 <Link to="/matches" className="text-lg" onClick={toggle}>
                   {t("nav.links.matches")}
+                </Link>
+              </li>
+              {/* settings */}
+              <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                <MdSettings size={26} className="text-sky-600" />
+                <Link to="/settings" className="text-lg" onClick={toggle}>
+                  {t("nav.links.settings")}
                 </Link>
               </li>
               {/* sign‑out */}

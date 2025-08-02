@@ -1,27 +1,30 @@
-import ProfileAvatar from './ProfileAvatar';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from "@/context/AuthContext";
+import { useConversations } from '@/context/social/chat/ConversationsContext';
+import { useParticipants } from '@/context/social/chat/ParticipantsContext';
+import { useNotifications } from '@/context/social/NotificationsContext';
+import { useMessages } from '@/context/social/chat/MessagesContext';
+import { useUserConnections } from '@/context/social/UserConnectionsContext';
+import { useSettings } from '@/context/settings/SettingsContext';
+import { handleStartChat } from '../social/chat/utilis/handleStartChat';
+
+import type { Profile } from "@/context/profile/profileActions"
+
+import ProfileAvatar from './ProfileAvatar';
 import Button from '../ui/Button';
+import MatchScoreIndicator from './MatchScoreIndicator';
+import formatLastSeen from '@/utils/formatLastSeen';
+import { useCanSendDM } from '@/utils/useCanSendDM';
+
 import { BsFillBellFill } from "react-icons/bs";
 import { IoIosSettings } from "react-icons/io";
 import { IoChatboxSharp, IoChatbubblesSharp } from "react-icons/io5";
-import { Link, useNavigate } from 'react-router-dom';
-import { useConversations } from '@/context/social/chat/ConversationsContext';
-import { useParticipants } from '@/context/social/chat/ParticipantsContext';
-import { useState, useEffect } from 'react';
-import { useNotifications } from '@/context/social/NotificationsContext';
-import { useMessages } from '@/context/social/chat/MessagesContext';
-import { useTranslation } from 'react-i18next';
-import { useUserConnections } from '@/context/social/UserConnectionsContext';
 import { FiMoreVertical } from "react-icons/fi";
 import { IoPersonAdd, IoPersonRemove, IoPersonOutline } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
-import { handleStartChat } from '../social/chat/utilis/handleStartChat';
-import MatchScoreIndicator from './MatchScoreIndicator';
 import { FaUserCheck, FaUserClock, FaUserPlus, FaUserSlash } from 'react-icons/fa';
-import formatLastSeen from '@/utils/formatLastSeen';
-import { useCanSendDM } from '@/utils/useCanSendDM';
-import type { Profile } from "@/context/profile/profileActions"
-import { useSettings } from '@/context/settings/SettingsContext';
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean;
