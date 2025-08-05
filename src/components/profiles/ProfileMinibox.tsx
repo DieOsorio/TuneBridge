@@ -1,12 +1,14 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IoChatboxOutline } from "react-icons/io5";
-import { BsPostcard } from "react-icons/bs";
 import { useAuth } from "@/context/AuthContext";
 import { useConversations } from "@/context/social/chat/ConversationsContext";
 import { useParticipants } from "@/context/social/chat/ParticipantsContext";
-import { useState } from "react";
-import { AiFillEdit } from "react-icons/ai";
+
+import { motion } from "framer-motion";
+import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon  } from "@heroicons/react/24/solid";
+import { BsPostcard } from "react-icons/bs";
+
 import { handleStartChat } from "../social/chat/utilis/handleStartChat";
 import { useCanSendDM } from "@/utils/useCanSendDM";
 
@@ -122,7 +124,7 @@ const ProfileMinibox: React.FC<ProfileMiniboxProps> = ({ profile, isLoading, isG
             to="/settings/profile"
             className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"
           >
-            <AiFillEdit size={30} />
+            <PencilSquareIcon className="w-7 h-7" />
           </Link>
         )}
         <Link
@@ -130,7 +132,7 @@ const ProfileMinibox: React.FC<ProfileMiniboxProps> = ({ profile, isLoading, isG
           to={isGroup ? `/group/${id}/posts` : `/profile/${id}/posts`}
           className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"
         >
-          <BsPostcard size={30} />
+          <BsPostcard size={28} />
         </Link>
         {canSend && !isGroup && (
           <button
@@ -138,7 +140,7 @@ const ProfileMinibox: React.FC<ProfileMiniboxProps> = ({ profile, isLoading, isG
             className="text-neutral-400 cursor-pointer hover:text-neutral-900 dark:hover:text-neutral-100 transition"
             onClick={startChat}
           >
-            <IoChatboxOutline size={30} />
+            <ChatBubbleLeftIcon className="w-7 h-7" />
           </button>
         )}
       </div>

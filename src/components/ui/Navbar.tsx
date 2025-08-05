@@ -5,9 +5,10 @@ import { useAuth } from "@/context/AuthContext";
 import { useMessages } from "@/context/social/chat/MessagesContext";
 import i18n from "@/i18n";
 
+import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/solid"; 
+
 import HamburgerMenu from "./HamburguerMenu";
 import Logo from "./Logo";
-import { IoChatbubblesSharp } from "react-icons/io5";
 
 const Navbar = () => {
   const { t } = useTranslation(["ui", "profile"]);
@@ -89,7 +90,7 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {user && (
           <div className="relative">
-            <IoChatbubblesSharp
+            <ChatBubbleBottomCenterTextIcon
               className="w-8 h-8 text-white cursor-pointer"
               onClick={() => navigate("/chat")}
               title={t("profile:profile.titles.chat")}

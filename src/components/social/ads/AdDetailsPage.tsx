@@ -1,25 +1,27 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useAds } from "../../../context/social/adsContext";
-import { useProfile } from "../../../context/profile/ProfileContext";
-import { handleStartChat } from "../chat/utilis/handleStartChat";
 import { useState } from "react";
-import { useConversations } from "../../../context/social/chat/ConversationsContext";
-import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
-import { useAuth } from "../../../context/AuthContext";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useCanSendDM } from "../../../utils/useCanSendDM";
+import { useAds } from "@/context/social/adsContext";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { useConversations } from "@/context/social/chat/ConversationsContext";
+import { useParticipants } from "@/context/social/chat/ParticipantsContext";
+import { useAuth } from "@/context/AuthContext";
+import { useCanSendDM } from "@/utils/useCanSendDM";
+import { handleStartChat } from "../chat/utilis/handleStartChat";
 
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteOutline } from "react-icons/md";
-import { FiArrowLeft } from "react-icons/fi";
+import {
+  TrashIcon,
+  PencilIcon,
+  ArrowUturnLeftIcon
+} from "@heroicons/react/24/outline";
 
 import ProfileAvatar from "../../profiles/ProfileAvatar";
 import Button from "../../ui/Button";
-import Loading from "../../../utils/Loading";
-import ErrorMessage from "../../../utils/ErrorMessage";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 
-const AdDetailsPage: React.FC = () => {
+const AdDetailsPage = () => {
   const { t } = useTranslation("ads");
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
@@ -33,7 +35,7 @@ const AdDetailsPage: React.FC = () => {
 
   const navigate = useNavigate();
   const [isStartingChat, setIsStartingChat] = useState(false);
-  const { canSend, loading } = useCanSendDM(profile?.id);
+  const { canSend, loading } = useCanSendDM(profile?.id || "");
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -85,17 +87,15 @@ const AdDetailsPage: React.FC = () => {
             {ownAd && (
               <div className="flex gap-3">
                 <Link to={`/ads/edit/${ad.id}`}>
-                  <CiEdit
-                    size={20}
+                  <PencilIcon
                     title={t("adCard.buttons.edit")}
-                    className="text-yellow-500"
+                    className="text-yellow-500 w-5 h-5"
                   />
                 </Link>
                 <button onClick={() => setConfirmOpen(true)}>
-                  <MdDeleteOutline
-                    size={20}
+                  <TrashIcon
                     title={t("adCard.buttons.delete")}
-                    className="text-red-500 cursor-pointer"
+                    className="text-red-500 cursor-pointer w-5 h-5"
                   />
                 </button>
               </div>
@@ -181,7 +181,7 @@ const AdDetailsPage: React.FC = () => {
           to="/ads"
           className={`group relative items-center justify-end hidden md:flex ${isSearching ? "text-cyan-400 hover:text-cyan-300" : "text-emerald-400 hover:text-emerald-300"} transition-colors text-sm font-medium`}
         >
-          <FiArrowLeft size={25} />
+          <ArrowUturnLeftIcon className="w-5 h-5 font-extrabold" />
           <span className={`ml-2 whitespace-nowrap ${isSearching ? "text-cyan-500" : "text-emerald-500"} font-semibold text-base px-3 py-1 transition-all duration-300 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none`}>
             {t("adsDetailsPage.buttons.back")}
           </span>
@@ -192,7 +192,10 @@ const AdDetailsPage: React.FC = () => {
           className={`md:hidden ${isSearching ? "text-cyan-500 hover:text-cyan-400" : "text-emerald-500 hover:text-emerald-400"} transition-colors p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300`}
           aria-label={t("adsDetailsPage.buttons.back")}
         >
-          <FiArrowLeft title={t("adsDetailsPage.buttons.back")} size={22} />
+          <ArrowUturnLeftIcon 
+            title={t("adsDetailsPage.buttons.back")}
+            className="w-5 h-5 font-extrabold"
+          />
         </Link>
 
         {canSend && (

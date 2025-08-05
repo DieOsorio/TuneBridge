@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useProfile } from "@/context/profile/ProfileContext";
-import { FiPlus } from "react-icons/fi";
+
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 import GroupMembersList from "../GroupMembersList";
-
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
@@ -189,7 +189,7 @@ const MembersSettings = ({
                     disabled={!value || customRoles.length >= 3}
                     className="text-emerald-500 hover:text-emerald-700 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    <FiPlus size={22} />
+                    <PlusIcon className="w-6 h-6" />
                   </button>
                 </div>
                 {errors.newBandRole && (
@@ -245,7 +245,7 @@ const MembersSettings = ({
                   onClick={() => setShowAddMember(true)}
                   className="text-emerald-600 hover:text-emerald-700 cursor-pointer p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 transition-colors"
                 >
-                  <FiPlus size={28} />
+                  <PlusIcon className="w-6 h-6" />
                 </button>
                 <span
                   className="absolute left-10 whitespace-nowrap opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300 bg-gray-900 text-emerald-500 font-semibold text-base px-3 py-1 rounded-lg shadow pointer-events-none"

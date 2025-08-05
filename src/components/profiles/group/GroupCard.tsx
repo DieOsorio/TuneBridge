@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { IoPeople } from "react-icons/io5";
+import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
 
 import ProfileAvatar from "../ProfileAvatar";
-import { useProfileGroupMembers } from "../../../context/profile/ProfileGroupMembersContext";
+
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 
 import type { ProfileGroup } from "@/context/profile/profileGroupsActions"; 
 
@@ -47,7 +48,7 @@ const GroupCard = ({ group }: GroupCardProps) => {
 
         {/* Members */}
         <div className="flex justify-center items-center gap-2 text-xs text-zinc-400 mt-1">
-          <IoPeople className="text-amber-500" />
+          <UserGroupIcon className="text-amber-500 w-4 h-4" />
           <span>{members || 0} {t("groupAbout.stats.members")}</span>
         </div>
 

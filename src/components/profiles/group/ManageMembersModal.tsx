@@ -1,8 +1,4 @@
-import { FiPlus } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
-import Button from "@/components/ui/Button";
-import Select from "@/components/ui/Select";
-import Input from "@/components/ui/Input";
 import { 
   FieldErrors, 
   UseFormRegister, 
@@ -13,6 +9,12 @@ import {
   UseControllerProps,
   Controller
 } from "react-hook-form";
+
+import { PlusIcon } from "@heroicons/react/24/outline";
+
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
+import Input from "@/components/ui/Input";
 
 interface FormInputs {
   editMemberRole: string;
@@ -52,7 +54,6 @@ function ManageMembersModal({
 }: ManageMembersModalProps) {
   const { t } = useTranslation("profileGroup");
   const newRole = watch("newBandRole")?.trim();
-
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
@@ -105,7 +106,7 @@ function ManageMembersModal({
                 disabled={!newRole || customRoles.length >= 3}
                 className="text-emerald-500 hover:text-emerald-700 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <FiPlus size={22} />
+                <PlusIcon className="w-6 h-6" />
               </button>
             </div>
             {errors.newBandRole && (

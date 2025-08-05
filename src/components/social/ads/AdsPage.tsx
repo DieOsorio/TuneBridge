@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { AdsFiltersPanel } from "./AdsFiltersPanel";
-import { useAds } from "../../../context/social/adsContext";
+import { useAds } from "@/context/social/adsContext";
 import { useTranslation } from "react-i18next";
 
 import AdsList from "./AdsList";
-import ShinyText from "../../ui/ShinyText";
-import ErrorMessage from "../../../utils/ErrorMessage";
-import PlusButton from "../../ui/PlusButton";
+import ShinyText from "@/components/ui/ShinyText";
+import ErrorMessage from "@/utils/ErrorMessage";
+import PlusButton from "@/components/ui/PlusButton";
 import AdsListSkeleton from "./skeletons/AdsListSkeleton";
 
-import type { MusicianAd, Filters } from "../../../context/social/adsActions";
+import type { MusicianAd, Filters } from "@/context/social/adsActions";
 import type { UseQueryResult } from "@tanstack/react-query";
 
 type AdType = "all" | "looking" | "offering";

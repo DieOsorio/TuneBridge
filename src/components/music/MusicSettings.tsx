@@ -1,13 +1,15 @@
 import { useState, useCallback } from "react";
-import { FaChevronRight } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import { useRoles } from "@/context/music/RolesContext";
+
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+
 import Button from "../ui/Button";
 import RoleDataEditor from "./RoleDataEditor";
-import { useRoles } from "../../context/music/RolesContext";
-import ErrorMessage from "../../utils/ErrorMessage";
-import Loading from "../../utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
+import Loading from "@/utils/Loading";
 import Select from "../ui/Select";
-import { useTranslation } from "react-i18next";
 
 interface MusicSettingsProps {
   profileId: string;
@@ -119,7 +121,7 @@ const MusicSettings = ({ profileId }: MusicSettingsProps) => {
                     {t(`roles.${role.role.toLowerCase()}`)}
                   </span>
                   <div className="flex items-center gap-2">
-                    <FaChevronRight
+                    <ChevronRightIcon
                       className={`w-5 h-5 text-gray-400 transition-transform ${expandedRole === role.id ? "rotate-90" : ""}`}
                     />
                     <button

@@ -16,7 +16,7 @@ export const uploadFileToBucket = async (
   bucketName: string,
   folderId: string,
   currentFileUrl?: string | null,
-  deleteOldFiles = false
+  deleteOldFiles?: boolean
 ): Promise<string> => {
   if (!selectedFile) return currentFileUrl ?? "";
 
@@ -62,5 +62,43 @@ export const uploadFileToBucket = async (
       err?.message ?? err
     );
     return currentFileUrl ?? "";
+  }
+};
+
+
+/**
+ * Deletes a file from a Supabase Storage bucket using its public URL.
+ *
+ * @param bucketName - The name of the Supabase Storage bucket.
+ * @param filePublicUrl - The full public URL of the file.
+ * @returns `true` if deletion was successful, `false` otherwise.
+ */
+export const deleteFileFromBucket = async (
+  bucketName: string,
+  filePublicUrl: string
+): Promise<boolean> => {
+  try {
+    // Validate presence of inputs
+    if (!bucketName || !filePublicUrl) return false;
+
+    const parts = filePublicUrl.split(`${bucketName}/`);
+    if (parts.length < 2) {
+      console.error("Invalid file URL format:", filePublicUrl);
+      return false;
+    }
+
+    const filePath = parts[1].split("?")[0]; // Remove any query params just in case
+
+    const { error } = await supabase.storage.from(bucketName).remove([filePath]);
+
+    if (error) throw error;
+
+    return true;
+  } catch (err: any) {
+    console.error(
+      `Error deleting file from bucket "${bucketName}" using URL "${filePublicUrl}":`,
+      err?.message ?? err
+    );
+    return false;
   }
 };

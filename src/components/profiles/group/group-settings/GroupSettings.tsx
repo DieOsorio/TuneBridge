@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
 import { useAuth } from "@/context/AuthContext";
 import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
@@ -10,8 +11,8 @@ import MembersSettings from "./MembersSettings";
 import Loading from "@/utils/Loading";
 import ErrorMessage from "@/utils/ErrorMessage";
 
-import { useTranslation } from "react-i18next";
-import { HiUserGroup, HiOutlineUserGroup } from "react-icons/hi";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
+import { UserGroupIcon as UserGroupIconOutline } from "@heroicons/react/24/outline";
 
 import type { ProfileGroup } from "@/context/profile/profileGroupsActions";
 import type { ProfileGroupMember } from "@/context/profile/profileGroupMembersActions";
@@ -77,7 +78,7 @@ const GroupSettings = () => {
     {
       to: `${basePath}/members`,
       label: t("members"),
-      icon: (active: boolean) => (active ? <HiUserGroup /> : <HiOutlineUserGroup />),
+      icon: (active: boolean) => (active ? <UserGroupIcon className="w-5 h-5" /> : <UserGroupIconOutline className="w-5 h-5" />),
     },
   ];
 

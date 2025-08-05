@@ -107,6 +107,7 @@ const MessageInput = ({ conversationId, senderId }: MessageInputProps) => {
       <textarea
         rows={1}
         value={content}
+        maxLength={3000}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={t("input.placeholder")}

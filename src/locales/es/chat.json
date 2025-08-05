@@ -17,7 +17,9 @@
       "showList": "Mostrar lista de conversaciones",
       "hideList": "Ocultar lista de conversaciones",
       "leaveConversation": "Salir del chat",
-      "leaveGroup": "Salir del grupo"
+      "leaveGroup": "Salir del grupo",
+      "attachments": "Archivos adjuntos",
+      "noAttachments": "No hay archivos adjuntos en esta conversación."
     },
     "convert": {
       "title": "Convertir en chat de grupo",

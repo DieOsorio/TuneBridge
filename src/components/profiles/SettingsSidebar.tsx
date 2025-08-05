@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { FaChevronRight } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import gsap from "gsap";
+
 import { useMediaQuery } from "@mui/material";
+import { ChevronDoubleRightIcon } from "@heroicons/react/24/solid";
+import gsap from "gsap";
 
 export interface SettingsSidebarOption {
   to: string;
@@ -52,15 +53,15 @@ const SettingsSidebar = ({ options }: SettingsSidebarProps) => {
   return (
     <div
       ref={sidebarRef}
-      className="fixed top-20 left-0 h-[calc(100%-80px)] bg-gradient-to-b from-gray-950 to-gray-900 text-white z-10"
+      className="fixed top-22 left-0 h-[calc(100%-80px)] bg-gradient-to-b from-gray-950 to-gray-900 text-white z-10"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{ width: "4rem" }}
     >
       {isDesktop && (
         <div className="flex items-center justify-center h-16">
-          <FaChevronRight
-            className={`text-gray-300 transform transition-transform duration-300 ${
+          <ChevronDoubleRightIcon
+            className={`text-gray-300 w-6 h-6 transform transition-transform duration-300 ${
               isExpanded ? "rotate-180" : "rotate-0"
             }`}
           />

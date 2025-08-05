@@ -1,16 +1,13 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
-import { useProfileGroupFollows } from "../../../context/groups/ProfileGroupFollowsContext";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import { useProfileGroupFollows } from "@/context/groups/ProfileGroupFollowsContext";
 
 import ProfileAvatar from "../ProfileAvatar";
-import Button from "../../ui/Button";
+import Button from "@/components/ui/Button";
 
-import { IoIosSettings } from "react-icons/io";
+import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
-
-/* width classes kept in‑sync with ProfileHeader */
 
 interface GroupData {
   id: string;
@@ -98,7 +95,7 @@ const GroupHeader = ({ groupData, CanManageGroup, isMember }: GroupHeaderProps) 
         {/* right side icons */}
         <div className="flex gap-4 ml-auto items-center mb-auto">
           {CanManageGroup && (
-            <IoIosSettings
+            <Cog6ToothIcon
               className="w-8 h-8 text-white cursor-pointer"
               onClick={() => navigate(`${basePath}/settings`)}
               title={t("btnTitles.settings")}

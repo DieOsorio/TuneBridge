@@ -1,14 +1,13 @@
 import { ReactNode, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
-import { useAuth } from "../../context/AuthContext";
-import { usePrefetchProfile } from "../../context/profile/profileActions";
-import { useLikes } from "../../context/social/LikesContext";
-import { useProfileGroups } from "../../context/profile/ProfileGroupsContext";
-import { useProfileGroupMembers } from "../../context/profile/ProfileGroupMembersContext";
-import { useProfile } from "../../context/profile/ProfileContext";
-import { usePostHashtags } from "../../context/social/PostHashtagsContext";
+import { useAuth } from "@/context/AuthContext";
+import { usePrefetchProfile } from "@/context/profile/profileActions";
+import { useLikes } from "@/context/social/LikesContext";
+import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
+import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { usePostHashtags } from "@/context/social/PostHashtagsContext";
 
 import ProfileAvatar from "../profiles/ProfileAvatar";
 import ProfileMinibox from "../profiles/ProfileMinibox";
@@ -19,14 +18,16 @@ import { motion } from "framer-motion";
 import { Navigation, Pagination, Scrollbar, Zoom } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { FcLike, FcLikePlaceholder } from "react-icons/fc";
+import {
+  XMarkIcon,
+  PencilSquareIcon,
+  HeartIcon
+} from "@heroicons/react/24/solid";
 import { LiaCommentsSolid } from "react-icons/lia";
-import { AiOutlineClose } from "react-icons/ai";
-import { FaEdit } from "react-icons/fa";
 
-import { Post } from "../../context/social/postsActions"
-import { Profile } from "../../context/profile/profileActions"
-import { ProfileGroup } from "../../context/profile/profileGroupsActions"
+import type { Post } from "@/context/social/postsActions"
+import type { Profile } from "@/context/profile/profileActions"
+import type { ProfileGroup } from "@/context/profile/profileGroupsActions"
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -223,11 +224,10 @@ function PostCard({ post }: PostCardProps) {
             {/* Edit button for the logged-in user's posts */}
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
               {canEditPost && (
-                <FaEdit
-                  title="Edit Post"
-                  className="text-yellow-600 hover:text-yellow-700 cursor-pointer"
+                <PencilSquareIcon
+                  title={t("posts.titles.updatePost")}
+                  className="text-yellow-600 w-5 h-5 hover:text-yellow-700 cursor-pointer"
                   onClick={handleEditClick}
-                  size={32}
                 />
               )}
             </div>
@@ -245,19 +245,20 @@ function PostCard({ post }: PostCardProps) {
                 transition={{ duration: 0.4 }}
               >
                 {alreadyLiked || isHovered ? (
-                  <FcLike className="w-8 h-8 sm:w-10 sm:h-10" />
+                  <HeartIcon 
+                    className="w-8 h-8 sm:w-10 sm:h-10 text-rose-600 transition-all" 
+                  />
                 ) : (
-                  <FcLikePlaceholder className="w-8 h-8 sm:w-10 sm:h-10" />
+                  <HeartIcon className="w-8 h-8 sm:w-10 sm:h-10 text-rose-300" />
                 )}
                 {isHovered && <Tooltip>{likeLabel}</Tooltip>}
               </motion.div>
             </div>
             {/* Show/hide comments box */}
             <LiaCommentsSolid
-              size={32}
-              title="Post Comments"
+              title= {t("titles.comments")}
               onClick={handleShowComments}
-              className={`text-gray-400 cursor-pointer ${
+              className={`text-gray-400 cursor-pointer w-5 h-5 transition-all ${
                 isGroupPost ? "hover:text-amber-700" : "hover:text-sky-600"
               } ${
                 showComments && !isGroupPost
@@ -355,7 +356,7 @@ function PostCard({ post }: PostCardProps) {
               className="absolute top-1 right-1 text-white hover:text-red-100 cursor-pointer z-10"
               onClick={closeModal}
             >
-              <AiOutlineClose size={28} />
+              <XMarkIcon className="w-7 h-7" />
             </button>
 
             {/* Image */}

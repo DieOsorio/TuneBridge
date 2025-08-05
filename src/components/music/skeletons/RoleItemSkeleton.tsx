@@ -1,6 +1,6 @@
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaChevronDown } from "react-icons/fa";
 
 const RoleItemSkeleton = () => {
   const baseColor = "#a1a1aa";
@@ -14,7 +14,7 @@ const RoleItemSkeleton = () => {
         baseColor={baseColor}
         highlightColor={highlightColor}
       />
-      <FaChevronDown className="text-gray-400 mt-2"/>
+      <ChevronDownIcon className="text-gray-400 mt-2 w-5" />
     </div>
   );
 };

@@ -1,23 +1,25 @@
-// src/components/social/ads/AdCard.tsx
-
-import { Link } from "react-router-dom";
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteOutline } from "react-icons/md";
-import { useAuth } from "../../../context/AuthContext";
-import { useTranslation } from "react-i18next";
-import { useAds } from "../../../context/social/adsContext";
-import ConfirmDialog from "../../ui/ConfirmDialog";
 import { useState } from "react";
-import Loading from "../../../utils/Loading";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import { useAds } from "@/context/social/adsContext";
 
-import type { MusicianAd } from "../../../context/social/adsActions";
+import {
+  TrashIcon,
+  PencilIcon
+} from "@heroicons/react/24/outline";
+
+import Loading from "@/utils/Loading";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+
+import type { MusicianAd } from "@/context/social/adsActions";
 
 interface AdCardProps {
   ad: MusicianAd;
   publisherId?: string | null;
 }
 
-const AdCard: React.FC<AdCardProps> = ({ ad, publisherId }) => {
+const AdCard = ({ ad, publisherId }: AdCardProps) => {
   const { t } = useTranslation("ads");
   const { user } = useAuth();
   const loggedIn = Boolean(user);
@@ -89,12 +91,15 @@ const AdCard: React.FC<AdCardProps> = ({ ad, publisherId }) => {
         {ownAd && (
           <div className="flex gap-3">
             <Link to={`/ads/edit/${ad.id}`}>
-              <CiEdit title={t("adCard.buttons.edit")} className="text-yellow-500" />
+              <PencilIcon 
+                title={t("adCard.buttons.edit")} 
+                className="text-yellow-500 w-4 h-4" 
+              />
             </Link>
             <button onClick={() => setConfirmOpen(true)}>
-              <MdDeleteOutline
+              <TrashIcon
                 title={t("adCard.buttons.delete")}
-                className="text-red-500 mr-6 cursor-pointer"
+                className="text-red-500 mr-6 cursor-pointer w-4 h-4"
               />
             </button>
           </div>

@@ -1,6 +1,6 @@
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+
 import { useTranslation } from 'react-i18next';
-import { FaChevronDown } from 'react-icons/fa';
-import React from 'react';
 
 export interface RoleItemProps {
   role: {
@@ -12,7 +12,7 @@ export interface RoleItemProps {
   handleRoleClick: (role: { id: string | number; role: string; [key: string]: any }) => void;
 }
 
-const RoleItem: React.FC<RoleItemProps> = ({ role, expandedRole, handleRoleClick }) => {
+const RoleItem = ({ role, expandedRole, handleRoleClick }: RoleItemProps) => {
   const { t } = useTranslation('music');
   const isExpanded = expandedRole === role.id;
 
@@ -27,8 +27,8 @@ const RoleItem: React.FC<RoleItemProps> = ({ role, expandedRole, handleRoleClick
         {t(`roles.${role.role.toLowerCase()}`)}
       </span>
       <div className="mt-2 flex justify-center">
-        <FaChevronDown
-          className={`text-gray-400 transition-transform duration-200 ${
+        <ChevronDownIcon
+          className={`text-gray-400 w-5 transition-transform duration-200 ${
             isExpanded ? "rotate-180" : ""
           }`}
         />

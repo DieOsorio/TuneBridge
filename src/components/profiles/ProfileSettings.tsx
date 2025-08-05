@@ -1,23 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
+import { useForm, Controller } from "react-hook-form";
+import { Country, State, City } from "country-state-city";
 import { useProfile } from "@/context/profile/ProfileContext";
 import { useCities, useCountries, useStates } from "@/context/helpers/useCountryCity";
+import { DatePicker } from "@mui/x-date-pickers";
+import { uploadFileToBucket } from "@/utils/avatarUtils";
+import ImageUploader from "@/utils/ImageUploader";
+
+import { CameraIcon } from "@heroicons/react/24/solid";
+
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ProfileAvatar from "./ProfileAvatar";
 import Select from "../ui/Select";
-import { uploadFileToBucket } from "@/utils/avatarUtils";
-import ImageUploader from "@/utils/ImageUploader";
-import { IoIosCamera } from "react-icons/io";
-import { useForm, Controller } from "react-hook-form";
-import { DatePicker } from "@mui/x-date-pickers";
-import { useTranslation } from "react-i18next";
 import Textarea from "../ui/Textarea";
-import { Country, State, City } from "country-state-city";
+
 import { ActualFileObject } from "filepond";
-
 import type { Profile } from "@/context/profile/profileActions";
-
 interface ProfileSettingsForm {
   bio: string;
   username: string;
@@ -186,7 +187,7 @@ const ProfileSettings = ({ profile, onSave, onCancel }: ProfileSettingsProps) =>
             gender={watch("gender")}
           />
           <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md group-hover:opacity-100 opacity-80 transition-opacity">
-            <IoIosCamera size={20} className="text-gray-700" />
+            <CameraIcon className="text-gray-700 w-6 h-6" />
           </div>
         </div>
       )}
