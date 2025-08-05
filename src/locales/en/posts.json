@@ -66,5 +66,9 @@
   "likes": {
     "count_one": "{{count}} like",
     "count_other": "{{count}} likes"
+  },
+  "titles": {
+    "updatePost": "Update Post",
+    "comments": "Comments"
   }
 }

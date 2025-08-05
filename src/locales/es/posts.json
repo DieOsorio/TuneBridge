@@ -65,5 +65,9 @@
   },
   "likes": {
     "count": "{{count}} me gusta"
+  },
+  "titles": {
+    "updatePost": "Actualizar publicación",
+    "comments": "Comentarios"
   }
 }

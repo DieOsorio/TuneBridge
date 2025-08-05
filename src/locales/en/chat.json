@@ -17,7 +17,9 @@
       "showList": "Show conversation list",
       "hideList": "Hide conversation list",
       "leaveConversation": "Leave Chat",
-      "leaveGroup": "Leave Group"
+      "leaveGroup": "Leave Group",
+      "attachments": "Attachments",
+      "noAttachments": "No attachments in this conversation."
     },
     "convert": {
       "title": "Convert to Group Chat",

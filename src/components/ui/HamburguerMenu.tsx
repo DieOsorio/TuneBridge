@@ -1,10 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { FaBolt, FaCompass, FaUser } from "react-icons/fa";
-import { MdCampaign, MdLogin, MdPersonAdd, MdLogout, MdSettings } from "react-icons/md";
-import { HiBars3, HiXMark } from "react-icons/hi2";
+import { useAuth } from "@/context/AuthContext";
+
+import {
+  BoltIcon,
+  UserIcon,
+  MegaphoneIcon,
+  ArrowRightStartOnRectangleIcon,
+  UserPlusIcon,
+  ArrowLeftStartOnRectangleIcon,
+  Cog6ToothIcon,
+  Bars3Icon,
+  XMarkIcon
+} from "@heroicons/react/24/solid";
+import { FaCompass } from "react-icons/fa";
 export interface HamburgerMenuProps {
   id?: string;
 }
@@ -30,14 +40,14 @@ const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
             isOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"
           } text-[35px]`}
         >
-          <HiBars3 />
+          <Bars3Icon className="w-8 h-8" />
         </span>
         <span
           className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
             isOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
           } text-[35px]`}
         >
-          <HiXMark />
+          <XMarkIcon className="w-8 h-8" />
         </span>
       </button>
       {/* dropdown */}
@@ -47,42 +57,42 @@ const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
             <ul className="space-y-2">
               {/* profile */}
               <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <FaUser size={22} className="text-sky-600" />
+                <UserIcon className="w-5 h-5 text-sky-600" />
                 <Link to={`/profile/${id}`} className="text-lg" onClick={toggle}>
                   {t("nav.links.profile")}
                 </Link>
               </li>
               {/* explore */}
               <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <FaCompass size={22} className="text-sky-600" />
+                <FaCompass className="w-5 h-5 text-sky-600" />
                 <Link to="/explore" className="text-lg" onClick={toggle}>
                   {t("nav.links.explore")}
                 </Link>
               </li>
               {/* ads */}
               <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MdCampaign size={28} className="text-sky-600" />
+                <MegaphoneIcon className="w-5 h-5 text-sky-600" />
                 <Link to="/ads" className="text-lg" onClick={toggle}>
                   {t("nav.links.ads")}
                 </Link>
               </li>
               {/* matches */}
               <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <FaBolt size={24} className="text-sky-600" />
+                <BoltIcon className="w-5 h-5 text-sky-600" />
                 <Link to="/matches" className="text-lg" onClick={toggle}>
                   {t("nav.links.matches")}
                 </Link>
               </li>
               {/* settings */}
               <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MdSettings size={26} className="text-sky-600" />
+                <Cog6ToothIcon className="w-5 h-5 text-sky-600" />
                 <Link to="/settings" className="text-lg" onClick={toggle}>
                   {t("nav.links.settings")}
                 </Link>
               </li>
               {/* sign‑out */}
               <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MdLogout size={26} className="text-sky-600" />
+                <ArrowLeftStartOnRectangleIcon className="text-sky-600 w-5 h-5" />
                 <button onClick={signOut} className="text-lg cursor-pointer">
                   {t("nav.auth.signOut")}
                 </button>
@@ -99,21 +109,21 @@ const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
               </li>
               {/* ads (guest) */}
               <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MdCampaign size={24} className="text-sky-600" />
+                <MegaphoneIcon className="w-5 h-5 text-sky-600" />
                 <Link to="/ads" className="text-lg" onClick={toggle}>
                   {t("nav.links.ads")}
                 </Link>
               </li>
               {/* sign‑in */}
               <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MdLogin size={26} className="text-sky-600" />
+                <ArrowRightStartOnRectangleIcon className="text-sky-600 w-5 h-5" />
                 <Link to="/login" className="text-lg" onClick={toggle}>
                   {t("nav.auth.signIn")}
                 </Link>
               </li>
               {/* sign‑up */}
               <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MdPersonAdd size={24} className="text-sky-600" />
+                <UserPlusIcon className="text-sky-600 w-5 h-5" />
                 <Link to="/signup" className="text-lg" onClick={toggle}>
                   {t("nav.auth.signUp")}
                 </Link>

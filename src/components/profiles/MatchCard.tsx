@@ -1,16 +1,24 @@
-import { FaBolt } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
 import { memo, useState } from "react";
-import { useUserConnections } from "../../context/social/UserConnectionsContext";
-import { IoChatbubble, IoPerson, IoPersonAdd, IoPersonOutline, IoPersonRemove } from "react-icons/io5";
-import { ImBlocked } from "react-icons/im";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../context/AuthContext";
+import { useUserConnections } from "@/context/social/UserConnectionsContext";
+import { useConversations } from "@/context/social/chat/ConversationsContext";
+import { useAuth } from "@/context/AuthContext";
+import { useParticipants } from "@/context/social/chat/ParticipantsContext";
+
+import { 
+  BoltIcon, 
+  ChatBubbleOvalLeftIcon, 
+  UserIcon, 
+  UserPlusIcon,
+  UserCircleIcon,
+  UserMinusIcon,
+  NoSymbolIcon,
+} from "@heroicons/react/24/solid";
+
 import { handleStartChat } from "../social/chat/utilis/handleStartChat";
-import { useConversations } from "../../context/social/chat/ConversationsContext";
-import { useParticipants } from "../../context/social/chat/ParticipantsContext";
 import ProfileAvatar from "./ProfileAvatar";
-import { useCanSendDM } from "../../utils/useCanSendDM";
+import { useCanSendDM } from "@/utils/useCanSendDM";
 import MatchCardSkeleton from "./skeletons/MatchCardSkeleton";
 
 export interface MatchCardProfile {
@@ -124,10 +132,10 @@ const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) =>
   };
 
   const icon = {
-    connect: <IoPersonAdd />,
-    pending: <IoPersonOutline />,
-    accepted: <IoPerson />,
-    blocked: <ImBlocked />,
+    connect: <UserPlusIcon className="w-4 h-4" />,
+    pending: <UserCircleIcon className="w-4 h-4" />,
+    accepted: <UserIcon className="w-4 h-4" />,
+    blocked: <NoSymbolIcon className="w-4 h-4" />,
   }[status];
 
   return (
@@ -164,7 +172,7 @@ const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) =>
         className={`absolute inline-flex items-center gap-2 cursor-help select-none px-3 py-1 rounded-full text-sm font-semibold ${badgeClasses}`}
         title={t("matchScore.cardTitle")}
       >
-        <FaBolt className="text-amber-500 text-lg" />
+        <BoltIcon className="text-amber-500 w-4 h-4" />
         <span>Match: {percentage}%</span>
       </div>
 
@@ -175,7 +183,7 @@ const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) =>
             onClick={startChat}
             className="absolute top-4 right-4 text-amber-700 cursor-pointer hover:text-amber-800 transition"
           >
-            <IoChatbubble size={30} />
+            <ChatBubbleOvalLeftIcon className="w-8 h-8" />
           </button>
         )}
 
@@ -186,9 +194,9 @@ const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) =>
           className="flex cursor-pointer items-center min-w-35 justify-center gap-1 px-3 py-1 rounded bg-gray-700 text-white hover:bg-gray-800 transition text-sm"
         >
           <span className="truncate flex items-center gap-1">
-            {hoverText && status === "accepted" && <IoPersonRemove />}
-            {hoverText && status === "pending" && <IoPersonRemove />}
-            {hoverText && status === "blocked" && <IoPerson />}
+            {hoverText && status === "accepted" && <UserMinusIcon className="w-4 h-4" />}
+            {hoverText && status === "pending" && <UserMinusIcon className="w-4 h-4" />}
+            {hoverText && status === "blocked" && <UserIcon className="w-4 h-4" />}
             {!hoverText && icon}
             <span>{hoverText ? hoverText : t(`connection.${status}`)}</span>
           </span>

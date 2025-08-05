@@ -1,6 +1,6 @@
-import React from "react";
 import { Routes, Route, NavLink, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import { FaCompass } from "react-icons/fa";
 
 import PostsList from "../components/social/PostsList";

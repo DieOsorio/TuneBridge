@@ -1,12 +1,13 @@
+import React, { useState, useRef, useEffect } from "react";
 import {
   Control,
   Controller,
   UseFormRegister,
   RegisterOptions,
 } from "react-hook-form";
-import React, { useState, useRef, useEffect } from "react";
-import { FaChevronDown } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 export type Option = {
   value: string;
@@ -85,7 +86,7 @@ const Select = ({
           onClick={() => !disabled && setIsOpen((prev) => !prev)}
         >
           <span>{selectedLabel}</span>
-          <FaChevronDown className="w-4 h-4 ml-2" />
+          <ChevronDownIcon className="w-4 h-4 ml-2" />
         </button>
 
         {isOpen && (

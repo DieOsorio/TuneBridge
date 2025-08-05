@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useMessages } from "../../../context/social/chat/MessagesContext";
-import { useAuth } from "../../../context/AuthContext";
+import { useMessages } from "@/context/social/chat/MessagesContext";
+import { useAuth } from "@/context/AuthContext";
 
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";

@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { RiUserSearchLine, RiUserSearchFill } from "react-icons/ri";
 import { Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../context/AuthContext";
-import { useProfile } from "../../context/profile/ProfileContext";
-
-import ProfilesList from "./ProfilesList";
-import Select from "../ui/Select";
-
+import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/profile/ProfileContext";
 import {
   useCountries,
   useStates,
   useCities,
-} from "../../context/helpers/useCountryCity";
-
+} from "@/context/helpers/useCountryCity";
 import { Country } from "country-state-city";
-import type { Profile } from "../../context/profile/profileActions";
+
+import { RiUserSearchLine, RiUserSearchFill } from "react-icons/ri";
+
+import ProfilesList from "./ProfilesList";
+import Select from "../ui/Select";
+
+import type { Profile } from "@/context/profile/profileActions";
 
 const cleanStateName = (name: string): string =>
   name.endsWith(" Department") ? name.replace(/ Department$/, "") : name;

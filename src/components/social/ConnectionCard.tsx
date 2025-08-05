@@ -1,19 +1,20 @@
-import { Link } from "react-router-dom";
 import { useState, MouseEvent } from "react";
-import { useUserConnections } from "../../context/social/UserConnectionsContext";
-import { useProfile } from "../../context/profile/ProfileContext";
-import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useUserConnections } from "@/context/social/UserConnectionsContext";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { useAuth } from "@/context/AuthContext";
 
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { ImCross } from "react-icons/im";
-import { FaCheck } from "react-icons/fa";
+import {
+  EllipsisVerticalIcon,
+  XMarkIcon,
+  CheckIcon
+} from "@heroicons/react/24/solid";
 
-import { UserConnection } from "../../context/social/userConnectionsActions"
-
-import ErrorMessage from "../../utils/ErrorMessage";
+import ErrorMessage from "@/utils/ErrorMessage";
 import ConnectionCardSkeleton from "./skeletons/ConnectionCardSkeleton";
 
+import type { UserConnection } from "@/context/social/userConnectionsActions"
 interface ConnectionCardProps {
   profileId: string;
   connection?: UserConnection | null;
@@ -77,17 +78,17 @@ const ConnectionCard = ({
             <>
               <button
                 onClick={handleAccept}
-                className="text-green-600 hover:text-green-800"
+                className="text-green-600 hover:text-green-500"
                 aria-label={t("connection.connectionCard.accept")}
               >
-                <FaCheck />
+                <CheckIcon className="w-5 h-5" />
               </button>
               <button
                 onClick={handleReject}
-                className="text-red-600 hover:text-red-800"
+                className="text-rose-600 hover:text-rose-400"
                 aria-label={t("connection.connectionCard.reject")}
               >
-                <ImCross />
+                <XMarkIcon className="w-5 h-5" />
               </button>
             </>
           )}
@@ -95,28 +96,30 @@ const ConnectionCard = ({
           {showMenuTrigger && !showAcceptReject && ownProfile && (
             <div className="relative">
               <button
+                className="w-6 h-6 cursor-pointer text-white hover:text-sky-400 p-2 rounded-full focus:outline-none"
                 onClick={() => setMenuOpen((open) => !open)}
-                className="text-gray-950 hover:text-orange-700 cursor-pointer"
                 aria-label={t("connection.connectionCard.options")}
               >
-                <BsThreeDotsVertical
-                  title={t("connection.connectionCard.options")}
-                />
+                <span className={`absolute inset-0 flex items-center justify-center transition ${menuOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
+                  <EllipsisVerticalIcon />
+                </span>
+                <span className={`absolute inset-0 flex items-center justify-center transition ${menuOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
+                  <XMarkIcon />
+                </span>
               </button>
-
-              {menuOpen && (
-                <div className="absolute right-0 mt-2 w-32 bg-gray-900 border rounded shadow-lg z-50">
-                  <button
-                    onClick={handleReject}
-                    className="block w-full cursor-pointer text-center px-4 py-2 text-red-500 hover:text-red-600"
-                  >
-                    {connection.status === "accepted"
-                      ? t("connection.connectionCard.disconnect")
-                      : t("connection.connectionCard.delete")}
-                  </button>
-                </div>
-              )}
-            </div>
+                {menuOpen && (                  
+                  <div className="absolute right-0 w-32 bg-gray-900 border rounded shadow-lg z-50">
+                    <button
+                      onClick={handleReject}
+                      className="block w-full cursor-pointer text-center px-4 py-2 text-red-500 hover:text-red-600"
+                    >
+                      {connection.status === "accepted"
+                        ? t("connection.connectionCard.disconnect")
+                        : t("connection.connectionCard.delete")}
+                    </button>
+                  </div>
+                )}
+            </div>                                 
           )}
         </div>
       )}

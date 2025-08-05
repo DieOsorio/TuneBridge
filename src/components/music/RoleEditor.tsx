@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useForm, FieldErrors } from "react-hook-form";
-import { Controller } from "react-hook-form";
-import Input from "../ui/Input";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
-import { Button } from "@mui/material";
-import Select from "../ui/Select";
-import { useHashtags } from "../../context/social/HashtagsContext";
-import { useProfileHashtags } from "../../context/social/ProfileHashtagsContext";
 import { useTranslation } from "react-i18next";
+import { useForm, Controller } from "react-hook-form";
+import { useHashtags } from "@/context/social/HashtagsContext";
+import { useProfileHashtags } from "@/context/social/ProfileHashtagsContext";
+
+import { Button } from "@mui/material";
+
+import Select from "../ui/Select";
+import Input from "../ui/Input";
 
 interface Field {
   name: string;
@@ -288,7 +288,6 @@ const RoleEditor = ({
                 variant="contained"
                 className="!text-white !bg-emerald-600 hover:!bg-emerald-700 !px-3 !rounded-xl flex gap-1 !text-sm"
               >
-                <FiEdit2 size={15} />
                 {t("generic.save")}
               </Button>
               <Button
@@ -297,7 +296,6 @@ const RoleEditor = ({
                 variant="contained"
                 className="!text-white !px-3 !rounded-xl !text-sm flex gap-1"
               >
-                <FiTrash2 size={17} />
                 {t("generic.delete")}
               </Button>
             </div>

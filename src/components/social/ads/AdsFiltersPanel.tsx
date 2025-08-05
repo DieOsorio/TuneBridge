@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import type { Filters } from "../../../context/social/adsActions";
+import type { Filters } from "@/context/social/adsActions";
 
-import Input from "../../ui/Input";
+import Input from "@/components/ui/Input";
 
 
 
@@ -40,8 +40,7 @@ export const AdsFiltersPanel = ({
         render={({ field }) => (
           <Input
             id="search"
-            placeholder={placeholder ?? "Search ads..."}
-            className="bg-gray-800"
+            placeholder={placeholder}
             field={field}
           />
         )}

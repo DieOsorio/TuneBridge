@@ -17,7 +17,7 @@ import SettingsSidebar from "../components/profiles/SettingsSidebar";
 import AccountSettings from "../components/auth/AccountSettings";
 import PrivacySettings from "../components/settings/PrivacySettings";
 import NotificationSettings from "../components/settings/NotificationSettings";
-import ProviderSettings from "../components/settings/ProviderSettings";
+// import ProviderSettings from "../components/settings/ProviderSettings";
 
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/profile/ProfileContext";
@@ -94,7 +94,7 @@ const Settings = () => {
           <Route path="account" element={<AccountSettings />} />
           <Route path="privacy" element={<PrivacySettings />} />
           <Route path="notifications" element={<NotificationSettings />} />
-          <Route path="apps" element={<ProviderSettings />} />
+          {/* <Route path="apps" element={<ProviderSettings />} /> */}
           <Route index element={<Navigate to="profile" replace />} />
         </Routes>
       </div>

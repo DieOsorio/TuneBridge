@@ -4,19 +4,24 @@ import {
   useEffect,
   useCallback,
   memo,
-  MutableRefObject,
 } from "react";
 import { Link } from "react-router-dom";
-import ProfileAvatar from "../../profiles/ProfileAvatar";
+import { useTranslation } from "react-i18next";
+import { useLikes } from "@/context/social/LikesContext";
+
+import { 
+  ArrowDownCircleIcon,
+  ArrowUpCircleIcon
+} from "@heroicons/react/24/outline";
+
+import ProfileAvatar from "@/components/profiles/ProfileAvatar";
 import ReplyForm from "./ReplyForm";
 import EditCommentBox from "./EditCommentBox";
 import CommentMenu from "./CommentMenu";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { useLikes } from "../../../context/social/LikesContext";
-import { useTranslation } from "react-i18next";
-import { Comment } from "../../../context/social/commentsActions";
-import { Like } from "../../../context/social/likesActions";
-import { Profile } from "../../../context/profile/profileActions";
+
+import type { Comment } from "@/context/social/commentsActions";
+import type { Like } from "@/context/social/likesActions";
+import type { Profile } from "@/context/profile/profileActions";
 
 type ProfilesMap = Record<string, Profile>;
 
@@ -206,10 +211,12 @@ const CommentCard = ({
           <div className="mt-4 border-zinc-300 dark:border-zinc-700">
             <button
               onClick={() => setShowAllReplies(!showAllReplies)}
-              className="flex items-center gap-1 text-sm font-bold text-sky-600 mb-1 hover:underline"
+              className="flex items-center gap-1 text-sm font-bold text-sky-600 mb-1.5 hover:underline"
             >
               <>
-                {showAllReplies ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                {showAllReplies 
+                  ? <ArrowUpCircleIcon className="w-5 h-5 text-sky-500" /> 
+                  : <ArrowDownCircleIcon className="w-5 h-5 text-sky-500" />}
                 {replies.length === 1
                   ? t("card.replies", { count: replies.length })
                   : t("card.repliesPlural", { count: replies.length })}

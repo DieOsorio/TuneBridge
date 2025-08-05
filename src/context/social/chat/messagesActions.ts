@@ -38,6 +38,10 @@ export function mapMessageFromSupabase(raw: any): Message {
     sender_profile_id: raw.sender_profile_id,
     conversation_id: raw.conversation_id,
     created_at: raw.created_at,
+    read_by: raw.read_by ?? [],
+    deleted_at: raw.deleted_at ?? null,
+    updated_at: raw.updated_at ?? null,
+    delivered_to: raw.delivered_to ?? [],
     attachment_id: raw.attachment_id ?? undefined,
     attachment: raw.message_attachments
       ? {

@@ -1,24 +1,31 @@
 import { useState, useRef, useEffect } from "react";
-import { useConversations } from "../../../context/social/chat/ConversationsContext";
-import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
-import { useAuth } from "../../../context/AuthContext";
-import { useProfile } from "../../../context/profile/ProfileContext";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { uploadFileToBucket } from "../../../utils/avatarUtils";
-
-import { HiCamera, HiPencil, HiOutlineUserRemove, HiUserGroup } from "react-icons/hi";
-
-import ConfirmDialog from "../../ui/ConfirmDialog";
-import ProfileAvatar from "../../profiles/ProfileAvatar";
-import ImageUploader from "../../../utils/ImageUploader";
-
-import { Profile } from "../../../context/profile/profileActions";
-import { Participant } from "../../../context/social/chat/participantsActions";
+import { useTranslation } from "react-i18next";
+import { useConversations } from "@/context/social/chat/ConversationsContext";
+import { useParticipants } from "@/context/social/chat/ParticipantsContext";
+import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { Profile } from "@/context/profile/profileActions";
 import { Conversation } from "@/context/social/chat/conversationsActions";
+import { Participant } from "@/context/social/chat/participantsActions";
+import { uploadFileToBucket } from "@/utils/avatarUtils";
+import ImageUploader from "@/utils/ImageUploader";
+
+import {
+  CameraIcon,
+  PencilIcon,
+  UserGroupIcon,
+  EllipsisVerticalIcon as HeroEllipsisVerticalIcon,
+  XMarkIcon as HeroXMarkIcon,
+  UserMinusIcon,
+} from "@heroicons/react/24/outline";
+
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ProfileAvatar from "@/components/profiles/ProfileAvatar";
+import ConversationAttachments from "./ConversationAttachments";
+
 import { ActualFileObject } from "filepond";
-import { HiEllipsisVertical, HiXMark } from "react-icons/hi2";
 
 interface ParticipantRowProps {
   participant: Participant;
@@ -94,9 +101,9 @@ function ParticipantRow({
             aria-label={t("groupOverview.menu.open")}
           >
             {menuOpen === participant.profile_id ? (
-              <HiXMark size={20} />
+              <HeroXMarkIcon className="h-6 w-6" />
             ) : (
-              <HiEllipsisVertical size={20} />
+              <HeroEllipsisVerticalIcon className="h-6 w-6" />
             )}
           </button>
           {menuOpen === participant.profile_id && (
@@ -108,7 +115,7 @@ function ParticipantRow({
               <ul className="py-1">
                 <li>
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-white"
+                    className="w-full cursor-pointer text-left px-4 py-2 text-sm hover:bg-gray-700 text-white"
                     onClick={() => {
                       navigate(`/profile/${participant.profile_id}`);
                       setMenuOpen(null);
@@ -120,7 +127,7 @@ function ParticipantRow({
                 {participant.role !== "admin" && (
                   <li>
                     <button
-                      className="w-full text-left border-t border-gray-700 px-4 py-2 text-sm hover:bg-sky-700 text-white"
+                      className="w-full cursor-pointer text-left border-t border-gray-700 px-4 py-2 text-sm hover:bg-sky-700 text-white"
                       onClick={() => setConfirmDialog({ open: true, action: "promote", participant })}
                     >
                       {t("groupOverview.actions.promote")}
@@ -129,7 +136,7 @@ function ParticipantRow({
                 )}
                 <li>
                   <button
-                    className="w-full text-left border-t border-gray-700 px-4 py-2 text-sm hover:bg-red-700 text-white"
+                    className="w-full cursor-pointer text-left border-t border-gray-700 px-4 py-2 text-sm hover:bg-rose-700 text-white"
                     onClick={() => setConfirmDialog({ open: true, action: "remove", participant })}
                   >
                     {t("groupOverview.actions.remove")}
@@ -172,6 +179,8 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
     participant: null,
   });
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
+  const [groupMenuOpen, setGroupMenuOpen] = useState(false);
+  const [isAttachmentsOpen, setIsAttachmentsOpen] = useState(false);
 
   const { register, watch } = useForm<{ searchTerm: string }>();
   const searchTerm = watch("searchTerm");
@@ -250,17 +259,17 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
           className="absolute cursor-pointer top-2 right-2 text-3xl text-white"
           aria-label="Close group overview"
         >
-          ✕
+          <HeroXMarkIcon className="h-8 w-8" />
         </button>
 
         {/* Leave group button */}
         <div className="flex justify-start mb-4">
           <button
             onClick={() => setIsLeaveConfirmOpen(true)}
-            className="text-red-400 cursor-pointer hover:text-red-600 transition text-sm font-semibold flex items-center gap-1"
+            className="text-rose-400 cursor-pointer hover:text-rose-700 transition text-sm font-semibold flex items-center gap-1"
             title={t("header.buttons.leaveGroup")}
           >
-            <HiOutlineUserRemove size={18} />
+            <UserMinusIcon className="h-6 w-6" />
             {t("header.buttons.leaveGroup")}
           </button>
         </div>
@@ -290,13 +299,13 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
                   title={t("groupOverview.avatar.edit")}
                   disabled={isUploading}
                 >
-                  <HiCamera className="w-5 h-5 cursor-pointer" />
+                  <CameraIcon className="w-5 h-5 cursor-pointer" />
                 </button>
                 <ImageUploader onFilesUpdate={handleGroupAvatarUpload} amount={1} triggerRef={avatarTriggerRef} />
               </>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-between w-full">
             {isEditingTitle ? (
               <input
                 type="text"
@@ -312,14 +321,53 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
               <>
                 <h2 className="text-xl font-bold text-white">{editedTitle || "Untitled Group"}</h2>
                 {isAdmin && (
-                  <HiPencil
+                  <PencilIcon
                     onClick={() => setIsEditingTitle(true)}
-                    className="text-white cursor-pointer hover:text-sky-400 transition text-base"
+                    className="text-white w-5 h-5 cursor-pointer hover:text-sky-400 transition text-base"
                     title={t("groupOverview.title.edit")}
                   />
                 )}
               </>
             )}
+            <div className="ml-auto relative flex items-center">
+              <button
+                className="p-1 w-[32px] h-[32px] rounded-full hover:bg-gray-800 cursor-pointer text-gray-300 relative"
+                onClick={() => setGroupMenuOpen((open) => !open)}
+                aria-label={t("header.menu.open")}
+              >
+                <span
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
+                    groupMenuOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"
+                  }`}
+                >
+                  <HeroEllipsisVerticalIcon className="h-6 w-6" />
+                </span>
+                <span
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
+                    groupMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
+                  }`}
+                >
+                  <HeroXMarkIcon className="h-6 w-6" />
+                </span>
+              </button>
+              {groupMenuOpen && (
+                <div className="absolute right-8 top-5 w-48 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
+                  <ul className="py-1">
+                    <li>
+                      <button
+                        className="w-full cursor-pointer text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-gray-700 text-white"
+                        onClick={() => {
+                          setIsAttachmentsOpen(true);
+                          setGroupMenuOpen(false);
+                        }}
+                      >
+                        {t("header.buttons.attachments")}
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Add participants search bar for admins */}
@@ -366,7 +414,7 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
 
         <div>
           <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-            <HiUserGroup /> {t("groupOverview.participants")}
+            <UserGroupIcon className="h-6 w-6" /> {t("groupOverview.participants")}
           </h3>
           <ul className="divide-y divide-gray-700">
             {[...new Map(participants.map((p) => [p.profile_id, p])).values()].map(
@@ -407,6 +455,12 @@ export default function GroupOverview({ conversation, onClose }: GroupOverviewPr
           }
           color={confirmDialog.action === "remove" ? "error" : "primary"}
         />
+        {isAttachmentsOpen && conversation?.message_attachments && (
+        <ConversationAttachments
+          attachments={conversation.message_attachments}
+          onClose={() => setIsAttachmentsOpen(false)}
+        />
+      )}
       </div>
     </div>
   );

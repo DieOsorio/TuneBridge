@@ -7,16 +7,18 @@ import { useHashtags } from "@/context/social/HashtagsContext";
 import { usePostHashtags } from "@/context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
-import { supabase } from "@/supabase";
+import { deleteFileFromBucket } from "@/utils/avatarUtils";
 
-import { FiPlus } from "react-icons/fi";
+
+import { PlusIcon } from "@heroicons/react/24/solid";
+
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Textarea from "../ui/Textarea";
-import ImageUploader from "../../utils/ImageUploader";
-import Loading from "../../utils/Loading";
-import ErrorMessage from "../../utils/ErrorMessage";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import ImageUploader from "@/utils/ImageUploader";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
 
 import type { Post } from "@/context/social/postsActions"
 import type { ActualFileObject } from "filepond";
@@ -100,9 +102,7 @@ const PostForm = () => {
   };
 
   const handleDeleteImage = async (imageUrl: string) => {
-    const fileName = imageUrl.split("/").pop();
-    if (!fileName) return;
-    await supabase.storage.from("post-media").remove([fileName]);
+    deleteFileFromBucket("post-media", imageUrl);
     const updatedImages = images.filter((img) => img !== imageUrl);
     setImages(updatedImages);
   };
@@ -277,7 +277,7 @@ const PostForm = () => {
                   : "cursor-pointer text-emerald-500 hover:text-emerald-700"
               }`}
             >
-              <FiPlus size={22} />
+              <PlusIcon className="w-6 h-6" />
             </button>
           </div>
 

@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUserConnections } from "../../context/social/UserConnectionsContext";
-import { useAuth } from "../../context/AuthContext";
-import { IoPersonAdd, IoPersonRemove, IoPersonOutline, IoPerson } from "react-icons/io5";
-import { ImBlocked } from "react-icons/im";
-import ProfileAvatar from "./ProfileAvatar";
 import { useTranslation } from "react-i18next";
+import { useUserConnections } from "@/context/social/UserConnectionsContext";
+import { useAuth } from "@/context/AuthContext";
+
+import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
+
+import { 
+  UserIcon, 
+  UserPlusIcon, 
+  UserMinusIcon 
+} from "@heroicons/react/24/solid";
+
+import { ImBlocked } from "react-icons/im";
+
+import ProfileAvatar from "./ProfileAvatar";
 
 export interface ProfileCardProfile {
   id: string;
@@ -21,7 +30,10 @@ export interface ProfileCardProps {
   profile: ProfileCardProfile;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
+const validStatuses = ["connect", "pending", "accepted", "blocked"] as const;
+type Status = typeof validStatuses[number];
+
+const ProfileCard = ({ profile }: ProfileCardProps) => {
   const { t } = useTranslation("profile");
   const { user } = useAuth();
   const loggedIn = Boolean(user);
@@ -41,7 +53,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
         )
       : undefined;
 
-  const status: "connect" | "pending" | "accepted" | "blocked" = userConnection?.status ?? "connect";
+  const rawStatus = userConnection?.status;
+  const status: Status = validStatuses.includes(rawStatus as Status)
+    ? (rawStatus as Status)
+    : "connect";
 
   // Function to handle connection status change
   const handleConnect = async () => {
@@ -117,12 +132,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
         >
           {/* Icon aligned to the left of the text */}
           <span className="pl-1">
-            {status === "connect" && <IoPersonAdd className="text-green-50" />}
-            {status === "accepted" && !hoverText && <IoPerson className="text-green-50" />}
-            {status === "pending" && !hoverText && <IoPersonOutline className="text-yellow-50" />}
-            {(status === "pending" || status === "accepted") && hoverText && <IoPersonRemove className="text-red-50" />}
-            {status === "blocked" && !hoverText && <ImBlocked className="text-red-100" />}
-            {status === "blocked" && hoverText && <IoPerson className="" />}
+            {status === "connect" && <UserPlusIcon className="text-green-50 w-4.5 h-4.5" />}
+            {status === "accepted" && !hoverText && <UserIcon className="text-green-50 w-4 h-4" />}
+            {status === "pending" && !hoverText && <UserIconOutline className="text-yellow-50 w-4 h-4" />}
+            {(status === "pending" || status === "accepted") && hoverText && <UserMinusIcon className="text-red-50 w-4.5 h-4.5" />}
+            {status === "blocked" && !hoverText && <ImBlocked className="text-red-100 w-4 h-4" />}
+            {status === "blocked" && hoverText && <UserIcon className="w-4 h-4" />}
           </span>
 
           {/* Text (centered over the rest of the button) */}

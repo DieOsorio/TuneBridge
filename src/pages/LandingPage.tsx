@@ -1,20 +1,22 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, A11y, EffectCoverflow } from "swiper/modules";
+
+import { AiOutlineClose } from "react-icons/ai";
+
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Banner from "../components/ui/Banner";
-import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import FeatureCard from "../components/landing-page/FeatureCard";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, A11y, EffectCoverflow } from "swiper/modules";
+import { motion } from "framer-motion";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-coverflow";
-import { AiOutlineClose } from "react-icons/ai";
-import FeatureCard from "../components/landing-page/FeatureCard";
 
 interface ScreenshotData {
   key: string;
@@ -23,7 +25,7 @@ interface ScreenshotData {
   images: { src: string; alt: string; caption: string }[];
 }
 
-const LandingPage: React.FC = () => {
+const LandingPage = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
   const isLoading = false;
@@ -192,7 +194,7 @@ const LandingPage: React.FC = () => {
   );
 };
 
-const FeatureCardSkeleton: React.FC = () => (
+const FeatureCardSkeleton = () => (
   <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
     <Skeleton circle={true} height={50} width={50} className="mx-auto mb-4" />
     <Skeleton height={20} width="60%" className="mx-auto mb-2" />
@@ -207,7 +209,7 @@ interface StepProps {
   isFinal?: boolean;
 }
 
-const Step: React.FC<StepProps> = ({ number, title, description, isFinal = false }) => {
+const Step = ({ number, title, description, isFinal = false }: StepProps) => {
   const bgColor = isFinal ? "bg-amber-700 border-amber-900" : "bg-sky-600 border-sky-900";
   const titleBg = isFinal ? "bg-amber-900" : "bg-sky-950";
 

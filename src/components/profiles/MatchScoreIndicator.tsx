@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { FaBolt } from "react-icons/fa";
-import { useProfile } from "../../context/profile/ProfileContext";
-import { useAuth } from "../../context/AuthContext";
-import LoadingBadge from "../ui/LoadingBadge";
 import { useTranslation } from "react-i18next";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { useAuth } from "@/context/AuthContext";
 
+import { BoltIcon } from "@heroicons/react/24/solid";
+
+import LoadingBadge from "../ui/LoadingBadge";
 export interface MatchScoreIndicatorProps {
   otherProfile: { id: string; [key: string]: any };
   className?: string;
 }
 
-const MatchScoreIndicator: React.FC<MatchScoreIndicatorProps> = ({ otherProfile, className = "" }) => {
+const MatchScoreIndicator = ({ otherProfile, className = "" }: MatchScoreIndicatorProps) => {
   const { t } = useTranslation("profile");
   const { user } = useAuth();
   const { matchScore } = useProfile();
@@ -40,7 +41,7 @@ const MatchScoreIndicator: React.FC<MatchScoreIndicatorProps> = ({ otherProfile,
       className={`w-full md:w-auto flex items-center justify-center gap-1 cursor-help whitespace-nowrap select-none ${className}`}
       title={t("matchScore.title")}
     >
-      <FaBolt className="text-amber-700 text-xl" />
+      <BoltIcon className="text-amber-700 w-6 h-6" />
       <span
         className={`inline-block w-full text-center px-3 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap ${
           percentage >= 70

@@ -1,20 +1,25 @@
-import { useConversations } from "../../../context/social/chat/ConversationsContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Loading from "../../../utils/Loading";
-import ErrorMessage from "../../../utils/ErrorMessage";
-import { useAuth } from "../../../context/AuthContext";
-import { useParticipants } from "../../../context/social/chat/ParticipantsContext";
-import { useProfile } from "../../../context/profile/ProfileContext";
-import { useForm } from "react-hook-form";
-import { HiInformationCircle, HiEllipsisVertical, HiBars3, HiXMark } from "react-icons/hi2";
-import { useEffect, useRef, useState } from "react";
-import { uploadFileToBucket } from "../../../utils/avatarUtils";
-import { useChatUI } from "../../../context/social/chat/ChatUIContext";
 import { useTranslation } from "react-i18next";
-import ConfirmDialog from "../../ui/ConfirmDialog";
-import GroupOverview from "./GroupOverview";
+import { useConversations } from "@/context/social/chat/ConversationsContext";
+import { useChatUI } from "@/context/social/chat/ChatUIContext";
+import { useAuth } from "@/context/AuthContext";
+import { useParticipants } from "@/context/social/chat/ParticipantsContext";
 
-import type { Participant } from "../../../context/social/chat/participantsActions";
+import ErrorMessage from "@/utils/ErrorMessage";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import ConversationAttachments from "./ConversationAttachments";
+import GroupOverview from "./GroupOverview";
+import Loading from "@/utils/Loading";
+
+import {
+  InformationCircleIcon,
+  EllipsisVerticalIcon,
+  Bars3Icon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+
+import type { Participant } from "@/context/social/chat/participantsActions";
 
 interface ChatHeaderProps {
   conversationId?: string;
@@ -31,7 +36,12 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
 
   const { t } = useTranslation("chat");
 
-  const { fetchConversation, fetchConversations, updateConversation, deleteConversation } = useConversations();
+  const { 
+    fetchConversation, 
+    fetchConversations, 
+    updateConversation, 
+    deleteConversation 
+  } = useConversations();
   const { data: conversation, isLoading, error } = fetchConversation(conversationId ?? "");
   const { refetch: refetchConversations } = fetchConversations(userId);
 
@@ -57,33 +67,17 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
     safeParticipants = [];
   }
 
+  const navigate = useNavigate();
+  
   const otherParticipant = safeParticipants.find((p) => p.profile_id !== userId);
-
-  const { fetchProfile, searchProfiles } = useProfile();
-
-  const { register, watch } = useForm<{ searchTerm: string }>();
-  const searchTerm = watch("searchTerm");
-
-  const { data: searchResults } = searchProfiles(searchTerm);
-
-  const participantsIds = safeParticipants.map((p) => p.profile_id);
-  const filteredResults = searchResults?.filter((profile) => !participantsIds.includes(profile.id)) ?? [];
 
   const isGroup = conversation?.is_group ?? false;
 
-  const isAdmin = safeParticipants.some((p) => p.profile_id === userId && p.role === "admin");
-
-  const avatarTriggerRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-
-  const [searchVisible, setSearchVisible] = useState(false);
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(conversation?.title ?? "");
-  const [isUploading, setIsUploading] = useState(false);
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
   const [isConvertConfirmOpen, setIsConvertConfirmOpen] = useState(false);
   const [isGroupOverviewOpen, setIsGroupOverviewOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAttachmentsOpen, setIsAttachmentsOpen] = useState(false);
 
   const { isConversationListVisible, toggleConversationList } = useChatUI();
 
@@ -116,45 +110,6 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
     }
   };
 
-  const handleGroupAvatarUpload = async (files?: FileList) => {
-    if (!files?.[0] || !conversationId) return;
-    if (isUploading) {
-      console.log("Upload already in progress, ignoring new upload.");
-      return;
-    }
-
-    setIsUploading(true);
-
-    try {
-      const newUrl = await uploadFileToBucket(
-        files[0],
-        "chat-group-avatars",
-        conversationId,
-        conversation?.avatar_url,
-        true
-      );
-
-      if (newUrl && newUrl !== conversation?.avatar_url && conversation) {
-        await updateConversation({
-          conversation,
-          updates: { avatar_url: newUrl },
-        });
-      }
-    } catch (err: any) {
-      console.error("Error uploading avatar:", err.message);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isGroup) {
-      setSearchVisible(true);
-      if (conversation?.title) {
-        setEditedTitle(conversation.title);
-      }
-    }
-  }, [isGroup, conversation?.title]);
 
   if (!conversationId) {
     return (
@@ -166,7 +121,7 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
           aria-label={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
           title={isConversationListVisible ? "Hide conversation list" : "Show conversation list"}
         >
-          <HiBars3 size={30} />
+          <Bars3Icon className="h-6 w-6" />
         </button>
       </div>
     );
@@ -221,7 +176,7 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
             className="ml-auto px-2 py-1 cursor-pointer bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold items-center gap-1 hidden md:flex"
             title={t("header.group.info")}
           >
-            <HiInformationCircle size={18} className="inline-block text-base text-gray-300" />
+            <InformationCircleIcon className="h-6 w-6 inline-block text-base text-gray-300" />
             {t("header.group.info")}
           </button>
         )}
@@ -239,22 +194,22 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
                   menuOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"
                 }`}
               >
-                <HiEllipsisVertical size={22} />
+                <EllipsisVerticalIcon className="h-6 w-6" />
               </span>
               <span
                 className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out ${
                   menuOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
                 }`}
               >
-                <HiXMark size={22} />
+                <XMarkIcon className="h-6 w-6" />
               </span>
             </button>
             {menuOpen && (
-              <div className="absolute right-7 mt-28 w-48 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
+              <div className="absolute right-8 top-5 w-48 bg-gray-800 border border-gray-700 rounded shadow-lg z-10">
                 <ul className="py-1">
                   <li>
                     <button
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-white"
+                      className="w-full cursor-pointer text-left px-4 py-2 text-sm hover:bg-gray-700 text-white"
                       onClick={() => {
                         if (otherParticipant?.profile_id)
                           navigate(`/profile/${otherParticipant.profile_id}`);
@@ -266,7 +221,7 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
                   </li>
                   <li>
                     <button
-                      className="w-full text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-sky-700 text-white"
+                      className="w-full cursor-pointer text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-gray-700 text-white"
                       onClick={() => {
                         setIsConvertConfirmOpen(true);
                         setMenuOpen(false);
@@ -277,7 +232,18 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
                   </li>
                   <li>
                     <button
-                      className="w-full text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-red-700 text-white"
+                      className="w-full cursor-pointer text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-gray-700 text-white"
+                      onClick={() => {
+                        setIsAttachmentsOpen(true);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      {t("header.buttons.attachments")}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="w-full cursor-pointer text-left px-4 py-2 text-sm border-t border-gray-700 hover:bg-rose-700 text-white"
                       onClick={() => {
                         setIsLeaveConfirmOpen(true);
                         setMenuOpen(false);
@@ -324,7 +290,7 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
           aria-label={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
           title={isConversationListVisible ? t("header.buttons.hideList") : t("header.buttons.showList")}
         >
-          <HiBars3 size={30} />
+          <Bars3Icon className="h-6 w-6" />
         </button>
       </div>
 
@@ -335,14 +301,24 @@ const ChatHeader = ({ conversationId }: ChatHeaderProps) => {
           className="mt-2 mr-auto px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800 transition text-xs font-semibold flex items-center gap-1 md:hidden"
           title={t("header.group.info")}
         >
-          <HiInformationCircle size={20} className="inline-block text-base text-gray-300" />
+          <InformationCircleIcon className="h-6 w-6 inline-block text-base text-gray-300" />
           {t("header.group.info")}
         </button>
       )}
 
       {/* GroupOverview modal */}
       {isGroupOverviewOpen && conversation && (
-        <GroupOverview conversation={conversation} onClose={() => setIsGroupOverviewOpen(false)} />
+        <GroupOverview 
+          conversation={conversation} 
+          onClose={() => setIsGroupOverviewOpen(false)} 
+        />
+      )}
+
+      {isAttachmentsOpen && conversation?.message_attachments && (
+        <ConversationAttachments
+          attachments={conversation.message_attachments}
+          onClose={() => setIsAttachmentsOpen(false)}
+        />
       )}
     </div>
   );

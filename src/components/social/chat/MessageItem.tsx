@@ -1,12 +1,15 @@
-import { FaCheck, FaCheckDouble } from "react-icons/fa";
-import { useProfile } from "../../../context/profile/ProfileContext";
+import { useState, useRef } from "react";
+import { useProfile } from "@/context/profile/ProfileContext";
+import { useMessages } from "@/context/social/chat/MessagesContext";
+import { Message } from "@/context/social/chat/messagesActions";
+
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useMessages } from "../../../context/social/chat/MessagesContext";
-import { Message } from "../../../context/social/chat/messagesActions";
-import { useState, useRef, useEffect } from "react";
-import { FiMoreVertical } from "react-icons/fi";
+import { deleteFileFromBucket } from "@/utils/avatarUtils";
+
 import { useTranslation } from "react-i18next";
+import { EllipsisVerticalIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { FaCheck, FaCheckDouble } from "react-icons/fa";
 
 interface MessageItemProps {
   message: Message;
@@ -34,7 +37,7 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
   const { data: senderProfile, isLoading } = fetchProfile(message.sender_profile_id);
 
   const wasDelivered = Array.isArray(message.delivered_to) && message.delivered_to.length > 0;
-  const wasRead = Array.isArray(message.read_by) && message.read_by.length > 0;
+  const wasRead = Array.isArray(message.read_by) && message.read_by.length > 0;  
 
   const bubbleColor = isMine
     ? "bg-sky-700 text-white"
@@ -44,17 +47,6 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
   const [editedContent, setEditedContent] = useState<string>(message.content);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -66,7 +58,7 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
       updateMessage({
         id: message.id,
         conversation_id: message.conversation_id,
-        updatedFields: { content: editedContent },
+        updatedFields: { content: editedContent, updated_at: new Date().toISOString() },
       });
     }
     setIsEditing(false);
@@ -78,6 +70,7 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
   };
 
   const handleDelete = () => {
+    deleteFileFromBucket("message-attachments", message.attachment?.url || "");
     deleteMessage({ id: message.id, conversation_id: message.conversation_id });
     setMenuOpen(false);
   };
@@ -107,14 +100,12 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
                     />
                   )}
                   {message.attachment.mime_type?.startsWith("audio/") && (
-                    <audio controls className="w-full">
+                    <audio controls className="w-75">
                       <source src={message.attachment.url} type={message.attachment.mime_type} />
                       {t("message.audioNotSupported")}
                     </audio>
                   )}
-                  {message.content && (
-                    message.content
-                  )}
+                  {message.content && message.content}
                 </>
               ) : (
                 message.content
@@ -126,7 +117,24 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
 
       {isMine && (
         <div className="flex flex-col items-end max-w-xs relative">
-          <div className={`${bubbleColor} p-3 rounded-lg relative pr-6 min-w-[80px]`}>
+          {/* Menu toggle button */}
+          <div className="absolute top-2 z-20">
+            <button
+              className="w-6 h-6 cursor-pointer text-gray-100 relative"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={t("header.menu.open")}
+            >
+              <span className={`absolute inset-0 flex items-center justify-center transition ${menuOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
+                <EllipsisVerticalIcon />
+              </span>
+              <span className={`absolute inset-0 flex items-center justify-center transition ${menuOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
+                <XMarkIcon />
+              </span>
+            </button>
+          </div>
+
+          {/* Message bubble */}
+          <div className={`${bubbleColor} p-1 pr-6 rounded-lg min-w-[80px] flex flex-col gap-1`}>
             {isEditing ? (
               <input
                 type="text"
@@ -166,43 +174,36 @@ const MessageItem = ({ message, isMine }: MessageItemProps) => {
                   <span className="mr-2">{message.content}</span>
                 )}
 
-                <span className="absolute bottom-1 right-1 text-xs text-white">
+
+                <span className="flex items-center text-xs">
                   {wasRead ? (
-                    <FaCheckDouble className="text-green-200" title="Read" />
+                    <FaCheckDouble className="text-green-200 w-4" title="Read" />
                   ) : wasDelivered ? (
-                    <FaCheck className="text-blue-200" title="Delivered" />
+                    <FaCheck className="text-blue-200 w-4" title="Delivered" />
                   ) : null}
                 </span>
-
-                <button
-                  className="absolute top-1/2 -translate-y-1/2 right-1 text-white hover:text-sky-400 p-1"
-                  onClick={() => setMenuOpen((v) => !v)}
-                  aria-label="Message options"
-                >
-                  <FiMoreVertical size={18} />
-                </button>
-
-                {menuOpen && (
-                  <div
-                    ref={menuRef}
-                    className="absolute z-10 right-5 top-6 bg-gray-900 border border-sky-700 rounded shadow-lg py-1 w-37 flex flex-col"
-                  >
-                    <button
-                      className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-red-400"
-                      onClick={handleDelete}
-                    >
-                      {t("message.delete.title")}
-                    </button>
-                    <div className="border-t border-sky-700" />
-                    <button
-                      className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-yellow-500"
-                      onClick={handleEdit}
-                    >
-                      {t("message.edit.title")}
-                    </button>
-                  </div>
-                )}
               </>
+            )}
+
+            {menuOpen && (
+              <div
+                ref={menuRef}
+                className="absolute z-30 right-0 top-10 bg-gray-900 border border-sky-700 rounded shadow-lg py-1 w-37 flex flex-col"
+              >
+                <button
+                  className="cursor-pointer px-4 py-2 text-left hover:bg-gray-800 text-sm text-rose-400"
+                  onClick={handleDelete}
+                >
+                  {t("message.delete.title")}
+                </button>
+                <div className="border-t border-sky-700" />
+                <button
+                  className="cursor-pointer px-4 py-2 text-left hover:bg-gray-800 text-sm text-yellow-500"
+                  onClick={handleEdit}
+                >
+                  {t("message.edit.title")}
+                </button>
+              </div>
             )}
           </div>
         </div>

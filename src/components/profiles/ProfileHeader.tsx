@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from "@/context/AuthContext";
@@ -18,13 +18,19 @@ import MatchScoreIndicator from './MatchScoreIndicator';
 import formatLastSeen from '@/utils/formatLastSeen';
 import { useCanSendDM } from '@/utils/useCanSendDM';
 
-import { BsFillBellFill } from "react-icons/bs";
-import { IoIosSettings } from "react-icons/io";
-import { IoChatboxSharp, IoChatbubblesSharp } from "react-icons/io5";
-import { FiMoreVertical } from "react-icons/fi";
-import { IoPersonAdd, IoPersonRemove, IoPersonOutline } from "react-icons/io5";
+import {
+  XMarkIcon,
+  EllipsisVerticalIcon,
+  UserPlusIcon,
+  UserMinusIcon,
+  UserIcon,
+  BellIcon,
+  Cog6ToothIcon, 
+  ChatBubbleLeftRightIcon, 
+  ChatBubbleLeftEllipsisIcon 
+} from "@heroicons/react/24/solid";
 import { ImBlocked } from "react-icons/im";
-import { FaUserCheck, FaUserClock, FaUserPlus, FaUserSlash } from 'react-icons/fa';
+import { FaUserCheck, FaUserClock, FaUserPlus, FaUserSlash } from "react-icons/fa";
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean;
@@ -104,18 +110,6 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
     }
   };
 
-  // Close menu on outside click
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest('.profile-connection-menu')) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen]);
-
   const getConnectionIcon = (status: string | undefined) => {
     const baseClass = "text-white text-lg mr-1 drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]";
     const blockedOtherClass = "text-gray-300 text-lg mr-1 drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]";
@@ -158,20 +152,25 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
           {!isOwnProfile && (
             <>
               {canSend && (
-                <IoChatboxSharp
+                <ChatBubbleLeftRightIcon
                   className="w-8 h-8 text-white cursor-pointer"
                   onClick={startChat}
                   title={t("profile.titles.startChat")}
                 />
               )}
-              {/* Three dots menu for connection actions */}
+              {/* Menu toggle button */}
               <div className="relative">
                 <button
-                  className="text-white hover:text-sky-400 p-2 rounded-full focus:outline-none"
+                  className="w-6 h-6 cursor-pointer text-white hover:text-sky-400 p-2 rounded-full focus:outline-none"
                   onClick={() => setMenuOpen((open) => !open)}
                   aria-label="Connection options"
                 >
-                  <FiMoreVertical size={24} />
+                  <span className={`absolute inset-0 flex items-center justify-center transition ${menuOpen ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
+                    <EllipsisVerticalIcon />
+                  </span>
+                  <span className={`absolute inset-0 flex items-center justify-center transition ${menuOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
+                    <XMarkIcon />
+                  </span>
                 </button>
                 {menuOpen && (
                   <div className="absolute right-0 top-10 z-20 bg-gray-900 border border-sky-700 rounded shadow-lg py-1 w-44 flex flex-col min-w-[150px] profile-connection-menu">
@@ -183,28 +182,28 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                     ) : isBlocked ? (
                       <button 
                         onClick={() => { handleUnblock(); setMenuOpen((open) => !open); }}              
-                        className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-yellow-600 flex items-center gap-2">
-                          <IoPersonRemove />{t("connection.unblock")}
+                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-yellow-600 flex items-center gap-2">
+                          <UserMinusIcon className="w-4 h-4" />{t("connection.unblock")}
                       </button>
                     ) : isOtherBlocked ? (
                       <span 
-                        className="px-4 py-2 text-red-400 text-xs flex items-center gap-2">
+                        className="px-4 py-2 cursor-pointer text-red-400 text-xs flex items-center gap-2">
                           <ImBlocked />{t("connection.blockedByOther")}
                       </span>
                     ) : isConnected ? (
                       <button 
                         onClick={() => { handleDisconnect(); setMenuOpen((open) => !open); }}
-                        className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-gray-300 flex items-center gap-2">
-                          <IoPersonRemove />{t("connection.disconnect")}
+                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-gray-300 flex items-center gap-2">
+                          <UserMinusIcon className="w-4 h-4" />{t("connection.disconnect")}
                       </button>
                     ) : isPending ? (
                       <button
                         onClick={() => { handleDisconnect(); setMenuOpen((open) => !open); }}
-                        className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-yellow-400 flex items-center gap-2 group"
+                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-yellow-400 flex items-center gap-2 group"
                         onMouseEnter={() => setHoverText('disconnect')}
                         onMouseLeave={() => setHoverText(null)}
                       >
-                        {hoverText === 'disconnect' ? <IoPersonRemove /> : <IoPersonOutline />}
+                        {hoverText === 'disconnect' ? <UserMinusIcon className="w-4 h-4" /> : <UserIcon className="w-4 h-4" />}
                         {hoverText === 'disconnect'
                           ? t("connection.disconnect")
                           : t("connection.pending")}
@@ -212,15 +211,15 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                     ) : (
                       <button 
                         onClick={() => { handleConnect(); setMenuOpen((open) => !open); }} 
-                        className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-green-600 flex items-center gap-2">
-                          <IoPersonAdd />{t("connection.connect")}
+                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-green-600 flex items-center gap-2">
+                          <UserPlusIcon className="w-4 h-4" />{t("connection.connect")}
                       </button>
                     )}
                     {/* Block option always available unless blocked by other or already blocked */}
                     {!isOtherBlocked && !isBlocked && (
                       <button 
                         onClick={() => { handleBlock(); setMenuOpen((open) => !open); }} 
-                        className="px-4 py-2 text-left hover:bg-gray-800 text-sm text-red-400 border-t border-sky-800 flex items-center gap-2">
+                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-red-400 border-t border-sky-800 flex items-center gap-2">
                           <ImBlocked />{t("connection.block")}
                       </button>
                     )}
@@ -232,7 +231,7 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
           {isOwnProfile && (
             <>
               <div className="relative">
-                <IoChatbubblesSharp
+                <ChatBubbleLeftEllipsisIcon
                   className="w-8 h-8 text-white cursor-pointer"
                   onClick={() => navigate("/chat")}
                   title={t("profile.titles.chat")}
@@ -243,7 +242,7 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                   </span>
                 )}
               </div>
-              <IoIosSettings
+              <Cog6ToothIcon
                 className="w-8 h-8 text-white cursor-pointer"
                 onClick={() => {
                   navigate("/settings");
@@ -251,7 +250,7 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                 title={t("profile.titles.settings")}
               />
               <div className="relative">
-                <BsFillBellFill
+                <BellIcon
                   className="w-7 h-7 text-white cursor-pointer"
                   onClick={() => navigate(`/profile/${profileData.id}/notifications`)}
                   title={t("profile.titles.notifications")}

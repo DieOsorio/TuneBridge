@@ -4,7 +4,10 @@ import {
   UseFormRegister,
   RegisterOptions,
 } from "react-hook-form";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { 
+  EyeIcon,
+  EyeSlashIcon,
+ } from "@heroicons/react/24/solid";
 
 interface InputProps {
   id: string;
@@ -87,7 +90,9 @@ const Input = ({
             className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-white focus:outline-none"
             tabIndex={-1}
           >
-            {visible ? <FiEyeOff /> : <FiEye />}
+            {visible 
+              ? <EyeSlashIcon className="w-4 h-4" /> 
+              : <EyeIcon className="w-4 h-4" />}
           </button>
         )}
       </div>

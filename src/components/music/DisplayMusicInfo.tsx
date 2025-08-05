@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { useComposerDetails } from "../../context/music/ComposerDetailsContext";
-import { useDjDetails } from "../../context/music/DjDetailsContext";
-import { useInstrumentsDetails } from "../../context/music/InstrumentDetailsContext";
-import { useProducerDetails } from "../../context/music/ProducerDetailsContext";
-import { useRoles } from "../../context/music/RolesContext";
-import { useSingerDetails } from "../../context/music/SingerDetailsContext";
-import { FaChevronUp } from "react-icons/fa";
-import ErrorMessage from "../../utils/ErrorMessage";
+import { useComposerDetails } from "@/context/music/ComposerDetailsContext";
+import { useDjDetails } from "@/context/music/DjDetailsContext";
+import { useInstrumentsDetails } from "@/context/music/InstrumentDetailsContext";
+import { useProducerDetails } from "@/context/music/ProducerDetailsContext";
+import { useSingerDetails } from "@/context/music/SingerDetailsContext";
+import { useRoles } from "@/context/music/RolesContext";
+
+import { ChevronUpIcon } from "@heroicons/react/24/outline";
+
+import ErrorMessage from "@/utils/ErrorMessage";
 import DisplayRoleInfo from "./DisplayRoleInfo";
 import RoleItem from "./RoleItem";
 import ShinyText from "../ui/ShinyText";
@@ -16,13 +18,12 @@ import MediaSummary from "./MediaSummary";
 import PlusButton from "../ui/PlusButton";
 import RoleItemSkeleton from "./skeletons/RoleItemSkeleton";
 import DisplayRoleInfoSkeleton from "./skeletons/DisplayRoleInfoSkeleton";
-import React from "react";
 
 interface DisplayMusicInfoProps {
   profileId: string;
 }
 
-const DisplayMusicInfo: React.FC<DisplayMusicInfoProps> = ({ profileId }) => {
+const DisplayMusicInfo = ({ profileId }: DisplayMusicInfoProps) => {
   const { t } = useTranslation("music");
   const { user } = useAuth();
   const [roleId, setRoleId] = useState<string>();
@@ -118,7 +119,7 @@ const DisplayMusicInfo: React.FC<DisplayMusicInfoProps> = ({ profileId }) => {
                 })()
               )}
               <div className="flex justify-center mt-4 cursor-pointer" onClick={() => setExpandedRole(undefined)}>
-                <FaChevronUp className="text-gray-500" />
+                <ChevronUpIcon className="text-gray-500" />
               </div>
             </div>
           )}

@@ -15,6 +15,14 @@ export interface Conversation {
   avatar_url?: string;
   title: string | null;
   is_group?: boolean;
+  message_attachments?: {
+  id: string;
+  url: string;
+  mime_type: string | null;
+  message_id: string | null;
+  profile_id: string | null;
+  created_at: string;
+}[];
   [key: string]: any;
 }
 export interface ConversationParticipant {
@@ -59,7 +67,17 @@ export const useFetchConversationQuery = (conversationId: string): UseQueryResul
       const { data, error } = await supabase
         .schema("social")
         .from("conversations")
-        .select("*")
+        .select(`
+          *,
+          message_attachments (
+            id,
+            url,
+            mime_type,
+            message_id,
+            profile_id,
+            created_at
+          )
+        `)
         .eq("id", conversationId)
         .single();
       if (error) throw new Error(error.message);

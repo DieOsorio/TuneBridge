@@ -1,4 +1,4 @@
-import { IoPeople } from "react-icons/io5";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -32,7 +32,7 @@ const GroupCardSkeleton = () => {
         />
 
         <div className="flex justify-center items-center gap-2 text-xs !text-gray-400">
-          <IoPeople className="text-amber-500" />
+          <UserGroupIcon className="text-amber-500 w-4 h-4" />
           <Skeleton 
             height={12} 
             width={50}

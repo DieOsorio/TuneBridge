@@ -1,12 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm, FieldErrors, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FiPlus } from "react-icons/fi";
-import { IoIosCamera } from "react-icons/io";
-
 import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
 import { useAuth } from "@/context/AuthContext";
+import { uploadFileToBucket } from "@/utils/avatarUtils";
+import {
+  useCountries,
+  useStates,
+  useCities,
+} from "@/context/helpers/useCountryCity";
+import { Country } from "country-state-city";
+
+import { CameraIcon, PlusIcon } from "@heroicons/react/24/solid";
 
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
@@ -14,16 +20,8 @@ import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import ProfileAvatar from "../ProfileAvatar";
 import ImageUploader from "@/utils/ImageUploader";
-import { uploadFileToBucket } from "@/utils/avatarUtils";
 
 import type { ProfileGroup as Group } from "@/context/profile/profileGroupsActions";
-
-import {
-  useCountries,
-  useStates,
-  useCities,
-} from "@/context/helpers/useCountryCity";
-import { Country } from "country-state-city";
 import { ActualFileObject } from "filepond";
 
 type Nullable<T> = T | null;
@@ -216,7 +214,7 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
       <div ref={avatarRef} className="relative mx-auto w-fit cursor-pointer group">
         <ProfileAvatar group avatar_url={preview || avatarUrl} />
         <span className="absolute bottom-1 right-1 bg-white rounded-full p-[2px] shadow-md">
-          <IoIosCamera size={20} className="text-gray-700" />
+          <CameraIcon className="text-gray-700 w-6 h-6" />
         </span>
       </div>
       <ImageUploader
@@ -272,9 +270,9 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
                 }
               }}
               disabled={!newGenre || genres.length >= 5}
-              className="text-emerald-500 mt-6 p-2 rounded-full hover:text-emerald-700 disabled:opacity-40"
+              className="text-emerald-500 mt-5 p-2 rounded-full hover:text-emerald-700 disabled:opacity-40"
             >
-              <FiPlus size={22} />
+              <PlusIcon className="w-6 h-6" />
             </button>
           </div>
 
