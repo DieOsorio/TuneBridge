@@ -1,4 +1,3 @@
-import React from "react";
 import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import GroupCard from "./GroupCard";
@@ -7,7 +6,7 @@ import GroupCardSkeleton from "./skeletons/GroupCardSkeleton";
 import type { ProfileGroup } from "@/context/profile/profileGroupsActions";
 
 
-const GroupList: React.FC = () => {
+const GroupList = () => {
   const { profileGroups, loading, error } = useProfileGroups() as {
     profileGroups: ProfileGroup[] | null;
     loading: boolean;

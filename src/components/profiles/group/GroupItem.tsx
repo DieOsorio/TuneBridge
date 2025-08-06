@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
 
-import { useProfileGroups } from "../../../context/profile/ProfileGroupsContext";
 import Button from "../../ui/Button";
-import Loading from "../../../utils/Loading";
-import ErrorMessage from "../../../utils/ErrorMessage";
+import Loading from "@/utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
 import ProfileAvatar from "../ProfileAvatar";
 
 interface GroupItemProps {

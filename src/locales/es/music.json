@@ -77,7 +77,9 @@
       "add": "Agregar",
       "update": "Actualizar",
       "cancel": "Cancelar",
-      "requiredType": "Este campo es obligatorio"
+      "requiredType": "Este campo es obligatorio",
+      "addDescription": "¡Comparte tus canciones o videos favoritos para mostrar tu estilo!",
+      "editDescription": "Actualiza tu contenido para mantener tu perfil fresco."
     },
     "player": {
       "unsupported": "Tipo de medio no soportado"
@@ -87,6 +89,19 @@
       "delete": "Eliminar",
       "seeMore": "Ver más",
       "add": "Agregar Multimedia"
+    },
+    "types": {
+      "audio": "Audio",
+      "video": "Video"
+    },
+    "titles": {
+      "expand": "Expandir Multimedia",
+      "close": "Cerrar Multimedia",
+      "copyLink": "Copiar enlace",
+      "copied": "Enlace copiado",
+      "twitter": "Compartir en X",
+      "facebook": "Compartir en Facebook",
+      "instagram": "Compartir en Instagram"
     }
   },
 

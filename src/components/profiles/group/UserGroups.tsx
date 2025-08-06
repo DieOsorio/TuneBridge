@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../context/AuthContext";
-import { useProfileGroupMembers } from "../../../context/profile/ProfileGroupMembersContext";
+import { useAuth } from "@/context/AuthContext";
+import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
 
 import GroupItem from "./GroupItem";
-import ErrorMessage from "../../../utils/ErrorMessage";
-import Loading from "../../../utils/Loading";
+import ErrorMessage from "@/utils/ErrorMessage";
+import Loading from "@/utils/Loading";
 import ShinyText from "../../ui/ShinyText";
 import PlusButton from "../../ui/PlusButton";
 

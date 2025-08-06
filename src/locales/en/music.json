@@ -76,7 +76,9 @@
       "add": "Add",
       "update": "Update",
       "cancel": "Cancel",
-      "requiredType": "This field is required"
+      "requiredType": "This field is required",
+      "addDescription": "Share your favorite songs or videos to show your style!",
+      "editDescription": "Update your content to keep your profile fresh."
     },
     "player": {
       "unsupported": "Unsupported media type"
@@ -86,6 +88,19 @@
       "delete": "Delete",
       "seeMore": "See more",
       "add": "Add Media"
+    },
+    "types": {
+      "audio": "Audio",
+      "video": "Video"
+    },
+    "titles": {
+      "expand": "Expand Media",
+      "close": "Close Media",
+      "copyLink": "Copy Link",
+      "copied": "Link Copied",
+      "twitter": "Share on X",
+      "facebook": "Share on Facebook",
+      "instagram": "Share on Instagram"
     }
   },
   "errors": {

@@ -1,15 +1,13 @@
-import type { ProfileGroup } from "@/context/profile/profileGroupsActions"
-import type { ProfileGroupMember } from "@/context/profile/profileGroupMembersActions";
-import { useAuth } from "@/context/AuthContext";
-import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
-import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
-
 import {
   Routes,
   Route,
   useParams,
   Navigate,
 } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
+import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
+
 
 import Loading from "@/utils/Loading";
 import ErrorMessage from "@/utils/ErrorMessage";
@@ -20,6 +18,8 @@ import GroupCalendarScreen from "@/components/profiles/group/group-events/GroupC
 import GroupForm from "@/components/profiles/group/GroupForm";
 import FollowersList from "@/components/profiles/group/FollowersList";
 
+import type { ProfileGroup } from "@/context/profile/profileGroupsActions"
+import type { ProfileGroupMember } from "@/context/profile/profileGroupMembersActions";
 
 export default function ProfileGroup() {
   const groupId = useParams<{ groupId: string }>().groupId!;
