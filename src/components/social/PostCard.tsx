@@ -224,8 +224,8 @@ function PostCard({ post }: PostCardProps) {
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
               {canEditPost && (
                 <PencilSquareIcon
-                  title={t("posts.titles.updatePost")}
-                  className="text-yellow-600 w-5 h-5 hover:text-yellow-700 cursor-pointer"
+                  title={t("titles.updatePost")}
+                  className="text-yellow-600 w-8 h-8 hover:text-yellow-700 cursor-pointer"
                   onClick={handleEditClick}
                 />
               )}
@@ -257,7 +257,7 @@ function PostCard({ post }: PostCardProps) {
             <LiaCommentsSolid
               title= {t("titles.comments")}
               onClick={handleShowComments}
-              className={`text-gray-400 cursor-pointer w-5 h-5 transition-all ${
+              className={`text-gray-400 cursor-pointer w-8 h-8 transition-all ${
                 isGroupPost ? "hover:text-amber-700" : "hover:text-sky-600"
               } ${
                 showComments && !isGroupPost

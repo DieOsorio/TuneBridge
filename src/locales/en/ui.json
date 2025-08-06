@@ -169,14 +169,17 @@
       "explore": "Explore",
 
       "ads": "Musician Ads",
+      "createAd": "Create Ad",
       "createPost": "New Post",
       "chat": "Chat",
 
       "myMedia": "My Media",
+      "uploadMedia": "Upload Media",
       "matches": "Matches",
 
       "profile": "My Profile",
       "createGroup": "Create Group",
+      "settings": "Settings",
       "login": "Log In",
       "signup": "Sign Up"
     }

@@ -1,15 +1,14 @@
-import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import i18n from "../../i18n";
-import { useAuth } from "../../context/AuthContext";
-import React from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import i18n from "@/i18n";
 
 interface LangBtnProps {
   lng: string;
   label: string;
 }
 
-const LangBtn: React.FC<LangBtnProps> = ({ lng, label }) => {
+const LangBtn = ({ lng, label }: LangBtnProps) => {
   const currentLang = i18n.language?.startsWith("es") ? "es" : "en";
   const changeLang = (lng: string) => lng !== currentLang && i18n.changeLanguage(lng);
   return (
@@ -26,7 +25,7 @@ const LangBtn: React.FC<LangBtnProps> = ({ lng, label }) => {
   );
 };
 
-const Footer: React.FC = () => {
+const Footer = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
   const year = new Date().getFullYear();
@@ -44,9 +43,10 @@ const Footer: React.FC = () => {
     {
       header: t("footer.map.social"),
       links: [
-        { to: "/ads",          label: t("footer.map.ads") },
+        { to: "/ads", label: t("footer.map.ads") },
         ...(user ? [{ to: "/create-post", label: t("footer.map.createPost") }] : []),
-        ...(user ? [{ to: "/chat",        label: t("footer.map.chat")       }] : []),
+        ...(user ? [{ to: "/chat", label: t("footer.map.chat") }] : []),
+        ...(user ? [{ to: "/ads/new", label: t("footer.map.createAd") }] : []),
       ],
     },
     {
@@ -54,6 +54,7 @@ const Footer: React.FC = () => {
       links: user
         ? [
             { to: `/media/${user.id}`, label: t("footer.map.myMedia") },
+            { to: "/media/create", label: t("footer.map.uploadMedia") }, 
             { to: "/matches",          label: t("footer.map.matches") },
           ]
         : [],
@@ -63,7 +64,8 @@ const Footer: React.FC = () => {
       links: user
         ? [
             { to: `/profile/${user.id}`, label: t("footer.map.profile") },
-            // { to: "/create-profile-group", label: t("footer.map.createGroup") },
+            { to: "/settings", label: t("footer.map.settings") },
+            { to: "/create-profile-group", label: t("footer.map.createGroup") },
           ]
         : [
             { to: "/login",  label: t("footer.map.login")  },
