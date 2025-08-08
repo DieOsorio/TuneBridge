@@ -1,7 +1,8 @@
 import { useAdminLogs } from "@/context/admin/AdminLogsContext";
+import { useTranslation } from "react-i18next";
+
 import AdminLogsList from "./AdminLogsList";
 import Button from "@/components/ui/Button";
-import { useTranslation } from "react-i18next";
 
 interface LogsSectionProps {
   isAdmin: boolean;

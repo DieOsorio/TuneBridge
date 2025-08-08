@@ -306,7 +306,7 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
               defaultOption={t("form.placeholders.country")}
               label={t("form.labels.country")}
               options={countries.map((c) => ({ value: c.isoCode, label: c.name }))}
-              register={register}
+              control={control}
               onChange={(val) => {
                 field.onChange(val);
                 setValue("state", ""); 
@@ -330,7 +330,7 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
                 value: s.isoCode,
                 label: cleanStateName(s.name) || "",
               }))}
-              register={register}
+              control={control}
               onChange={(val) => {
                 field.onChange(val);
                 setValue("city", "");
@@ -350,7 +350,7 @@ const GroupForm = ({ group = null, onSave, onCancel }: GroupFormProps) => {
             defaultOption={t("form.placeholders.city")}
             label={t("form.labels.city")}
             options={cities.map((c) => ({ value: c.name, label: c.name }))}
-            register={register}
+            control={control}
             onChange={field.onChange}
             error={errors.city}
             disabled={!stateIso}   
