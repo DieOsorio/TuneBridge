@@ -68,10 +68,22 @@ Low‑level system helpers created by Supabase (`pgsodium`, `storage`, `realtime
 
 ## groups schema
 
-| Trigger                               | Table                          | Fired On         | Function                            | Purpose                                                   |
-| ------------------------------------- | ------------------------------ | ---------------- | ----------------------------------- | --------------------------------------------------------- |
-| `trg_pg_follow_notif`                 | `groups.profile_group_follows` | **AFTER INSERT** | `groups.notify_profile_group_follow`| Sends a notification when a user follows a profile group. |
-| `update_rsvp_timestamp_trg`           | `groups.event_rsvps`           | **BEFORE UPDATE**| `groups.update_rsvp_timestamp`      | Touches `updated_at` when an RSVP row is updated.         |
+| Trigger                               | Table                          | Fired On         | Function                             | Purpose                                                   |
+| ------------------------------------- | ------------------------------ | ---------------- | ------------------------------------ | --------------------------------------------------------- |
+| `trg_pg_follow_notif`                 | `groups.profile_group_follows` | **AFTER INSERT** | `groups.notify_profile_group_follow` | Sends a notification when a user follows a profile group. |
+| `update_rsvp_timestamp_trg`           | `groups.event_rsvps`           | **BEFORE UPDATE**| `groups.update_rsvp_timestamp`       | Touches `updated_at` when an RSVP row is updated.         |
+
+---
+
+## admin schema
+
+| Trigger                                 | Table                 | Fired On                          | Function                                | Purpose                                                                                  |
+| --------------------------------------- | --------------------- | --------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `trigger_notify_admin_report`           | `admin.user_reports`  | **AFTER INSERT**                 | `admin.notify_admin_report_received`     | Notifies admins with `'review_reports'` permission when a user report is submitted.     |
+| `trigger_log_admin_ban`                 | `admin.banned_users`  | **AFTER INSERT / UPDATE**        | `admin.log_admin_action('ban')`          | Logs moderation actions to `admin.admin_logs`.                                           |
+| `trigger_log_feedback_status_change`    | `admin.user_feedback` | **AFTER UPDATE** *(status)*      | `admin.log_admin_action('feedback_status_change')` | Logs when feedback is marked as `'handled'`.                                   |
+| `trigger_handle_user_ban`               | `admin.banned_users`  | **AFTER INSERT**                 | `admin.handle_user_ban`                  | Updates `users.profiles.state` to `'banned'`.                                            |
+| `trigger_sync_feedback_status`          | `admin.user_feedback` | **AFTER UPDATE**                 | `admin.sync_feedback_status`             | Calls `log_admin_action()` internally if status changed to `'handled'`.                  |
 
 ---
 
@@ -81,4 +93,10 @@ Low‑level system helpers created by Supabase (`pgsodium`, `storage`, `realtime
 
 ---
 
-*Last synchronised with production on **2025‑07‑15***
+*Last synchronised with production on **2025‑08‑06***
+
+
+create trigger trg_set_default_permissions
+before insert on admin.admin_roles
+for each row
+execute function admin.set_default_permissions();

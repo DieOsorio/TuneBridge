@@ -1,0 +1,33 @@
+{
+  "form": {
+    "types": {
+      "bug": "Reportar un error",
+      "suggestion": "Hacer una sugerencia",
+      "other": "Otro comentario"
+    },
+    "validations": {
+      "typeRequired": "Por favor selecciona un tipo de comentario",
+      "messageRequired": "Por favor ingresa un mensaje",
+      "messageMax": "Tu mensaje debe tener menos de 500 caracteres"
+    },
+    "labels": {
+      "type": "Tipo de comentario",
+      "topic": "Tema",
+      "message": "Tu mensaje"
+    },
+    "placeholders": {
+      "topic": "Agregar un tema (opcional)",
+      "message": "Escribe tu mensaje aquí..."
+    },
+    "buttons": {
+      "submit": "Enviar comentario"
+    }   
+  },
+  "success": {
+    "title": "¡Gracias por tu feedback!",
+    "description": "Agradecemos tu mensaje y lo revisaremos a la brevedad.",
+    "buttons": {
+      "backHome": "Volver al inicio"
+    }
+  }
+}

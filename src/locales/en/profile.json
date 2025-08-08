@@ -125,5 +125,9 @@
       },
       "title": "This score estimates the musical compatibility between profiles, based on interests, genres, location, and descriptions.",
       "cardTitle": "This score estimates the musical compatibility between profiles."
+    },
+    "reportUser": {
+      "title": "Report User",
+      "description": "If you believe this user is violating our community guidelines, please provide details below."
     }
 }

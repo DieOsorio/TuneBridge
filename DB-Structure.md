@@ -376,3 +376,55 @@ storage
     ├─ owner_id (text, nullable)
     ├─ version (text, NOT NULL)
     ├─ created_at (timestamp with time zone, NOT NULL, default: now())
+
+
+admin
+├── admin_roles
+│   ├─ profile_id (UUID, NOT NULL)
+│   ├─ role (text, NOT NULL, default: 'admin')                 # 'admin', 'moderator', etc.
+│   ├─ permissions (text[], NOT NULL, default: '{}')           # e.g. ['manage_users', 'view_reports']
+│   ├─ created_at (timestamp with time zone, NOT NULL, default: now())
+│
+├── user_reports
+│   ├─ id (UUID, NOT NULL, default: gen_random_uuid())
+│   ├─ reporter_id (UUID, NOT NULL)
+│   ├─ target_type (text, NOT NULL)                            # 'user', 'post', 'comment', etc.
+│   ├─ target_id (UUID, NOT NULL)
+│   ├─ reason (text, NOT NULL)
+│   ├─ status (text, NOT NULL, default: 'pending')             # 'pending', 'reviewing', 'resolved'
+│   ├─ handled_by (UUID, nullable)
+│   ├─ notes (text, nullable)                                  # internal moderator notes
+│   ├─ created_at (timestamp with time zone, NOT NULL, default: now())
+│   └─ TRIGGER: `trigger_notify_admin_report` → admin.notify_admin_report_received()
+│
+├── user_feedback
+│   ├─ id (UUID, NOT NULL, default: gen_random_uuid())
+│   ├─ profile_id (UUID, NOT NULL)
+│   ├─ type (text NOT NULL)                                    # 'suggestion', 'bug', 'question', etc.
+│   ├─ message (text NOT NULL)
+│   ├─ status (text, NOT NULL, default: 'unread')              # 'unread', 'read', 'responded'
+│   ├─ response (text, nullable)                               # internal reply to the user
+│   ├─ feedback_topic (text, nullable)                         # optional: 'media', 'chat', 'auth', etc.
+│   ├─ created_at (timestamp with time zone, NOT NULL, default: now())
+│   ├─ TRIGGER: `trigger_log_feedback_status_change` → admin.log_admin_action('feedback_status_change')
+│   └─ TRIGGER: `trigger_sync_feedback_status` → admin.sync_feedback_status()
+│
+├── banned_users
+│   ├─ profile_id (UUID, NOT NULL)
+│   ├─ reason (text, NOT NULL)
+│   ├─ banned_until (timestamp with time zone, nullable)       # null = permanent
+│   ├─ type (text, NOT NULL, default: 'full')                  # 'full', 'posting', 'messaging', etc.
+│   ├─ banned_by (UUID, NOT NULL)
+│   ├─ created_at (timestamp with time zone, NOT NULL, default: now())
+│   ├─ TRIGGER: `trigger_log_admin_ban` → admin.log_admin_action('ban')
+│   └─ TRIGGER: `trigger_handle_user_ban` → admin.handle_user_ban()
+│
+└── admin_logs
+    ├─ id (UUID, NOT NULL, default: gen_random_uuid())         # primary key
+    ├─ profile_id (UUID, NOT NULL)                             # admin who performed the action
+    ├─ action_type (text NOT NULL)                             # e.g. 'ban', 'role_update', 'report_resolve'
+    ├─ target_table (text, nullable)
+    ├─ target_id (UUID, nullable)
+    ├─ details (jsonb, nullable)
+    ├─ created_at (timestamp with time zone, default: now())
+

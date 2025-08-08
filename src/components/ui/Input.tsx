@@ -24,6 +24,7 @@ interface InputProps {
   validation?: RegisterOptions;
   field?: ControllerRenderProps<any, string>;
   showToggle?: boolean;
+  disabled?: boolean;
 }
 
 const Input = ({
@@ -41,6 +42,7 @@ const Input = ({
   validation,
   field,
   showToggle = true,
+  disabled = false,
 }: InputProps) => {
   const [visible, setVisible] = useState(false);
   const [charCount, setCharCount] = useState(field?.value?.length || 0);
@@ -60,7 +62,7 @@ const Input = ({
       {label && (
         <label
           htmlFor={id}
-          className={`font-semibold text-sm mb-1 text-white ${classForLabel}`}
+          className={`font-semibold text-sm text-white ${classForLabel}`}
         >
           {label}
         </label>
@@ -72,6 +74,7 @@ const Input = ({
           type={isPassword && visible ? "text" : type}
           placeholder={placeholder}
           maxLength={maxLength}
+          disabled={disabled}
           autoComplete={autoComplete}
           className={`w-full rounded-md px-3 py-2 border bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
             error ? "border-rose-600" : "border-gray-600"

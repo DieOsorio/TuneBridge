@@ -124,5 +124,9 @@
       },
       "title": "Este puntaje estima la compatibilidad musical entre los perfiles, basado en intereses, géneros, ubicación y descripciones.",
       "cardTitle": "Este puntaje estima la compatibilidad musical entre los perfiles."
+    },
+    "reportUser": {
+      "title": "Reportar Usuario",
+      "description": "Si crees que este usuario está violando nuestras pautas comunitarias, por favor proporciona detalles a continuación."
     }
 }

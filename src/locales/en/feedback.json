@@ -1,0 +1,33 @@
+{
+  "form": {
+    "types": {
+      "bug": "Report a bug",
+      "suggestion": "Make a suggestion",
+      "other": "Other feedback"
+    },
+    "validations": {
+      "typeRequired": "Please select a feedback type",
+      "messageRequired": "Please enter a message",
+      "messageMax": "Your message must be under 500 characters"
+    },
+    "labels": {
+      "type": "Feedback type",
+      "topic": "Topic",
+      "message": "Your message"
+    },
+    "placeholders": {
+      "topic": "Add a topic (optional)",
+      "message": "Write your message here..."
+    },
+    "buttons": {
+      "submit": "Send feedback"
+    }
+  },
+  "success": {
+    "title": "Thank you for your feedback!",
+    "description": "We appreciate your message and will review it shortly.",
+    "buttons": {
+      "backHome": "Back to home"
+    }
+  }
+}

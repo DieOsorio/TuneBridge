@@ -13,6 +13,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { SettingsProvider } from './context/settings/SettingsContext';
 import { GroupsProvider } from './context/groups/GroupsContext';
+import { AdminProvider } from './context/admin/AdminContext';
 
 const queryClient = new QueryClient();
 
@@ -30,8 +31,10 @@ createRoot(rootElement).render(
               <SocialProvider>
                 <MusicProvider>
                   <GroupsProvider>
-                    <App />
-                    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+                    <AdminProvider>
+                      <App />
+                      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+                    </AdminProvider>
                   </GroupsProvider>
                 </MusicProvider>
               </SocialProvider>

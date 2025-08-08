@@ -2,37 +2,43 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
 // UI that lives in every view 
-import Navbar from "../components/ui/Navbar";
-import Footer from "../components/ui/Footer";
-import ProtectedRoute from "../components/ProtectedRoute";
-import Loading from "../utils/Loading";
-import GroupSettings from "../components/profiles/group/group-settings/GroupSettings";
+import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import Loading from "@/utils/Loading";
+import GroupSettings from "@/components/profiles/group/group-settings/GroupSettings";
 
 // 🔥  Split‑per‑route 
-const LandingPage          = lazy(() => import("../pages/LandingPage"));
-const Explore              = lazy(() => import("../pages/Explore"));
-const Login                = lazy(() => import("../components/auth/Login"));
-const SignUp               = lazy(() => import("../components/auth/SignUp"));
-const SignUpSuccess        = lazy(() => import("../pages/SignUpSuccess"));
-const TermsPage            = lazy(() => import("../components/ui/TermsPage"));
-const ForgotPasswordForm   = lazy(() => import("../components/auth/ForgotPasswordForm"));
-const ResetPasswordForm    = lazy(() => import("../components/auth/ResetPasswordForm"));
+const LandingPage          = lazy(() => import("@/pages/LandingPage"));
+const Explore              = lazy(() => import("@/pages/Explore"));
+const Login                = lazy(() => import("@/components/auth/Login"));
+const SignUp               = lazy(() => import("@/components/auth/SignUp"));
+const SignUpSuccess        = lazy(() => import("@/pages/SignUpSuccess"));
+const TermsPage            = lazy(() => import("@/components/ui/TermsPage"));
+const ForgotPasswordForm   = lazy(() => import("@/components/auth/ForgotPasswordForm"));
+const ResetPasswordForm    = lazy(() => import("@/components/auth/ResetPasswordForm"));
 
 // Protected routes 
-const Settings             = lazy(() => import("../pages/Settings"));
-const DiscoverMatches      = lazy(() => import("../pages/DiscoverMatches"));
-const MediaSection         = lazy(() => import("../components/music/MediaSection"));
-const MediaSettings        = lazy(() => import("../components/music/MediaSettings"));
-const AdsPage              = lazy(() => import("../components/social/ads/AdsPage"));
-const AdDetailsPage        = lazy(() => import("../components/social/ads/AdDetailsPage"));
-const AdCreateEditPage     = lazy(() => import("../components/social/ads/AdCreateEditPage"));
-const PostForm             = lazy(() => import("../components/social/PostForm"));
-const GroupForm            = lazy(() => import("../components/profiles/group/GroupForm"));
-const ProfileGroup         = lazy(() => import("../pages/ProfileGroup"));
-const ChatPage             = lazy(() => import("../components/social/chat/ChatPage"));
-const AccountConfirmed     = lazy(() => import("../components/auth/AccountConfirmed"));
-const Profile              = lazy(() => import("../pages/Profile"));
-const Hashtag              = lazy(() => import("../pages/Hashtag"));
+const Settings             = lazy(() => import("@/pages/Settings"));
+const DiscoverMatches      = lazy(() => import("@/pages/DiscoverMatches"));
+const MediaSection         = lazy(() => import("@/components/music/MediaSection"));
+const MediaSettings        = lazy(() => import("@/components/music/MediaSettings"));
+const AdsPage              = lazy(() => import("@/components/social/ads/AdsPage"));
+const AdDetailsPage        = lazy(() => import("@/components/social/ads/AdDetailsPage"));
+const AdCreateEditPage     = lazy(() => import("@/components/social/ads/AdCreateEditPage"));
+const PostForm             = lazy(() => import("@/components/social/PostForm"));
+const GroupForm            = lazy(() => import("@/components/profiles/group/GroupForm"));
+const ProfileGroup         = lazy(() => import("@/pages/ProfileGroup"));
+const ChatPage             = lazy(() => import("@/components/social/chat/ChatPage"));
+const AccountConfirmed     = lazy(() => import("@/components/auth/AccountConfirmed"));
+const Profile              = lazy(() => import("@/pages/Profile"));
+const Hashtag              = lazy(() => import("@/pages/Hashtag"));
+const FeedbackForm         = lazy(() => import("@/utils/FeedbackForm"));
+const FeedbackSuccess      = lazy(() => import("@/utils/FeedbackSuccess"));
+
+// Admin routes
+const AdminDashboard       = lazy(() => import("../components/admin/AdminDashboard"));
+const ProtectedAdminRoute = lazy(() => import("./ProtectedAdminRoute"));
 
 function PageLoader() {
   return <Loading />;
@@ -59,7 +65,9 @@ export default function AppRouter() {
             <Route path="/reset-password"   element={<ResetPasswordForm />} />
             <Route path="/hashtag/:hashtag" element={<Hashtag />} />
 
-            {/* Protected Routes */}
+            {/* Protected Routes */}            
+            <Route path="/feedback-success"          element={<ProtectedRoute><FeedbackSuccess /></ProtectedRoute>} />
+            <Route path="/feedback-form"             element={<ProtectedRoute><FeedbackForm /></ProtectedRoute>} />
             <Route path="/group/:groupId/settings/*" element={<ProtectedRoute><GroupSettings /></ProtectedRoute>} />
             <Route path="/settings/*"                element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/matches"                   element={<ProtectedRoute><DiscoverMatches /></ProtectedRoute>} />
@@ -76,6 +84,16 @@ export default function AppRouter() {
             <Route path="/chat/"                     element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
             <Route path="/chat/:conversationId"      element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
             <Route path="/profile/:identifier/*"     element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            
+            {/* Admin Routes */}
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminDashboard />
+                </ProtectedAdminRoute>
+              }
+            />
           </Routes>
         </Suspense>
       </main>

@@ -68,6 +68,11 @@
   },
   "titles": {
     "updatePost": "Actualizar publicación",
-    "comments": "Comentarios"
+    "comments": "Comentarios",
+    "report": "Reportar esta publicación"
+  },
+  "reportPost": {
+    "title": "Reportar publicación",
+    "description": "Si creés que esta publicación infringe nuestras normas de la comunidad, por favor detallalo a continuación."
   }
 }
