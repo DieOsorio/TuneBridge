@@ -1,5 +1,7 @@
 # Logs
 logs
+!src/components/admin/logs/
+!src/components/admin/logs/**
 *.log
 npm-debug.log*
 yarn-debug.log*
