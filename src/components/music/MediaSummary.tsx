@@ -131,7 +131,7 @@ const MediaSummary = ({ profileId }: MediaSummaryProps) => {
           </li>
         ))}
       </ul>
-      {mediaLinks && (
+      {mediaLinks.length > 0 && (
         <div className="flex justify-center mt-6">
           <Button
             onClick={() => navigate(`/media/${profileId}`)}
