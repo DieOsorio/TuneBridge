@@ -1,0 +1,246 @@
+{
+  "nav": {
+    "roles": "Roles",
+    "reports": "Reportes",
+    "feedback": "Feedback",
+    "bans": "Baneos",
+    "logs": "Logs"
+  },
+  "reports": {
+    "title": "Reportar contenido",
+    "description": "Por favor proporciona detalles sobre el contenido que estás reportando.",
+    "form": {
+      "reason": {
+        "label": "Motivo",
+        "placeholder": "Describe el comportamiento que infringe nuestras normas.",
+        "error": "La descripción es obligatoria"
+      }
+    },
+    "buttons": {
+      "submit": "Enviar reporte",
+      "cancel": "Cancelar"
+    },
+    "success": "Gracias por tu reporte. Lo revisaremos en breve.",
+    "error": "Ocurrió un error al enviar el reporte. Inténtalo nuevamente más tarde.",
+    "list": {
+      "empty": "No se encontraron reportes.",
+      "target": "Objetivo :",
+      "status": "Estado :",
+      "deleteAria": "Eliminar reporte",
+      "deleteTitle": "Eliminar reporte",
+      "danger": {
+        "title": "Eliminar Reporte",
+        "confirm": "¿Estás seguro de que deseas eliminar este reporte?",
+        "yesDelete": "Sí, eliminar",
+        "cancel": "Cancelar"
+      }
+    },
+    "reportDetail": {
+      "title": "Detalle del reporte",
+      "fields": {
+        "reporterId": "Reportado por",
+        "target": "Objetivo",
+        "targetOwner": "Propietario",
+        "reason": "Motivo",
+        "createdAt": "Fecha de creación",
+        "status": "Estado",
+        "notes": "Notas del moderador"
+      },
+      "placeholders": {
+        "notes": "Agrega notas internas aquí..."
+      },
+      "statusOptions": {
+        "pending": "Pendiente",
+        "reviewing": "En revisión",
+        "resolved": "Resuelto"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando..."
+      }
+    },
+    "section": {
+      "title": "Reportes de usuarios",
+      "refresh": "Actualizar"
+    }
+  },
+  "roles": {
+    "section": {
+      "title": "Roles administrativos",
+      "buttons": {
+        "add": "Agregar rol"
+      }
+    },
+    "list": {
+      "permissions": "Permisos:",
+      "noPermissions": "Ninguno",
+      "noRoles": "No se encontraron roles administrativos.",
+      "buttons": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "danger": {
+        "title": "Eliminar rol",
+        "confirm": "¿Estás seguro de que deseas eliminar este rol administrativo?",
+        "yesDelete": "Sí, eliminar",
+        "cancel": "Cancelar"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Agregar rol administrativo",
+        "edit": "Editar rol administrativo"
+      },
+      "fields": {
+        "profile_id": {
+          "label": "ID del perfil",
+          "placeholder": "UUID del perfil administrador",
+          "required": "El ID del perfil es obligatorio"
+        },
+        "role": {
+          "label": "Rol",
+          "required": "El rol es obligatorio",
+          "options": {
+            "admin": "Administrador",
+            "moderator": "Moderador",
+            "auditor": "Auditor"
+          }
+        },
+        "permissions": {
+          "label": "Permisos",
+          "options": {
+            "manage_users": "Gestionar usuarios",
+            "ban_users": "Suspender usuarios",
+            "review_reports": "Revisar reportes",
+            "view_feedback": "Ver feedback",
+            "access_logs": "Acceder a registros",
+            "edit_roles": "Editar roles"
+          }
+        }
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando..."
+      }
+    }
+  },
+  "bans": {
+    "details": {
+      "profileId": "ID de perfil",
+      "noReason": "No se proporcionó una razón",
+      "reason": "Razón",
+      "bannedAt": "Baneado el",
+      "bannedUntil": "Baneado hasta",
+      "permanent": "Permanente",
+      "bannedBy": "Baneado por",
+      "handledBy": "Asignado por",
+      "notHandled": "No asignado",
+      "buttons": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "danger": {
+        "title": "Eliminar baneo",
+        "confirm": "¿Estás seguro de que querés eliminar este baneo?",
+        "yesDelete": "Sí, eliminar",
+        "cancel": "Cancelar"
+      }
+    },
+    "list": {
+      "empty":"No se encontraron usuarios baneados.",
+      "profileId":"ID de perfil :",
+      "until": "Baneado hasta :",
+      "permanent": "Permanente"
+    },
+    "section": {
+      "title": "Usuarios Baneados",
+      "buttons": {
+        "add": "Añadir Ban",
+        "refresh": "Actualizar"
+      }
+    }
+  },
+  "feedback": {
+    "section": {
+      "title": "Feedback de usuarios",
+      "buttons": {
+        "refresh": "Actualizar"
+      }
+    },
+    "list": {
+      "empty": "No se encontró feedback de usuarios.",
+      "fields": {
+        "status": "Estado:"
+      },
+      "buttons": {
+        "deleteAria": "Eliminar feedback",
+        "deleteTitle": "Eliminar feedback"
+      },
+      "danger": {
+        "title": "Eliminar feedback de usuario",
+        "confirm": "¿Estás seguro de que deseas eliminar este feedback?",
+        "yesDelete": "Sí, eliminar",
+        "cancel": "Cancelar"
+      }
+    },
+    "form": {
+      "title": "Responder al Feedback",
+      "fields": {
+        "type": {
+
+        },
+        "topic": "Tema",
+        "status": "Estado"
+      },
+      "placeholders": {
+        "response": "Escribe tu respuesta aquí..."
+      },
+      "validations": {
+        "response": "La respuesta es obligatoria"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "saving": "Guardando...",
+        "save": "Guardar"
+      }
+    }
+  },
+  "logs": {
+    "section": {
+      "title": "Logs de Administradres",
+      "buttons": {
+        "loading": "Cargando...",
+        "refresh": "Actualizar"
+      }
+    },
+    "list": {
+      "fields": {
+        "date": "Fecha",
+        "adminId": "Administrador",
+        "action": "Acción",
+        "target": "Objetivo",
+        "targetId": "Dueño"
+      }
+    },
+    "details": {
+      "selectLog": "Selecciona un log de la lista para ver los detalles",
+      "logId": "ID del log",
+      "profileId": "ID del perfil",
+      "actionType": "Tipo de acción",
+      "targetTable": "Tabla objetivo",
+      "targetId": "ID objetivo",
+      "createdAt": "Fecha de creación",
+      "details": "Detalles",
+      "details.type": "Tipo",
+      "details.reason": "Razón",
+      "details.bannedBy": "Bloqueado por",
+      "details.handledBy": "Manejado por",
+      "details.notHandled": "No manejado",
+      "details.createdAt": "Fecha de creación",
+      "details.bannedUntil": "Bloqueado hasta",
+      "details.permanent": "Permanente"
+    }
+  }
+}

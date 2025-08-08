@@ -1,0 +1,245 @@
+{
+  "nav": {
+    "roles": "Roles",
+    "reports": "Reports",
+    "feedback": "Feedback",
+    "bans": "Bans",
+    "logs": "Logs"
+  },
+  "reports": {
+    "title": "Report Content",
+    "description": "Please provide details about the content you are reporting.",
+    "form": {
+      "reason": {
+        "label": "Reason",
+        "placeholder": "Please describe the behavior that violates our guidelines.",
+        "error": "Description is required"
+      }
+    },
+    "buttons": {
+      "submit": "Submit Report",
+      "cancel": "Cancel"
+    },
+    "success": "Thank you for your report. We will review it shortly.",
+    "error": "There was an error submitting your report. Please try again later.",
+    "list": {
+      "empty": "No reports found.",
+      "target": "Target :",
+      "status": "Status :",
+      "deleteAria": "Delete report",
+      "deleteTitle": "Delete report",
+      "danger": {
+        "title": "Delete Report",
+        "confirm": "Are you sure you want to delete this report?",
+        "yesDelete": "Yes, delete",
+        "cancel": "Cancel"
+      }
+    },
+    "reportDetail": {
+      "title": "Report Detail",
+      "fields": {
+        "reporterId": "Reporter",
+        "target": "Target",
+        "targetOwner": "Owner",
+        "reason": "Reason",
+        "createdAt": "Created At",
+        "status": "Status",
+        "notes": "Moderator Notes"
+      },
+      "placeholders": {
+        "notes": "Add internal notes here..."
+      },
+      "statusOptions": {
+        "pending": "Pending",
+        "reviewing": "Reviewing",
+        "resolved": "Resolved"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    },
+    "section": {
+      "title": "User Reports",
+      "refresh": "Refresh"
+    }
+  },
+  "roles": {
+    "section": {
+      "title": "Admin Roles",
+      "buttons": {
+        "add": "Add Role"
+      }
+    },
+    "list": {
+      "permissions": "Permissions:",
+      "noPermissions": "None",
+      "noRoles": "No admin roles found.",
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "danger": {
+        "title": "Delete Role",
+        "confirm": "Are you sure you want to delete this admin role?",
+        "yesDelete": "Yes, delete",
+        "cancel": "Cancel"
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add Admin Role",
+        "edit": "Edit Admin Role"
+      },
+      "fields": {
+        "profile_id": {
+          "label": "Profile ID",
+          "placeholder": "UUID of the admin profile",
+          "required": "Profile ID is required"
+        },
+        "role": {
+          "label": "Role",
+          "required": "Role is required",
+          "options": {
+            "admin": "Admin",
+            "moderator": "Moderator",
+            "auditor": "Auditor"
+          }
+        },
+        "permissions": {
+          "label": "Permissions",
+          "options": {
+            "manage_users": "Manage users",
+            "ban_users": "Ban users",
+            "review_reports": "Review reports",
+            "view_feedback": "View feedback",
+            "access_logs": "Access logs",
+            "edit_roles": "Edit roles"
+          }
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    }
+  },
+  "bans": {
+    "details": {
+      "profileId": "Profile ID",
+      "noReason": "No reason provided",
+      "reason": "Reason",
+      "bannedAt": "Banned at",
+      "bannedUntil": "Banned until",
+      "permanent": "Permanent",
+      "bannedBy": "Banned by",
+      "handledBy": "Handled by",
+      "notHandled": "Not assigned",
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "danger": {
+        "title": "Delete Ban",
+        "confirm": "Are you sure you want to delete this ban?",
+        "yesDelete": "Yes, delete",
+        "cancel": "Cancel"
+      }
+    },
+    "list": {
+      "empty":"No banned users found.",
+      "profileId":"Profile ID :",
+      "until": "Banned until :",
+      "permanent": "Permanent"
+    },
+    "section": {
+      "title": "Banned Users",
+      "buttons": {
+        "add": "Add Ban",
+        "refresh": "Refresh"
+      }
+    }
+  },
+  "feedback": {
+    "section": {
+      "title": "Users Feedback",
+      "buttons": {
+        "refresh": "Refresh"
+      }
+    },
+    "list": {
+      "empty":"No users feedback found.",
+      "fields": {
+        "status": "Status :"
+      },
+      "buttons": {
+        "deleteAria":"Delete feedback",
+        "deleteTitle":"Delete feedback"
+      },
+      "danger": {
+        "title": "Delete User Feedback",
+        "confirm": "Are you sure you want to delete this feedback?",
+        "yesDelete": "Yes, delete",
+        "cancel": "Cancel"
+      }
+    },
+    "form": {
+      "title": "Reply to Feedback",
+      "fields": {
+        "type": {
+
+        },
+        "topic": "Topic",
+        "status":"Status"
+      },
+      "placeholders": {
+        "response": "Write your response here..."
+      },
+      "validations": {
+        "response": "Response is required"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "save": "Save"
+      }
+    }
+  },
+  "logs": {
+    "section": {
+      "title": "Admin Logs",
+      "buttons": {
+        "loading": "Loading...",
+        "refresh": "Refresh"
+      }
+    },
+    "list": {
+      "fields": {
+        "date": "Date",
+        "adminId": "Admin",
+        "action": "Action",
+        "target": "Target Table",
+        "targetId": "Owner"
+      }
+    },
+    "details": {
+      "logId": "Log ID",
+      "profileId": "Profile ID",
+      "actionType": "Action Type",
+      "targetTable": "Target Table",
+      "targetId": "Target ID",
+      "createdAt": "Created At",
+      "details": "Details",
+      "details.type": "Type",
+      "details.reason": "Reason",
+      "details.bannedBy": "Banned By",
+      "details.handledBy": "Handled By",
+      "details.notHandled": "Not Handled",
+      "details.createdAt": "Created At",
+      "details.bannedUntil": "Banned Until",
+      "details.permanent": "Permanent"
+    }
+  }
+}

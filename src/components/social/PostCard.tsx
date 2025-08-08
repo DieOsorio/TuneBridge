@@ -24,6 +24,7 @@ import {
   HeartIcon
 } from "@heroicons/react/24/solid";
 import { LiaCommentsSolid } from "react-icons/lia";
+import { MdReport } from "react-icons/md";
 
 import type { Post } from "@/context/social/postsActions"
 import type { Profile } from "@/context/profile/profileActions"
@@ -35,6 +36,8 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/zoom";
 import "swiper/css/effect-coverflow";
+import ReportForm from "@/utils/ReportForm";
+import Modal from "../ui/Modal";
 
 interface TooltipProps {
   children: ReactNode;
@@ -67,6 +70,7 @@ function PostCard({ post }: PostCardProps) {
   const [showComments, setShowComments] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [showReportForm, setShowReportForm] = useState(false);
 
   const { fetchProfile } = useProfile();
   const { data: profile, error, isLoading } = fetchProfile(post.profile_id);
@@ -229,7 +233,7 @@ function PostCard({ post }: PostCardProps) {
                   onClick={handleEditClick}
                 />
               )}
-            </div>
+            </div>          
             {/* Like hearts */}
             <div
               onMouseEnter={() => setIsHovered(true)}
@@ -271,6 +275,19 @@ function PostCard({ post }: PostCardProps) {
         {/* Images of the post */}
         {/* Desktop/Tablet Swiper */}
         <div className="w-full max-w-[600px] flex-1 mx-auto bg-gradient-to-l from-gray-900 rounded-md hidden sm:flex">
+            {/* Report */}
+            {loggedIn && (
+              <div className="mt-1.5">
+                <MdReport
+                  onClick={() => {
+                    setShowReportForm(true);
+                  }} 
+                  title={t("titles.report")}
+                  className="text-red-700/70 hover:text-red-600 cursor-pointer mx-auto"
+                  size={21}
+                />
+            </div>
+            )}
           {post.images_urls && post.images_urls.length > 0 ? (
             <Swiper
               modules={[Navigation, Pagination, Scrollbar, Zoom]}
@@ -305,6 +322,19 @@ function PostCard({ post }: PostCardProps) {
         </div>
         {/* Mobile Image Displayer */}
         <div className="w-full mx-auto p-0 bg-gradient-to-l from-gray-900 rounded-md block sm:hidden">
+          {/* Report */}
+            {loggedIn && (
+              <div className="mt-1.5">
+                <MdReport
+                  onClick={() => {
+                    setShowReportForm(true);
+                  }} 
+                  title={t("titles.report")}
+                  className="text-red-700/70 hover:text-red-600 cursor-pointer mr-auto"
+                  size={21}
+                />
+            </div>
+            )}
           {post.images_urls && post.images_urls.length > 0 ? (
             post.images_urls.length === 1 ? (
               <img
@@ -397,6 +427,18 @@ function PostCard({ post }: PostCardProps) {
       </p>
 
       {showComments && <CommentsBox postId={post.id} />}
+      {showReportForm && (
+        <Modal onClose={() => setShowReportForm(false)}>
+          <ReportForm
+            targetType="post"
+            targetId={post.id}
+            targetOwnerId={post.profile_id}
+            title={t("reportPost.title")}
+            description={t("reportPost.description")}
+            onClose={() => setShowReportForm(false)}
+          />
+        </Modal>
+      )}
     </div>
   );
 }

@@ -17,6 +17,9 @@ import Button from '../ui/Button';
 import MatchScoreIndicator from './MatchScoreIndicator';
 import formatLastSeen from '@/utils/formatLastSeen';
 import { useCanSendDM } from '@/utils/useCanSendDM';
+import ReportForm from '@/utils/ReportForm';
+import Modal from '../ui/Modal';
+
 
 import {
   XMarkIcon,
@@ -30,7 +33,13 @@ import {
   ChatBubbleLeftEllipsisIcon 
 } from "@heroicons/react/24/solid";
 import { ImBlocked } from "react-icons/im";
-import { FaUserCheck, FaUserClock, FaUserPlus, FaUserSlash } from "react-icons/fa";
+import { 
+  FaUserCheck, 
+  FaUserClock, 
+  FaUserPlus, 
+  FaUserSlash 
+} from "react-icons/fa";
+import { MdReport } from "react-icons/md";
 
 export interface ProfileHeaderProps {
   isOwnProfile: boolean;
@@ -57,6 +66,8 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
   const [isStartingChat, setIsStartingChat] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoverText, setHoverText] = useState<string | null>(null);
+  const [showReportForm, setShowReportForm] = useState(false);
+
   const unreadCount = notifications?.filter((n: any) => !n.is_read).length || 0;
 
   const lastSeenActive = Boolean(privacyPrefs?.show_last_seen && profileData.last_seen);
@@ -182,24 +193,24 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                     ) : isBlocked ? (
                       <button 
                         onClick={() => { handleUnblock(); setMenuOpen((open) => !open); }}              
-                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-yellow-600 flex items-center gap-2">
+                        className="px-4 py-2 justify-between cursor-pointer text-left hover:bg-gray-800 text-sm text-yellow-600 flex items-center gap-2">
                           <UserMinusIcon className="w-4 h-4" />{t("connection.unblock")}
                       </button>
                     ) : isOtherBlocked ? (
                       <span 
-                        className="px-4 py-2 cursor-pointer text-red-400 text-xs flex items-center gap-2">
+                        className="px-4 py-2 cursor-pointer justify-between text-red-400 text-xs flex items-center gap-2">
                           <ImBlocked />{t("connection.blockedByOther")}
                       </span>
                     ) : isConnected ? (
                       <button 
                         onClick={() => { handleDisconnect(); setMenuOpen((open) => !open); }}
-                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-gray-300 flex items-center gap-2">
+                        className="px-4 py-2 justify-between cursor-pointer text-left hover:bg-gray-800 text-sm text-gray-300 flex items-center gap-2">
                           <UserMinusIcon className="w-4 h-4" />{t("connection.disconnect")}
                       </button>
                     ) : isPending ? (
                       <button
                         onClick={() => { handleDisconnect(); setMenuOpen((open) => !open); }}
-                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-yellow-400 flex items-center gap-2 group"
+                        className="px-4 py-2 cursor-pointer justify-between text-left hover:bg-gray-800 text-sm text-yellow-400 flex items-center gap-2 group"
                         onMouseEnter={() => setHoverText('disconnect')}
                         onMouseLeave={() => setHoverText(null)}
                       >
@@ -211,7 +222,7 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                     ) : (
                       <button 
                         onClick={() => { handleConnect(); setMenuOpen((open) => !open); }} 
-                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-green-600 flex items-center gap-2">
+                        className="px-4 py-2 cursor-pointer justify-between text-left hover:bg-gray-800 text-sm text-green-600 flex items-center gap-2">
                           <UserPlusIcon className="w-4 h-4" />{t("connection.connect")}
                       </button>
                     )}
@@ -219,10 +230,19 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
                     {!isOtherBlocked && !isBlocked && (
                       <button 
                         onClick={() => { handleBlock(); setMenuOpen((open) => !open); }} 
-                        className="px-4 py-2 cursor-pointer text-left hover:bg-gray-800 text-sm text-red-400 border-t border-sky-800 flex items-center gap-2">
+                        className="px-4 py-2 justify-between cursor-pointer text-left hover:bg-gray-800 text-sm text-red-400 border-t border-sky-800 flex items-center gap-2">
                           <ImBlocked />{t("connection.block")}
                       </button>
                     )}
+                    <button 
+                      onClick={() => {
+                        setShowReportForm(true);
+                        setMenuOpen(false);
+                      }}
+                      className="px-4 py-2 text-left justify-between cursor-pointer hover:bg-gray-800 text-sm text-red-500 border-t border-sky-800 flex items-center gap-2"
+                    >
+                      <MdReport size={18} />{t("reportUser.title")}
+                    </button>
                   </div>
                 )}
               </div>
@@ -371,6 +391,18 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
           </div>
         </div>
       </div>
+      {showReportForm && (
+        <Modal onClose={() => setShowReportForm(false)}>
+          <ReportForm
+            targetType="user"
+            targetId={profileData.id}
+            targetOwnerId={profileData.id}
+            title={t("reportUser.title")}
+            description={t("reportUser.description")}
+            onClose={() => setShowReportForm(false)}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

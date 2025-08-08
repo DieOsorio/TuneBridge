@@ -116,4 +116,50 @@
 
 ---
 
+## 12  Admin Panel
+
+| Function                                              | Purpose                                                                                                   |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `admin.is_admin(profile UUID) → BOOLEAN`              | Returns `true` if the profile is listed as an **admin** or **moderator** in `admin.admin_roles`.          |
+| `admin.log_admin_action()`                            | Trigger function that logs moderation/admin actions into `admin.admin_logs`.                              |
+| `admin.handle_user_ban()`                             | Trigger function that updates the banned user’s profile state to `'banned'`.                              |
+| `admin.sync_feedback_status()`                        | When feedback status changes to `'handled'`, logs the action using `admin.log_admin_action()`.            |
+| `admin.notify_admin_report_received()`                | Notifies all admins with the `'review_reports'` permission about a new user report via `social.notifications`. |
+
+---
+
 > **Note**  All trigger functions are declared `SET search_path`‑safe and run under the minimal privileges required. Security‑definer is only used when cross‑schema permissions are necessary.
+
+
+create or replace function admin.set_default_permissions()
+returns trigger as $$
+begin
+  -- Solo auto-poblar si NO se especificaron permisos
+  if NEW.permissions is null or array_length(NEW.permissions, 1) is null then
+    if NEW.role = 'admin' then
+      NEW.permissions := array[
+        'manage_users',
+        'ban_users',
+        'review_reports',
+        'view_feedback',
+        'access_logs',
+        'edit_roles'
+      ];
+    elsif NEW.role = 'moderator' then
+      NEW.permissions := array[
+        'ban_users',
+        'review_reports'
+      ];
+    elsif NEW.role = 'auditor' then
+      NEW.permissions := array[
+        'view_feedback',
+        'access_logs'
+      ];
+    else
+      NEW.permissions := array[]::text[]; -- vacío si es un rol desconocido
+    end if;
+  end if;
+
+  return NEW;
+end;
+$$ language plpgsql;

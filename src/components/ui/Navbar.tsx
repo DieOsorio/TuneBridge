@@ -91,7 +91,7 @@ const Navbar = () => {
         {user && (
           <div className="relative">
             <ChatBubbleBottomCenterTextIcon
-              className="w-8 h-8 text-white cursor-pointer"
+              className="w-8 h-8 text-gray-300 cursor-pointer"
               onClick={() => navigate("/chat")}
               title={t("profile:profile.titles.chat")}
             />

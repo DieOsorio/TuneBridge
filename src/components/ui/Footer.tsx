@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import i18n from "@/i18n";
+import { useIsAdmin } from "@/context/admin/adminRolesActions";
 
 interface LangBtnProps {
   lng: string;
@@ -28,6 +29,7 @@ const LangBtn = ({ lng, label }: LangBtnProps) => {
 const Footer = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
   const year = new Date().getFullYear();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
   const currentLang = i18n.language?.startsWith("es") ? "es" : "en";
@@ -55,7 +57,7 @@ const Footer = () => {
         ? [
             { to: `/media/${user.id}`, label: t("footer.map.myMedia") },
             { to: "/media/create", label: t("footer.map.uploadMedia") }, 
-            { to: "/matches",          label: t("footer.map.matches") },
+            { to: "/matches", label: t("footer.map.matches") },
           ]
         : [],
     },
@@ -66,6 +68,7 @@ const Footer = () => {
             { to: `/profile/${user.id}`, label: t("footer.map.profile") },
             { to: "/settings", label: t("footer.map.settings") },
             { to: "/create-profile-group", label: t("footer.map.createGroup") },
+            ...(isAdmin ? [{ to: "/admin", label: t("footer.map.admin") }] : []),
           ]
         : [
             { to: "/login",  label: t("footer.map.login")  },

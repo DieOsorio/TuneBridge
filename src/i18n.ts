@@ -16,6 +16,8 @@ import profileGroupEN from './locales/en/profileGroup.json';
 import adsEN from './locales/en/ads.json';
 import settingsEN from './locales/en/settings.json';
 import groupEventsEN from './locales/en/groupEvents.json';
+import adminEN from './locales/en/admin.json';
+import feedbackEN from './locales/en/feedback.json';
 
 import authES from './locales/es/auth.json';
 import commonES from './locales/es/common.json';
@@ -30,6 +32,8 @@ import profileGroupES from './locales/es/profileGroup.json';
 import adsES from './locales/es/ads.json';
 import settingsES from './locales/es/settings.json';
 import groupEventsES from './locales/es/groupEvents.json';
+import adminES from './locales/es/admin.json';
+import feedbackES from './locales/es/feedback.json';
 
 const resources: Resource = {
   en: {
@@ -45,7 +49,9 @@ const resources: Resource = {
     profileGroup: profileGroupEN,
     ads: adsEN,
     settings: settingsEN,
-    groupEvents: groupEventsEN
+    groupEvents: groupEventsEN,
+    admin: adminEN,
+    feedback: feedbackEN
   },
   es: {
     auth: authES,
@@ -60,7 +66,9 @@ const resources: Resource = {
     profileGroup: profileGroupES,
     ads: adsES,
     settings: settingsES,
-    groupEvents: groupEventsES
+    groupEvents: groupEventsES,
+    admin: adminES,
+    feedback: feedbackES
   }
 };
 
@@ -84,7 +92,9 @@ i18n
       'profileGroup',
       'ads',
       'settings',
-      'groupEvents'
+      'groupEvents',
+      'admin',
+      'feedback'
     ],
     interpolation: {
       escapeValue: false

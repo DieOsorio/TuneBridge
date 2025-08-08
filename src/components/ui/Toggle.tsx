@@ -1,4 +1,3 @@
-import React from "react";
 import { UseFormRegister } from "react-hook-form";
 
 export interface ToggleProps {
@@ -11,7 +10,7 @@ export interface ToggleProps {
   classForLabel?: string;
 }
 
-const Toggle: React.FC<ToggleProps> = ({
+const Toggle = ({
   id,
   label,
   register,
@@ -20,7 +19,7 @@ const Toggle: React.FC<ToggleProps> = ({
   className = "",
   classForLabel = "",
   ...rest
-}) => {
+}: ToggleProps) => {
   // RHF or controlled props
   const inputProps = register ? register(id, validation) : rest;
 

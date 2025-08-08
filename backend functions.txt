@@ -927,3 +927,118 @@ begin
   return new;
 end;
 $$;
+
+
+
+CREATE OR REPLACE FUNCTION admin.is_admin(profile UUID)
+RETURNS BOOLEAN
+LANGUAGE sql STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM admin.admin_roles
+    WHERE admin_roles.profile_id = profile
+    AND admin_roles.role IN ('admin', 'moderator')
+  );
+$$;
+
+
+
+
+CREATE OR REPLACE FUNCTION admin.log_admin_action()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO admin.admin_logs (
+    profile_id,
+    action_type,
+    target_table,
+    target_id,
+    details
+  )
+  VALUES (
+    COALESCE(NEW.banned_by, NEW.handled_by),  -- fallback
+    TG_ARGV[0],  -- passed in trigger arg: 'ban' / 'feedback_status_change'
+    TG_TABLE_NAME,
+    NEW.profile_id,
+    row_to_json(NEW)::jsonb
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION admin.handle_user_ban()
+RETURNS trigger AS $$
+BEGIN
+  -- Example: set user profile state to 'banned'
+  UPDATE users.profiles
+  SET state = 'banned'
+  WHERE id = NEW.profile_id;
+
+  -- Optionally, invalidate sessions if using Supabase Enterprise or JWT tricks
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION admin.sync_feedback_status()
+RETURNS trigger AS $$
+BEGIN
+  -- Example: log when status is marked as handled
+  IF NEW.status = 'handled' AND OLD.status IS DISTINCT FROM NEW.status THEN
+    PERFORM admin.log_admin_action();  -- optional: call manually with custom args
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION admin.notify_admin_report_received()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = admin, public
+AS $$
+DECLARE
+  admin_profile uuid;
+BEGIN
+  FOR admin_profile IN
+    SELECT profile_id
+    FROM admin.admin_roles
+    WHERE permissions @> ARRAY['review_reports']
+  LOOP
+    INSERT INTO social.notifications (
+      id,
+      created_at,
+      profile_id,
+      type,
+      entity_id,
+      from_user_id,
+      is_read,
+      message,
+      payload
+    )
+    VALUES (
+      gen_random_uuid(),
+      NOW(),
+      admin_profile,
+      'admin_report',
+      NEW.id,
+      NEW.reporter_id,
+      FALSE,
+      'A new user report has been submitted.',
+      jsonb_build_object(
+        'target_type', NEW.target_type,
+        'target_id', NEW.target_id
+      )
+    );
+  END LOOP;
+
+  RETURN NEW;
+END;
+$$;

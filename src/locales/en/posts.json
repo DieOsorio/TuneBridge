@@ -69,6 +69,11 @@
   },
   "titles": {
     "updatePost": "Update Post",
-    "comments": "Comments"
+    "comments": "Comments",
+    "report": "Report this post"
+  },
+  "reportPost": {
+    "title": "Report Post",
+    "description": "If you believe this post violates our community guidelines, please provide details below."
   }
 }
