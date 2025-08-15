@@ -163,3 +163,15 @@ begin
   return NEW;
 end;
 $$ language plpgsql;
+
+
+select cron.schedule(
+  'mark_expired_bans',
+  '*/1 * * * *',  -- cada minuto
+  $$
+    update admin.banned_users
+    set deleted_at = now()
+    where banned_until <= now()
+      and deleted_at is null;
+  $$
+);

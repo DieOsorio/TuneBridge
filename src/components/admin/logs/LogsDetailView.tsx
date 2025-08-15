@@ -78,7 +78,9 @@ const LogDetailView = ({ log, hasAccess }: LogDetailViewProps) => {
           <h2 className="text-sm bg-black/20 p-2 rounded-lg mb-2 font-medium text-muted-foreground">
             {t("targetId")}
           </h2>
-          <p className="text-sm break-all text-gray-300">{log.target_id ?? "-"}</p>
+          <Link to={`/profile/${log.target_id}`} className="text-sm break-all text-gray-300 hover:text-sky-500 hover:underline transition-all">
+            {log.target_id}
+          </Link>
         </div>
         <div>
           <h2 className="text-sm bg-black/20 p-2 rounded-lg mb-2 font-medium text-muted-foreground">

@@ -40,15 +40,15 @@ const AdminLogsList = ({
     setShowModal(false);
   };
   return (
-    <div className="overflow-x-auto rounded-md border border-gray-700 bg-zinc-900 p-4 max-h-[400px] overflow-y-auto">
+    <div className="overflow-x-auto rounded-md border border-gray-700 bg-zinc-900 max-h-[400px] overflow-y-auto">
       <table className="w-full text-center text-sm text-gray-300 border-separate border-spacing-0">
         <thead className="text-gray-400 bg-gray-700">
           <tr className="text-white uppercase">
-            <th className="px-3 py-2 border border-gray-600">{t("fields.date")}</th>
-            <th className="px-3 py-2 border border-gray-600">{t("fields.adminId")}</th>
-            <th className="px-3 py-2 border border-gray-600">{t("fields.action")}</th>
-            <th className="px-3 py-2 border border-gray-600">{t("fields.target")}</th>
-            <th className="px-3 py-2 border border-gray-600">{t("fields.targetId")}</th>
+            <th className="px-3 border border-gray-600">{t("fields.date")}</th>
+            <th className="px-3 border border-gray-600">{t("fields.adminId")}</th>
+            <th className="px-3 border border-gray-600">{t("fields.action")}</th>
+            <th className="px-3 border border-gray-600">{t("fields.target")}</th>
+            <th className="px-3 border border-gray-600">{t("fields.targetId")}</th>
           </tr>
         </thead>
         <tbody>

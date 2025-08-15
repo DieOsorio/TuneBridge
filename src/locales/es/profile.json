@@ -39,6 +39,8 @@
       "group_join":      "Te uniste al grupo",
       "group_member_left":   "{{user}} salió del grupo",
       "group_member_removed":"{{user}} te sacó del grupo",
+      "admin_report": "Se ha enviado un nuevo reporte de {{targetType}}.",
+      "admin_report_default": "Se ha enviado un nuevo reporte.",
       "noNotifications": "Todavía no tienes notificaciones",
       "someone": "Alguien",
       "group_follow": "{{user}} comenzó a seguir tu grupo “{{group}}”.",

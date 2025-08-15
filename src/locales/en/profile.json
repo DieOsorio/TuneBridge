@@ -39,6 +39,8 @@
     "group_join":"You joined the group",
     "group_member_left":"{{user}} left the group",
     "group_member_removed":"You were removed from the group by {{user}}",
+    "admin_report": "New {{targetType}} report has been submitted.",
+    "admin_report_default": "A new report has been submitted.",
     "noNotifications": "You don't have notifications yet",
     "someone": "Someone",
     "group_follow": "{{user}} started following your group “{{group}}”.",

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useConversations } from "@/context/social/chat/ConversationsContext";
 import { useParticipants } from "@/context/social/chat/ParticipantsContext";
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 
 import { motion } from "framer-motion";
 import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
@@ -39,6 +40,8 @@ const ProfileMinibox: React.FC<ProfileMiniboxProps> = ({ profile, isLoading, isG
   const { findConversation, createConversation } = useConversations();
   const { addParticipant } = useParticipants();
   const { canSend, loading: LoadingSendDM } = useCanSendDM(profile.id);
+  const { bannedUser } = useBannedUsers();
+
   const [isStartingChat, setIsStartingChat] = useState(false);
   const [showReportForm, setShowReportForm] = useState(false);
 
@@ -61,11 +64,18 @@ const ProfileMinibox: React.FC<ProfileMiniboxProps> = ({ profile, isLoading, isG
   };
 
   const startChat = () => {
-    if (isStartingChat) return;
     if (!loggedIn || !user) {
       navigate("/login");
       return;
     }
+    
+    if (isStartingChat) return;
+
+    if (bannedUser?.type === "messaging") {
+      navigate("/banned");
+      return;
+    }
+    
     if (!isGroup && "username" in profile) {
       handleStartChat({
         myProfileId: user.id,

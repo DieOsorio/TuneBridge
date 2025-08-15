@@ -5,11 +5,12 @@ import { useUserConnections } from "@/context/social/UserConnectionsContext";
 import { useConversations } from "@/context/social/chat/ConversationsContext";
 import { useAuth } from "@/context/AuthContext";
 import { useParticipants } from "@/context/social/chat/ParticipantsContext";
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 
-import { 
-  BoltIcon, 
-  ChatBubbleOvalLeftIcon, 
-  UserIcon, 
+import {
+  BoltIcon,
+  ChatBubbleOvalLeftIcon,
+  UserIcon,
   UserPlusIcon,
   UserCircleIcon,
   UserMinusIcon,
@@ -63,6 +64,10 @@ const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) =>
       (user && c.follower_profile_id === profile.profile_id && c.following_profile_id === user.id)
   );
 
+  const { bannedUser } = useBannedUsers();
+
+  const isBannedMessaging = bannedUser?.type === "messaging";
+
   const validStatuses = ["connect", "pending", "accepted", "blocked"] as const;
   type StatusType = typeof validStatuses[number];
 
@@ -93,13 +98,19 @@ const MatchCard = memo(({ profile, loading: loadingProfile }: MatchCardProps) =>
 
   const startChat = () => {
     if (isStartingChat || !user) return;
+
+    if (isBannedMessaging) {
+      navigate("/banned");
+      return;
+    }
+
     handleStartChat({
       myProfileId: user.id,
       otherProfile: {
         id: profile.profile_id,
         username: profile.username,
         avatar_url: profile.avatar_url,
-        last_seen: profile.last_seen
+        last_seen: profile.last_seen,
       },
       findConversation,
       createConversation,

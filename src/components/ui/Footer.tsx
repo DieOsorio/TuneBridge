@@ -3,6 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import i18n from "@/i18n";
 import { useIsAdmin } from "@/context/admin/adminRolesActions";
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 
 interface LangBtnProps {
   lng: string;
@@ -30,9 +31,12 @@ const Footer = () => {
   const { t } = useTranslation("ui");
   const { user } = useAuth();
   const { data: isAdmin } = useIsAdmin();
+  const { bannedUser } = useBannedUsers();
+
   const year = new Date().getFullYear();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-  const currentLang = i18n.language?.startsWith("es") ? "es" : "en";
+
+  const isFullBan = bannedUser?.type === "full";
 
   const siteMap = [
     {
@@ -90,29 +94,31 @@ const Footer = () => {
     <footer className="bg-gradient-to-b from-gray-950 to-gray-900 text-gray-300 pt-8 pb-6 mt-4">
       <div className="container mx-auto px-4">
         {/* ---------- Site map ---------- */}
-        <div
-          className={`mx-auto grid grid-cols-2 sm:grid-cols-2 ${gridColsMd}
-                      gap-6 mb-8 justify-items-center
-                      text-center sm:text-left`}
-        >
-          {siteMap.map(({ header, links }) => (
-            <div key={header}>
-              <h4 className="font-semibold text-white mb-2">{header}</h4>
-              <ul className="space-y-1">
-                {links.map(({ to, label }) => (
-                  <li key={to}>
-                    <Link
-                      to={to}
-                      className="text-sm text-gray-400 hover:text-white transition"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        {!isFullBan && (
+          <div
+            className={`mx-auto grid grid-cols-2 sm:grid-cols-2 ${gridColsMd}
+                        gap-6 mb-8 justify-items-center
+                        text-center sm:text-left`}
+          >
+            {siteMap.map(({ header, links }) => (
+              <div key={header}>
+                <h4 className="font-semibold text-white mb-2">{header}</h4>
+                <ul className="space-y-1">
+                  {links.map(({ to, label }) => (
+                    <li key={to}>
+                      <Link
+                        to={to}
+                        className="text-sm text-gray-400 hover:text-white transition"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
         {/* ---------- Lower bar ---------- */}
         <div className="border-t border-gray-700 pt-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">

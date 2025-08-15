@@ -8,6 +8,7 @@ import { useNotifications } from '@/context/social/NotificationsContext';
 import { useMessages } from '@/context/social/chat/MessagesContext';
 import { useUserConnections } from '@/context/social/UserConnectionsContext';
 import { useSettings } from '@/context/settings/SettingsContext';
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 import { handleStartChat } from '../social/chat/utilis/handleStartChat';
 
 import type { Profile } from "@/context/profile/profileActions"
@@ -62,6 +63,7 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
   const { connectionBetweenProfiles, addConnection, updateConnection, deleteConnection } = useUserConnections();
   const { data: connection, isLoading: loadingConnection } = connectionBetweenProfiles(user?.id ?? "", profileData.id);
   const { canSend, loading: loadingCanSend, reason } = useCanSendDM(profileData.id);
+  const { bannedUser } = useBannedUsers();
 
   const [isStartingChat, setIsStartingChat] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -74,6 +76,12 @@ const ProfileHeader = ({ isOwnProfile, profileData }: ProfileHeaderProps) => {
 
   const startChat = () => {
     if (isStartingChat || !user) return;
+
+    if (bannedUser?.type === "messaging") {
+      navigate("/banned");
+      return;
+    }
+    
     handleStartChat({
       myProfileId: user.id,
       otherProfile: profileData,

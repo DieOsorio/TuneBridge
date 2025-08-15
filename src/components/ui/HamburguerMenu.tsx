@@ -15,11 +15,13 @@ import {
   XMarkIcon
 } from "@heroicons/react/24/solid";
 import { FaCompass } from "react-icons/fa";
+
 export interface HamburgerMenuProps {
   id?: string;
+  isFullBan?: boolean;
 }
 
-const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
+const HamburgerMenu = ({ id, isFullBan }: HamburgerMenuProps) => {
   const { t } = useTranslation("ui");
   const [isOpen, setOpen] = useState(false);
   const { signOut } = useAuth();
@@ -54,50 +56,62 @@ const HamburgerMenu = ({ id }: HamburgerMenuProps) => {
       {isOpen && (
         <div className="absolute right-5 z-50 mt-2 w-55 rounded-md bg-gray-900 p-4 text-white shadow-lg border border-sky-700">
           {id ? (
-            <ul className="space-y-2">
-              {/* profile */}
-              <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <UserIcon className="w-5 h-5 text-sky-600" />
-                <Link to={`/profile/${id}`} className="text-lg" onClick={toggle}>
-                  {t("nav.links.profile")}
-                </Link>
-              </li>
-              {/* explore */}
-              <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <FaCompass className="w-5 h-5 text-sky-600" />
-                <Link to="/explore" className="text-lg" onClick={toggle}>
-                  {t("nav.links.explore")}
-                </Link>
-              </li>
-              {/* ads */}
-              <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <MegaphoneIcon className="w-5 h-5 text-sky-600" />
-                <Link to="/ads" className="text-lg" onClick={toggle}>
-                  {t("nav.links.ads")}
-                </Link>
-              </li>
-              {/* matches */}
-              <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <BoltIcon className="w-5 h-5 text-sky-600" />
-                <Link to="/matches" className="text-lg" onClick={toggle}>
-                  {t("nav.links.matches")}
-                </Link>
-              </li>
-              {/* settings */}
-              <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <Cog6ToothIcon className="w-5 h-5 text-sky-600" />
-                <Link to="/settings" className="text-lg" onClick={toggle}>
-                  {t("nav.links.settings")}
-                </Link>
-              </li>
-              {/* sign‑out */}
-              <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
-                <ArrowLeftStartOnRectangleIcon className="text-sky-600 w-5 h-5" />
-                <button onClick={signOut} className="text-lg cursor-pointer">
-                  {t("nav.auth.signOut")}
-                </button>
-              </li>
-            </ul>
+            isFullBan ? (
+              <ul className="space-y-2">
+                {/* sign‑out */}
+                <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <ArrowLeftStartOnRectangleIcon className="text-sky-600 w-5 h-5" />
+                  <button onClick={signOut} className="text-lg cursor-pointer">
+                    {t("nav.auth.signOut")}
+                  </button>
+                </li>
+              </ul>
+            ) : (
+              <ul className="space-y-2">
+                {/* profile */}
+                <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <UserIcon className="w-5 h-5 text-sky-600" />
+                  <Link to={`/profile/${id}`} className="text-lg" onClick={toggle}>
+                    {t("nav.links.profile")}
+                  </Link>
+                </li>
+                {/* explore */}
+                <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <FaCompass className="w-5 h-5 text-sky-600" />
+                  <Link to="/explore" className="text-lg" onClick={toggle}>
+                    {t("nav.links.explore")}
+                  </Link>
+                </li>
+                {/* ads */}
+                <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <MegaphoneIcon className="w-5 h-5 text-sky-600" />
+                  <Link to="/ads" className="text-lg" onClick={toggle}>
+                    {t("nav.links.ads")}
+                  </Link>
+                </li>
+                {/* matches */}
+                <li className="md:hidden flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <BoltIcon className="w-5 h-5 text-sky-600" />
+                  <Link to="/matches" className="text-lg" onClick={toggle}>
+                    {t("nav.links.matches")}
+                  </Link>
+                </li>
+                {/* settings */}
+                <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <Cog6ToothIcon className="w-5 h-5 text-sky-600" />
+                  <Link to="/settings" className="text-lg" onClick={toggle}>
+                    {t("nav.links.settings")}
+                  </Link>
+                </li>
+                {/* sign‑out */}
+                <li className="flex items-center justify-between rounded-md px-4 py-2 border-b border-sky-700 hover:bg-gray-800 transition">
+                  <ArrowLeftStartOnRectangleIcon className="text-sky-600 w-5 h-5" />
+                  <button onClick={signOut} className="text-lg cursor-pointer">
+                    {t("nav.auth.signOut")}
+                  </button>
+                </li>
+              </ul>
+            )
           ) : (
             <ul className="space-y-2">
               {/* explore (guest) */}

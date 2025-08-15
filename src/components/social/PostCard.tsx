@@ -8,6 +8,7 @@ import { useProfileGroups } from "@/context/profile/ProfileGroupsContext";
 import { useProfileGroupMembers } from "@/context/profile/ProfileGroupMembersContext";
 import { useProfile } from "@/context/profile/ProfileContext";
 import { usePostHashtags } from "@/context/social/PostHashtagsContext";
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 
 import ProfileAvatar from "../profiles/ProfileAvatar";
 import ProfileMinibox from "../profiles/ProfileMinibox";
@@ -74,6 +75,8 @@ function PostCard({ post }: PostCardProps) {
 
   const { fetchProfile } = useProfile();
   const { data: profile, error, isLoading } = fetchProfile(post.profile_id);
+
+  const { bannedUser } = useBannedUsers();
 
   const isGroupPost = Boolean(post.group_id);
   const { fetchProfileGroup } = useProfileGroups();
@@ -158,6 +161,11 @@ function PostCard({ post }: PostCardProps) {
   const handleShowComments = () => {
     if (!loggedIn) {
       navigate("/login");
+      return;
+    }
+
+    if (bannedUser?.type === "posting") {
+      navigate("/banned");
       return;
     }
 

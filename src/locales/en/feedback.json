@@ -20,7 +20,8 @@
       "message": "Write your message here..."
     },
     "buttons": {
-      "submit": "Send feedback"
+      "submit": "Send feedback",
+      "cancel": "Cancel"
     }
   },
   "success": {

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
 // UI that lives in every view 
@@ -35,6 +35,7 @@ const Profile              = lazy(() => import("@/pages/Profile"));
 const Hashtag              = lazy(() => import("@/pages/Hashtag"));
 const FeedbackForm         = lazy(() => import("@/utils/FeedbackForm"));
 const FeedbackSuccess      = lazy(() => import("@/utils/FeedbackSuccess"));
+const BannedUserNotice     = lazy(() => import("@/pages/BannedUserNotice"));
 
 // Admin routes
 const AdminDashboard       = lazy(() => import("../components/admin/AdminDashboard"));
@@ -46,7 +47,7 @@ function PageLoader() {
 
 export default function AppRouter() {
   return (
-    <Router>
+    <>
       <Navbar />
 
       <main className="flex-grow p-4">
@@ -66,6 +67,7 @@ export default function AppRouter() {
             <Route path="/hashtag/:hashtag" element={<Hashtag />} />
 
             {/* Protected Routes */}            
+            <Route path="/banned"                    element={<ProtectedRoute><BannedUserNotice /></ProtectedRoute>} />
             <Route path="/feedback-success"          element={<ProtectedRoute><FeedbackSuccess /></ProtectedRoute>} />
             <Route path="/feedback-form"             element={<ProtectedRoute><FeedbackForm /></ProtectedRoute>} />
             <Route path="/group/:groupId/settings/*" element={<ProtectedRoute><GroupSettings /></ProtectedRoute>} />
@@ -99,6 +101,6 @@ export default function AppRouter() {
       </main>
 
       <Footer />
-    </Router>
+    </>  
   );
 }

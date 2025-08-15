@@ -7,6 +7,7 @@ import { useHashtags } from "@/context/social/HashtagsContext";
 import { usePostHashtags } from "@/context/social/PostHashtagsContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 import { deleteFileFromBucket } from "@/utils/avatarUtils";
 
 
@@ -44,6 +45,7 @@ const PostForm = () => {
   const uploadImageMutations = useUploadPostImages();
   const { upsertHashtag } = useHashtags();
   const { getHashtagsByPostId, upsertPostHashtag, deletePostHashtags } = usePostHashtags();
+  const { bannedUser } = useBannedUsers();
 
   // Images can be string (URL) or File (upload)
   const [images, setImages] = useState<(string | ActualFileObject)[]>([]);
@@ -69,6 +71,12 @@ const PostForm = () => {
   } = postId ? fetchPost(postId) : { data: null, isLoading: false, error: null };
 
   const { data: hashtagsData } = postId ? getHashtagsByPostId(postId) : { data: [] };
+
+  useEffect(() => {
+      if (bannedUser?.type === "posting") {
+        navigate("/banned");
+      }
+    }, [bannedUser, navigate]);
 
   useEffect(() => {
     if (postId && postData) {
@@ -111,12 +119,20 @@ const PostForm = () => {
 
   const confirmDelete = async () => {
     if (!postId || !postData) return;
+    if (bannedUser?.type === "posting") {
+      navigate("/banned");
+      return;
+    }
     await deletePost(postId);
     navigate(groupId ? `/group/${groupId}` : `/profile/${postData.profile_id}`);
     setIsConfirmOpen(false);
   };
 
   const onSubmit = async (formData: FormData) => {
+    if (bannedUser?.type === "posting") {
+      navigate("/banned");
+      return;
+    }
     const { newHashtag: _ignored, ...rest } = formData;
     const parsedHashtags = hashtagItems.map(tag => tag.trim()).filter(Boolean);
 

@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router } from "react-router-dom";
 import './index.css';
 import App from './App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -23,26 +24,28 @@ if (!rootElement) throw new Error('Root element not found');
 createRoot(rootElement).render(
   // <StrictMode>
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <SettingsProvider>
-        <I18nextProvider i18n={i18n}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ProfileProvider>
-              <SocialProvider>
-                <MusicProvider>
-                  <GroupsProvider>
-                    <AdminProvider>
-                      <App />
-                      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
-                    </AdminProvider>
-                  </GroupsProvider>
-                </MusicProvider>
-              </SocialProvider>
-            </ProfileProvider>
-          </LocalizationProvider>
-        </I18nextProvider>
-      </SettingsProvider>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <SettingsProvider>
+          <I18nextProvider i18n={i18n}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <ProfileProvider>
+                <SocialProvider>
+                  <MusicProvider>
+                    <GroupsProvider>
+                      <AdminProvider>
+                        <App />
+                        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+                      </AdminProvider>
+                    </GroupsProvider>
+                  </MusicProvider>
+                </SocialProvider>
+              </ProfileProvider>
+            </LocalizationProvider>
+          </I18nextProvider>
+        </SettingsProvider>
+      </AuthProvider>
+    </Router>
   </QueryClientProvider>
   // </StrictMode>
 );

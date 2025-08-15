@@ -172,13 +172,20 @@ export const useCreatePostMutation = (): UseMutationResult<Post, Error, Partial<
   const queryClient = useQueryClient();
   return useMutation<Post, Error, Partial<Post>>({
     mutationFn: async (post) => {
-      const { data, error } = await supabase
+      const { data, error, status, statusText } = await supabase
         .schema("social")
         .from("posts")
         .insert(post)
         .select()
         .single();
-      if (error) throw new Error(error.message);
+      
+      // Log status info for debugging
+      if (error) {
+        console.log("Supabase insert status:", status, statusText);
+        console.log("Supabase insert error:", error);
+        throw new Error(error.message);
+      }
+      
       return toPostEntity(data);
     },
     onMutate: async (post) =>
@@ -208,6 +215,7 @@ export const useCreatePostMutation = (): UseMutationResult<Post, Error, Partial<
       }),
   });
 };
+
 
 
 export const useUpdatePostMutation = (): UseMutationResult<Post, Error, { id: string; updatedPost: Partial<Post> }> => {

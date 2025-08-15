@@ -127,6 +127,48 @@
     }
   },
   "bans": {
+    "form": {
+      "title": {
+        "add": "Add Ban",
+        "edit": "Edit Ban"
+      },
+      "search": {
+        "placeholder": "Search user",
+        "loading": "Loading...",
+        "noResults": "No results"
+      },
+      "selected": {
+        "title": "Selected user:",
+        "clear": "Clear"
+      },
+      "fields": {
+        "profile_id": {
+          "label": "User",
+          "required": "User is required"
+        },
+        "reason": {
+          "label": "Reason",
+          "placeholder": "Reason for the ban",
+          "required": "Reason is required"
+        },
+        "banned_until": {
+          "label": "Banned Until (optional)"
+        },
+        "type": {
+          "label": "Ban Type",
+          "options": {
+            "full": "Full",
+            "posting": "Posting",
+            "messaging": "Messaging"
+          }
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    },
     "details": {
       "profileId": "Profile ID",
       "noReason": "No reason provided",
@@ -226,10 +268,10 @@
     },
     "details": {
       "logId": "Log ID",
-      "profileId": "Profile ID",
+      "profileId": "Admin/Moderator",
       "actionType": "Action Type",
       "targetTable": "Target Table",
-      "targetId": "Target ID",
+      "targetId": "Banned User",
       "createdAt": "Created At",
       "details": "Details",
       "details.type": "Type",

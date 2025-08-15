@@ -203,5 +203,29 @@
     "textarea": {
       "limit": "characters used"
     }
+  },
+  "bannedUser": {
+    "alertBar": {
+      "messaging": "You are restricted from messaging. ",
+      "posting": "You are restricted from posting. ",
+      "linkText": "Click here for details."
+    },
+    "titles": {
+      "full": "Access Restricted - You are Fully Banned",
+      "posting": "Posting Restricted",
+      "messaging": "Messaging Restricted",
+      "unknown": "Restricted Access"
+    },
+    "descriptions": {
+      "full": "Your access to the platform is fully restricted due to violations. You cannot log in or use any features.",
+      "posting": "You are temporarily restricted from posting content.",
+      "messaging": "You are temporarily restricted from sending messages.",
+      "unknown": "Your access is restricted."
+    },
+    "reasonLabel": "Reason",
+    "bannedUntilLabel": "Banned Until",
+    "noReason": "No reason provided",
+    "indefinite": "Indefinite",
+    "appealButton": "Appeal this Ban"
   }
 }

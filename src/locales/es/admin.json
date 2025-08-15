@@ -127,6 +127,48 @@
     }
   },
   "bans": {
+    "form": {
+      "title": {
+        "add": "Agregar suspensión",
+        "edit": "Editar suspensión"
+      },
+      "search": {
+        "placeholder": "Buscar usuario",
+        "loading": "Cargando...",
+        "noResults": "Sin resultados"
+      },
+      "selected": {
+        "title": "Usuario seleccionado:",
+        "clear": "Limpiar"
+      },
+      "fields": {
+        "profile_id": {
+          "label": "Usuario",
+          "required": "El usuario es obligatorio"
+        },
+        "reason": {
+          "label": "Razón",
+          "placeholder": "Motivo de la suspensión",
+          "required": "La razón es obligatoria"
+        },
+        "banned_until": {
+          "label": "Suspendido hasta (opcional)"
+        },
+        "type": {
+          "label": "Tipo de suspensión",
+          "options": {
+            "full": "Total",
+            "posting": "Publicaciones",
+            "messaging": "Mensajería"
+          }
+        }
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saving": "Guardando..."
+      }
+    },
     "details": {
       "profileId": "ID de perfil",
       "noReason": "No se proporcionó una razón",
@@ -227,10 +269,10 @@
     "details": {
       "selectLog": "Selecciona un log de la lista para ver los detalles",
       "logId": "ID del log",
-      "profileId": "ID del perfil",
+      "profileId": "Administrador/Moderador",
       "actionType": "Tipo de acción",
       "targetTable": "Tabla objetivo",
-      "targetId": "ID objetivo",
+      "targetId": "Usuario Baneado",
       "createdAt": "Fecha de creación",
       "details": "Detalles",
       "details.type": "Tipo",

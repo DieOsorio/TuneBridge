@@ -1,15 +1,14 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { supabase } from "../../supabase";
+import { supabase } from "@/supabase";
+import { useNotifications } from "@/context/social/NotificationsContext";
+import { useProfile } from "@/context/profile/ProfileContext";
 
-import { useNotifications } from "../../context/social/NotificationsContext";
-import { useProfile } from "../../context/profile/ProfileContext";
+import ErrorMessage from "@/utils/ErrorMessage";
+import Loading from "@/utils/Loading";
 
-import ErrorMessage from "../../utils/ErrorMessage";
-import Loading from "../../utils/Loading";
-
-import type { Notification } from "../../context/social/notificationsActions";
+import type { Notification } from "@/context/social/notificationsActions";
 
 
 interface Props {
@@ -116,6 +115,14 @@ const NotificationsList = ({ profileId }: Props) => {
           user: nameOf(payload.follower_id),
           group: groupNameOf(payload.group_id),
         });
+
+      case "admin_report":
+      return t("admin_report", {
+        targetType: payload.target_type || t("entity"),
+        targetId: payload.target_id || "",
+        message: n.message || t("admin_report_default")
+      });
+
       default:
         return t(n.type, { user: nameOf(n.from_user_id) });
     }

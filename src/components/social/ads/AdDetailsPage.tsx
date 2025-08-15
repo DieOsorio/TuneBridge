@@ -6,6 +6,7 @@ import { useProfile } from "@/context/profile/ProfileContext";
 import { useConversations } from "@/context/social/chat/ConversationsContext";
 import { useParticipants } from "@/context/social/chat/ParticipantsContext";
 import { useAuth } from "@/context/AuthContext";
+import { useBannedUsers } from "@/context/admin/BannedUsersContext";
 import { useCanSendDM } from "@/utils/useCanSendDM";
 import { handleStartChat } from "../chat/utilis/handleStartChat";
 
@@ -32,6 +33,7 @@ const AdDetailsPage = () => {
   const { data: ad, isLoading: adLoading, error } = fetchAd(id!);
   const { fetchProfile } = useProfile();
   const { data: profile, isLoading: profileLoading } = fetchProfile(ad?.profile_id);
+  const { bannedUser } = useBannedUsers();
 
   const navigate = useNavigate();
   const [isStartingChat, setIsStartingChat] = useState(false);
@@ -44,6 +46,12 @@ const AdDetailsPage = () => {
 
   const startChat = () => {
     if (isStartingChat) return;
+
+    if (bannedUser?.type === "messaging") {
+      navigate("/banned");
+      return;
+    }
+    
     handleStartChat({
       myProfileId: user.id,
       otherProfile: profile,

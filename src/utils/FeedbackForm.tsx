@@ -16,7 +16,11 @@ type FeedbackFormData = {
   feedback_topic?: string | null;
 };
 
-const FeedbackForm = () => {
+interface FeedbackFormProps {
+  onClose?: () => void 
+}
+
+const FeedbackForm = ({ onClose }: FeedbackFormProps) => {
   const { t } = useTranslation("feedback", { keyPrefix: "form" });
   const { user } = useAuth();
   const { insertUserFeedback } = useAdminFeedback();
@@ -47,7 +51,11 @@ const FeedbackForm = () => {
     };
 
     await insertUserFeedback(payload);
-    navigate("/feedback-success");
+    if (onClose) {
+      onClose();
+    } else {
+      navigate("/feedback-success");
+    }
   };
 
   return (
@@ -101,6 +109,16 @@ const FeedbackForm = () => {
         <Button className="!bg-emerald-600 hover:!bg-emerald-700" type="submit">
           {t("buttons.submit")}
         </Button>
+
+        {onClose && (
+          <Button
+            type="button"
+            onClick={onClose}
+            className="!bg-gray-600 hover:!bg-gray-700"
+          >
+            {t("buttons.cancel")}
+          </Button>
+        )}
       </div>
     </form>
   );

@@ -203,5 +203,29 @@
     "textarea": {
       "limit": "caracteres usados"
     }
+  },
+  "bannedUser": {
+    "alertBar": {
+      "messaging": "Estás restringido para enviar mensajes. ",
+      "posting": "Estás restringido para publicar. ",
+      "linkText": "Haz clic aquí para más detalles."
+    },
+    "titles": {
+      "full": "Acceso Restringido - Estás Completamente Baneado",
+      "posting": "Restricción para Publicar",
+      "messaging": "Restricción para Enviar Mensajes",
+      "unknown": "Acceso Restringido"
+    },
+    "descriptions": {
+      "full": "Tu acceso a la plataforma está completamente restringido debido a violaciones. No puedes iniciar sesión ni usar ninguna función.",
+      "posting": "Estás temporalmente restringido para publicar contenido.",
+      "messaging": "Estás temporalmente restringido para enviar mensajes.",
+      "unknown": "Tu acceso está restringido."
+    },
+    "reasonLabel": "Razón",
+    "bannedUntilLabel": "Prohibido Hasta",
+    "noReason": "No se proporcionó una razón",
+    "indefinite": "Indefinido",
+    "appealButton": "Apelar este Ban"
   }
 }

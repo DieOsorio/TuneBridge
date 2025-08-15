@@ -3,7 +3,7 @@
     "types": {
       "bug": "Reportar un error",
       "suggestion": "Hacer una sugerencia",
-      "other": "Otro comentario"
+      "other": "Otro feedback"
     },
     "validations": {
       "typeRequired": "Por favor selecciona un tipo de comentario",
@@ -11,7 +11,7 @@
       "messageMax": "Tu mensaje debe tener menos de 500 caracteres"
     },
     "labels": {
-      "type": "Tipo de comentario",
+      "type": "Tipo de feedback",
       "topic": "Tema",
       "message": "Tu mensaje"
     },
@@ -20,7 +20,8 @@
       "message": "Escribe tu mensaje aquí..."
     },
     "buttons": {
-      "submit": "Enviar comentario"
+      "submit": "Enviar comentario",
+      "cancel": "Cancelar"
     }   
   },
   "success": {

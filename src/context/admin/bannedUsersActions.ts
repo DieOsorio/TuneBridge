@@ -6,6 +6,7 @@ import {
   rollbackCache,
   invalidateKeys,
 } from "../helpers/cacheHandler";
+import { useEffect } from "react";
 
 export interface BannedUser {
   profile_id: string;
@@ -15,7 +16,43 @@ export interface BannedUser {
   banned_by: string;
   handled_by?: string;
   created_at: string;
+  deleted_at?: string | null;
 }
+
+/* ────── check if user is banned ────── */
+export const useRealtimeBannedUser = (profile_id: string | null) => {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!profile_id) return;
+
+    const channel = supabase
+      .channel(`realtime-banned-${profile_id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // INSERT | UPDATE | DELETE
+          schema: "admin",
+          table: "banned_users",
+          filter: `profile_id=eq.${profile_id}`,
+        },
+        (payload) => {
+          const key = bannedUsersKeyFactory({ profileId: profile_id }).all ?? ["bannedUsers", profile_id];
+
+          if (payload.eventType === "DELETE") {
+            queryClient.setQueryData(key, null);
+          } else if (payload.new) {
+            queryClient.setQueryData(key, payload.new as BannedUser);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile_id, queryClient]);
+};
 
 /* ────── fetch all banned users ────── */
 export const useAllBannedUsersQuery = () => {
@@ -36,22 +73,26 @@ export const useAllBannedUsersQuery = () => {
 
 
 /* ────── fetch banned user by profile_id ────── */
-export const useBannedUserQuery = (profile_id: string): UseQueryResult<BannedUser | null, Error> => {
+export const useBannedUserQuery = (
+  profile_id: string | null
+): UseQueryResult<BannedUser | null, Error> => {
   const queryClient = useQueryClient();
   return useQuery<BannedUser | null, Error>({
-    queryKey: bannedUsersKeyFactory({ profileId: profile_id }).all ?? ["bannedUsers", profile_id],
+    queryKey: bannedUsersKeyFactory({ profileId: profile_id ?? "" }).all ?? ["bannedUsers", profile_id ?? ""],
     queryFn: async () => {
-      const { data, error } = await supabase
+      if (!profile_id) return null;
+      const { data, error, status, statusText } = await supabase
         .schema("admin")
         .from("banned_users")
         .select("*")
         .eq("profile_id", profile_id)
-        .single();
+        .is("deleted_at", null)
+        .maybeSingle();
+
+      // Log statu info for debugging
       if (error) {
-        if (error.code === "PGRST116") {
-          // Not found error from supabase
-          return null;
-        }
+        console.log("Supabase insert status:", status, statusText);
+        console.log("Supabase insert error:", error);
         throw new Error(error.message);
       }
       return data;
